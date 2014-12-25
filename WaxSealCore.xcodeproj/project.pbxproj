@@ -1,0 +1,465 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		83C723721A4C1AA60084221A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723711A4C1AA60084221A /* Cocoa.framework */; };
+		83C7237C1A4C1AA60084221A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 83C7237A1A4C1AA60084221A /* InfoPlist.strings */; };
+		83C723801A4C1AA60084221A /* WaxSealCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 83C7237F1A4C1AA60084221A /* WaxSealCore.m */; };
+		83C723871A4C1AA60084221A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723861A4C1AA60084221A /* XCTest.framework */; };
+		83C723881A4C1AA60084221A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723711A4C1AA60084221A /* Cocoa.framework */; };
+		83C7238B1A4C1AA60084221A /* WaxSealCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C7236E1A4C1AA60084221A /* WaxSealCore.framework */; };
+		83C723911A4C1AA60084221A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 83C7238F1A4C1AA60084221A /* InfoPlist.strings */; };
+		83C723931A4C1AA60084221A /* WaxSealCoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83C723921A4C1AA60084221A /* WaxSealCoreTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		83C723891A4C1AA60084221A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83C723651A4C1AA60084221A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 83C7236D1A4C1AA60084221A;
+			remoteInfo = WaxSealCore;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		83C7236E1A4C1AA60084221A /* WaxSealCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WaxSealCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		83C723711A4C1AA60084221A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		83C723741A4C1AA60084221A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		83C723751A4C1AA60084221A /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		83C723761A4C1AA60084221A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		83C723791A4C1AA60084221A /* WaxSealCore-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WaxSealCore-Info.plist"; sourceTree = "<group>"; };
+		83C7237B1A4C1AA60084221A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		83C7237D1A4C1AA60084221A /* WaxSealCore-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WaxSealCore-Prefix.pch"; sourceTree = "<group>"; };
+		83C7237E1A4C1AA60084221A /* WaxSealCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WaxSealCore.h; sourceTree = "<group>"; };
+		83C7237F1A4C1AA60084221A /* WaxSealCore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WaxSealCore.m; sourceTree = "<group>"; };
+		83C723851A4C1AA60084221A /* WaxSealCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WaxSealCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		83C723861A4C1AA60084221A /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		83C7238E1A4C1AA60084221A /* WaxSealCoreTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WaxSealCoreTests-Info.plist"; sourceTree = "<group>"; };
+		83C723901A4C1AA60084221A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		83C723921A4C1AA60084221A /* WaxSealCoreTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WaxSealCoreTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		83C7236A1A4C1AA60084221A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83C723721A4C1AA60084221A /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83C723821A4C1AA60084221A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83C723881A4C1AA60084221A /* Cocoa.framework in Frameworks */,
+				83C7238B1A4C1AA60084221A /* WaxSealCore.framework in Frameworks */,
+				83C723871A4C1AA60084221A /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		83C723641A4C1AA60084221A = {
+			isa = PBXGroup;
+			children = (
+				83C723771A4C1AA60084221A /* WaxSealCore */,
+				83C7238C1A4C1AA60084221A /* WaxSealCoreTests */,
+				83C723701A4C1AA60084221A /* Frameworks */,
+				83C7236F1A4C1AA60084221A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		83C7236F1A4C1AA60084221A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				83C7236E1A4C1AA60084221A /* WaxSealCore.framework */,
+				83C723851A4C1AA60084221A /* WaxSealCoreTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		83C723701A4C1AA60084221A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				83C723711A4C1AA60084221A /* Cocoa.framework */,
+				83C723861A4C1AA60084221A /* XCTest.framework */,
+				83C723731A4C1AA60084221A /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		83C723731A4C1AA60084221A /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				83C723741A4C1AA60084221A /* Foundation.framework */,
+				83C723751A4C1AA60084221A /* CoreData.framework */,
+				83C723761A4C1AA60084221A /* AppKit.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		83C723771A4C1AA60084221A /* WaxSealCore */ = {
+			isa = PBXGroup;
+			children = (
+				83C7237E1A4C1AA60084221A /* WaxSealCore.h */,
+				83C7237F1A4C1AA60084221A /* WaxSealCore.m */,
+				83C723781A4C1AA60084221A /* Supporting Files */,
+			);
+			path = WaxSealCore;
+			sourceTree = "<group>";
+		};
+		83C723781A4C1AA60084221A /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				83C723791A4C1AA60084221A /* WaxSealCore-Info.plist */,
+				83C7237A1A4C1AA60084221A /* InfoPlist.strings */,
+				83C7237D1A4C1AA60084221A /* WaxSealCore-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		83C7238C1A4C1AA60084221A /* WaxSealCoreTests */ = {
+			isa = PBXGroup;
+			children = (
+				83C723921A4C1AA60084221A /* WaxSealCoreTests.m */,
+				83C7238D1A4C1AA60084221A /* Supporting Files */,
+			);
+			path = WaxSealCoreTests;
+			sourceTree = "<group>";
+		};
+		83C7238D1A4C1AA60084221A /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				83C7238E1A4C1AA60084221A /* WaxSealCoreTests-Info.plist */,
+				83C7238F1A4C1AA60084221A /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		83C7236B1A4C1AA60084221A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		83C7236D1A4C1AA60084221A /* WaxSealCore */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 83C723961A4C1AA60084221A /* Build configuration list for PBXNativeTarget "WaxSealCore" */;
+			buildPhases = (
+				83C723691A4C1AA60084221A /* Sources */,
+				83C7236A1A4C1AA60084221A /* Frameworks */,
+				83C7236B1A4C1AA60084221A /* Headers */,
+				83C7236C1A4C1AA60084221A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WaxSealCore;
+			productName = WaxSealCore;
+			productReference = 83C7236E1A4C1AA60084221A /* WaxSealCore.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		83C723841A4C1AA60084221A /* WaxSealCoreTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 83C723991A4C1AA60084221A /* Build configuration list for PBXNativeTarget "WaxSealCoreTests" */;
+			buildPhases = (
+				83C723811A4C1AA60084221A /* Sources */,
+				83C723821A4C1AA60084221A /* Frameworks */,
+				83C723831A4C1AA60084221A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				83C7238A1A4C1AA60084221A /* PBXTargetDependency */,
+			);
+			name = WaxSealCoreTests;
+			productName = WaxSealCoreTests;
+			productReference = 83C723851A4C1AA60084221A /* WaxSealCoreTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		83C723651A4C1AA60084221A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "Tong Guo";
+				TargetAttributes = {
+					83C723841A4C1AA60084221A = {
+						TestTargetID = 83C7236D1A4C1AA60084221A;
+					};
+				};
+			};
+			buildConfigurationList = 83C723681A4C1AA60084221A /* Build configuration list for PBXProject "WaxSealCore" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 83C723641A4C1AA60084221A;
+			productRefGroup = 83C7236F1A4C1AA60084221A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				83C7236D1A4C1AA60084221A /* WaxSealCore */,
+				83C723841A4C1AA60084221A /* WaxSealCoreTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		83C7236C1A4C1AA60084221A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83C7237C1A4C1AA60084221A /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83C723831A4C1AA60084221A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83C723911A4C1AA60084221A /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		83C723691A4C1AA60084221A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83C723801A4C1AA60084221A /* WaxSealCore.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83C723811A4C1AA60084221A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83C723931A4C1AA60084221A /* WaxSealCoreTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		83C7238A1A4C1AA60084221A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 83C7236D1A4C1AA60084221A /* WaxSealCore */;
+			targetProxy = 83C723891A4C1AA60084221A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		83C7237A1A4C1AA60084221A /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				83C7237B1A4C1AA60084221A /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		83C7238F1A4C1AA60084221A /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				83C723901A4C1AA60084221A /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		83C723941A4C1AA60084221A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		83C723951A4C1AA60084221A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		83C723971A4C1AA60084221A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "WaxSealCore/WaxSealCore-Prefix.pch";
+				INFOPLIST_FILE = "WaxSealCore/WaxSealCore-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Debug;
+		};
+		83C723981A4C1AA60084221A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "WaxSealCore/WaxSealCore-Prefix.pch";
+				INFOPLIST_FILE = "WaxSealCore/WaxSealCore-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Release;
+		};
+		83C7239A1A4C1AA60084221A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/WaxSealCore.framework/Versions/A/WaxSealCore";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "WaxSealCore/WaxSealCore-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "WaxSealCoreTests/WaxSealCoreTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		83C7239B1A4C1AA60084221A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/WaxSealCore.framework/Versions/A/WaxSealCore";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "WaxSealCore/WaxSealCore-Prefix.pch";
+				INFOPLIST_FILE = "WaxSealCoreTests/WaxSealCoreTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		83C723681A4C1AA60084221A /* Build configuration list for PBXProject "WaxSealCore" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83C723941A4C1AA60084221A /* Debug */,
+				83C723951A4C1AA60084221A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83C723961A4C1AA60084221A /* Build configuration list for PBXNativeTarget "WaxSealCore" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83C723971A4C1AA60084221A /* Debug */,
+				83C723981A4C1AA60084221A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		83C723991A4C1AA60084221A /* Build configuration list for PBXNativeTarget "WaxSealCoreTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83C7239A1A4C1AA60084221A /* Debug */,
+				83C7239B1A4C1AA60084221A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 83C723651A4C1AA60084221A /* Project object */;
+}
