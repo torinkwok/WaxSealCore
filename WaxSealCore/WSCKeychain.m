@@ -33,11 +33,29 @@
 
 #import "WSCKeychain.h"
 
+#pragma mark Private Programmatic Interfaces for Creating Keychains
+@implementation WSCKeychain ( WSCKeychainPrivateInitialization )
+
+- ( instancetype ) initWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef
+    {
+    if ( self = [ super init ] )
+        {
+        if ( _SecKeychainRef )
+            self->_secKeychain = ( SecKeychainRef )CFRetain( _SecKeychainRef );
+        else
+            return nil;
+        }
+
+    return self;
+    }
+
+@end // WSCKeychain + WSCKeychainPrivateInitialization
+
 @implementation WSCKeychain
 
-@synthesize c_keychain;
+@synthesize secKeychain = _secKeychain;
 
-#pragma mark Public Programmatic Interfaces for Initialization
+#pragma mark Public Programmatic Interfaces for Creating Keychains
 + ( instancetype ) keychainWithURL: ( NSURL* )_URL
                           password: ( NSString* )_Password
                     doesPromptUser: ( BOOL )_DoesPromptUser
@@ -86,23 +104,46 @@
     return [ [ [ self alloc ] initWithSecKeychainRef: _SecKeychainRef ] autorelease ];
     }
 
-- ( instancetype ) initWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef
+#pragma mark Public Programmatic Interfaces for Managing Keychains
++ ( instancetype ) currentDefaultKeychain
     {
-    if ( self = [ super init ] )
-        {
-        if ( _SecKeychainRef )
-            self->c_keychain = ( SecKeychainRef )CFRetain( _SecKeychainRef );
-        else
-            return nil;
-        }
+    return [ self currentDefaultKeychain: nil ];
+    }
 
-    return self;
++ ( instancetype ) currentDefaultKeychain: ( NSError** )_Error
+    {
+    OSStatus resultCode = errSecSuccess;
+
+    SecKeychainRef currentDefaultSecKeychain = NULL;
+    resultCode = SecKeychainCopyDefault( &currentDefaultSecKeychain );
+
+    if ( resultCode == errSecSuccess )
+        {
+        WSCKeychain* currentDefaultKeychain = [ WSCKeychain keychainWithSecKeychainRef: currentDefaultSecKeychain ];
+        CFRelease( currentDefaultSecKeychain );
+
+        return currentDefaultKeychain;
+        }
+    else
+        {
+        if ( _Error )
+            {
+            CFStringRef cfErrorDesc = SecCopyErrorMessageString( resultCode, NULL );
+            *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain
+                                           code: resultCode
+                                       userInfo: @{ NSLocalizedDescriptionKey : NSLocalizedString( ( __bridge NSString* )cfErrorDesc, nil ) }
+                                       ];
+            CFRelease( cfErrorDesc );
+            }
+
+        return nil;
+        }
     }
 
 - ( void ) dealloc
     {
-    if ( self->c_keychain )
-        CFRelease( c_keychain );
+    if ( self->_secKeychain )
+        CFRelease( self->_secKeychain );
 
     [ super dealloc ];
     }

@@ -56,13 +56,13 @@
 
     }
 
-#pragma Test the Programmatic Interfaces for Initialization
-- ( void ) testPublicAPIsForInitialization
+#pragma Test the Programmatic Interfaces for Creating Keychains
+- ( void ) testPublicAPIsForCreatingKeychains
     {
 
     }
 
-- ( void ) testPrivateAPIsForInitialization
+- ( void ) testPrivateAPIsForCreatingKeychains
     {
     OSStatus resultCode = errSecSuccess;
 
@@ -113,15 +113,34 @@
     WSCKeychain* keychain_nonPrompt = [ [ [ WSCKeychain alloc ] initWithSecKeychainRef: secKeychain_nonPrompt ] autorelease ];
     // Create WSCKeychain for test case 2
     WSCKeychain* keychain_withPrompt = [ [ [ WSCKeychain alloc ] initWithSecKeychainRef: secKeychain_withPrompt ] autorelease ];
+    // Create WSCKeychain for test case 3 (negative testing)
+    WSCKeychain* keychain_negativeTesting = [ [ [ WSCKeychain alloc ] initWithSecKeychainRef: nil ] autorelease ];
 
     XCTAssertNotNil( keychain_nonPrompt );
     XCTAssertNotNil( keychain_withPrompt );
+    XCTAssertNil( keychain_negativeTesting );
 
     if ( secKeychain_nonPrompt )
         CFRelease( secKeychain_nonPrompt );
 
     if ( secKeychain_withPrompt )
         CFRelease( secKeychain_withPrompt );
+    }
+
+#pragma Test the Programmatic Interfaces for Managing Keychains
+- ( void ) testPublicAPIsForManagingKeychains
+    {
+    NSError* error = nil;
+
+    WSCKeychain* currentDefaultKeychain_testCase1 = [ WSCKeychain currentDefaultKeychain ];
+    WSCKeychain* currentDefaultKeychain_testCase2 = [ WSCKeychain currentDefaultKeychain: &error ];
+
+    XCTAssertNotNil( currentDefaultKeychain_testCase1 );
+
+    XCTAssertNotNil( currentDefaultKeychain_testCase2 );
+    XCTAssertNil( error );
+
+    // TODO: Add a nagtive testing
     }
 
 @end // WSCKeychainTests case

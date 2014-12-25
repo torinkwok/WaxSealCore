@@ -1,4 +1,3 @@
-///:
 /*****************************************************************************
  **                                                                         **
  **                               .======.                                  **
@@ -40,15 +39,13 @@
 @interface WSCKeychain : NSObject
     {
 @private
-    SecKeychainRef  c_keychain;
+    SecKeychainRef  _secKeychain;
     }
 
-@property ( unsafe_unretained, readonly ) SecKeychainRef c_keychain;
+@property ( unsafe_unretained, readonly ) SecKeychainRef secKeychain;
 
-#pragma mark Public Programmatic Interfaces for Initialization
-/// -----------------------
-/// Initialization
-/// -----------------------
+#pragma mark Public Programmatic Interfaces for Creating Keychains
+/** @name Creating Keychains */
 
 /** Creates and returns a WSCKeychain object using the given URL, password, interaction prompt and inital access rights.
 
@@ -97,13 +94,40 @@
   @param _SecKeychainRef A reference to the instance of *SecKeychain* opaque type.
   
   @return A *WSCKeychain* object initialized with the givent reference to the instance of *SecKeychain* opaque type.
-          Return nil if *_SecKeychainRef* is nil.
+          Return *nil* if *_SecKeychainRef* is nil.
   */
 + ( instancetype ) keychainWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef;
 
-- ( instancetype ) initWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef;
+#pragma mark Public Programmatic Interfaces for Managing Keychains
+/** @name Managing Keychains */
+
+/** Retrieves a WSCKeychain object represented the current default keychain.
+
+  Return *nil* if there is no default keychain.
+
+  @return A WSCKeychain object represented the current default keychain.
+  */
++ ( instancetype ) currentDefaultKeychain;
+
+/** Retrieves a WSCKeychain object represented the current default keychain.
+
+  Return *nil* if there is no default keychain.
+  
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+
+  @return A WSCKeychain object represented the current default keychain.
+  */
++ ( instancetype ) currentDefaultKeychain: ( NSError** )_Error;
+- ( void ) setDefault: ( NSError** )_Error;
+- ( BOOL ) isDefault: ( NSError** )_Error;
 
 @end // WSCKeychain class
+
+#pragma mark Private Programmatic Interfaces for Creating Keychains
+@interface WSCKeychain ( WSCKeychainPrivateInitialization )
+- ( instancetype ) initWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef;
+@end // WSCKeychain + WSCKeychainPrivateInitialization
 
 //////////////////////////////////////////////////////////////////////////////
 
