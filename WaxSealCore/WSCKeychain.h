@@ -119,7 +119,11 @@
   @return A WSCKeychain object represented the current default keychain.
   */
 + ( instancetype ) currentDefaultKeychain: ( NSError** )_Error;
+
+
+- ( void ) setDefault;
 - ( void ) setDefault: ( NSError** )_Error;
+- ( BOOL ) isDefault;
 - ( BOOL ) isDefault: ( NSError** )_Error;
 
 @end // WSCKeychain class
