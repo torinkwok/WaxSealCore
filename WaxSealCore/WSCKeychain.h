@@ -101,6 +101,8 @@
   */
 + ( instancetype ) keychainWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef;
 
+- ( instancetype ) initWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef;
+
 @end // WSCKeychain class
 
 //////////////////////////////////////////////////////////////////////////////

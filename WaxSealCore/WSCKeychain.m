@@ -60,6 +60,9 @@
         WSCKeychain* newKeychain = [ WSCKeychain keychainWithSecKeychainRef: newSecKeychain ];
         CFRelease( newKeychain );
 
+//        if ( _WillBecomeDefault )
+            // TODO: Set the new keychain as default
+
         return newKeychain;
         }
     else

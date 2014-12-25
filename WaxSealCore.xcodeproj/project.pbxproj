@@ -96,12 +96,12 @@
 		83C723641A4C1AA60084221A = {
 			isa = PBXGroup;
 			children = (
-				838221091A4C1DC400EF9945 /* DocumentationHelper.xcodeproj */,
 				83C723771A4C1AA60084221A /* WaxSealCore */,
 				83C7238C1A4C1AA60084221A /* WaxSealCoreTests */,
 				83C723701A4C1AA60084221A /* Frameworks */,
 				83C7236F1A4C1AA60084221A /* Products */,
 				838221101A4C214A00EF9945 /* README.md */,
+				838221091A4C1DC400EF9945 /* DocumentationHelper.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -446,6 +446,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/WaxSealCore.framework/Versions/A/WaxSealCore";
+				CLANG_ENABLE_OBJC_ARC = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
@@ -468,6 +469,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/WaxSealCore.framework/Versions/A/WaxSealCore";
+				CLANG_ENABLE_OBJC_ARC = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
