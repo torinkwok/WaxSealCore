@@ -7,17 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		83C723721A4C1AA60084221A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723711A4C1AA60084221A /* Cocoa.framework */; };
 		83C7237C1A4C1AA60084221A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 83C7237A1A4C1AA60084221A /* InfoPlist.strings */; };
-		83C723801A4C1AA60084221A /* WaxSealCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 83C7237F1A4C1AA60084221A /* WaxSealCore.m */; };
+		83C723801A4C1AA60084221A /* WSCKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 83C7237F1A4C1AA60084221A /* WSCKeychain.m */; };
 		83C723871A4C1AA60084221A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723861A4C1AA60084221A /* XCTest.framework */; };
-		83C723881A4C1AA60084221A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723711A4C1AA60084221A /* Cocoa.framework */; };
 		83C7238B1A4C1AA60084221A /* WaxSealCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C7236E1A4C1AA60084221A /* WaxSealCore.framework */; };
 		83C723911A4C1AA60084221A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 83C7238F1A4C1AA60084221A /* InfoPlist.strings */; };
-		83C723931A4C1AA60084221A /* WaxSealCoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83C723921A4C1AA60084221A /* WaxSealCoreTests.m */; };
+		83C723931A4C1AA60084221A /* WSCKeychainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83C723921A4C1AA60084221A /* WSCKeychainTests.m */; };
+		83C7239D1A4C1B1E0084221A /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C7239C1A4C1B1E0084221A /* CoreFoundation.framework */; };
+		83C7239E1A4C1B240084221A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723741A4C1AA60084221A /* Foundation.framework */; };
+		83C723A01A4C1B280084221A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C7239F1A4C1B280084221A /* Security.framework */; };
+		83C723A21A4C1B2C0084221A /* SecurityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723A11A4C1B2C0084221A /* SecurityFoundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		8382210D1A4C1DC500EF9945 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 838221091A4C1DC400EF9945 /* DocumentationHelper.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 838220F81A4C1DC400EF9945;
+			remoteInfo = DocumentationHelper;
+		};
 		83C723891A4C1AA60084221A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83C723651A4C1AA60084221A /* Project object */;
@@ -28,21 +37,22 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		838221091A4C1DC400EF9945 /* DocumentationHelper.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DocumentationHelper.xcodeproj; path = DocumentationHelper/DocumentationHelper.xcodeproj; sourceTree = "<group>"; };
 		83C7236E1A4C1AA60084221A /* WaxSealCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WaxSealCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		83C723711A4C1AA60084221A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		83C723741A4C1AA60084221A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		83C723751A4C1AA60084221A /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		83C723761A4C1AA60084221A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		83C723791A4C1AA60084221A /* WaxSealCore-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WaxSealCore-Info.plist"; sourceTree = "<group>"; };
 		83C7237B1A4C1AA60084221A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		83C7237D1A4C1AA60084221A /* WaxSealCore-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WaxSealCore-Prefix.pch"; sourceTree = "<group>"; };
-		83C7237E1A4C1AA60084221A /* WaxSealCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WaxSealCore.h; sourceTree = "<group>"; };
-		83C7237F1A4C1AA60084221A /* WaxSealCore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WaxSealCore.m; sourceTree = "<group>"; };
+		83C7237E1A4C1AA60084221A /* WSCKeychain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WSCKeychain.h; sourceTree = "<group>"; };
+		83C7237F1A4C1AA60084221A /* WSCKeychain.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WSCKeychain.m; sourceTree = "<group>"; };
 		83C723851A4C1AA60084221A /* WaxSealCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WaxSealCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		83C723861A4C1AA60084221A /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		83C7238E1A4C1AA60084221A /* WaxSealCoreTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WaxSealCoreTests-Info.plist"; sourceTree = "<group>"; };
 		83C723901A4C1AA60084221A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		83C723921A4C1AA60084221A /* WaxSealCoreTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WaxSealCoreTests.m; sourceTree = "<group>"; };
+		83C723921A4C1AA60084221A /* WSCKeychainTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WSCKeychainTests.m; sourceTree = "<group>"; };
+		83C7239C1A4C1B1E0084221A /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		83C7239F1A4C1B280084221A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		83C723A11A4C1B2C0084221A /* SecurityFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityFoundation.framework; path = System/Library/Frameworks/SecurityFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,7 +60,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83C723721A4C1AA60084221A /* Cocoa.framework in Frameworks */,
+				83C7239E1A4C1B240084221A /* Foundation.framework in Frameworks */,
+				83C723A21A4C1B2C0084221A /* SecurityFoundation.framework in Frameworks */,
+				83C723A01A4C1B280084221A /* Security.framework in Frameworks */,
+				83C7239D1A4C1B1E0084221A /* CoreFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -58,7 +71,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83C723881A4C1AA60084221A /* Cocoa.framework in Frameworks */,
 				83C7238B1A4C1AA60084221A /* WaxSealCore.framework in Frameworks */,
 				83C723871A4C1AA60084221A /* XCTest.framework in Frameworks */,
 			);
@@ -67,9 +79,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8382210A1A4C1DC400EF9945 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8382210E1A4C1DC500EF9945 /* DocumentationHelper */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		83C723641A4C1AA60084221A = {
 			isa = PBXGroup;
 			children = (
+				838221091A4C1DC400EF9945 /* DocumentationHelper.xcodeproj */,
 				83C723771A4C1AA60084221A /* WaxSealCore */,
 				83C7238C1A4C1AA60084221A /* WaxSealCoreTests */,
 				83C723701A4C1AA60084221A /* Frameworks */,
@@ -89,7 +110,9 @@
 		83C723701A4C1AA60084221A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				83C723711A4C1AA60084221A /* Cocoa.framework */,
+				83C723A11A4C1B2C0084221A /* SecurityFoundation.framework */,
+				83C7239F1A4C1B280084221A /* Security.framework */,
+				83C7239C1A4C1B1E0084221A /* CoreFoundation.framework */,
 				83C723861A4C1AA60084221A /* XCTest.framework */,
 				83C723731A4C1AA60084221A /* Other Frameworks */,
 			);
@@ -100,8 +123,6 @@
 			isa = PBXGroup;
 			children = (
 				83C723741A4C1AA60084221A /* Foundation.framework */,
-				83C723751A4C1AA60084221A /* CoreData.framework */,
-				83C723761A4C1AA60084221A /* AppKit.framework */,
 			);
 			name = "Other Frameworks";
 			sourceTree = "<group>";
@@ -109,8 +130,8 @@
 		83C723771A4C1AA60084221A /* WaxSealCore */ = {
 			isa = PBXGroup;
 			children = (
-				83C7237E1A4C1AA60084221A /* WaxSealCore.h */,
-				83C7237F1A4C1AA60084221A /* WaxSealCore.m */,
+				83C7237E1A4C1AA60084221A /* WSCKeychain.h */,
+				83C7237F1A4C1AA60084221A /* WSCKeychain.m */,
 				83C723781A4C1AA60084221A /* Supporting Files */,
 			);
 			path = WaxSealCore;
@@ -129,7 +150,7 @@
 		83C7238C1A4C1AA60084221A /* WaxSealCoreTests */ = {
 			isa = PBXGroup;
 			children = (
-				83C723921A4C1AA60084221A /* WaxSealCoreTests.m */,
+				83C723921A4C1AA60084221A /* WSCKeychainTests.m */,
 				83C7238D1A4C1AA60084221A /* Supporting Files */,
 			);
 			path = WaxSealCoreTests;
@@ -217,6 +238,12 @@
 			mainGroup = 83C723641A4C1AA60084221A;
 			productRefGroup = 83C7236F1A4C1AA60084221A /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 8382210A1A4C1DC400EF9945 /* Products */;
+					ProjectRef = 838221091A4C1DC400EF9945 /* DocumentationHelper.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				83C7236D1A4C1AA60084221A /* WaxSealCore */,
@@ -224,6 +251,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		8382210E1A4C1DC500EF9945 /* DocumentationHelper */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = DocumentationHelper;
+			remoteRef = 8382210D1A4C1DC500EF9945 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		83C7236C1A4C1AA60084221A /* Resources */ = {
@@ -249,7 +286,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83C723801A4C1AA60084221A /* WaxSealCore.m in Sources */,
+				83C723801A4C1AA60084221A /* WSCKeychain.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,7 +294,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83C723931A4C1AA60084221A /* WaxSealCoreTests.m in Sources */,
+				83C723931A4C1AA60084221A /* WSCKeychainTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,6 +401,7 @@
 		83C723971A4C1AA60084221A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -379,6 +417,7 @@
 		83C723981A4C1AA60084221A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -450,6 +489,7 @@
 				83C723981A4C1AA60084221A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		83C723991A4C1AA60084221A /* Build configuration list for PBXNativeTarget "WaxSealCoreTests" */ = {
 			isa = XCConfigurationList;
@@ -458,6 +498,7 @@
 				83C7239B1A4C1AA60084221A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
