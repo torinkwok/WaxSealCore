@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		838221111A4C214A00EF9945 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 838221101A4C214A00EF9945 /* README.md */; };
 		83C7237C1A4C1AA60084221A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 83C7237A1A4C1AA60084221A /* InfoPlist.strings */; };
 		83C723801A4C1AA60084221A /* WSCKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 83C7237F1A4C1AA60084221A /* WSCKeychain.m */; };
 		83C723871A4C1AA60084221A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723861A4C1AA60084221A /* XCTest.framework */; };
@@ -38,6 +39,7 @@
 
 /* Begin PBXFileReference section */
 		838221091A4C1DC400EF9945 /* DocumentationHelper.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DocumentationHelper.xcodeproj; path = DocumentationHelper/DocumentationHelper.xcodeproj; sourceTree = "<group>"; };
+		838221101A4C214A00EF9945 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
 		83C7236E1A4C1AA60084221A /* WaxSealCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WaxSealCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		83C723741A4C1AA60084221A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		83C723791A4C1AA60084221A /* WaxSealCore-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WaxSealCore-Info.plist"; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 				83C7238C1A4C1AA60084221A /* WaxSealCoreTests */,
 				83C723701A4C1AA60084221A /* Frameworks */,
 				83C7236F1A4C1AA60084221A /* Products */,
+				838221101A4C214A00EF9945 /* README.md */,
 			);
 			sourceTree = "<group>";
 		};
@@ -267,6 +270,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				838221111A4C214A00EF9945 /* README.md in Resources */,
 				83C7237C1A4C1AA60084221A /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
