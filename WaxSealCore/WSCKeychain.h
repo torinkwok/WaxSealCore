@@ -38,8 +38,19 @@
 /** The WSCKeychain class is a subclass of NSObject that represents a keychain.
  */
 @interface WSCKeychain : NSObject
+    {
+@private
+    SecKeychainRef  c_keychain;
+    }
 
-/** Create an empty keychain.
+@property ( unsafe_unretained, readonly ) SecKeychainRef c_keychain;
+
+#pragma mark Public Programmatic Interfaces for Initialization
+/// -----------------------
+/// Initialization
+/// -----------------------
+
+/** Creates and returns a WSCKeychain object using the given URL, password, interaction prompt and inital access rights.
 
   This class method creates an empty keychain. The *_Password* and *_InitialAccess* parameters are optional.
   If user interaction to create a keychain is posted, the newly-created keychain is automatically unlocked after creation.
@@ -80,6 +91,15 @@
                      initialAccess: ( WSCAccess* )_InitalAccess
                     becomesDefault: ( BOOL )_WillBecomeDefault
                              error: ( NSError** )_Error;
+
+/** Creates and returns a WSCKeychain object using the given reference to the instance of *SecKeychain* opaque type.
+
+  @param _SecKeychainRef A reference to the instance of *SecKeychain* opaque type.
+  
+  @return A *WSCKeychain* object initialized with the givent reference to the instance of *SecKeychain* opaque type.
+          Return nil if *_SecKeychainRef* is nil.
+  */
++ ( instancetype ) keychainWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef;
 
 @end // WSCKeychain class
 
