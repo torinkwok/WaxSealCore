@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		838221111A4C214A00EF9945 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 838221101A4C214A00EF9945 /* README.md */; };
+		838221141A4C229B00EF9945 /* WSCAccess.h in Headers */ = {isa = PBXBuildFile; fileRef = 838221121A4C229B00EF9945 /* WSCAccess.h */; };
+		838221151A4C229B00EF9945 /* WSCAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = 838221131A4C229B00EF9945 /* WSCAccess.m */; };
 		83C7237C1A4C1AA60084221A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 83C7237A1A4C1AA60084221A /* InfoPlist.strings */; };
 		83C723801A4C1AA60084221A /* WSCKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 83C7237F1A4C1AA60084221A /* WSCKeychain.m */; };
 		83C723871A4C1AA60084221A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723861A4C1AA60084221A /* XCTest.framework */; };
@@ -40,6 +42,8 @@
 /* Begin PBXFileReference section */
 		838221091A4C1DC400EF9945 /* DocumentationHelper.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DocumentationHelper.xcodeproj; path = DocumentationHelper/DocumentationHelper.xcodeproj; sourceTree = "<group>"; };
 		838221101A4C214A00EF9945 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
+		838221121A4C229B00EF9945 /* WSCAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSCAccess.h; sourceTree = "<group>"; };
+		838221131A4C229B00EF9945 /* WSCAccess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCAccess.m; sourceTree = "<group>"; };
 		83C7236E1A4C1AA60084221A /* WaxSealCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WaxSealCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		83C723741A4C1AA60084221A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		83C723791A4C1AA60084221A /* WaxSealCore-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WaxSealCore-Info.plist"; sourceTree = "<group>"; };
@@ -135,6 +139,8 @@
 			children = (
 				83C7237E1A4C1AA60084221A /* WSCKeychain.h */,
 				83C7237F1A4C1AA60084221A /* WSCKeychain.m */,
+				838221121A4C229B00EF9945 /* WSCAccess.h */,
+				838221131A4C229B00EF9945 /* WSCAccess.m */,
 				83C723781A4C1AA60084221A /* Supporting Files */,
 			);
 			path = WaxSealCore;
@@ -175,6 +181,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				838221141A4C229B00EF9945 /* WSCAccess.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,6 +298,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				83C723801A4C1AA60084221A /* WSCKeychain.m in Sources */,
+				838221151A4C229B00EF9945 /* WSCAccess.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -35,6 +35,16 @@
 
 @implementation WSCKeychain
 
++ ( instancetype ) keychainWithURL: ( NSURL* )_URL
+                          password: ( NSString* )_Password
+                    doesPromptUser: ( BOOL )_DoesPromptUser
+                     initialAccess: ( WSCAccess* )_InitalAccess
+                    becomesDefault: ( BOOL )_WillBecomeDefault
+                             error: ( NSError** )_Error
+    {
+    
+    }
+
 @end // WSCKeychain class
 
 //////////////////////////////////////////////////////////////////////////////
