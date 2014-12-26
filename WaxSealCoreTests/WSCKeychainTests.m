@@ -247,6 +247,42 @@
     XCTAssertNil( error, @"Error occured while setting the new keychain as default!" );
     }
 
+- ( void ) testEquivalent
+    {
+    WSCKeychain* keychainForTestCase1 = [ WSCKeychain login ];
+    WSCKeychain* keychainForTestCase2 = [ WSCKeychain login ];
+    WSCKeychain* keychainForTestCase3 = [ WSCKeychain login ];
+    WSCKeychain* keychainForTestCase4 = self.publicKeychain;
+
+    NSLog( @"Case 1: %p     %lu", keychainForTestCase1, keychainForTestCase1.hash );
+    NSLog( @"Case 2: %p     %lu", keychainForTestCase2, keychainForTestCase2.hash );
+    NSLog( @"Case 3: %p     %lu", keychainForTestCase3, keychainForTestCase3.hash );
+    NSLog( @"Case 4: %p     %lu", keychainForTestCase4, keychainForTestCase4.hash );
+
+    XCTAssertNotEqual( keychainForTestCase1, keychainForTestCase2 );
+    XCTAssertNotEqual( keychainForTestCase2, keychainForTestCase3 );
+    XCTAssertNotEqual( keychainForTestCase3, keychainForTestCase4 );
+
+    XCTAssertEqual( keychainForTestCase1.hash, keychainForTestCase2.hash );
+    XCTAssertEqual( keychainForTestCase2.hash, keychainForTestCase3.hash );
+    XCTAssertNotEqual( keychainForTestCase3.hash, keychainForTestCase4.hash );
+
+    XCTAssertFalse( [ keychainForTestCase1 isEqualToKeychain: keychainForTestCase4 ] );
+    XCTAssertTrue( [ keychainForTestCase1 isEqualToKeychain: keychainForTestCase2 ] );
+    XCTAssertTrue( [ keychainForTestCase2 isEqualToKeychain: keychainForTestCase3 ] );
+    XCTAssertFalse( [ keychainForTestCase3 isEqualToKeychain: keychainForTestCase4 ] );
+
+    XCTAssertFalse( [ keychainForTestCase1 isEqual: keychainForTestCase4 ] );
+    XCTAssertTrue( [ keychainForTestCase1 isEqual: keychainForTestCase2 ] );
+    XCTAssertTrue( [ keychainForTestCase2 isEqual: keychainForTestCase3 ] );
+    XCTAssertFalse( [ keychainForTestCase3 isEqual: keychainForTestCase4 ] );
+
+    XCTAssertFalse( [ keychainForTestCase1 isEqual: @1 ] );
+    XCTAssertFalse( [ keychainForTestCase2 isEqual: @"TestTestTest" ] );
+    XCTAssertFalse( [ keychainForTestCase3 isEqual: [ NSDate date ] ] );
+    XCTAssertFalse( [ keychainForTestCase4 isEqual: nil ] );
+    }
+
 @end // WSCKeychainTests case
 
 // --------------------------------------------------------

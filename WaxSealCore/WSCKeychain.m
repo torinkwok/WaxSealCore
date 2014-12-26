@@ -262,6 +262,15 @@
         }
     }
 
+/* Returns a Boolean value that indicates 
+ * whether a given keychain is equal to receiver using an URL comparision. 
+ */
+- ( BOOL ) isEqualToKeychain: ( WSCKeychain* )_AnotherKeychain
+    {
+    return ( self.hash == _AnotherKeychain.hash );
+    }
+
+#pragma mark Overrides
 - ( void ) dealloc
     {
     if ( self->_secKeychain )
@@ -273,6 +282,14 @@
 - ( NSUInteger ) hash
     {
     return [ self URL ].hash;
+    }
+
+- ( BOOL ) isEqual: ( id )_Object
+    {
+    if ( [ _Object isKindOfClass: [ WSCKeychain class ] ] )
+        return [ self isEqualToKeychain: ( WSCKeychain* )_Object ];
+
+    return [ super isEqual: _Object ];
     }
 
 @end // WSCKeychain class
