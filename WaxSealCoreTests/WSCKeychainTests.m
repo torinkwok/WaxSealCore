@@ -35,7 +35,17 @@
 
 #import "WSCKeychain.h"
 
-#pragma mark WSCKeychainTests case
+#define printErr( _ResultCode )                                                     \
+    NSLog( @"\n\n\nError Occured (%d): `%@' (Line: %d Function/Method: %s)\n\n\n"   \
+         , _ResultCode                                                              \
+         , ( __bridge NSString* )SecCopyErrorMessageString( resultCode, NULL )      \
+         , __LINE__                                                                 \
+         , __func__                                                                 \
+         )
+
+// --------------------------------------------------------
+#pragma mark Interface of WSCKeychainTests case
+// --------------------------------------------------------
 @interface WSCKeychainTests : XCTestCase
 
 @property ( nonatomic, retain ) NSFileManager* defaultFileManager;
@@ -43,6 +53,20 @@
 
 @end
 
+// --------------------------------------------------------
+#pragma mark Interface of Utilities for Easy to Test
+// --------------------------------------------------------
+@interface WSCKeychainTests ( WSCEasyToTest )
+
+- ( NSURL* ) URLForTestCase: ( SEL )_Selector
+                 doesPrompt: ( BOOL )_DoesPrompt
+               deleteExists: ( BOOL )_DeleteExits;
+
+@end // WSCKeychainTests + WSCEasyToTest
+
+// --------------------------------------------------------
+#pragma mark Implementation of WSCKeychainTests case
+// --------------------------------------------------------
 @implementation WSCKeychainTests
 
 - ( void ) setUp
@@ -56,7 +80,9 @@
 
     }
 
-#pragma Test the Programmatic Interfaces for Creating Keychains
+// -----------------------------------------------------------------
+    #pragma Test the Programmatic Interfaces for Creating Keychains
+// -----------------------------------------------------------------
 - ( void ) testPublicAPIsForCreatingKeychains
     {
 
@@ -69,28 +95,12 @@
     /* URL of keychain for test case 1
      * Destination location: /var/folders/fv/k_p7_fbj4fzbvflh4905fn1m0000gn/T/NSTongG_nonPrompt....keychain
      */
-    NSURL* URLForNewKeychain_nonPrompt =
-        [ NSURL URLWithString: [ NSString stringWithFormat: @"file://%@%@"
-                                                          , NSTemporaryDirectory()
-                                                          , [ NSString stringWithFormat: @"WSC_nonPrompt_%@.keychain", NSStringFromSelector( _cmd ) ]
-                               ] ];
+    NSURL* URLForNewKeychain_nonPrompt = [ self URLForTestCase: _cmd doesPrompt: NO deleteExists: YES ];
 
     /* URL of keychain for test case 2
      * Destination location: /var/folders/fv/k_p7_fbj4fzbvflh4905fn1m0000gn/T/NSTongG_withPrompt....keychain
      */
-    NSURL* URLForNewKeychain_withPrompt =
-        [ NSURL URLWithString: [ NSString stringWithFormat: @"file://%@%@"
-                                                          , NSTemporaryDirectory()
-                                                          , [ NSString stringWithFormat: @"WSC_withPrompt_%@.keychain", NSStringFromSelector( _cmd ) ]
-                               ] ];
-
-    // Delete the .keychain file already exists for test case 1
-    if ( [ self.defaultFileManager fileExistsAtPath: [ URLForNewKeychain_nonPrompt path ] ] )
-        [ self.defaultFileManager removeItemAtURL: URLForNewKeychain_nonPrompt error: nil ];
-
-    // Delete the .keychain file already exists for test case 2
-    if ( [ self.defaultFileManager fileExistsAtPath: [ URLForNewKeychain_withPrompt path ] ] )
-        [ self.defaultFileManager removeItemAtURL: URLForNewKeychain_withPrompt error: nil ];
+    NSURL* URLForNewKeychain_withPrompt = [ self URLForTestCase: _cmd doesPrompt: YES deleteExists: YES ];
 
     // Create sec keychain for test case 1
     SecKeychainRef secKeychain_nonPrompt = NULL;
@@ -127,7 +137,9 @@
         CFRelease( secKeychain_withPrompt );
     }
 
-#pragma Test the Programmatic Interfaces for Managing Keychains
+// -----------------------------------------------------------------
+    #pragma Test the Programmatic Interfaces for Managing Keychains
+// -----------------------------------------------------------------
 - ( void ) testPublicAPIsForManagingKeychains
     {
     NSError* error = nil;
@@ -140,10 +152,61 @@
     XCTAssertNotNil( currentDefaultKeychain_testCase2 );
     XCTAssertNil( error );
 
+    OSStatus resultCode = SecKeychainSetDefault( NULL );
+    printErr( resultCode );
+
     // TODO: Add a nagtive testing
     }
 
+- ( void ) testSetDefaultMethods
+    {
+    NSURL* URLForNewKeychain = [ self URLForTestCase: _cmd doesPrompt: NO deleteExists: YES ];
+
+    NSError* error = nil;
+    WSCKeychain* newKeychain = [ WSCKeychain keychainWithURL: URLForNewKeychain
+                                                    password: self.passwordForTest
+                                              doesPromptUser: NO
+                                               initialAccess: nil
+                                              becomesDefault: NO
+                                                       error: &error ];
+
+    XCTAssertNil( error, @"Error occured while creating the new keychain!" );
+    XCTAssertNotNil( newKeychain );
+
+    [ newKeychain setDefault: &error ];
+
+    XCTAssertNil( error, @"Error occured while setting the new keychain as default!" );
+    }
+
 @end // WSCKeychainTests case
+
+// --------------------------------------------------------
+#pragma mark Implementation of Utilities for Easy to Test
+// --------------------------------------------------------
+
+@implementation WSCKeychainTests ( WSCEasyToTest )
+
+- ( NSURL* ) URLForTestCase: ( SEL )_Selector
+                 doesPrompt: ( BOOL )_DoesPrompt
+               deleteExists: ( BOOL )_DeleteExits
+    {
+    NSString* keychainName = [ NSString stringWithFormat: @"WSC_%@_%@.keychain"
+                                                        , _DoesPrompt ? @"withPrompt" : @"nonPrompt"
+                                                        , NSStringFromSelector( _Selector ) ];
+
+    NSURL* newURL = [ NSURL URLWithString: [ NSString stringWithFormat: @"file://%@%@"
+                                                                      , NSTemporaryDirectory()
+                                                                      , keychainName ] ];
+    if ( _DeleteExits )
+        {
+        if ( [ self.defaultFileManager fileExistsAtPath: [ newURL path ] ] )
+            [ self.defaultFileManager removeItemAtURL: newURL error: nil ];
+        }
+
+    return newURL;
+    }
+
+@end // WSCKeychainTests + WSCEasyToTest
 
 //////////////////////////////////////////////////////////////////////////////
 

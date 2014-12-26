@@ -56,6 +56,10 @@
 @synthesize secKeychain = _secKeychain;
 
 #pragma mark Public Programmatic Interfaces for Creating Keychains
+
+/* Creates and returns a WSCKeychain object using the given URL, password, 
+ * interaction prompt and inital access rights. 
+ */
 + ( instancetype ) keychainWithURL: ( NSURL* )_URL
                           password: ( NSString* )_Password
                     doesPromptUser: ( BOOL )_DoesPromptUser
@@ -76,7 +80,7 @@
     if ( resultCode == errSecSuccess )
         {
         WSCKeychain* newKeychain = [ WSCKeychain keychainWithSecKeychainRef: newSecKeychain ];
-        CFRelease( newKeychain );
+        CFRelease( newSecKeychain );
 
 //        if ( _WillBecomeDefault )
             // TODO: Set the new keychain as default
@@ -99,12 +103,17 @@
         }
     }
 
+/* Creates and returns a WSCKeychain object using the 
+ * given reference to the instance of *SecKeychain* opaque type. 
+ */
 + ( instancetype ) keychainWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef
     {
     return [ [ [ self alloc ] initWithSecKeychainRef: _SecKeychainRef ] autorelease ];
     }
 
 #pragma mark Public Programmatic Interfaces for Managing Keychains
+
+/* Retrieves a WSCKeychain object represented the current default keychain. */
 + ( instancetype ) currentDefaultKeychain
     {
     return [ self currentDefaultKeychain: nil ];
@@ -138,6 +147,21 @@
 
         return nil;
         }
+    }
+
+/* Sets current keychain as default keychain. */
+- ( void ) setDefault
+    {
+    [ self setDefault: nil ];
+    }
+
+- ( void ) setDefault: ( NSError** )_Error
+    {
+    OSStatus resultCode = errSecSuccess;
+
+    resultCode = SecKeychainSetDefault( self->_secKeychain );
+    if ( resultCode != errSecSuccess )
+        WSCFillErrorParam( resultCode, _Error );
     }
 
 - ( void ) dealloc

@@ -20,6 +20,8 @@
 		83C7239E1A4C1B240084221A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723741A4C1AA60084221A /* Foundation.framework */; };
 		83C723A01A4C1B280084221A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C7239F1A4C1B280084221A /* Security.framework */; };
 		83C723A21A4C1B2C0084221A /* SecurityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723A11A4C1B2C0084221A /* SecurityFoundation.framework */; };
+		83E966341A4D8135008FDEE8 /* WSCCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 83E966331A4D8135008FDEE8 /* WSCCommon.h */; };
+		83E966371A4D82B0008FDEE8 /* WSCCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E966361A4D82B0008FDEE8 /* WSCCommon.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +61,8 @@
 		83C7239C1A4C1B1E0084221A /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		83C7239F1A4C1B280084221A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		83C723A11A4C1B2C0084221A /* SecurityFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityFoundation.framework; path = System/Library/Frameworks/SecurityFoundation.framework; sourceTree = SDKROOT; };
+		83E966331A4D8135008FDEE8 /* WSCCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSCCommon.h; sourceTree = "<group>"; };
+		83E966361A4D82B0008FDEE8 /* WSCCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCCommon.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +153,8 @@
 		83C723781A4C1AA60084221A /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				83E966331A4D8135008FDEE8 /* WSCCommon.h */,
+				83E966361A4D82B0008FDEE8 /* WSCCommon.m */,
 				83C723791A4C1AA60084221A /* WaxSealCore-Info.plist */,
 				83C7237A1A4C1AA60084221A /* InfoPlist.strings */,
 				83C7237D1A4C1AA60084221A /* WaxSealCore-Prefix.pch */,
@@ -182,6 +188,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				838221141A4C229B00EF9945 /* WSCAccess.h in Headers */,
+				83E966341A4D8135008FDEE8 /* WSCCommon.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,6 +304,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83E966371A4D82B0008FDEE8 /* WSCCommon.m in Sources */,
 				83C723801A4C1AA60084221A /* WSCKeychain.m in Sources */,
 				838221151A4C229B00EF9945 /* WSCAccess.m in Sources */,
 			);

@@ -120,8 +120,26 @@
   */
 + ( instancetype ) currentDefaultKeychain: ( NSError** )_Error;
 
+/** Sets current keychain as default keychain.
 
+  In most cases, your application should not need to set the default keychain, 
+  because this is a choice normally made by the user. You may call this method to change where a
+  password or other keychain items are added, but since this is a user choice, 
+  you should set the default keychain back to the user specified keychain when you are done.
+  */
 - ( void ) setDefault;
+
+/** Sets current keychain as default keychain.
+  
+  In most cases, your application should not need to set the default keychain, 
+  because this is a choice normally made by the user. You may call this method to change where a
+  password or other keychain items are added, but since this is a user choice, 
+  you should set the default keychain back to the user specified keychain when you are done.
+  
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+                You may specify *nil* for this parameter if you don't want the error information.
+  */
 - ( void ) setDefault: ( NSError** )_Error;
 - ( BOOL ) isDefault;
 - ( BOOL ) isDefault: ( NSError** )_Error;
