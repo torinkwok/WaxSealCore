@@ -55,6 +55,40 @@
 
 @synthesize secKeychain = _secKeychain;
 
+@dynamic URL;
+
+#pragma mark Properties
+- ( NSURL* ) URL
+    {
+    OSStatus resultCode = errSecSuccess;
+
+    /* On entry, this variable represents the length (in bytes) of the buffer specified by secPath.
+     * and on return, this variable represents the string length of secPath, not including the null termination */
+    UInt32 secPathLength = MAXPATHLEN;
+
+    /* On entry, it's a pointer to buffer we have allocated 
+     * and on return, the buffer contains POSIX path of the keychain as a null-terminated UTF-8 encoding string */
+    char secPath[ MAXPATHLEN + 1 ] = { 0 };
+
+    resultCode = SecKeychainGetPath( self->_secKeychain, &secPathLength, secPath );
+
+    if ( resultCode == errSecSuccess )
+        {
+        NSString* pathStringForKeychain = [ [ [ NSString alloc ] initWithCString: secPath
+                                                                        encoding: NSUTF8StringEncoding ] autorelease ];
+
+        NSURL* URLForKeychain = [ NSURL URLWithString: [ @"file://" stringByAppendingString: pathStringForKeychain ] ];
+
+        NSError* error = nil;
+        if ( [ URLForKeychain isFileURL ] && [ URLForKeychain checkResourceIsReachableAndReturnError: &error ] )
+            return URLForKeychain;
+        }
+    else
+        WSCPrintError( resultCode );
+
+    return nil;
+    }
+
 #pragma mark Public Programmatic Interfaces for Creating Keychains
 
 /* Creates and returns a WSCKeychain object using the given URL, password, 
@@ -82,13 +116,14 @@
         WSCKeychain* newKeychain = [ WSCKeychain keychainWithSecKeychainRef: newSecKeychain ];
         CFRelease( newSecKeychain );
 
-//        if ( _WillBecomeDefault )
-            // TODO: Set the new keychain as default
+////        if ( _WillBecomeDefault )
+//            // TODO: Set the new keychain as default
 
         return newKeychain;
         }
     else
         {
+        WSCPrintError( resultCode );
         if ( _Error )
             {
             CFStringRef cfErrorDesc = SecCopyErrorMessageString( resultCode, NULL );

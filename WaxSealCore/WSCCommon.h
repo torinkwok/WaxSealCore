@@ -61,6 +61,14 @@
     if ( _Object )              \
         CFRelease( _Object )    \
 
+#define WSCPrintError( _ResultCode )                                                \
+    NSLog( @"Error Occured (%d): `%@' (Line: %d Function/Method: %s)"               \
+         , _ResultCode                                                              \
+         , ( __bridge NSString* )SecCopyErrorMessageString( resultCode, NULL )      \
+         , __LINE__                                                                 \
+         , __func__                                                                 \
+         )
+
 void WSCFillErrorParam( OSStatus _ResultCode, NSError** _ErrorParam );
 
 //////////////////////////////////////////////////////////////////////////////

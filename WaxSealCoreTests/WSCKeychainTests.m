@@ -35,18 +35,19 @@
 
 #import "WSCKeychain.h"
 
-#define printErr( _ResultCode )                                                     \
-    NSLog( @"\n\n\nError Occured (%d): `%@' (Line: %d Function/Method: %s)\n\n\n"   \
-         , _ResultCode                                                              \
-         , ( __bridge NSString* )SecCopyErrorMessageString( resultCode, NULL )      \
-         , __LINE__                                                                 \
-         , __func__                                                                 \
-         )
-
 // --------------------------------------------------------
 #pragma mark Interface of WSCKeychainTests case
 // --------------------------------------------------------
 @interface WSCKeychainTests : XCTestCase
+    {
+@private
+    WSCKeychain*    _publicKeychain;
+
+    NSFileManager*  _defaultFileManager;
+    NSString*       _passwordForTest;
+    }
+
+@property ( nonatomic, retain ) WSCKeychain* publicKeychain;
 
 @property ( nonatomic, retain ) NSFileManager* defaultFileManager;
 @property ( nonatomic, copy ) NSString* passwordForTest;
@@ -69,10 +70,26 @@
 // --------------------------------------------------------
 @implementation WSCKeychainTests
 
+@synthesize publicKeychain = _publicKeychain;
+@synthesize defaultFileManager = _defaultFileManager;
+@synthesize passwordForTest = _passwordForTest;
+
 - ( void ) setUp
     {
+    NSError* error = nil;
+
+    if ( error )
+        NSLog( @"%@", error );
+
     self.defaultFileManager = [ NSFileManager defaultManager ];
     self.passwordForTest = @"waxsealcore";
+
+    self.publicKeychain = [ WSCKeychain keychainWithURL: [ self URLForTestCase: _cmd doesPrompt: NO deleteExists: YES ]
+                                               password: self.passwordForTest
+                                         doesPromptUser: NO
+                                          initialAccess: nil
+                                         becomesDefault: NO
+                                                  error: &error ];
     }
 
 - ( void ) tearDown
@@ -86,6 +103,23 @@
 - ( void ) testPublicAPIsForCreatingKeychains
     {
 
+    }
+
+- ( void ) testPropeties
+    {
+    NSError* error = nil;
+
+    NSURL* URLForKeychain_test1 = [ self.publicKeychain URL ];
+    NSURL* URLForKeychain_test2 = [ [ WSCKeychain currentDefaultKeychain: &error ] URL ];
+
+    NSLog( @"Path for self.publicKeychain: %@", URLForKeychain_test1 );
+    XCTAssertNotNil( URLForKeychain_test1 );
+
+    NSLog( @"Path for current default keychain: %@", URLForKeychain_test2 );
+    XCTAssertNotNil( URLForKeychain_test2 );
+    XCTAssertNil( error );
+
+    // TODO: Waiting for a nagtive testing.
     }
 
 - ( void ) testPrivateAPIsForCreatingKeychains
@@ -110,6 +144,7 @@
                                   , nil
                                   , &secKeychain_nonPrompt
                                   );
+
     // Create sec keychain for test case 2
     SecKeychainRef secKeychain_withPrompt = NULL;
     resultCode = SecKeychainCreate( [ URLForNewKeychain_withPrompt.path UTF8String ]
@@ -153,9 +188,9 @@
     XCTAssertNil( error );
 
     OSStatus resultCode = SecKeychainSetDefault( NULL );
-    printErr( resultCode );
+    WSCPrintError( resultCode );
 
-    // TODO: Add a nagtive testing
+    // TODO: Waiting for a nagtive testing.
     }
 
 - ( void ) testSetDefaultMethods
