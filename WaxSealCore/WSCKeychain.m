@@ -253,10 +253,17 @@
             /* Cancel the default state for receiver */
             WSCKeychain* loginKeychain = [ WSCKeychain login ]; // TODO:
 
-            if ( loginKeychain )
-                /* if login.keychain is already exists,
+            /* If we receiver is login.keychain */
+            if ( [ self isEqualToKeychain: loginKeychain ] )
+                {
+                /* TODO: Create a temporary keychain, make it default, then delete it */
+                }
+            else
+                {
+                /* if login.keychain is already exists, and receiver is not login.keychain
                  * cancel default state of receiver, make login.keychain default */
                 resultCode = SecKeychainSetDefault( loginKeychain.secKeychain );
+                }
 
             } /* ... if receiver is not already default, do nothing. */
         }
