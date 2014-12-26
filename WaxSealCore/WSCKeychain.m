@@ -267,7 +267,11 @@
  */
 - ( BOOL ) isEqualToKeychain: ( WSCKeychain* )_AnotherKeychain
     {
-    return ( self.hash == _AnotherKeychain.hash );
+    if ( self == _AnotherKeychain )
+        return YES;
+
+    return ( self.hash == _AnotherKeychain.hash )
+                && [ self.URL isEqualTo: _AnotherKeychain.URL ];
     }
 
 #pragma mark Overrides
@@ -286,6 +290,9 @@
 
 - ( BOOL ) isEqual: ( id )_Object
     {
+    if ( self == _Object )
+        return YES;
+
     if ( [ _Object isKindOfClass: [ WSCKeychain class ] ] )
         return [ self isEqualToKeychain: ( WSCKeychain* )_Object ];
 

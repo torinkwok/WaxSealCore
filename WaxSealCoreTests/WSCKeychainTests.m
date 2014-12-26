@@ -281,6 +281,17 @@
     XCTAssertFalse( [ keychainForTestCase2 isEqual: @"TestTestTest" ] );
     XCTAssertFalse( [ keychainForTestCase3 isEqual: [ NSDate date ] ] );
     XCTAssertFalse( [ keychainForTestCase4 isEqual: nil ] );
+
+    // Self assigned
+    XCTAssertTrue( [ keychainForTestCase1 isEqualToKeychain: keychainForTestCase1 ] );
+    XCTAssertTrue( [ keychainForTestCase2 isEqualToKeychain: keychainForTestCase2 ] );
+    XCTAssertTrue( [ keychainForTestCase3 isEqualToKeychain: keychainForTestCase3 ] );
+    XCTAssertTrue( [ keychainForTestCase4 isEqualToKeychain: keychainForTestCase4 ] );
+
+    XCTAssertTrue( [ keychainForTestCase1 isEqual: keychainForTestCase1 ] );
+    XCTAssertTrue( [ keychainForTestCase2 isEqual: keychainForTestCase2 ] );
+    XCTAssertTrue( [ keychainForTestCase3 isEqual: keychainForTestCase3 ] );
+    XCTAssertTrue( [ keychainForTestCase4 isEqual: keychainForTestCase4 ] );
     }
 
 @end // WSCKeychainTests case
