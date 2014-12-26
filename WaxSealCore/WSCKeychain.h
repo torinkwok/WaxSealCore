@@ -44,6 +44,10 @@
 
 @property ( unsafe_unretained, readonly ) SecKeychainRef secKeychain;
 
+/** The URL for the receiver.
+  
+  @return The URL for the receiver.
+  */
 @property ( retain, readonly ) NSURL* URL;
 
 #pragma mark Public Programmatic Interfaces for Creating Keychains
