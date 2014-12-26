@@ -63,6 +63,10 @@
                  doesPrompt: ( BOOL )_DoesPrompt
                deleteExists: ( BOOL )_DeleteExits;
 
+- ( BOOL ) moveKeychain: ( WSCKeychain* )_Keychain
+                  toURL: ( NSURL* )_DstURL
+                  error: ( NSError** )_Error;
+
 @end // WSCKeychainTests + WSCEasyToTest
 
 // --------------------------------------------------------
@@ -120,6 +124,36 @@
     XCTAssertNil( error );
 
     // TODO: Waiting for a nagtive testing.
+    }
+
+- ( void ) testLoginClassMethod
+    {
+    NSError* error = nil;
+
+    WSCKeychain* login_test1 = [ WSCKeychain login ];
+    XCTAssertNotNil( login_test1 );
+
+    [ login_test1 setDefault: YES error: &error ];
+
+    if ( error )
+        NSLog( @"%@", error );
+
+    XCTAssertNil( error );
+
+#if 0
+    [ self moveKeychain: login_test1
+                  toURL: [ NSURL URLWithString: [ @"file://" stringByAppendingString: NSHomeDirectory() ] ]
+                  error: &error ];
+    NSLog( @"%@", error );
+
+    WSCKeychain* login_test2 = [ WSCKeychain login ];
+    XCTAssertNotNil( login_test2 );
+
+    WSCKeychain* login_test3 = [ WSCKeychain login ];
+    XCTAssertNotNil( login_test3 );
+
+    // TODO: Waiting for a nagtive testing.
+#endif
     }
 
 - ( void ) testPrivateAPIsForCreatingKeychains
@@ -208,7 +242,7 @@
     XCTAssertNil( error, @"Error occured while creating the new keychain!" );
     XCTAssertNotNil( newKeychain );
 
-    [ newKeychain setDefault: &error ];
+    [ newKeychain setDefault: YES error: &error ];
 
     XCTAssertNil( error, @"Error occured while setting the new keychain as default!" );
     }
@@ -239,6 +273,19 @@
         }
 
     return newURL;
+    }
+
+- ( BOOL ) moveKeychain: ( WSCKeychain* )_Keychain
+                  toURL: ( NSURL* )_DstURL
+                  error: ( NSError** )_Error
+    {
+    BOOL moveSuccess = NO;
+
+    if ( _Keychain && _DstURL )
+        moveSuccess = [ [ NSFileManager defaultManager ] moveItemAtURL: _Keychain.URL
+                                                                 toURL: _DstURL
+                                                                 error: _Error ];
+    return moveSuccess;
     }
 
 @end // WSCKeychainTests + WSCEasyToTest

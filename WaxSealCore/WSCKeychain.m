@@ -56,6 +56,7 @@
 @synthesize secKeychain = _secKeychain;
 
 @dynamic URL;
+@dynamic isDefault;
 
 #pragma mark Properties
 - ( NSURL* ) URL
@@ -88,6 +89,17 @@
 
     return nil;
     }
+
+- ( BOOL ) isDefault
+    {
+    /* Determine whether receiver is default by comparing with the URL of current default */
+    return [ [ WSCKeychain currentDefaultKeychain ].URL isEqualTo: self.URL ];
+    }
+//
+//- ( void ) setIsDefault: ( BOOL )_IsDefault
+//    {
+//    [ self setDefault: nil ];
+//    }
 
 #pragma mark Public Programmatic Interfaces for Creating Keychains
 
@@ -146,6 +158,40 @@
     return [ [ [ self alloc ] initWithSecKeychainRef: _SecKeychainRef ] autorelease ];
     }
 
+/* Opens and returns a WSCKeychain object representing the login.keychain for current user. 
+ */
++ ( instancetype ) login
+    {
+    OSStatus resultCode = errSecSuccess;
+    NSError* error = nil;
+
+    NSURL* URLForLogin = [ NSURL URLWithString:
+        [ NSString stringWithFormat: @"file://%@/Library/Keychains/login.keychain", NSHomeDirectory() ] ];
+
+    SecKeychainRef secLoginKeychain = NULL;
+    WSCKeychain* loginKeychain = nil;
+
+    /* If the login.keychain is already exists
+     * otherwise, we have no necessary to create one, return nil is OK.
+     */
+    if ( [ URLForLogin checkResourceIsReachableAndReturnError: &error ] )
+        {
+        resultCode = SecKeychainOpen( URLForLogin.path.UTF8String, &secLoginKeychain );
+
+        if ( resultCode == errSecSuccess )
+            {
+            loginKeychain = [ WSCKeychain keychainWithSecKeychainRef: secLoginKeychain ];
+            CFRelease( secLoginKeychain );
+
+            return loginKeychain;
+            }
+        else
+            WSCPrintError( resultCode );
+        }
+
+    return nil;
+    }
+
 #pragma mark Public Programmatic Interfaces for Managing Keychains
 
 /* Retrieves a WSCKeychain object represented the current default keychain. */
@@ -185,18 +231,35 @@
     }
 
 /* Sets current keychain as default keychain. */
-- ( void ) setDefault
-    {
-    [ self setDefault: nil ];
-    }
-
-- ( void ) setDefault: ( NSError** )_Error
+- ( void ) setDefault: ( BOOL )_IsDefault
+                error: ( NSError** )_Error
     {
     OSStatus resultCode = errSecSuccess;
 
-    resultCode = SecKeychainSetDefault( self->_secKeychain );
-    if ( resultCode != errSecSuccess )
-        WSCFillErrorParam( resultCode, _Error );
+    if ( _IsDefault )
+        {
+        if ( !self.isDefault /* If receiver is not already default... */ )
+            {
+            resultCode = SecKeychainSetDefault( self->_secKeychain );
+
+            if ( resultCode != errSecSuccess )
+                WSCFillErrorParam( resultCode, _Error );
+            } /* ... if receiver is already default, do nothing. */
+        }
+    else
+        {
+        if ( self.isDefault /* If receiver is already default... */ )
+            {
+            /* Cancel the default state for receiver */
+            WSCKeychain* loginKeychain = [ WSCKeychain login ]; // TODO:
+
+            if ( loginKeychain )
+                /* if login.keychain is already exists,
+                 * cancel default state of receiver, make login.keychain default */
+                resultCode = SecKeychainSetDefault( loginKeychain.secKeychain );
+
+            } /* ... if receiver is not already default, do nothing. */
+        }
     }
 
 - ( void ) dealloc
@@ -205,6 +268,11 @@
         CFRelease( self->_secKeychain );
 
     [ super dealloc ];
+    }
+
+- ( NSUInteger ) hash
+    {
+    return [ self URL ].hash;
     }
 
 @end // WSCKeychain class
