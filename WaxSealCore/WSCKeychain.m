@@ -36,7 +36,7 @@
 #pragma mark Private Programmatic Interfaces for Creating Keychains
 @implementation WSCKeychain ( WSCKeychainPrivateInitialization )
 
-- ( instancetype ) initWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef
+- ( instancetype ) p_initWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef
     {
     if ( self = [ super init ] )
         {
@@ -155,7 +155,7 @@
  */
 + ( instancetype ) keychainWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef
     {
-    return [ [ [ self alloc ] initWithSecKeychainRef: _SecKeychainRef ] autorelease ];
+    return [ [ [ self alloc ] p_initWithSecKeychainRef: _SecKeychainRef ] autorelease ];
     }
 
 /* Opens and returns a WSCKeychain object representing the login.keychain for current user. 

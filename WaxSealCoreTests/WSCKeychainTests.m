@@ -242,11 +242,11 @@
                                   );
 
     // Create WSCKeychain for test case 1
-    WSCKeychain* keychain_nonPrompt = [ [ [ WSCKeychain alloc ] initWithSecKeychainRef: secKeychain_nonPrompt ] autorelease ];
+    WSCKeychain* keychain_nonPrompt = [ [ [ WSCKeychain alloc ] p_initWithSecKeychainRef: secKeychain_nonPrompt ] autorelease ];
     // Create WSCKeychain for test case 2
-    WSCKeychain* keychain_withPrompt = [ [ [ WSCKeychain alloc ] initWithSecKeychainRef: secKeychain_withPrompt ] autorelease ];
+    WSCKeychain* keychain_withPrompt = [ [ [ WSCKeychain alloc ] p_initWithSecKeychainRef: secKeychain_withPrompt ] autorelease ];
     // Create WSCKeychain for test case 3 (negative testing)
-    WSCKeychain* keychain_negativeTesting = [ [ [ WSCKeychain alloc ] initWithSecKeychainRef: nil ] autorelease ];
+    WSCKeychain* keychain_negativeTesting = [ [ [ WSCKeychain alloc ] p_initWithSecKeychainRef: nil ] autorelease ];
 
     XCTAssertNotNil( keychain_nonPrompt );
     XCTAssertNotNil( keychain_withPrompt );

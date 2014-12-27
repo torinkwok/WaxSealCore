@@ -200,7 +200,7 @@
 
 #pragma mark Private Programmatic Interfaces for Creating Keychains
 @interface WSCKeychain ( WSCKeychainPrivateInitialization )
-- ( instancetype ) initWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef;
+- ( instancetype ) p_initWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef;
 @end // WSCKeychain + WSCKeychainPrivateInitialization
 
 //////////////////////////////////////////////////////////////////////////////
