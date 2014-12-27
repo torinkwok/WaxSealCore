@@ -135,6 +135,34 @@
     XCTAssertNil( error );
     }
 
+- ( void ) testURLForHomeDirectory
+    {
+    NSURL* homeURL_testCase1 = [ NSURL URLForHomeDirectory ];
+    NSURL* homeURL_testCase2 = [ NSURL URLForHomeDirectory ];
+    NSURL* homeURL_testCase3 = [ NSURL URLForHomeDirectory ];
+
+    XCTAssertNotNil( homeURL_testCase1 );
+    XCTAssertNotNil( homeURL_testCase2 );
+    XCTAssertNotNil( homeURL_testCase3 );
+
+    XCTAssertEqualObjects( homeURL_testCase1, homeURL_testCase2 );
+    XCTAssertEqualObjects( homeURL_testCase2, homeURL_testCase3 );
+    XCTAssertEqualObjects( homeURL_testCase3, homeURL_testCase1 );
+
+    NSError* error = nil;
+    XCTAssertTrue( [ homeURL_testCase1 checkResourceIsReachableAndReturnError: &error ] );
+    if ( error ) NSLog( @"%@", error );
+    XCTAssertNil( error );
+
+    XCTAssertTrue( [ homeURL_testCase2 checkResourceIsReachableAndReturnError: &error ] );
+    if ( error ) NSLog( @"%@", error );
+    XCTAssertNil( error );
+
+    XCTAssertTrue( [ homeURL_testCase3 checkResourceIsReachableAndReturnError: &error ] );
+    if ( error ) NSLog( @"%@", error );
+    XCTAssertNil( error );
+    }
+
 @end // NSURL_WSCKeychainURL test case
 
 //////////////////////////////////////////////////////////////////////////////
