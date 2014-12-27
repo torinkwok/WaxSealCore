@@ -141,6 +141,19 @@
     XCTAssertNil( error );
     }
 
+- ( void ) testSystemClassMethod
+    {
+    NSError* error = nil;
+
+    WSCKeychain* system_test1 = [ WSCKeychain system ];
+    XCTAssertNotNil( system_test1 );
+
+    if ( error )
+        NSLog( @"%@", error );
+
+    XCTAssertNil( error );
+    }
+
 - ( void ) testClassMethodsForOpenKeychains
     {
     NSError* error = nil;

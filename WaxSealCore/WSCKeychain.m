@@ -176,6 +176,21 @@
     return loginKeychain;
     }
 
++ ( instancetype ) system
+    {
+    NSError* error = nil;
+
+    NSURL* URLForSystem = [ NSURL URLWithString: @"file:///Library/Keychains/System.keychain" ];
+
+    WSCKeychain* systemKeychain = [ WSCKeychain keychainWithContentsOfURL: URLForSystem
+                                                                    error: &error ];
+    if ( error )
+        /* Log for easy to debug */
+        NSLog( @"%@", error );
+
+    return systemKeychain;
+    }
+
 /* Opens a keychain from the location specified by a given URL.
  */
 + ( instancetype ) keychainWithContentsOfURL: ( NSURL* )_URLOfKeychain
