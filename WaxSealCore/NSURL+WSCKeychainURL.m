@@ -41,6 +41,7 @@ NSURL static* s_URLForloginKeychain = nil;
     {
     dispatch_once_t static onceToken;
 
+    /* Initializes s_URLForLoginKeychain once and only once for the lifetime of this process */
     dispatch_once( &onceToken
                  , ( dispatch_block_t )^( void )
                     {
@@ -57,6 +58,7 @@ NSURL static* s_URLForSystemKeychain = nil;
     {
     dispatch_once_t static onceToken;
 
+    /* Initializes s_URLForSystemKeychain once and only once for the lifetime of this process */
     dispatch_once( &onceToken
                  , ( dispatch_block_t )^( void )
                     {
