@@ -37,7 +37,7 @@
 
 /* Returns an `NSURL` object specifying the location of `login.keychain` for current user. 
  */
-NSURL static* s_URLForloginKeychain = nil;
+NSURL static* s_URLForLoginKeychain = nil;
 + ( NSURL* ) URLForLoginKeychain
     {
     dispatch_once_t static onceToken;
@@ -46,11 +46,11 @@ NSURL static* s_URLForloginKeychain = nil;
     dispatch_once( &onceToken
                  , ( dispatch_block_t )^( void )
                     {
-                    s_URLForloginKeychain =
-                        [ NSURL URLWithString: [ NSString stringWithFormat: @"file://%@/Library/Keychains/login.keychain", NSHomeDirectory() ] ];
+                    s_URLForLoginKeychain =
+                        [ [ [ NSURL URLForCurrentUserKeychainDirectory ] URLByAppendingPathComponent: @"login.keychain" ] retain ];
                     } );
 
-    return s_URLForloginKeychain;
+    return s_URLForLoginKeychain;
     }
 
 /* Returns an `NSURL` object specifying the location of `System.keychain`. 
@@ -64,7 +64,8 @@ NSURL static* s_URLForSystemKeychain = nil;
     dispatch_once( &onceToken
                  , ( dispatch_block_t )^( void )
                     {
-                    s_URLForSystemKeychain = [ NSURL URLWithString: @"file:///Library/Keychains/System.keychain" ];
+                    s_URLForSystemKeychain =
+                        [ [ [ NSURL URLForSystemKeychainDirectory ] URLByAppendingPathComponent: @"System.keychain" ] retain ];
                     } );
 
     return s_URLForSystemKeychain;
@@ -84,6 +85,41 @@ NSURL static* s_URLForSystemKeychain = nil;
     {
     return [ NSURL URLWithString:
         [ NSString stringWithFormat: @"file://%@", NSHomeDirectory() ] ];
+    }
+
+/* Returns the URL of the current user's keychain directory: `~/Library/Keychains`.
+ */
+NSURL static* s_URLForCurrentUserKeychainDirectory = nil;
++ ( NSURL* ) URLForCurrentUserKeychainDirectory
+    {
+    dispatch_once_t static onceToken;
+
+    /* Initializes s_URLForCurrentUserKeychainDirectory once and only once for the lifetime of this process */
+    dispatch_once( &onceToken
+                 , ( dispatch_block_t )^( void )
+                    {
+                    s_URLForCurrentUserKeychainDirectory =
+                        [ [ [ NSURL URLForHomeDirectory ] URLByAppendingPathComponent: @"/Library/Keychains" ] retain ];
+                    } );
+
+    return s_URLForCurrentUserKeychainDirectory;
+    }
+
+/* Returns the URL of the system directory: `/Library/Keychains`.
+ */
+NSURL static* s_URLForSystemKeychainDirectory = nil;
++ ( NSURL* ) URLForSystemKeychainDirectory
+    {
+    dispatch_once_t static onceToken;
+
+    /* Initializes s_URLForSystemKeychainDirectory once and only once for the lifetime of this process */
+    dispatch_once( &onceToken
+                 , ( dispatch_block_t )^( void )
+                    {
+                    s_URLForSystemKeychainDirectory = [ [ NSURL URLWithString: @"file:///Library/Keychains" ] retain ];
+                    } );
+
+    return s_URLForSystemKeychainDirectory;
     }
 
 @end // NSURL + WSCKeychainURL

@@ -59,10 +59,13 @@
 
 - ( void ) testURLForLoginKeychain
     {
+    NSError* error = nil;
     NSURL* URLForLoginKeychain_testCase1 = [ NSURL URLForLoginKeychain ];
 
     XCTAssertNotNil( URLForLoginKeychain_testCase1 );
-    XCTAssertTrue( [ URLForLoginKeychain_testCase1 checkResourceIsReachableAndReturnError: nil ] );
+    XCTAssertTrue( [ URLForLoginKeychain_testCase1 checkResourceIsReachableAndReturnError: &error ] );
+    if ( error ) NSLog( @"%@", error );
+    XCTAssertNil( error );
 
     WSCKeychain* loginKeychain = [ WSCKeychain login ];
     XCTAssertEqual( URLForLoginKeychain_testCase1.hash, loginKeychain.URL.hash );
@@ -84,10 +87,13 @@
 
 - ( void ) testURLForSystemKeychain
     {
+    NSError* error = nil;
     NSURL* URLForSystemKeychain_testCase1 = [ NSURL URLForSystemKeychain ];
 
     XCTAssertNotNil( URLForSystemKeychain_testCase1 );
-    XCTAssertTrue( [ URLForSystemKeychain_testCase1 checkResourceIsReachableAndReturnError: nil ] );
+    XCTAssertTrue( [ URLForSystemKeychain_testCase1 checkResourceIsReachableAndReturnError: &error ] );
+    if ( error ) NSLog( @"%@", error );
+    XCTAssertNil( error );
 
     WSCKeychain* systemKeychain = [ WSCKeychain system ];
     XCTAssertEqual( URLForSystemKeychain_testCase1.hash, systemKeychain.URL.hash );
@@ -161,6 +167,62 @@
     XCTAssertTrue( [ homeURL_testCase3 checkResourceIsReachableAndReturnError: &error ] );
     if ( error ) NSLog( @"%@", error );
     XCTAssertNil( error );
+    }
+
+- ( void ) testURLForCurrentUserKeychainDirectory
+    {
+    NSError* error = nil;
+    NSURL* URLForCurrentUserKeychainDir_testCase1 = [ NSURL URLForCurrentUserKeychainDirectory ];
+
+    XCTAssertNotNil( URLForCurrentUserKeychainDir_testCase1 );
+    XCTAssertTrue( [ URLForCurrentUserKeychainDir_testCase1 checkResourceIsReachableAndReturnError: &error ] );
+    if ( error ) NSLog( @"%@", error );
+    XCTAssertNil( error );
+
+    NSURL* testURL = [ [ NSURL URLForHomeDirectory ] URLByAppendingPathComponent: @"/Library/Keychains" ];
+    XCTAssertEqual( URLForCurrentUserKeychainDir_testCase1.hash, testURL.hash );
+    XCTAssertEqualObjects( URLForCurrentUserKeychainDir_testCase1, testURL );
+
+    NSURL* URLForCurrentUserKeychainDir_testCase2 = [ NSURL URLForCurrentUserKeychainDirectory ];
+    NSURL* URLForCurrentUserKeychainDir_testCase3 = [ NSURL URLForCurrentUserKeychainDirectory ];
+    NSURL* URLForCurrentUserKeychainDir_testCase4 = [ NSURL URLForCurrentUserKeychainDirectory ];
+
+    // Assert whether the [ NSURL URLForCurrentUserKeychainDirectory ] returns a singleton.
+    XCTAssertEqual( URLForCurrentUserKeychainDir_testCase1, URLForCurrentUserKeychainDir_testCase2 );
+    XCTAssertEqual( URLForCurrentUserKeychainDir_testCase2, URLForCurrentUserKeychainDir_testCase3 );
+    XCTAssertEqual( URLForCurrentUserKeychainDir_testCase3, URLForCurrentUserKeychainDir_testCase4 );
+    XCTAssertEqual( URLForCurrentUserKeychainDir_testCase4, URLForCurrentUserKeychainDir_testCase1 );
+
+    NSString* currentUserKeychainDirPath = [ NSString stringWithFormat: @"%@/Library/Keychains", NSHomeDirectory() ];
+    XCTAssertEqualObjects( URLForCurrentUserKeychainDir_testCase1.path, currentUserKeychainDirPath );
+    }
+
+- ( void ) testURLForSystemKeychainDirectory
+    {
+    NSError* error = nil;
+    NSURL* URLForSystemKeychainDir_testCase1 = [ NSURL URLForSystemKeychainDirectory ];
+
+    XCTAssertNotNil( URLForSystemKeychainDir_testCase1 );
+    XCTAssertTrue( [ URLForSystemKeychainDir_testCase1 checkResourceIsReachableAndReturnError: &error ] );
+    if ( error ) NSLog( @"%@", error );
+    XCTAssertNil( error );
+
+    NSURL* testURL = [ NSURL URLWithString: @"file:///Library/Keychains" ];
+    XCTAssertEqual( URLForSystemKeychainDir_testCase1.hash, testURL.hash );
+    XCTAssertEqualObjects( URLForSystemKeychainDir_testCase1, testURL );
+
+    NSURL* URLForSystemKeychainDir_testCase2 = [ NSURL URLForSystemKeychainDirectory ];
+    NSURL* URLForSystemKeychainDir_testCase3 = [ NSURL URLForSystemKeychainDirectory ];
+    NSURL* URLForSystemKeychainDir_testCase4 = [ NSURL URLForSystemKeychainDirectory ];
+
+    // Assert whether the [ NSURL URLForSystemKeychainDirectory ] returns a singleton.
+    XCTAssertEqual( URLForSystemKeychainDir_testCase1, URLForSystemKeychainDir_testCase2 );
+    XCTAssertEqual( URLForSystemKeychainDir_testCase2, URLForSystemKeychainDir_testCase3 );
+    XCTAssertEqual( URLForSystemKeychainDir_testCase3, URLForSystemKeychainDir_testCase4 );
+    XCTAssertEqual( URLForSystemKeychainDir_testCase4, URLForSystemKeychainDir_testCase1 );
+
+    NSString* systemKeychainDirPath = @"/Library/Keychains";
+    XCTAssertEqualObjects( URLForSystemKeychainDir_testCase1.path, systemKeychainDirPath );
     }
 
 @end // NSURL_WSCKeychainURL test case

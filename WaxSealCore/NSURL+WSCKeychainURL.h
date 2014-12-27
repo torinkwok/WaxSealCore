@@ -62,11 +62,23 @@
 /** Returns the URL of the current user's or application's home directory, depending on the platform.
 
   In OS X, it is the application’s sandbox directory or the current user's home directory
-   (if the application is not in a sandbox)
+   (if the application is not in a sandbox).
 
   @return An URL specifing the location of home directory for current user.
   */
 + ( NSURL* ) URLForHomeDirectory;
+
+/** Returns the URL of the current user's keychain directory: `~/Library/Keychains`.
+
+  @return An URL of the current user's keychain directory: `~/Library/Keychains`.
+  */
++ ( NSURL* ) URLForCurrentUserKeychainDirectory;
+
+/** Returns the URL of the system directory: `/Library/Keychains`.
+
+  @return An URL of the system keychain directory: `/Library/Keychains`.
+  */
++ ( NSURL* ) URLForSystemKeychainDirectory;
 
 @end // NSURL + WSCKeychainURL
 
