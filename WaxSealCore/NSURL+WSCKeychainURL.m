@@ -35,7 +35,8 @@
 
 @implementation NSURL ( WSCKeychainURL )
 
-/* Returns an `NSURL` object specifying the location of `login.keychain` for current user. */
+/* Returns an `NSURL` object specifying the location of `login.keychain` for current user. 
+ */
 NSURL static* s_URLForloginKeychain = nil;
 + ( NSURL* ) URLForLoginKeychain
     {
@@ -52,7 +53,8 @@ NSURL static* s_URLForloginKeychain = nil;
     return s_URLForloginKeychain;
     }
 
-/* Returns an `NSURL` object specifying the location of `System.keychain`. */
+/* Returns an `NSURL` object specifying the location of `System.keychain`. 
+ */
 NSURL static* s_URLForSystemKeychain = nil;
 + ( NSURL* ) URLForSystemKeychain
     {
@@ -66,6 +68,14 @@ NSURL static* s_URLForSystemKeychain = nil;
                     } );
 
     return s_URLForSystemKeychain;
+    }
+
+/* Returns the URL of the temporary directory for current user. 
+ */
++ ( NSURL* ) URLForTemporaryDirectory
+    {
+    return [ NSURL URLWithString:
+        [ NSString stringWithFormat: @"file://%@", NSTemporaryDirectory() ] ];
     }
 
 @end // NSURL + WSCKeychainURL

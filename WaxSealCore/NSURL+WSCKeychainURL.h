@@ -49,6 +49,16 @@
   */
 + ( NSURL* ) URLForSystemKeychain;
 
+/** Returns the URL of the temporary directory for current user.
+
+  See the `NSFileManager` method `URLForDirectory:inDomain:appropriateForURL:create:error:`
+  for the preferred means of finding the correct temporary directory.
+
+  @return An URL specifing the location of temporary directory for current user. 
+          If no such directory is currently available, returns `nil`.
+  */
++ ( NSURL* ) URLForTemporaryDirectory;
+
 @end // NSURL + WSCKeychainURL
 
 //////////////////////////////////////////////////////////////////////////////

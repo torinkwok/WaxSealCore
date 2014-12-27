@@ -107,6 +107,34 @@
     XCTAssertEqualObjects( URLForSystemKeychain_testCase1.path, systemKeychainPath );
     }
 
+- ( void ) testURLForTemporaryDirectory
+    {
+    NSURL* tempURL_testCase1 = [ NSURL URLForTemporaryDirectory ];
+    NSURL* tempURL_testCase2 = [ NSURL URLForTemporaryDirectory ];
+    NSURL* tempURL_testCase3 = [ NSURL URLForTemporaryDirectory ];
+
+    XCTAssertNotNil( tempURL_testCase1 );
+    XCTAssertNotNil( tempURL_testCase2 );
+    XCTAssertNotNil( tempURL_testCase3 );
+
+    XCTAssertEqualObjects( tempURL_testCase1, tempURL_testCase2 );
+    XCTAssertEqualObjects( tempURL_testCase2, tempURL_testCase3 );
+    XCTAssertEqualObjects( tempURL_testCase3, tempURL_testCase1 );
+
+    NSError* error = nil;
+    XCTAssertTrue( [ tempURL_testCase1 checkResourceIsReachableAndReturnError: &error ] );
+    if ( error ) NSLog( @"%@", error );
+    XCTAssertNil( error );
+
+    XCTAssertTrue( [ tempURL_testCase2 checkResourceIsReachableAndReturnError: &error ] );
+    if ( error ) NSLog( @"%@", error );
+    XCTAssertNil( error );
+
+    XCTAssertTrue( [ tempURL_testCase3 checkResourceIsReachableAndReturnError: &error ] );
+    if ( error ) NSLog( @"%@", error );
+    XCTAssertNil( error );
+    }
+
 @end // NSURL_WSCKeychainURL test case
 
 //////////////////////////////////////////////////////////////////////////////
