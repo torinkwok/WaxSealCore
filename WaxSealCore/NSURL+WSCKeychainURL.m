@@ -78,6 +78,14 @@ NSURL static* s_URLForSystemKeychain = nil;
         [ NSString stringWithFormat: @"file://%@", NSTemporaryDirectory() ] ];
     }
 
+/* Returns the URL of the current user's or application's home directory, depending on the platform.
+ */
++ ( NSURL* ) URLForHomeDirectory
+    {
+    return [ NSURL URLWithString:
+        [ NSString stringWithFormat: @"file://%@", NSHomeDirectory() ] ];
+    }
+
 @end // NSURL + WSCKeychainURL
 
 //////////////////////////////////////////////////////////////////////////////

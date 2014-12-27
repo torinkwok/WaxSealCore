@@ -281,7 +281,7 @@
             if ( [ self isEqualToKeychain: loginKeychain ] )
                 {
                 /* TODO: Create a temporary keychain, make it default, then delete it */
-                WSCKeychain* tempKeychain = [ WSCKeychain keychainWithURL: [ NSURL URLWithString: NSTemporaryDirectory() ]
+                WSCKeychain* tempKeychain = [ WSCKeychain keychainWithURL: [ NSURL URLForTemporaryDirectory ]
                                                                  password: [ NSString stringWithFormat: @"%lu", NSStringFromSelector( _cmd ).hash ]
                                                            doesPromptUser: NO
                                                             initialAccess: nil
