@@ -162,34 +162,18 @@
  */
 + ( instancetype ) login
     {
-    OSStatus resultCode = errSecSuccess;
     NSError* error = nil;
 
     NSURL* URLForLogin = [ NSURL URLWithString:
         [ NSString stringWithFormat: @"file://%@/Library/Keychains/login.keychain", NSHomeDirectory() ] ];
 
-    SecKeychainRef secLoginKeychain = NULL;
-    WSCKeychain* loginKeychain = nil;
+    WSCKeychain* loginKeychain = [ WSCKeychain keychainWithContentsOfURL: URLForLogin
+                                                                   error: &error ];
+    if ( error )
+        /* Log for easy to debug */
+        NSLog( @"%@", error );
 
-    /* If the login.keychain is already exists
-     * otherwise, we have no necessary to create one, return nil is OK.
-     */
-    if ( [ URLForLogin checkResourceIsReachableAndReturnError: &error ] )
-        {
-        resultCode = SecKeychainOpen( URLForLogin.path.UTF8String, &secLoginKeychain );
-
-        if ( resultCode == errSecSuccess )
-            {
-            loginKeychain = [ WSCKeychain keychainWithSecKeychainRef: secLoginKeychain ];
-            CFRelease( secLoginKeychain );
-
-            return loginKeychain;
-            }
-        else
-            WSCPrintError( resultCode );
-        }
-
-    return nil;
+    return loginKeychain;
     }
 
 /* Opens a keychain from the location specified by a given URL.
