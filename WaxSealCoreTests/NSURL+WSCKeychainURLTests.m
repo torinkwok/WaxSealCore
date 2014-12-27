@@ -62,6 +62,7 @@
     NSURL* URLForLoginKeychain_testCase1 = [ NSURL URLForLoginKeychain ];
 
     XCTAssertNotNil( URLForLoginKeychain_testCase1 );
+    XCTAssertTrue( [ URLForLoginKeychain_testCase1 checkResourceIsReachableAndReturnError: nil ] );
 
     WSCKeychain* loginKeychain = [ WSCKeychain login ];
     XCTAssertEqual( URLForLoginKeychain_testCase1.hash, loginKeychain.URL.hash );
@@ -76,6 +77,9 @@
     XCTAssertEqual( URLForLoginKeychain_testCase2, URLForLoginKeychain_testCase3 );
     XCTAssertEqual( URLForLoginKeychain_testCase3, URLForLoginKeychain_testCase4 );
     XCTAssertEqual( URLForLoginKeychain_testCase4, URLForLoginKeychain_testCase1 );
+
+    NSString* loginKeychainPath = [ NSString stringWithFormat: @"%@/Library/Keychains/login.keychain", NSHomeDirectory() ];
+    XCTAssertEqualObjects( URLForLoginKeychain_testCase1.path, loginKeychainPath );
     }
 
 - ( void ) testURLForSystemKeychain
@@ -83,6 +87,7 @@
     NSURL* URLForSystemKeychain_testCase1 = [ NSURL URLForSystemKeychain ];
 
     XCTAssertNotNil( URLForSystemKeychain_testCase1 );
+    XCTAssertTrue( [ URLForSystemKeychain_testCase1 checkResourceIsReachableAndReturnError: nil ] );
 
     WSCKeychain* systemKeychain = [ WSCKeychain system ];
     XCTAssertEqual( URLForSystemKeychain_testCase1.hash, systemKeychain.URL.hash );
@@ -97,6 +102,9 @@
     XCTAssertEqual( URLForSystemKeychain_testCase2, URLForSystemKeychain_testCase3 );
     XCTAssertEqual( URLForSystemKeychain_testCase3, URLForSystemKeychain_testCase4 );
     XCTAssertEqual( URLForSystemKeychain_testCase4, URLForSystemKeychain_testCase1 );
+
+    NSString* systemKeychainPath = @"/Library/Keychains/System.keychain";
+    XCTAssertEqualObjects( URLForSystemKeychain_testCase1.path, systemKeychainPath );
     }
 
 @end // NSURL_WSCKeychainURL test case

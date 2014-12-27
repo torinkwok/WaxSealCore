@@ -32,6 +32,7 @@
  ****************************************************************************/
 
 #import "WSCKeychain.h"
+#import "NSURL+WSCKeychainURL.h"
 
 #pragma mark Private Programmatic Interfaces for Creating Keychains
 @implementation WSCKeychain ( WSCKeychainPrivateInitialization )
@@ -164,10 +165,7 @@
     {
     NSError* error = nil;
 
-    NSURL* URLForLogin = [ NSURL URLWithString:
-        [ NSString stringWithFormat: @"file://%@/Library/Keychains/login.keychain", NSHomeDirectory() ] ];
-
-    WSCKeychain* loginKeychain = [ WSCKeychain keychainWithContentsOfURL: URLForLogin
+    WSCKeychain* loginKeychain = [ WSCKeychain keychainWithContentsOfURL: [ NSURL URLForLoginKeychain ]
                                                                    error: &error ];
     if ( error )
         /* Log for easy to debug */
@@ -180,9 +178,7 @@
     {
     NSError* error = nil;
 
-    NSURL* URLForSystem = [ NSURL URLWithString: @"file:///Library/Keychains/System.keychain" ];
-
-    WSCKeychain* systemKeychain = [ WSCKeychain keychainWithContentsOfURL: URLForSystem
+    WSCKeychain* systemKeychain = [ WSCKeychain keychainWithContentsOfURL: [ NSURL URLForSystemKeychain ]
                                                                     error: &error ];
     if ( error )
         /* Log for easy to debug */
