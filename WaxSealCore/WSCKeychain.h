@@ -122,6 +122,19 @@
   */
 + ( instancetype ) login;
 
+/** Opens a keychain from the location specified by a given URL.
+
+  @param _URLOfKeychain The URL from which to open keychain.
+  
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+                You may specify *nil* for this parameter if you don't want the error information.
+
+  @return A WSCKeychain object represented a keychain located at the given URL.
+  */
++ ( instancetype ) keychainWithContentsOfURL: ( NSURL* )_URLOfKeychain
+                                       error: ( NSError** )_Error;
+
 #pragma mark Public Programmatic Interfaces for Managing Keychains
 /** @name Managing Keychains */
 

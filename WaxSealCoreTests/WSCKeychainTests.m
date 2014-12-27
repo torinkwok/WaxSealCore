@@ -139,21 +139,61 @@
         NSLog( @"%@", error );
 
     XCTAssertNil( error );
+    }
 
-#if 0
-    [ self moveKeychain: login_test1
-                  toURL: [ NSURL URLWithString: [ @"file://" stringByAppendingString: NSHomeDirectory() ] ]
-                  error: &error ];
-    NSLog( @"%@", error );
+- ( void ) testClassMethodsForOpenKeychains
+    {
+    NSError* error = nil;
 
-    WSCKeychain* login_test2 = [ WSCKeychain login ];
-    XCTAssertNotNil( login_test2 );
+    // ----------------------------------------------------------------------------------
+    // The URL location of login.keychain. (/Users/${USER_NAME}/Keychains/login.keychain)
+    // ----------------------------------------------------------------------------------
+    NSURL* correctURLForTestCase1 = [ NSURL URLWithString:
+        [ NSString stringWithFormat: @"file://%@/Library/Keychains/login.keychain", NSHomeDirectory() ] ];
+    WSCKeychain* correctKeychain_test1 = [ WSCKeychain keychainWithContentsOfURL: correctURLForTestCase1
+                                                                           error: &error ];
+    if ( error )
+        NSLog( @"%@", error );
 
-    WSCKeychain* login_test3 = [ WSCKeychain login ];
-    XCTAssertNotNil( login_test3 );
+    XCTAssertNil( error );
+    XCTAssertNotNil( correctKeychain_test1 );
 
-    // TODO: Waiting for a nagtive testing.
-#endif
+    // ------------------------------------------------------------------------------------
+    // The URL location of system.keychain. (/Users/${USER_NAME}/Keychains/system.keychain)
+    // ------------------------------------------------------------------------------------
+    NSURL* correctURLForTestCase2 = [ NSURL URLWithString: @"file:///Library/Keychains/System.keychain" ];
+    WSCKeychain* correctKeychain_test2 = [ WSCKeychain keychainWithContentsOfURL: correctURLForTestCase2
+                                                                           error: &error ];
+    if ( error )
+        NSLog( @"%@", error );
+
+    XCTAssertNil( error );
+    XCTAssertNotNil( correctKeychain_test2 );
+
+    // ------------------------------------------------------------------------------------
+    // The URL location is completely wrong. Hum...it's not a URL at all.
+    // ------------------------------------------------------------------------------------
+    NSURL* incorrectURLForNagativeTestCase1 = [ NSURL URLWithString: @"completelyWrong" ];
+    WSCKeychain* incorrectKeychain_nagativeTestCase1 = [ WSCKeychain keychainWithContentsOfURL: incorrectURLForNagativeTestCase1
+                                                                                         error: &error ];
+    if ( error )
+        NSLog( @"%@", error );
+
+    XCTAssertNotNil( error );
+    XCTAssertNil( incorrectKeychain_nagativeTestCase1 );
+
+    // ------------------------------------------------------------------------------------
+    // The URL location is not completely wrong, however the format is incorrect.
+    // ------------------------------------------------------------------------------------
+    NSURL* incorrectURLForNagativeTestCase2 = [ NSURL URLWithString:
+        [ NSString stringWithFormat: @"%@/Library/Keychains/login.keychain", NSHomeDirectory() ] ];
+    WSCKeychain* incorrectKeychain_nagativeTestCase2 = [ WSCKeychain keychainWithContentsOfURL: incorrectURLForNagativeTestCase2
+                                                                                         error: &error ];
+    if ( error )
+        NSLog( @"%@", error );
+
+    XCTAssertNotNil( error );
+    XCTAssertNil( incorrectKeychain_nagativeTestCase2 );
     }
 
 - ( void ) testPrivateAPIsForCreatingKeychains

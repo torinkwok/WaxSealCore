@@ -192,6 +192,35 @@
     return nil;
     }
 
+/* Opens a keychain from the location specified by a given URL.
+ */
++ ( instancetype ) keychainWithContentsOfURL: ( NSURL* )_URLOfKeychain
+                                       error: ( NSError** )_Error
+    {
+    if ( [ _URLOfKeychain checkResourceIsReachableAndReturnError: _Error ] )
+        {
+        OSStatus resultCode = errSecSuccess;
+
+        SecKeychainRef secKeychain = NULL;
+        resultCode = SecKeychainOpen( _URLOfKeychain.path.UTF8String, &secKeychain );
+
+        if ( resultCode == errSecSuccess )
+            {
+            WSCKeychain* keychain = [ WSCKeychain keychainWithSecKeychainRef: secKeychain ];
+            CFRelease( secKeychain );
+
+            return keychain;
+            }
+        else
+            {
+            WSCPrintError( resultCode );
+            WSCFillErrorParam( resultCode, _Error );
+            }
+        }
+
+    return nil;
+    }
+
 #pragma mark Public Programmatic Interfaces for Managing Keychains
 
 /* Retrieves a WSCKeychain object represented the current default keychain. */
@@ -257,6 +286,13 @@
             if ( [ self isEqualToKeychain: loginKeychain ] )
                 {
                 /* TODO: Create a temporary keychain, make it default, then delete it */
+                WSCKeychain* tempKeychain = [ WSCKeychain keychainWithURL: [ NSURL URLWithString: NSTemporaryDirectory() ]
+                                                                 password: [ NSString stringWithFormat: @"%lu", NSStringFromSelector( _cmd ).hash ]
+                                                           doesPromptUser: NO
+                                                            initialAccess: nil
+                                                           becomesDefault: NO
+                                                                    error: nil ];
+                SecKeychainSetDefault( tempKeychain.secKeychain );
                 }
             else
                 {
