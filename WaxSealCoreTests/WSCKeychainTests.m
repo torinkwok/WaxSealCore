@@ -49,7 +49,7 @@
 
 @property ( nonatomic, retain ) WSCKeychain* publicKeychain;
 
-@property ( nonatomic, retain ) NSFileManager* defaultFileManager;
+@property ( nonatomic, unsafe_unretained ) NSFileManager* defaultFileManager;
 @property ( nonatomic, copy ) NSString* passwordForTest;
 
 @end
@@ -88,17 +88,30 @@
     self.defaultFileManager = [ NSFileManager defaultManager ];
     self.passwordForTest = @"waxsealcore";
 
-    self.publicKeychain = [ WSCKeychain keychainWithURL: [ self URLForTestCase: _cmd doesPrompt: NO deleteExists: YES ]
-                                               password: self.passwordForTest
-                                         doesPromptUser: NO
-                                          initialAccess: nil
-                                         becomesDefault: NO
-                                                  error: &error ];
+    NSURL* URLForPublicKeychain = [ self URLForTestCase: _cmd doesPrompt: NO deleteExists: NO ];
+    /* If the the public keychain is not already exists, create one */
+    if ( ![ URLForPublicKeychain checkResourceIsReachableAndReturnError: &error ] )
+        {
+        self.publicKeychain = [ WSCKeychain keychainWithURL: URLForPublicKeychain
+                                                   password: self.passwordForTest
+                                             doesPromptUser: NO
+                                              initialAccess: nil
+                                             becomesDefault: NO
+                                                      error: &error ];
+        }
+    else  /* If it's already here, open it */
+        {
+        self.publicKeychain = [ WSCKeychain keychainWithContentsOfURL: URLForPublicKeychain
+                                                                error: &error ];
+        if ( error )
+            NSLog( @"%@", error );
+        }
     }
 
 - ( void ) tearDown
     {
-
+    [ self.publicKeychain release ];
+    [ self.passwordForTest release ];
     }
 
 // -----------------------------------------------------------------
