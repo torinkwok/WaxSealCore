@@ -34,7 +34,7 @@
 
 @class WSCAccess;
 
-/** The WSCKeychain class is a subclass of NSObject that represents a keychain.
+/** The `WSCKeychain` class is a subclass of `NSObject` that represents a keychain.
  */
 @interface WSCKeychain : NSObject
     {
@@ -62,7 +62,7 @@
 #pragma mark Public Programmatic Interfaces for Creating Keychains
 /** @name Creating Keychains */
 
-/** Creates and returns a WSCKeychain object using the given URL, password, interaction prompt and inital access rights.
+/** Creates and returns a `WSCKeychain` object using the given URL, password, interaction prompt and inital access rights.
 
   This class method creates an empty keychain. The *_Password* and *_InitialAccess* parameters are optional.
   If user interaction to create a keychain is posted, the newly-created keychain is automatically unlocked after creation.
@@ -95,7 +95,7 @@
                 If an error occurs, this pointer is set to an actual error object containing the error information.
                 You may specify `nil` for this parameter if you don't want the error information.
                 
-  @return A WSCKeychain object initialized with above parameters.
+  @return A `WSCKeychain` object initialized with above parameters.
   */
 + ( instancetype ) keychainWithURL: ( NSURL* )_URL
                           password: ( NSString* )_Password
@@ -104,30 +104,30 @@
                     becomesDefault: ( BOOL )_WillBecomeDefault
                              error: ( NSError** )_Error;
 
-/** Creates and returns a WSCKeychain object using the given reference to the instance of *SecKeychain* opaque type.
+/** Creates and returns a `WSCKeychain` object using the given reference to the instance of *SecKeychain* opaque type.
 
   @param _SecKeychainRef A reference to the instance of *SecKeychain* opaque type.
   
-  @return A *WSCKeychain* object initialized with the givent reference to the instance of *SecKeychain* opaque type.
+  @return A `WSCKeychain` object initialized with the givent reference to the instance of *SecKeychain* opaque type.
           Return `nil` if *_SecKeychainRef* is nil.
   */
 + ( instancetype ) keychainWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef;
 
-/** Opens and returns a WSCKeychain object representing the `login.keychain` for current user.
+/** Opens and returns a `WSCKeychain` object representing the `login.keychain` for current user.
 
   This method will search for the `login.keychain` at `~/Library/Keychains`,
   if there is not a `login.keychain`, `nil` returned.
 
-  @return A WSCKeychain object representing the `login.keychain` for current user
+  @return A `WSCKeychain` object representing the `login.keychain` for current user
   */
 + ( instancetype ) login;
 
-/** Opens and returns a WSCKeychain object representing the `System.keychain` for current user.
+/** Opens and returns a `WSCKeychain` object representing the `System.keychain` for current user.
 
   This method will search for the `System.keychain` at `/Library/Keychains`,
   if there is not a `System.keychain`, `nil` returned.
 
-  @return A WSCKeychain object representing the `System.keychain`.
+  @return A `WSCKeychain` object representing the `System.keychain`.
   */
 + ( instancetype ) system;
 
@@ -139,7 +139,7 @@
                 If an error occurs, this pointer is set to an actual error object containing the error information.
                 You may specify `nil` for this parameter if you don't want the error information.
 
-  @return A WSCKeychain object represented a keychain located at the given URL.
+  @return A `WSCKeychain` object represented a keychain located at the given URL.
   */
 + ( instancetype ) keychainWithContentsOfURL: ( NSURL* )_URLOfKeychain
                                        error: ( NSError** )_Error;
@@ -147,22 +147,22 @@
 #pragma mark Public Programmatic Interfaces for Managing Keychains
 /** @name Managing Keychains */
 
-/** Retrieves a WSCKeychain object represented the current default keychain.
+/** Retrieves a `WSCKeychain` object represented the current default keychain.
 
   Return `nil` if there is no default keychain.
 
-  @return A WSCKeychain object represented the current default keychain.
+  @return A `WSCKeychain` object represented the current default keychain.
   */
 + ( instancetype ) currentDefaultKeychain;
 
-/** Retrieves a WSCKeychain object represented the current default keychain.
+/** Retrieves a `WSCKeychain` object represented the current default keychain.
 
   Return `nil` if there is no default keychain.
   
   @param _Error On input, a pointer to an error object.
                 If an error occurs, this pointer is set to an actual error object containing the error information.
 
-  @return A WSCKeychain object represented the current default keychain.
+  @return A `WSCKeychain` object represented the current default keychain.
   */
 + ( instancetype ) currentDefaultKeychain: ( NSError** )_Error;
 
