@@ -149,6 +149,7 @@ NSURL static* s_sharedURLForSystemKeychain = nil;
         [ NSString stringWithFormat: @"file://%@", NSHomeDirectory() ] ];
     }
 
+#pragam mark Overrides for Singleton Objects
 /* Overriding implementation of -[ NSURL retain ] for own singleton object */
 - ( instancetype ) retain
     {
@@ -196,6 +197,10 @@ NSURL static* s_sharedURLForSystemKeychain = nil;
 
     return [ super retainCount ];
     }
+
+/* There is not necessary to override the implementation of copyWithZone: in NSCoyping protocol,
+ * because NSURL object is immutable object.
+ */
 
 @end // NSURL + WSCKeychainURL
 
