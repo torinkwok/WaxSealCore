@@ -89,7 +89,7 @@
 - ( void ) testURLForSystemKeychain
     {
     NSError* error = nil;
-    NSURL* URLForSystemKeychain_testCase1 = [ NSURL URLForSystemKeychain ];
+    NSURL* URLForSystemKeychain_testCase1 = [ NSURL sharedURLForSystemKeychain ];
 
     XCTAssertNotNil( URLForSystemKeychain_testCase1 );
     XCTAssertTrue( [ URLForSystemKeychain_testCase1 checkResourceIsReachableAndReturnError: &error ] );
@@ -100,11 +100,11 @@
     XCTAssertEqual( URLForSystemKeychain_testCase1.hash, systemKeychain.URL.hash );
     XCTAssertEqualObjects( URLForSystemKeychain_testCase1, systemKeychain.URL );
 
-    NSURL* URLForSystemKeychain_testCase2 = [ NSURL URLForSystemKeychain ];
-    NSURL* URLForSystemKeychain_testCase3 = [ NSURL URLForSystemKeychain ];
-    NSURL* URLForSystemKeychain_testCase4 = [ NSURL URLForSystemKeychain ];
+    NSURL* URLForSystemKeychain_testCase2 = [ NSURL sharedURLForSystemKeychain ];
+    NSURL* URLForSystemKeychain_testCase3 = [ NSURL sharedURLForSystemKeychain ];
+    NSURL* URLForSystemKeychain_testCase4 = [ NSURL sharedURLForSystemKeychain ];
 
-    // Assert whether the [ NSURL URLForSystemKeychain ] returns a singleton.
+    // Assert whether the [ NSURL sharedURLForSystemKeychain ] returns a singleton.
     XCTAssertEqual( URLForSystemKeychain_testCase1, URLForSystemKeychain_testCase2 );
     XCTAssertEqual( URLForSystemKeychain_testCase2, URLForSystemKeychain_testCase3 );
     XCTAssertEqual( URLForSystemKeychain_testCase3, URLForSystemKeychain_testCase4 );

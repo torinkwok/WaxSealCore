@@ -57,7 +57,7 @@ NSURL static* s_sharedURLForLoginKeychain = nil;
 /* Returns an `NSURL` object specifying the location of `System.keychain`. 
  */
 NSURL static* s_URLForSystemKeychain = nil;
-+ ( NSURL* ) URLForSystemKeychain
++ ( NSURL* ) sharedURLForSystemKeychain
     {
     dispatch_once_t static onceToken;
 

@@ -47,7 +47,7 @@
 
   @return An `NSURL` object specifying the location of `System.keychain`.
   */
-+ ( NSURL* ) URLForSystemKeychain;
++ ( NSURL* ) sharedURLForSystemKeychain;
 
 /** Returns the URL of the temporary directory for current user.
 

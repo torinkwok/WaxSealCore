@@ -178,7 +178,7 @@
     {
     NSError* error = nil;
 
-    WSCKeychain* systemKeychain = [ WSCKeychain keychainWithContentsOfURL: [ NSURL URLForSystemKeychain ]
+    WSCKeychain* systemKeychain = [ WSCKeychain keychainWithContentsOfURL: [ NSURL sharedURLForSystemKeychain ]
                                                                     error: &error ];
     if ( error )
         /* Log for easy to debug */
