@@ -35,6 +35,43 @@
 
 @implementation NSURL ( WSCKeychainURL )
 
+/* Returns the URL of the current user's keychain directory: `~/Library/Keychains`.
+ */
+NSURL static* s_sharedURLForCurrentUserKeychainsDirectory = nil;
++ ( NSURL* ) sharedURLForCurrentUserKeychainsDirectory
+    {
+    dispatch_once_t static onceToken;
+
+    /* Initializes s_sharedURLForCurrentUserKeychainsDirectory once and only once for the lifetime of this process */
+    dispatch_once( &onceToken
+                 , ( dispatch_block_t )^( void )
+                    {
+                    s_sharedURLForCurrentUserKeychainsDirectory =
+                        /* We have no necessary to retain the new URL object, because it's a singleton object */
+                        [ [ NSURL URLForHomeDirectory ] URLByAppendingPathComponent: @"/Library/Keychains" ];
+                    } );
+
+    return s_sharedURLForCurrentUserKeychainsDirectory;
+    }
+
+/* Returns the URL of the system directory: `/Library/Keychains`.
+ */
+NSURL static* s_sharedURLForSystemKeychainsDirectory = nil;
++ ( NSURL* ) sharedURLForSystemKeychainsDirectory
+    {
+    dispatch_once_t static onceToken;
+
+    /* Initializes s_sharedURLForSystemKeychainsDirectory once and only once for the lifetime of this process */
+    dispatch_once( &onceToken
+                 , ( dispatch_block_t )^( void )
+                    {
+                    /* We have no necessary to retain the new URL object, because it's a singleton object */
+                    s_sharedURLForSystemKeychainsDirectory = [ NSURL URLWithString: @"file:///Library/Keychains" ];
+                    } );
+
+    return s_sharedURLForSystemKeychainsDirectory;
+    }
+
 /* Returns an `NSURL` object specifying the location of `login.keychain` for current user. 
  */
 NSURL static* s_sharedURLForLoginKeychain = nil;
@@ -87,43 +124,6 @@ NSURL static* s_sharedURLForSystemKeychain = nil;
     {
     return [ NSURL URLWithString:
         [ NSString stringWithFormat: @"file://%@", NSHomeDirectory() ] ];
-    }
-
-/* Returns the URL of the current user's keychain directory: `~/Library/Keychains`.
- */
-NSURL static* s_sharedURLForCurrentUserKeychainsDirectory = nil;
-+ ( NSURL* ) sharedURLForCurrentUserKeychainsDirectory
-    {
-    dispatch_once_t static onceToken;
-
-    /* Initializes s_sharedURLForCurrentUserKeychainsDirectory once and only once for the lifetime of this process */
-    dispatch_once( &onceToken
-                 , ( dispatch_block_t )^( void )
-                    {
-                    s_sharedURLForCurrentUserKeychainsDirectory =
-                        /* We have no necessary to retain the new URL object, because it's a singleton object */
-                        [ [ NSURL URLForHomeDirectory ] URLByAppendingPathComponent: @"/Library/Keychains" ];
-                    } );
-
-    return s_sharedURLForCurrentUserKeychainsDirectory;
-    }
-
-/* Returns the URL of the system directory: `/Library/Keychains`.
- */
-NSURL static* s_sharedURLForSystemKeychainsDirectory = nil;
-+ ( NSURL* ) sharedURLForSystemKeychainsDirectory
-    {
-    dispatch_once_t static onceToken;
-
-    /* Initializes s_sharedURLForSystemKeychainsDirectory once and only once for the lifetime of this process */
-    dispatch_once( &onceToken
-                 , ( dispatch_block_t )^( void )
-                    {
-                    /* We have no necessary to retain the new URL object, because it's a singleton object */
-                    s_sharedURLForSystemKeychainsDirectory = [ NSURL URLWithString: @"file:///Library/Keychains" ];
-                    } );
-
-    return s_sharedURLForSystemKeychainsDirectory;
     }
 
 - ( instancetype ) retain
