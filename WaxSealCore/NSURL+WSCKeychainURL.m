@@ -56,7 +56,7 @@ NSURL static* s_sharedURLForLoginKeychain = nil;
 
 /* Returns an `NSURL` object specifying the location of `System.keychain`. 
  */
-NSURL static* s_URLForSystemKeychain = nil;
+NSURL static* s_sharedURLForSystemKeychain = nil;
 + ( NSURL* ) sharedURLForSystemKeychain
     {
     dispatch_once_t static onceToken;
@@ -65,12 +65,12 @@ NSURL static* s_URLForSystemKeychain = nil;
     dispatch_once( &onceToken
                  , ( dispatch_block_t )^( void )
                     {
-                    s_URLForSystemKeychain =
+                    s_sharedURLForSystemKeychain =
                         /* We have no necessary to retain the new URL object, because it's a singleton object */
                         [ [ NSURL sharedURLForSystemKeychainsDirectory ] URLByAppendingPathComponent: @"System.keychain" ];
                     } );
 
-    return s_URLForSystemKeychain;
+    return s_sharedURLForSystemKeychain;
     }
 
 /* Returns the URL of the temporary directory for current user. 
@@ -131,7 +131,7 @@ NSURL static* s_sharedURLForSystemKeychainsDirectory = nil;
     if ( self == s_sharedURLForSystemKeychainsDirectory
             || self == s_sharedURLForCurrentUserKeychainsDirectory
             || self == s_sharedURLForLoginKeychain
-            || self == s_URLForSystemKeychain )
+            || self == s_sharedURLForSystemKeychain )
         return self;    // Do nothing.
 
     return [ super retain ];
@@ -142,7 +142,7 @@ NSURL static* s_sharedURLForSystemKeychainsDirectory = nil;
     if ( self == s_sharedURLForSystemKeychainsDirectory
             || self == s_sharedURLForCurrentUserKeychainsDirectory
             || self == s_sharedURLForLoginKeychain
-            || self == s_URLForSystemKeychain )
+            || self == s_sharedURLForSystemKeychain )
         return;    // Do nothing.
 
     [ super release ];

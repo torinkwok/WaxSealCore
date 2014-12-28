@@ -58,7 +58,7 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-- ( void ) testsharedURLForLoginKeychain
+- ( void ) testSharedURLForLoginKeychain
     {
     NSError* error = nil;
     NSURL* sharedURLForLoginKeychain_testCase1 = [ NSURL sharedURLForLoginKeychain ];
@@ -86,7 +86,7 @@
     XCTAssertEqualObjects( sharedURLForLoginKeychain_testCase1.path, loginKeychainPath );
     }
 
-- ( void ) testURLForSystemKeychain
+- ( void ) testSharedURLForSystemKeychain
     {
     NSError* error = nil;
     NSURL* URLForSystemKeychain_testCase1 = [ NSURL sharedURLForSystemKeychain ];
@@ -170,7 +170,7 @@
     XCTAssertNil( error );
     }
 
-- ( void ) testsharedURLForCurrentUserKeychainsDirectory
+- ( void ) testSharedURLForCurrentUserKeychainsDirectory
     {
     NSError* error = nil;
     NSURL* URLForCurrentUserKeychainDir_testCase1 = [ NSURL sharedURLForCurrentUserKeychainsDirectory ];
@@ -198,7 +198,7 @@
     XCTAssertEqualObjects( URLForCurrentUserKeychainDir_testCase1.path, currentUserKeychainDirPath );
     }
 
-- ( void ) testsharedURLForSystemKeychainsDirectory
+- ( void ) testSharedURLForSystemKeychainsDirectory
     {
     NSError* error = nil;
     NSURL* URLForSystemKeychainDir_testCase1 = [ NSURL sharedURLForSystemKeychainsDirectory ];
