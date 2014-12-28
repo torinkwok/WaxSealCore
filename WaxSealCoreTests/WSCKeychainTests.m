@@ -309,8 +309,10 @@
     XCTAssertNotNil( newKeychain );
 
     [ newKeychain setDefault: YES error: &error ];
-
     XCTAssertNil( error, @"Error occured while setting the new keychain as default!" );
+
+    [ [ WSCKeychain login ] setDefault: YES error: &error ];
+    XCTAssertNil( error, @"Error occured while setting the login.keychain back as default!" );
     }
 
 - ( void ) testEquivalent

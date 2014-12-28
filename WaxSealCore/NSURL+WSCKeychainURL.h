@@ -33,7 +33,7 @@
 
 #import <Foundation/Foundation.h>
 
-/** A collection of useful additions for `NSURL` to deal with keychains.
+/** A collection of useful and convenient additions for `NSURL` to deal with keychains.
   */
 @interface NSURL ( WSCKeychainURL )
 

@@ -33,6 +33,22 @@
 
 #import "NSURL+WSCKeychainURL.h"
 
+#pragma Private Utilities for Creating Singleton Objects
+NSMutableSet static* s_singletonObjects = nil;
+    void WSCKeychainURLRegisterSingletonObject( id _SingletonObject )
+    {
+    dispatch_once_t static onceToken;
+
+    dispatch_once( &onceToken
+                 , ( dispatch_block_t )^( void )
+                    {
+                    s_singletonObjects = [ [ NSMutableSet set ] retain ];
+                    } );
+
+    [ s_singletonObjects addObject: _SingletonObject ];
+    }
+
+#pragma mark Implementation of NSURL+WSCKeychainURL category
 @implementation NSURL ( WSCKeychainURL )
 
 /* Returns the URL of the current user's keychain directory: `~/Library/Keychains`.
@@ -49,6 +65,8 @@ NSURL static* s_sharedURLForCurrentUserKeychainsDirectory = nil;
                     s_sharedURLForCurrentUserKeychainsDirectory =
                         /* We have no necessary to retain the new URL object, because it's a singleton object */
                         [ [ NSURL URLForHomeDirectory ] URLByAppendingPathComponent: @"/Library/Keychains" ];
+
+                    WSCKeychainURLRegisterSingletonObject( s_sharedURLForCurrentUserKeychainsDirectory );
                     } );
 
     return s_sharedURLForCurrentUserKeychainsDirectory;
@@ -67,6 +85,7 @@ NSURL static* s_sharedURLForSystemKeychainsDirectory = nil;
                     {
                     /* We have no necessary to retain the new URL object, because it's a singleton object */
                     s_sharedURLForSystemKeychainsDirectory = [ NSURL URLWithString: @"file:///Library/Keychains" ];
+                    WSCKeychainURLRegisterSingletonObject( s_sharedURLForSystemKeychainsDirectory );
                     } );
 
     return s_sharedURLForSystemKeychainsDirectory;
@@ -86,6 +105,8 @@ NSURL static* s_sharedURLForLoginKeychain = nil;
                     s_sharedURLForLoginKeychain =
                         /* We have no necessary to retain the new URL object, because it's a singleton object */
                         [ [ NSURL sharedURLForCurrentUserKeychainsDirectory ] URLByAppendingPathComponent: @"login.keychain" ];
+
+                    WSCKeychainURLRegisterSingletonObject( s_sharedURLForLoginKeychain );
                     } );
 
     return s_sharedURLForLoginKeychain;
@@ -105,6 +126,8 @@ NSURL static* s_sharedURLForSystemKeychain = nil;
                     s_sharedURLForSystemKeychain =
                         /* We have no necessary to retain the new URL object, because it's a singleton object */
                         [ [ NSURL sharedURLForSystemKeychainsDirectory ] URLByAppendingPathComponent: @"System.keychain" ];
+
+                    WSCKeychainURLRegisterSingletonObject( s_sharedURLForSystemKeychain );
                     } );
 
     return s_sharedURLForSystemKeychain;
@@ -126,26 +149,52 @@ NSURL static* s_sharedURLForSystemKeychain = nil;
         [ NSString stringWithFormat: @"file://%@", NSHomeDirectory() ] ];
     }
 
+/* Overriding implementation of -[ NSURL retain ] for own singleton object */
 - ( instancetype ) retain
     {
-    if ( self == s_sharedURLForSystemKeychainsDirectory
-            || self == s_sharedURLForCurrentUserKeychainsDirectory
-            || self == s_sharedURLForLoginKeychain
-            || self == s_sharedURLForSystemKeychain )
-        return self;    // Do nothing.
+    for ( id singletonObject in s_singletonObjects )
+        /* If the receiver is a singleton which predefined in s_singletonObjects set */
+        if ( singletonObject == self )
+            /* Do nothing, just return self, not performed the retain statement */
+            return self;
 
     return [ super retain ];
     }
 
+/* Overriding implementation of -[ NSURL release ] for own singleton object */
 - ( oneway void ) release
     {
-    if ( self == s_sharedURLForSystemKeychainsDirectory
-            || self == s_sharedURLForCurrentUserKeychainsDirectory
-            || self == s_sharedURLForLoginKeychain
-            || self == s_sharedURLForSystemKeychain )
-        return;    // Do nothing.
+    for ( id singletonObject in s_singletonObjects )
+        /* If the receiver is a singleton which predefined in s_singletonObjects set */
+        if ( singletonObject == self )
+            /* Do nothing, just return, not performed the retain statement */
+            return;
 
     [ super release ];
+    }
+
+/* Overriding implementation of -[ NSURL autorelease ] for own singleton object */
+- ( instancetype ) autorelease
+    {
+    for ( id singletonObject in s_singletonObjects )
+        /* If the receiver is a singleton which predefined in s_singletonObjects set */
+        if ( singletonObject == self )
+            /* Do nothing, just return self, not performed the retain statement */
+            return self;
+
+    return [ super autorelease ];
+    }
+
+/* Overriding implementation of -[ NSURL retainCount ] for own singleton object */
+- ( NSUInteger ) retainCount
+    {
+    for ( id singletonObject in s_singletonObjects )
+        /* If the receiver is a singleton which predefined in s_singletonObjects set */
+        if ( singletonObject == self )
+            /* Do nothing, just return the maximum retain count, not performed the retain statement */
+            return NSUIntegerMax;
+
+    return [ super retainCount ];
     }
 
 @end // NSURL + WSCKeychainURL
