@@ -72,7 +72,7 @@
 
   @return An URL of the current user's keychain directory: `~/Library/Keychains`.
   */
-+ ( NSURL* ) URLForCurrentUserKeychainDirectory;
++ ( NSURL* ) sharedURLForCurrentUserKeychainDirectory;
 
 /** Returns the URL of the system directory: `/Library/Keychains`.
 
