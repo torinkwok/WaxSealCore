@@ -149,7 +149,7 @@ NSURL static* s_sharedURLForSystemKeychain = nil;
         [ NSString stringWithFormat: @"file://%@", NSHomeDirectory() ] ];
     }
 
-#pragam mark Overrides for Singleton Objects
+#pragma mark Overrides for Singleton Objects
 /* Overriding implementation of -[ NSURL retain ] for own singleton object */
 - ( instancetype ) retain
     {
