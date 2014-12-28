@@ -32,7 +32,20 @@
  ****************************************************************************/
 
 #import <Security/Security.h>
+#import <Foundation/Foundation.h>
 
+/** `WSCKeychain` error domain.
+  */
+NSString extern* const WSCKeychainErrorDomain;
+
+/** `NSError` code in `WSCKeychainErrorDomain` error domain
+  */
+typedef NS_ENUM( NSUInteger, WSCKeychainErrorCode )
+    {
+    /** The URL of a keychain file cannot be a directory.
+      */
+    WSCKeychainCannotBeDirectory = 1U
+    };
 
 //////////////////////////////////////////////////////////////////////////////
 

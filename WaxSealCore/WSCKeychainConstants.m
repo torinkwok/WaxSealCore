@@ -31,7 +31,9 @@
  **                                                                         **
  ****************************************************************************/
 
+#import "WSCKeychainConstants.h"
 
+NSString* const WSCKeychainErrorDomain = @"WSCKeychainErrorDomain";
 
 //////////////////////////////////////////////////////////////////////////////
 

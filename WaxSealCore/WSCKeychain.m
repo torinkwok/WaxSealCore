@@ -33,6 +33,7 @@
 
 #import "WSCKeychain.h"
 #import "NSURL+WSCKeychainURL.h"
+#import "WSCKeychainConstants.h"
 
 #pragma mark Private Programmatic Interfaces for Creating Keychains
 @implementation WSCKeychain ( WSCKeychainPrivateInitialization )
@@ -192,24 +193,39 @@
 + ( instancetype ) keychainWithContentsOfURL: ( NSURL* )_URLOfKeychain
                                        error: ( NSError** )_Error
     {
-    if ( [ _URLOfKeychain checkResourceIsReachableAndReturnError: _Error ] )
+    if ( [ _URLOfKeychain checkResourceIsReachableAndReturnError: _Error ]  /* If the given URL is reachable... */ )
         {
-        OSStatus resultCode = errSecSuccess;
+        BOOL isDir = NO;
+        BOOL doesExist = [ [ NSFileManager defaultManager ] fileExistsAtPath: _URLOfKeychain.path isDirectory: &isDir ];
 
-        SecKeychainRef secKeychain = NULL;
-        resultCode = SecKeychainOpen( _URLOfKeychain.path.UTF8String, &secKeychain );
-
-        if ( resultCode == errSecSuccess )
+        if ( !isDir /* ... and the given path is NOT a directory */
+                && doesExist /* ... and this file does exist. */ )
             {
-            WSCKeychain* keychain = [ WSCKeychain keychainWithSecKeychainRef: secKeychain ];
-            CFRelease( secKeychain );
+            OSStatus resultCode = errSecSuccess;
 
-            return keychain;
+            SecKeychainRef secKeychain = NULL;
+            resultCode = SecKeychainOpen( _URLOfKeychain.path.UTF8String, &secKeychain );
+
+            if ( resultCode == errSecSuccess )
+                {
+                WSCKeychain* keychain = [ WSCKeychain keychainWithSecKeychainRef: secKeychain ];
+                CFRelease( secKeychain );
+
+                return keychain;
+                }
+            else
+                {
+                WSCPrintError( resultCode );
+                WSCFillErrorParam( resultCode, _Error );
+                }
             }
         else
             {
-            WSCPrintError( resultCode );
-            WSCFillErrorParam( resultCode, _Error );
+            /* If the given path is a directory */
+            *_Error = [ NSError errorWithDomain: isDir ? WSCKeychainErrorDomain : NSCocoaErrorDomain
+                                           code: isDir ? WSCKeychainCannotBeDirectory : NSFileNoSuchFileError
+                                       userInfo: isDir ? @{ NSLocalizedDescriptionKey : NSLocalizedString( @"Cannot be a directory", nil ) }
+                                                       : nil ];
             }
         }
 
