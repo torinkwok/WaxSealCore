@@ -176,7 +176,8 @@
     // ----------------------------------------------------------------------------------
     // The URL location of login.keychain. (/Users/${USER_NAME}/Keychains/login.keychain)
     // ----------------------------------------------------------------------------------
-    WSCKeychain* correctKeychain_test1 = [ WSCKeychain keychainWithContentsOfURL: [ NSURL sharedURLForLoginKeychain ]
+    NSURL* correctURLForTestCase1 = [ NSURL sharedURLForLoginKeychain ];
+    WSCKeychain* correctKeychain_test1 = [ WSCKeychain keychainWithContentsOfURL: correctURLForTestCase1
                                                                            error: &error ];
     if ( error ) NSLog( @"%@", error );
     XCTAssertNil( error );
@@ -185,7 +186,7 @@
     // ------------------------------------------------------------------------------------
     // The URL location of system.keychain. (/Users/${USER_NAME}/Keychains/system.keychain)
     // ------------------------------------------------------------------------------------
-    NSURL* correctURLForTestCase2 = [ NSURL URLWithString: @"file:///Library/Keychains/System.keychain" ];
+    NSURL* correctURLForTestCase2 = [ NSURL sharedURLForSystemKeychain ];
     WSCKeychain* correctKeychain_test2 = [ WSCKeychain keychainWithContentsOfURL: correctURLForTestCase2
                                                                            error: &error ];
     if ( error ) NSLog( @"%@", error );
@@ -385,9 +386,8 @@
                                                         , _DoesPrompt ? @"withPrompt" : @"nonPrompt"
                                                         , NSStringFromSelector( _Selector ) ];
 
-    NSURL* newURL = [ NSURL URLWithString: [ NSString stringWithFormat: @"file://%@%@"
-                                                                      , NSTemporaryDirectory()
-                                                                      , keychainName ] ];
+    NSURL* newURL = [ [ NSURL URLForTemporaryDirectory ] URLByAppendingPathComponent: keychainName ];
+
     if ( _DeleteExits )
         {
         if ( [ self.defaultFileManager fileExistsAtPath: [ newURL path ] ] )
