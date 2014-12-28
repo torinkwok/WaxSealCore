@@ -165,7 +165,7 @@
     {
     NSError* error = nil;
 
-    WSCKeychain* loginKeychain = [ WSCKeychain keychainWithContentsOfURL: [ NSURL URLForLoginKeychain ]
+    WSCKeychain* loginKeychain = [ WSCKeychain keychainWithContentsOfURL: [ NSURL sharedURLForLoginKeychain ]
                                                                    error: &error ];
     if ( error )
         /* Log for easy to debug */

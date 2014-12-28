@@ -58,32 +58,32 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-- ( void ) testURLForLoginKeychain
+- ( void ) testsharedURLForLoginKeychain
     {
     NSError* error = nil;
-    NSURL* URLForLoginKeychain_testCase1 = [ NSURL URLForLoginKeychain ];
+    NSURL* sharedURLForLoginKeychain_testCase1 = [ NSURL sharedURLForLoginKeychain ];
 
-    XCTAssertNotNil( URLForLoginKeychain_testCase1 );
-    XCTAssertTrue( [ URLForLoginKeychain_testCase1 checkResourceIsReachableAndReturnError: &error ] );
+    XCTAssertNotNil( sharedURLForLoginKeychain_testCase1 );
+    XCTAssertTrue( [ sharedURLForLoginKeychain_testCase1 checkResourceIsReachableAndReturnError: &error ] );
     if ( error ) NSLog( @"%@", error );
     XCTAssertNil( error );
 
     WSCKeychain* loginKeychain = [ WSCKeychain login ];
-    XCTAssertEqual( URLForLoginKeychain_testCase1.hash, loginKeychain.URL.hash );
-    XCTAssertEqualObjects( URLForLoginKeychain_testCase1, loginKeychain.URL );
+    XCTAssertEqual( sharedURLForLoginKeychain_testCase1.hash, loginKeychain.URL.hash );
+    XCTAssertEqualObjects( sharedURLForLoginKeychain_testCase1, loginKeychain.URL );
 
-    NSURL* URLForLoginKeychain_testCase2 = [ NSURL URLForLoginKeychain ];
-    NSURL* URLForLoginKeychain_testCase3 = [ NSURL URLForLoginKeychain ];
-    NSURL* URLForLoginKeychain_testCase4 = [ NSURL URLForLoginKeychain ];
+    NSURL* sharedURLForLoginKeychain_testCase2 = [ NSURL sharedURLForLoginKeychain ];
+    NSURL* sharedURLForLoginKeychain_testCase3 = [ NSURL sharedURLForLoginKeychain ];
+    NSURL* sharedURLForLoginKeychain_testCase4 = [ NSURL sharedURLForLoginKeychain ];
 
-    // Assert whether the [ NSURL URLForLoginKeychain ] returns a singleton.
-    XCTAssertEqual( URLForLoginKeychain_testCase1, URLForLoginKeychain_testCase2 );
-    XCTAssertEqual( URLForLoginKeychain_testCase2, URLForLoginKeychain_testCase3 );
-    XCTAssertEqual( URLForLoginKeychain_testCase3, URLForLoginKeychain_testCase4 );
-    XCTAssertEqual( URLForLoginKeychain_testCase4, URLForLoginKeychain_testCase1 );
+    // Assert whether the [ NSURL sharedURLForLoginKeychain ] returns a singleton.
+    XCTAssertEqual( sharedURLForLoginKeychain_testCase1, sharedURLForLoginKeychain_testCase2 );
+    XCTAssertEqual( sharedURLForLoginKeychain_testCase2, sharedURLForLoginKeychain_testCase3 );
+    XCTAssertEqual( sharedURLForLoginKeychain_testCase3, sharedURLForLoginKeychain_testCase4 );
+    XCTAssertEqual( sharedURLForLoginKeychain_testCase4, sharedURLForLoginKeychain_testCase1 );
 
     NSString* loginKeychainPath = [ NSString stringWithFormat: @"%@/Library/Keychains/login.keychain", NSHomeDirectory() ];
-    XCTAssertEqualObjects( URLForLoginKeychain_testCase1.path, loginKeychainPath );
+    XCTAssertEqualObjects( sharedURLForLoginKeychain_testCase1.path, loginKeychainPath );
     }
 
 - ( void ) testURLForSystemKeychain

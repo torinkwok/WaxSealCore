@@ -41,7 +41,7 @@
 
   @return An `NSURL` object specifying the location of `login.keychain` for current user.
   */
-+ ( NSURL* ) URLForLoginKeychain;
++ ( NSURL* ) sharedURLForLoginKeychain;
 
 /** Returns an `NSURL` object specifying the location of `System.keychain`.
 

@@ -37,21 +37,21 @@
 
 /* Returns an `NSURL` object specifying the location of `login.keychain` for current user. 
  */
-NSURL static* s_URLForLoginKeychain = nil;
-+ ( NSURL* ) URLForLoginKeychain
+NSURL static* s_sharedURLForLoginKeychain = nil;
++ ( NSURL* ) sharedURLForLoginKeychain
     {
     dispatch_once_t static onceToken;
 
-    /* Initializes s_URLForLoginKeychain once and only once for the lifetime of this process */
+    /* Initializes s_sharedURLForLoginKeychain once and only once for the lifetime of this process */
     dispatch_once( &onceToken
                  , ( dispatch_block_t )^( void )
                     {
-                    s_URLForLoginKeychain =
+                    s_sharedURLForLoginKeychain =
                         /* We have no necessary to retain the new URL object, because it's a singleton object */
                         [ [ NSURL URLForCurrentUserKeychainDirectory ] URLByAppendingPathComponent: @"login.keychain" ];
                     } );
 
-    return s_URLForLoginKeychain;
+    return s_sharedURLForLoginKeychain;
     }
 
 /* Returns an `NSURL` object specifying the location of `System.keychain`. 
@@ -130,7 +130,7 @@ NSURL static* s_URLForSystemKeychainDirectory = nil;
     {
     if ( self == s_URLForSystemKeychainDirectory
             || self == s_URLForCurrentUserKeychainDirectory
-            || self == s_URLForLoginKeychain
+            || self == s_sharedURLForLoginKeychain
             || self == s_URLForSystemKeychain )
         return self;    // Do nothing.
 
@@ -141,7 +141,7 @@ NSURL static* s_URLForSystemKeychainDirectory = nil;
     {
     if ( self == s_URLForSystemKeychainDirectory
             || self == s_URLForCurrentUserKeychainDirectory
-            || self == s_URLForLoginKeychain
+            || self == s_sharedURLForLoginKeychain
             || self == s_URLForSystemKeychain )
         return;    // Do nothing.
 
