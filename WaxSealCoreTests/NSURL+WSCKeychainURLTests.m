@@ -170,10 +170,10 @@
     XCTAssertNil( error );
     }
 
-- ( void ) testsharedURLForCurrentUserKeychainDirectory
+- ( void ) testsharedURLForCurrentUserKeychainsDirectory
     {
     NSError* error = nil;
-    NSURL* URLForCurrentUserKeychainDir_testCase1 = [ NSURL sharedURLForCurrentUserKeychainDirectory ];
+    NSURL* URLForCurrentUserKeychainDir_testCase1 = [ NSURL sharedURLForCurrentUserKeychainsDirectory ];
 
     XCTAssertNotNil( URLForCurrentUserKeychainDir_testCase1 );
     XCTAssertTrue( [ URLForCurrentUserKeychainDir_testCase1 checkResourceIsReachableAndReturnError: &error ] );
@@ -184,11 +184,11 @@
     XCTAssertEqual( URLForCurrentUserKeychainDir_testCase1.hash, testURL.hash );
     XCTAssertEqualObjects( URLForCurrentUserKeychainDir_testCase1, testURL );
 
-    NSURL* URLForCurrentUserKeychainDir_testCase2 = [ NSURL sharedURLForCurrentUserKeychainDirectory ];
-    NSURL* URLForCurrentUserKeychainDir_testCase3 = [ NSURL sharedURLForCurrentUserKeychainDirectory ];
-    NSURL* URLForCurrentUserKeychainDir_testCase4 = [ NSURL sharedURLForCurrentUserKeychainDirectory ];
+    NSURL* URLForCurrentUserKeychainDir_testCase2 = [ NSURL sharedURLForCurrentUserKeychainsDirectory ];
+    NSURL* URLForCurrentUserKeychainDir_testCase3 = [ NSURL sharedURLForCurrentUserKeychainsDirectory ];
+    NSURL* URLForCurrentUserKeychainDir_testCase4 = [ NSURL sharedURLForCurrentUserKeychainsDirectory ];
 
-    // Assert whether the [ NSURL sharedURLForCurrentUserKeychainDirectory ] returns a singleton.
+    // Assert whether the [ NSURL sharedURLForCurrentUserKeychainsDirectory ] returns a singleton.
     XCTAssertEqual( URLForCurrentUserKeychainDir_testCase1, URLForCurrentUserKeychainDir_testCase2 );
     XCTAssertEqual( URLForCurrentUserKeychainDir_testCase2, URLForCurrentUserKeychainDir_testCase3 );
     XCTAssertEqual( URLForCurrentUserKeychainDir_testCase3, URLForCurrentUserKeychainDir_testCase4 );

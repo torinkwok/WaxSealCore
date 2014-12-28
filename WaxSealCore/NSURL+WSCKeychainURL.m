@@ -48,7 +48,7 @@ NSURL static* s_sharedURLForLoginKeychain = nil;
                     {
                     s_sharedURLForLoginKeychain =
                         /* We have no necessary to retain the new URL object, because it's a singleton object */
-                        [ [ NSURL sharedURLForCurrentUserKeychainDirectory ] URLByAppendingPathComponent: @"login.keychain" ];
+                        [ [ NSURL sharedURLForCurrentUserKeychainsDirectory ] URLByAppendingPathComponent: @"login.keychain" ];
                     } );
 
     return s_sharedURLForLoginKeychain;
@@ -91,21 +91,21 @@ NSURL static* s_URLForSystemKeychain = nil;
 
 /* Returns the URL of the current user's keychain directory: `~/Library/Keychains`.
  */
-NSURL static* s_sharedURLForCurrentUserKeychainDirectory = nil;
-+ ( NSURL* ) sharedURLForCurrentUserKeychainDirectory
+NSURL static* s_sharedURLForCurrentUserKeychainsDirectory = nil;
++ ( NSURL* ) sharedURLForCurrentUserKeychainsDirectory
     {
     dispatch_once_t static onceToken;
 
-    /* Initializes s_sharedURLForCurrentUserKeychainDirectory once and only once for the lifetime of this process */
+    /* Initializes s_sharedURLForCurrentUserKeychainsDirectory once and only once for the lifetime of this process */
     dispatch_once( &onceToken
                  , ( dispatch_block_t )^( void )
                     {
-                    s_sharedURLForCurrentUserKeychainDirectory =
+                    s_sharedURLForCurrentUserKeychainsDirectory =
                         /* We have no necessary to retain the new URL object, because it's a singleton object */
                         [ [ NSURL URLForHomeDirectory ] URLByAppendingPathComponent: @"/Library/Keychains" ];
                     } );
 
-    return s_sharedURLForCurrentUserKeychainDirectory;
+    return s_sharedURLForCurrentUserKeychainsDirectory;
     }
 
 /* Returns the URL of the system directory: `/Library/Keychains`.
@@ -129,7 +129,7 @@ NSURL static* s_sharedURLForSystemKeychainsDirectory = nil;
 - ( instancetype ) retain
     {
     if ( self == s_sharedURLForSystemKeychainsDirectory
-            || self == s_sharedURLForCurrentUserKeychainDirectory
+            || self == s_sharedURLForCurrentUserKeychainsDirectory
             || self == s_sharedURLForLoginKeychain
             || self == s_URLForSystemKeychain )
         return self;    // Do nothing.
@@ -140,7 +140,7 @@ NSURL static* s_sharedURLForSystemKeychainsDirectory = nil;
 - ( oneway void ) release
     {
     if ( self == s_sharedURLForSystemKeychainsDirectory
-            || self == s_sharedURLForCurrentUserKeychainDirectory
+            || self == s_sharedURLForCurrentUserKeychainsDirectory
             || self == s_sharedURLForLoginKeychain
             || self == s_URLForSystemKeychain )
         return;    // Do nothing.
