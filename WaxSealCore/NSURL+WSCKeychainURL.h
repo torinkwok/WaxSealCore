@@ -78,7 +78,7 @@
 
   @return An URL of the system keychain directory: `/Library/Keychains`.
   */
-+ ( NSURL* ) URLForSystemKeychainDirectory;
++ ( NSURL* ) sharedURLForSystemKeychainsDirectory;
 
 @end // NSURL + WSCKeychainURL
 
