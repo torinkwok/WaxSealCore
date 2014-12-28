@@ -221,7 +221,7 @@
             }
         else
             {
-            /* If the given path is a directory */
+            /* If the given path is a directory or the given path is NOT a directory but there is no such file */
             *_Error = [ NSError errorWithDomain: isDir ? WSCKeychainErrorDomain : NSCocoaErrorDomain
                                            code: isDir ? WSCKeychainCannotBeDirectory : NSFileNoSuchFileError
                                        userInfo: isDir ? @{ NSLocalizedDescriptionKey : NSLocalizedString( @"Cannot be a directory", nil ) }
