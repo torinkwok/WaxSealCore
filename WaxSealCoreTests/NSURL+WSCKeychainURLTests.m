@@ -32,6 +32,7 @@
  ****************************************************************************/
 
 #import <XCTest/XCTest.h>
+#import <objc/runtime.h>
 
 #import "WSCKeychain.h"
 #import "NSURL+WSCKeychainURL.h"

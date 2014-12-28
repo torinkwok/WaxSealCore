@@ -47,7 +47,8 @@ NSURL static* s_URLForLoginKeychain = nil;
                  , ( dispatch_block_t )^( void )
                     {
                     s_URLForLoginKeychain =
-                        [ [ [ NSURL URLForCurrentUserKeychainDirectory ] URLByAppendingPathComponent: @"login.keychain" ] retain ];
+                        /* We have no necessary to retain the new URL object, because it's a singleton object */
+                        [ [ NSURL URLForCurrentUserKeychainDirectory ] URLByAppendingPathComponent: @"login.keychain" ];
                     } );
 
     return s_URLForLoginKeychain;
@@ -65,7 +66,8 @@ NSURL static* s_URLForSystemKeychain = nil;
                  , ( dispatch_block_t )^( void )
                     {
                     s_URLForSystemKeychain =
-                        [ [ [ NSURL URLForSystemKeychainDirectory ] URLByAppendingPathComponent: @"System.keychain" ] retain ];
+                        /* We have no necessary to retain the new URL object, because it's a singleton object */
+                        [ [ NSURL URLForSystemKeychainDirectory ] URLByAppendingPathComponent: @"System.keychain" ];
                     } );
 
     return s_URLForSystemKeychain;
@@ -99,7 +101,8 @@ NSURL static* s_URLForCurrentUserKeychainDirectory = nil;
                  , ( dispatch_block_t )^( void )
                     {
                     s_URLForCurrentUserKeychainDirectory =
-                        [ [ [ NSURL URLForHomeDirectory ] URLByAppendingPathComponent: @"/Library/Keychains" ] retain ];
+                        /* We have no necessary to retain the new URL object, because it's a singleton object */
+                        [ [ NSURL URLForHomeDirectory ] URLByAppendingPathComponent: @"/Library/Keychains" ];
                     } );
 
     return s_URLForCurrentUserKeychainDirectory;
@@ -116,10 +119,33 @@ NSURL static* s_URLForSystemKeychainDirectory = nil;
     dispatch_once( &onceToken
                  , ( dispatch_block_t )^( void )
                     {
-                    s_URLForSystemKeychainDirectory = [ [ NSURL URLWithString: @"file:///Library/Keychains" ] retain ];
+                    /* We have no necessary to retain the new URL object, because it's a singleton object */
+                    s_URLForSystemKeychainDirectory = [ NSURL URLWithString: @"file:///Library/Keychains" ];
                     } );
 
     return s_URLForSystemKeychainDirectory;
+    }
+
+- ( instancetype ) retain
+    {
+    if ( self == s_URLForSystemKeychainDirectory
+            || self == s_URLForCurrentUserKeychainDirectory
+            || self == s_URLForLoginKeychain
+            || self == s_URLForSystemKeychain )
+        return self;    // Do nothing.
+
+    return [ super retain ];
+    }
+
+- ( oneway void ) release
+    {
+    if ( self == s_URLForSystemKeychainDirectory
+            || self == s_URLForCurrentUserKeychainDirectory
+            || self == s_URLForLoginKeychain
+            || self == s_URLForSystemKeychain )
+        return;    // Do nothing.
+
+    [ super release ];
     }
 
 @end // NSURL + WSCKeychainURL
