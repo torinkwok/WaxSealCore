@@ -53,6 +53,31 @@
 
 @end // WSCKeychain + WSCKeychainPrivateInitialization
 
+NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
+    {
+    NSString* pathOfKeychain = nil;
+
+    if ( _Keychain )
+        {
+        OSStatus resultCode = errSecSuccess;
+
+        /* On entry, this variable represents the length (in bytes) of the buffer specified by secPath.
+         * and on return, this variable represents the string length of secPath, not including the null termination */
+        UInt32 secPathLength = MAXPATHLEN;
+
+        /* On entry, it's a pointer to buffer we have allocated 
+         * and on return, the buffer contains POSIX path of the keychain as a null-terminated UTF-8 encoding string */
+        char secPath[ MAXPATHLEN + 1 ] = { 0 };
+
+        resultCode = SecKeychainGetPath( _Keychain, &secPathLength, secPath );
+        if ( resultCode == errSecSuccess )
+            pathOfKeychain = [ [ [ NSString alloc ] initWithCString: secPath
+                                                           encoding: NSUTF8StringEncoding ] autorelease ];
+        }
+
+    return pathOfKeychain;
+    }
+
 @implementation WSCKeychain
 
 @synthesize secKeychain = _secKeychain;
@@ -297,13 +322,15 @@
             if ( [ self isEqualToKeychain: loginKeychain ] )
                 {
                 /* TODO: Create a temporary keychain, make it default, then delete it */
-                WSCKeychain* tempKeychain = [ WSCKeychain keychainWithURL: [ [ NSURL URLForTemporaryDirectory ] URLByAppendingPathComponent: [ NSString stringWithFormat: @"%lu", NSStringFromSelector( _cmd ).hash ] ]
+                NSURL* URLForTempKeychain = [ [ NSURL URLForTemporaryDirectory ] URLByAppendingPathComponent: [ NSString stringWithFormat: @"%lu", NSStringFromSelector( _cmd ).hash ] ];
+                WSCKeychain* tempKeychain = [ WSCKeychain keychainWithURL: URLForTempKeychain
                                                                  password: [ NSString stringWithFormat: @"%lu", NSStringFromSelector( _cmd ).hash ]
                                                            doesPromptUser: NO
                                                             initialAccess: nil
                                                            becomesDefault: NO
                                                                     error: nil ];
                 SecKeychainSetDefault( tempKeychain.secKeychain );
+                [ [ NSFileManager defaultManager ] removeItemAtURL: URLForTempKeychain error: nil ];
                 }
             else
                 {

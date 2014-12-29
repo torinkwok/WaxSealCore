@@ -203,6 +203,8 @@
 - ( instancetype ) p_initWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef;
 @end // WSCKeychain + WSCKeychainPrivateInitialization
 
+NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain );
+
 //////////////////////////////////////////////////////////////////////////////
 
 /*****************************************************************************
