@@ -128,6 +128,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 1
     // ----------------------------------------------------------------------------------
+    [ self.publicKeychain setDefault: YES error: nil ];
     SecKeychainRef defaultKeychain_testCase1 = NULL;
     SecKeychainCopyDefault( &defaultKeychain_testCase1 );
     NSString* pathOfDefaultKeychain_testCase1 = WSCKeychainGetPathOfKeychain( defaultKeychain_testCase1 );
@@ -161,10 +162,35 @@
     NSLog( @"pathOfSystem_testCase3: %@", pathOfNil_negativeTestCase1 );
     XCTAssertNil( pathOfNil_negativeTestCase1 );
     XCTAssertEqualObjects( pathOfNil_negativeTestCase1, nil );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 2
+    // ----------------------------------------------------------------------------------
+    NSError* error = nil;
+    NSURL* randomURL = [ self randomURLForKeychain ];
+    WSCKeychain* randomKeychain = [ WSCKeychain keychainWithURL: randomURL
+                                                       password: self.passwordForTest
+                                                 doesPromptUser: NO
+                                                  initialAccess: nil
+                                                 becomesDefault: NO
+                                                          error: &error ];
+    XCTAssertNil( error );
+    if ( error ) NSLog( @"%@", error );
+    [ randomKeychain setDefault: YES error: nil ];
+
+    /* This keychain has be invalid */
+    [ [ NSFileManager defaultManager ] removeItemAtURL: randomURL error: nil ];
+
+    SecKeychainRef invalidDefault_negativeTestCase2 = randomKeychain.secKeychain;
+    NSString* pathOfInvalidDefault_negativeTestCase2 = WSCKeychainGetPathOfKeychain( invalidDefault_negativeTestCase2 );
+    NSLog( @"pathOfInvalidDefault_negativeTestCase2: %@", pathOfInvalidDefault_negativeTestCase2 );
+    XCTAssertNil( pathOfInvalidDefault_negativeTestCase2 );
     }
 
 - ( void ) tearDown
     {
+    [ [ WSCKeychain login ] setDefault: YES error: nil ];
+
     for ( NSURL* _URL in self.randomURLsAutodeletePool )
         if ( [ _URL checkResourceIsReachableAndReturnError: nil ] )
             [ [ NSFileManager defaultManager ] removeItemAtURL: _URL error: nil ];

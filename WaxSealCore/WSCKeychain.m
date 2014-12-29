@@ -42,7 +42,10 @@
     {
     if ( self = [ super init ] )
         {
-        if ( _SecKeychainRef )
+        NSString* path = WSCKeychainGetPathOfKeychain( _SecKeychainRef );
+
+        /* Ensure that the _SecKeychainRef does reference an exist keychain file */
+        if ( _SecKeychainRef && path )
             self->_secKeychain = ( SecKeychainRef )CFRetain( _SecKeychainRef );
         else
             return nil;
@@ -55,8 +58,6 @@
 
 NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
     {
-    NSString* pathOfKeychain = nil;
-
     if ( _Keychain )
         {
         OSStatus resultCode = errSecSuccess;
@@ -71,11 +72,23 @@ NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
 
         resultCode = SecKeychainGetPath( _Keychain, &secPathLength, secPath );
         if ( resultCode == errSecSuccess )
-            pathOfKeychain = [ [ [ NSString alloc ] initWithCString: secPath
-                                                           encoding: NSUTF8StringEncoding ] autorelease ];
+            {
+            NSString* pathOfKeychain = [ [ [ NSString alloc ] initWithCString: secPath
+                                                                     encoding: NSUTF8StringEncoding ] autorelease ];
+
+            BOOL doesExist = NO;
+            BOOL isDir = NO;
+            doesExist = [ [ NSFileManager defaultManager ] fileExistsAtPath: pathOfKeychain isDirectory: &isDir ];
+
+            if ( doesExist /* The _Keychain does reference an exist keychain file */
+                    && !isDir /* This path isn't a directory */ )
+                return pathOfKeychain;
+            }
+        else
+            WSCPrintError( resultCode );
         }
 
-    return pathOfKeychain;
+    return nil;
     }
 
 @implementation WSCKeychain
@@ -275,9 +288,6 @@ NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
     if ( resultCode == errSecSuccess )
         {
         WSCKeychain* currentDefaultKeychain = [ WSCKeychain keychainWithSecKeychainRef: currentDefaultSecKeychain ];
-
-        if ( !currentDefaultKeychain.URL )
-            return nil;
 
         CFRelease( currentDefaultSecKeychain );
         return currentDefaultKeychain;
