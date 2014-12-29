@@ -47,6 +47,8 @@
 
     NSFileManager*  _defaultFileManager;
     NSString*       _passwordForTest;
+
+    NSMutableSet*   _randomURLsAutodeletePool;
     }
 
 @property ( nonatomic, retain ) WSCKeychain* publicKeychain;
@@ -54,12 +56,16 @@
 @property ( nonatomic, unsafe_unretained ) NSFileManager* defaultFileManager;
 @property ( nonatomic, copy ) NSString* passwordForTest;
 
+@property ( nonatomic, retain ) NSMutableSet* randomURLsAutodeletePool;
+
 @end
 
 // --------------------------------------------------------
 #pragma mark Interface of Utilities for Easy to Test
 // --------------------------------------------------------
 @interface WSCKeychainTests ( WSCEasyToTest )
+
+- ( NSURL* ) randomURLForKeychain;
 
 - ( NSURL* ) URLForTestCase: ( SEL )_Selector
                  doesPrompt: ( BOOL )_DoesPrompt
@@ -79,6 +85,8 @@
 @synthesize publicKeychain = _publicKeychain;
 @synthesize defaultFileManager = _defaultFileManager;
 @synthesize passwordForTest = _passwordForTest;
+
+@synthesize randomURLsAutodeletePool = _randomURLsAutodeletePool;
 
 - ( void ) setUp
     {
@@ -108,12 +116,19 @@
         if ( error )
             NSLog( @"%@", error );
         }
+
+    self.randomURLsAutodeletePool = [ NSMutableSet set ];
     }
 
 - ( void ) tearDown
     {
+    for ( NSURL* _URL in self.randomURLsAutodeletePool )
+        if ( [ _URL checkResourceIsReachableAndReturnError: nil ] )
+            [ [ NSFileManager defaultManager ] removeItemAtURL: _URL error: nil ];
+
     [ self.publicKeychain release ];
     [ self.passwordForTest release ];
+    [ self.randomURLsAutodeletePool release ];
     }
 
 // -----------------------------------------------------------------
@@ -303,24 +318,55 @@
 
 - ( void ) testSetDefaultMethods
     {
-    NSURL* URLForNewKeychain = [ self URLForTestCase: _cmd doesPrompt: NO deleteExists: YES ];
-
     NSError* error = nil;
-    WSCKeychain* newKeychain = [ WSCKeychain keychainWithURL: URLForNewKeychain
-                                                    password: self.passwordForTest
-                                              doesPromptUser: NO
-                                               initialAccess: nil
-                                              becomesDefault: NO
-                                                       error: &error ];
+
+    // Test case 1
+    NSURL* URLForNewKeychain_testCase1 = [ self URLForTestCase: _cmd doesPrompt: NO deleteExists: YES ];
+    WSCKeychain* newKeychain_testCase1 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase1
+                                                              password: self.passwordForTest
+                                                        doesPromptUser: NO
+                                                         initialAccess: nil
+                                                        becomesDefault: NO
+                                                                 error: &error ];
 
     XCTAssertNil( error, @"Error occured while creating the new keychain!" );
-    XCTAssertNotNil( newKeychain );
+    XCTAssertNotNil( newKeychain_testCase1 );
 
-    [ newKeychain setDefault: YES error: &error ];
+    [ newKeychain_testCase1 setDefault: YES error: &error ];
     XCTAssertNil( error, @"Error occured while setting the new keychain as default!" );
+    XCTAssertEqualObjects( [ WSCKeychain currentDefaultKeychain ], newKeychain_testCase1 );
 
     [ [ WSCKeychain login ] setDefault: YES error: &error ];
     XCTAssertNil( error, @"Error occured while setting the login.keychain back as default!" );
+    XCTAssertEqualObjects( [ WSCKeychain currentDefaultKeychain ], [ WSCKeychain login ] );
+
+    // Test case 2
+    NSURL* URLForNewKeychain_testCase2 = [ self randomURLForKeychain ];
+    NSLog( @"URLForNewKeychain_testCase2: %@", URLForNewKeychain_testCase2 );
+    WSCKeychain* newKeychain_testCase2 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase2
+                                                              password: self.passwordForTest
+                                                        doesPromptUser: NO
+                                                         initialAccess: nil
+                                                        becomesDefault: NO
+                                                                 error: &error ];
+
+    [ newKeychain_testCase2 setDefault: YES error: &error ];
+    XCTAssertNil( error, @"Error occured while setting the new keychain as default!" );
+    XCTAssertEqualObjects( [ WSCKeychain currentDefaultKeychain ], newKeychain_testCase2 );
+
+    // Test case 3
+    NSURL* URLForNewKeychain_testCase3 = [ self randomURLForKeychain ];
+    NSLog( @"URLForNewKeychain_testCase3: %@", URLForNewKeychain_testCase3 );
+    WSCKeychain* newKeychain_testCase3 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase3
+                                                              password: self.passwordForTest
+                                                        doesPromptUser: NO
+                                                         initialAccess: nil
+                                                        becomesDefault: NO
+                                                                 error: &error ];
+
+    [ newKeychain_testCase3 setDefault: YES error: &error ];
+    XCTAssertNil( error, @"Error occured while setting the new keychain as default!" );
+    XCTAssertEqualObjects( [ WSCKeychain currentDefaultKeychain ], newKeychain_testCase3 );
     }
 
 - ( void ) testEquivalent
@@ -370,6 +416,27 @@
     XCTAssertTrue( [ keychainForTestCase4 isEqual: keychainForTestCase4 ] );
     }
 
+- ( void ) testRandomURLForKeychain
+    {
+    NSURL* randomURL_testCase0 = [ self randomURLForKeychain ];
+    NSURL* randomURL_testCase1 = [ self randomURLForKeychain ];
+    NSURL* randomURL_testCase2 = [ self randomURLForKeychain ];
+    NSURL* randomURL_testCase3 = [ self randomURLForKeychain ];
+    NSURL* randomURL_testCase4 = [ self randomURLForKeychain ];
+
+    NSLog( @"randomURL_testCase0: %@", randomURL_testCase0 );
+    NSLog( @"randomURL_testCase1: %@", randomURL_testCase1 );
+    NSLog( @"randomURL_testCase2: %@", randomURL_testCase2 );
+    NSLog( @"randomURL_testCase3: %@", randomURL_testCase3 );
+    NSLog( @"randomURL_testCase4: %@", randomURL_testCase4 );
+
+    XCTAssertNotEqualObjects( randomURL_testCase0, randomURL_testCase1 );
+    XCTAssertNotEqualObjects( randomURL_testCase1, randomURL_testCase2 );
+    XCTAssertNotEqualObjects( randomURL_testCase2, randomURL_testCase3 );
+    XCTAssertNotEqualObjects( randomURL_testCase3, randomURL_testCase4 );
+    XCTAssertNotEqualObjects( randomURL_testCase4, randomURL_testCase0 );
+    }
+
 @end // WSCKeychainTests case
 
 // --------------------------------------------------------
@@ -377,6 +444,20 @@
 // --------------------------------------------------------
 
 @implementation WSCKeychainTests ( WSCEasyToTest )
+
+- ( NSURL* ) randomURLForKeychain
+    {
+    srand( ( unsigned int )time( NULL ) );
+
+    NSString* fuckString = [ NSString stringWithFormat: @"%lu", random() ];
+    NSString* keychainNameWithHash = [ NSString stringWithFormat: @"%lx.keychain"
+                                                                , fuckString.hash ];
+
+    NSURL* randomURL = [ [ NSURL URLForTemporaryDirectory ] URLByAppendingPathComponent: keychainNameWithHash ];
+    [ self.randomURLsAutodeletePool addObject: [ randomURL retain ] ];
+
+    return randomURL;
+    }
 
 - ( NSURL* ) URLForTestCase: ( SEL )_Selector
                  doesPrompt: ( BOOL )_DoesPrompt
