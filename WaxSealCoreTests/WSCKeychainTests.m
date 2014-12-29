@@ -449,9 +449,10 @@
     /* Now the login.keychain is already default */
     [ [ WSCKeychain login ] setDefault: NO error: &error ];
     XCTAssertNil( error, @"Error occured while setting the login.keychain back as default!" );
-//    XCTAssertNotEqualObjects( [ WSCKeychain currentDefaultKeychain ], [ WSCKeychain login ] );
+    XCTAssertNotEqualObjects( [ WSCKeychain currentDefaultKeychain ], [ WSCKeychain login ] );
     NSLog( @"Login: %@", [ WSCKeychain login ].URL );
-    NSLog( @"Current Default: %@", [ WSCKeychain currentDefaultKeychain ].URL );
+    NSLog( @"Current Default URL: %@", [ WSCKeychain currentDefaultKeychain ].URL );
+    NSLog( @"Current Default: %@", [ WSCKeychain currentDefaultKeychain ] );
     XCTAssertNil( [ WSCKeychain currentDefaultKeychain ] );
     }
 

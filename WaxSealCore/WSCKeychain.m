@@ -275,8 +275,11 @@ NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
     if ( resultCode == errSecSuccess )
         {
         WSCKeychain* currentDefaultKeychain = [ WSCKeychain keychainWithSecKeychainRef: currentDefaultSecKeychain ];
-        CFRelease( currentDefaultSecKeychain );
 
+        if ( !currentDefaultKeychain.URL )
+            return nil;
+
+        CFRelease( currentDefaultSecKeychain );
         return currentDefaultKeychain;
         }
     else
