@@ -243,7 +243,7 @@
 
     }
 
-- ( void ) testURLPropeties
+- ( void ) testURLProperty
     {
     NSError* error = nil;
 
@@ -282,6 +282,11 @@
     [ [ NSFileManager defaultManager ] removeItemAtURL: randomURL_negativeTestCase1 error: nil ];
     XCTAssertNil( [ WSCKeychain currentDefaultKeychain ] );
     XCTAssertNil( randomKeychain_negativeTestCase1.URL );
+    }
+
+- ( void ) testIsDefaultProperty
+    {
+    /* Test in testSetDefaultMethods() */
     }
 
 - ( void ) testLoginClassMethod
@@ -454,6 +459,8 @@
     // Test case 0
     // ------------------------------------------------------------------------------------
     [ [ WSCKeychain login ] setDefault: YES error: &error ];
+    XCTAssertFalse( self.publicKeychain.isDefault );
+    XCTAssertTrue( [ WSCKeychain login ].isDefault );
     XCTAssertNil( error, @"Error occured while setting the login.keychain back as default!" );
     XCTAssertEqualObjects( [ WSCKeychain currentDefaultKeychain ], [ WSCKeychain login ] );
 
@@ -472,10 +479,13 @@
     XCTAssertNotNil( newKeychain_testCase1 );
     XCTAssertTrue( newKeychain_testCase1.isValid );
 
+    XCTAssertFalse( newKeychain_testCase1.isDefault );
     [ newKeychain_testCase1 setDefault: YES error: &error ];
+    XCTAssertTrue( newKeychain_testCase1.isDefault );
     XCTAssertNil( error, @"Error occured while setting the new keychain as default!" );
     XCTAssertEqualObjects( [ WSCKeychain currentDefaultKeychain ], newKeychain_testCase1 );
     [ newKeychain_testCase1 setDefault: NO error: &error ];
+    XCTAssertFalse( newKeychain_testCase1.isDefault );
     XCTAssertEqualObjects( [ WSCKeychain currentDefaultKeychain ], [ WSCKeychain login ] );
 
     // ------------------------------------------------------------------------------------
@@ -489,8 +499,8 @@
                                                          initialAccess: nil
                                                         becomesDefault: NO
                                                                  error: &error ];
-
-    [ newKeychain_testCase2 setDefault: NO error: &error ];
+    newKeychain_testCase2.isDefault = NO;
+    XCTAssertFalse( newKeychain_testCase2.isDefault );
     XCTAssertNil( error, @"Error occured while setting the new keychain as default!" );
     XCTAssertTrue( newKeychain_testCase2.isValid );
     XCTAssertNotEqualObjects( [ WSCKeychain currentDefaultKeychain ], newKeychain_testCase2 );
@@ -505,8 +515,9 @@
                                                          initialAccess: nil
                                                         becomesDefault: NO
                                                                  error: &error ];
-
-    [ newKeychain_testCase3 setDefault: YES error: &error ];
+    XCTAssertFalse( newKeychain_testCase3.isDefault );
+    newKeychain_testCase3.isDefault = YES;
+    XCTAssertTrue( newKeychain_testCase3.isDefault );
     XCTAssertNil( error, @"Error occured while setting the new keychain as default!" );
     XCTAssertTrue( newKeychain_testCase3.isValid );
     XCTAssertEqualObjects( [ WSCKeychain currentDefaultKeychain ], newKeychain_testCase3 );
@@ -521,7 +532,9 @@
                                                          initialAccess: nil
                                                         becomesDefault: NO
                                                                  error: &error ];
+    XCTAssertFalse( newKeychain_testCase4.isDefault );
     [ newKeychain_testCase4 setDefault: YES error: &error ];
+    XCTAssertTrue( newKeychain_testCase4.isDefault );
     XCTAssertNil( error, @"Error occured while setting the new keychain as default!" );
     XCTAssertTrue( newKeychain_testCase4.isValid );
     XCTAssertEqualObjects( [ WSCKeychain currentDefaultKeychain ], newKeychain_testCase4 );
@@ -529,7 +542,9 @@
     // ------------------------------------------------------------------------------------
     // Test case 5
     // ------------------------------------------------------------------------------------
+    XCTAssertFalse( [ WSCKeychain login ].isDefault );
     [ [ WSCKeychain login ] setDefault: YES error: &error ];
+    XCTAssertTrue( [ WSCKeychain login ].isDefault );
     XCTAssertNil( error, @"Error occured while setting the login.keychain back as default!" );
     XCTAssertEqualObjects( [ WSCKeychain currentDefaultKeychain ], [ WSCKeychain login ] );
 
@@ -539,7 +554,7 @@
     /* Now the login.keychain is already default */
     XCTAssertTrue( [ WSCKeychain currentDefaultKeychain ].isValid );
     [ [ WSCKeychain login ] setDefault: NO error: &error ];
-    [ [ WSCKeychain login ] setDefault: NO error: &error ];
+    [ WSCKeychain login ].isDefault = NO;
     XCTAssertFalse( [ WSCKeychain currentDefaultKeychain ].isValid );
 
     XCTAssertNil( error, @"Error occured while setting the login.keychain back as default!" );
@@ -548,6 +563,7 @@
     NSLog( @"Current Default: %@", [ WSCKeychain currentDefaultKeychain ] );
     XCTAssertNil( [ WSCKeychain currentDefaultKeychain ] );
     [ [ WSCKeychain login ] setDefault: YES error: &error ];
+    XCTAssertTrue( [ WSCKeychain login ].isDefault );
     XCTAssertNil( error );
     XCTAssertNotNil( [ WSCKeychain currentDefaultKeychain ] );
     XCTAssertEqualObjects( [ WSCKeychain login ], [ WSCKeychain currentDefaultKeychain ] );
@@ -555,7 +571,9 @@
     // ------------------------------------------------------------------------------------
     // Negative Test case 1
     // ------------------------------------------------------------------------------------
+    XCTAssertFalse( [ WSCKeychain system ].isDefault );
     [ [ WSCKeychain system ] setDefault: YES error: &error ];
+    XCTAssertFalse( [ WSCKeychain system ].isDefault );
     XCTAssertNotNil( [ WSCKeychain currentDefaultKeychain ] );
     XCTAssertNotNil( error );
     XCTAssertNotNil( [ WSCKeychain currentDefaultKeychain ] );

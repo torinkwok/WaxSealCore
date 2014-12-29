@@ -99,6 +99,7 @@ NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
 @dynamic isDefault;
 
 #pragma mark Properties
+/* The URL for the receiver. (read-only) */
 - ( NSURL* ) URL
     {
     NSString* pathOfKeychain = WSCKeychainGetPathOfKeychain( self.secKeychain );
@@ -115,16 +116,21 @@ NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
     return nil;
     }
 
+/* Default state of receiver. */
 - ( BOOL ) isDefault
     {
     /* Determine whether receiver is default by comparing with the URL of current default */
-    return [ [ WSCKeychain currentDefaultKeychain ].URL isEqualTo: self.URL ];
+    return [ self isEqualTo: [ WSCKeychain currentDefaultKeychain ] ];
     }
-//
-//- ( void ) setIsDefault: ( BOOL )_IsDefault
-//    {
-//    [ self setDefault: nil ];
-//    }
+
+- ( void ) setIsDefault: ( BOOL )_IsDefault
+    {
+    NSError* error = nil;
+    [ self setDefault: _IsDefault error: &error ];
+
+    if ( error )
+        NSLog( @"%@", error );
+    }
 
 #pragma mark Public Programmatic Interfaces for Creating Keychains
 

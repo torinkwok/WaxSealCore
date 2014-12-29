@@ -182,9 +182,6 @@
 - ( void ) setDefault: ( BOOL )_IsDefault
                 error: ( NSError** )_Error;
 
-- ( BOOL ) isDefault;
-- ( BOOL ) isDefault: ( NSError** )_Error;
-
 /** Returns a Boolean value that indicates whether the receiver is currently valid.
 
   @return `YES` if the receiver is still capable of referring to a valid keychain file; otherwise, *NO*.
