@@ -180,7 +180,7 @@
                 You may specify `nil` for this parameter if you don't want the error information.
   */
 - ( void ) setDefault: ( BOOL )_IsDefault
-                error: ( NSError** )_Error;;
+                error: ( NSError** )_Error;
 
 - ( BOOL ) isDefault;
 - ( BOOL ) isDefault: ( NSError** )_Error;
