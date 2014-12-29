@@ -101,31 +101,16 @@ NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
 #pragma mark Properties
 - ( NSURL* ) URL
     {
-    OSStatus resultCode = errSecSuccess;
+    NSString* pathOfKeychain = WSCKeychainGetPathOfKeychain( self.secKeychain );
 
-    /* On entry, this variable represents the length (in bytes) of the buffer specified by secPath.
-     * and on return, this variable represents the string length of secPath, not including the null termination */
-    UInt32 secPathLength = MAXPATHLEN;
-
-    /* On entry, it's a pointer to buffer we have allocated 
-     * and on return, the buffer contains POSIX path of the keychain as a null-terminated UTF-8 encoding string */
-    char secPath[ MAXPATHLEN + 1 ] = { 0 };
-
-    resultCode = SecKeychainGetPath( self->_secKeychain, &secPathLength, secPath );
-
-    if ( resultCode == errSecSuccess )
+    if ( pathOfKeychain )
         {
-        NSString* pathStringForKeychain = [ [ [ NSString alloc ] initWithCString: secPath
-                                                                        encoding: NSUTF8StringEncoding ] autorelease ];
-
-        NSURL* URLForKeychain = [ NSURL URLWithString: [ @"file://" stringByAppendingString: pathStringForKeychain ] ];
+        NSURL* URLForKeychain = [ NSURL URLWithString: [ @"file://" stringByAppendingString: pathOfKeychain ] ];
 
         NSError* error = nil;
         if ( [ URLForKeychain isFileURL ] && [ URLForKeychain checkResourceIsReachableAndReturnError: &error ] )
             return URLForKeychain;
         }
-    else
-        WSCPrintError( resultCode );
 
     return nil;
     }
@@ -287,6 +272,9 @@ NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
 
     if ( resultCode == errSecSuccess )
         {
+        /* If the keychain file referenced by currentDefaultSecKeychain is invalid or doesn't exist
+         * (perhaps it has been deleted, renamed or moved), this method will return nil
+         */
         WSCKeychain* currentDefaultKeychain = [ WSCKeychain keychainWithSecKeychainRef: currentDefaultSecKeychain ];
 
         CFRelease( currentDefaultSecKeychain );
@@ -354,6 +342,12 @@ NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
 
             } /* ... if receiver is not already default, do nothing. */
         }
+    }
+
+/* Returns a Boolean value that indicates whether the receiver is currently valid. */
+- ( BOOL ) isValid
+    {
+    return self.URL ? YES : NO;
     }
 
 /* Returns a Boolean value that indicates 

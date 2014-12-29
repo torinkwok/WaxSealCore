@@ -185,6 +185,12 @@
 - ( BOOL ) isDefault;
 - ( BOOL ) isDefault: ( NSError** )_Error;
 
+/** Returns a Boolean value that indicates whether the receiver is currently valid.
+
+  @return `YES` if the receiver is still capable of referring to a valid keychain file; otherwise, *NO*.
+  */
+- ( BOOL ) isValid;
+
 /** Returns a Boolean value that indicates whether a given keychain is equal to receiver using an URL comparision.
 
   @param _AnotherKeychain The keychain with which to compare the receiver.
