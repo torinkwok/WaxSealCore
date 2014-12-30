@@ -85,7 +85,7 @@ NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
                 return pathOfKeychain;
             }
         else
-            WSCPrintError( resultCode );
+            WSCPrintSecErrorCode( resultCode );
         }
 
     return nil;
@@ -166,7 +166,7 @@ NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
         }
     else
         {
-        WSCPrintError( resultCode );
+        WSCPrintSecErrorCode( resultCode );
         if ( _Error )
             {
             CFStringRef cfErrorDesc = SecCopyErrorMessageString( resultCode, NULL );
@@ -216,7 +216,7 @@ NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
                 }
             else
                 {
-                WSCPrintError( resultCode );
+                WSCPrintSecErrorCode( resultCode );
                 WSCFillErrorParam( resultCode, _Error );
                 }
             }
@@ -245,8 +245,8 @@ WSCKeychain static* s_login = nil;
                     {
                     NSError* error = nil;
 
-                    s_login = [ [ WSCKeychain keychainWithContentsOfURL: [ NSURL sharedURLForLoginKeychain ]
-                                                                error: &error ] retain ];
+                    s_login = [ WSCKeychain keychainWithContentsOfURL: [ NSURL sharedURLForLoginKeychain ]
+                                                                error: &error ];
                     if ( error )
                         /* Log for easy to debug */
                         NSLog( @"%@", error );
@@ -268,8 +268,8 @@ WSCKeychain static* s_system = nil;
                     {
                     NSError* error = nil;
 
-                    s_system = [ [ WSCKeychain keychainWithContentsOfURL: [ NSURL sharedURLForSystemKeychain ]
-                                                                   error: &error ] retain ];
+                    s_system = [ WSCKeychain keychainWithContentsOfURL: [ NSURL sharedURLForSystemKeychain ]
+                                                                   error: &error ];
                     if ( error )
                         /* Log for easy to debug */
                         NSLog( @"%@", error );
@@ -417,6 +417,47 @@ WSCKeychain static* s_system = nil;
         return [ self isEqualToKeychain: ( WSCKeychain* )_Object ];
 
     return [ super isEqual: _Object ];
+    }
+
+#pragma mark Overrides for Singleton Objects
+/* Overriding implementation of -[ WSCKeychain retain ] for own singleton object */
+- ( instancetype ) retain
+    {
+    if ( self == s_login || self == s_system )
+        /* Do nothing, just return self, not performed the retain statement */
+        return self;
+
+    return [ super retain ];
+    }
+
+/* Overriding implementation of -[ WSCKeychain release ] for own singleton object */
+- ( oneway void ) release
+    {
+    if ( self == s_login || self == s_system )
+        /* Do nothing, just return, not performed the release statement */
+        return;
+
+    [ super release ];
+    }
+
+/* Overriding implementation of -[ WSCKeychain autorelease ] for own singleton object */
+- ( instancetype ) autorelease
+    {
+    if ( self == s_login || self == s_system )
+        /* Do nothing, just return self, not performed the autorelease statement */
+        return self;
+
+    return [ super autorelease ];
+    }
+
+/* Overriding implementation of -[ WSCKeychain retainCount ] for own singleton object */
+- ( NSUInteger ) retainCount
+    {
+    if ( self == s_login || self==s_system )
+        /* Do nothing, just return the maximum retain count, not performed the retainCount statement */
+        return NSUIntegerMax;
+
+    return [ super retainCount ];
     }
 
 @end // WSCKeychain class

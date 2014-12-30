@@ -168,7 +168,7 @@ NSURL static* s_sharedURLForSystemKeychain = nil;
     for ( id singletonObject in s_singletonObjects )
         /* If the receiver is a singleton which predefined in s_singletonObjects set */
         if ( singletonObject == self )
-            /* Do nothing, just return, not performed the retain statement */
+            /* Do nothing, just return, not performed the release statement */
             return;
 
     [ super release ];
@@ -180,7 +180,7 @@ NSURL static* s_sharedURLForSystemKeychain = nil;
     for ( id singletonObject in s_singletonObjects )
         /* If the receiver is a singleton which predefined in s_singletonObjects set */
         if ( singletonObject == self )
-            /* Do nothing, just return self, not performed the retain statement */
+            /* Do nothing, just return self, not performed the autorelease statement */
             return self;
 
     return [ super autorelease ];
@@ -192,7 +192,7 @@ NSURL static* s_sharedURLForSystemKeychain = nil;
     for ( id singletonObject in s_singletonObjects )
         /* If the receiver is a singleton which predefined in s_singletonObjects set */
         if ( singletonObject == self )
-            /* Do nothing, just return the maximum retain count, not performed the retain statement */
+            /* Do nothing, just return the maximum retain count, not performed the retainCount statement */
             return NSUIntegerMax;
 
     return [ super retainCount ];

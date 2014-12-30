@@ -292,6 +292,7 @@
 - ( void ) testLoginClassMethod
     {
     NSError* error = nil;
+    NSString* pathOfLoginKeychain = [ [ NSURL sharedURLForLoginKeychain ] path ];
     NSURL* destURL = [ [ NSURL URLForTemporaryDirectory ] URLByAppendingPathComponent: @"login.keychain" ];
 
     // ----------------------------------------------------------------------------------
@@ -299,20 +300,64 @@
     // ----------------------------------------------------------------------------------
     WSCKeychain* login_testCase0 = [ WSCKeychain login ];
     WSCKeychain* login_testCase1 = [ WSCKeychain login ];
-    WSCKeychain* login_testCase3 = [ WSCKeychain login ];
+    WSCKeychain* login_testCase2 = [ WSCKeychain login ];
+
+    XCTAssertEqualObjects( login_testCase0.URL.path, pathOfLoginKeychain );
+    XCTAssertEqualObjects( login_testCase1.URL.path, pathOfLoginKeychain );
+    XCTAssertEqualObjects( login_testCase2.URL.path, pathOfLoginKeychain );
+
+    /* Test for overriding the -[ WSCKeychain retain ] for the singleton objects */
+    WSCKeychain* nonSingleton_testCase0 = [ self randomKeychain ];
+    [ nonSingleton_testCase0 retain ];
+    [ nonSingleton_testCase0 retain ];
+    [ nonSingleton_testCase0 release ];
+    [ nonSingleton_testCase0 autorelease ];
+    NSLog( @"%lu", [ nonSingleton_testCase0 retainCount ] );
+
+    [ login_testCase0 retain ];
+    [ login_testCase0 release ];
+    [ login_testCase0 release ];
+    [ login_testCase0 release ];
+    [ login_testCase0 release ];
+    [ login_testCase0 autorelease ];
+    [ login_testCase0 autorelease ];
+    [ login_testCase0 autorelease ];
+    [ login_testCase0 autorelease ];
+    XCTAssertEqual( [ login_testCase0 retainCount ], NSUIntegerMax );
+
+    [ login_testCase1 retain ];
+    [ login_testCase1 release ];
+    [ login_testCase1 release ];
+    [ login_testCase1 release ];
+    [ login_testCase1 release ];
+    [ login_testCase1 autorelease ];
+    [ login_testCase1 autorelease ];
+    [ login_testCase1 autorelease ];
+    [ login_testCase1 autorelease ];
+    XCTAssertEqual( [ login_testCase1 retainCount ], NSUIntegerMax );
+
+    [ login_testCase2 retain ];
+    [ login_testCase2 release ];
+    [ login_testCase2 release ];
+    [ login_testCase2 release ];
+    [ login_testCase2 release ];
+    [ login_testCase2 autorelease ];
+    [ login_testCase2 autorelease ];
+    [ login_testCase2 autorelease ];
+    [ login_testCase2 autorelease ];
+    XCTAssertEqual( [ login_testCase2 retainCount ], NSUIntegerMax );
 
     XCTAssertNotNil( login_testCase0 );
     XCTAssertNotNil( login_testCase1 );
-    XCTAssertNotNil( login_testCase3 );
+    XCTAssertNotNil( login_testCase2 );
 
     XCTAssertTrue( login_testCase0.isValid );
     XCTAssertTrue( login_testCase1.isValid );
-    XCTAssertTrue( login_testCase3.isValid );
+    XCTAssertTrue( login_testCase2.isValid );
 
     XCTAssertEqual( login_testCase0, login_testCase1 );
-    XCTAssertEqual( login_testCase1, login_testCase3 );
-    XCTAssertEqual( login_testCase3, login_testCase0 );
-
+    XCTAssertEqual( login_testCase1, login_testCase2 );
+    XCTAssertEqual( login_testCase2, login_testCase0 );
 
     // ----------------------------------------------------------------------------------
     // Negative Test Case
@@ -323,34 +368,32 @@
     [ [ NSFileManager defaultManager ] moveItemAtURL: [ NSURL sharedURLForLoginKeychain ]
                                                toURL: destURL
                                                error: &error ];
-
     XCTAssertFalse( login_testCase0.isValid );
     XCTAssertFalse( login_testCase1.isValid );
-    XCTAssertFalse( login_testCase3.isValid );
+    XCTAssertFalse( login_testCase2.isValid );
 
     XCTAssertNil( error );
-    if ( error )
-        {
-        NSLog( @"%@", error );
-        error = nil;
-        }
+    WSCPrintNSError( error );
 
+    WSCKeychain* login_testCase3 = [ WSCKeychain login ];
     WSCKeychain* login_testCase4 = [ WSCKeychain login ];
-    WSCKeychain* login_testCase5 = [ WSCKeychain login ];
 
+    XCTAssertNil( login_testCase3 );
     XCTAssertNil( login_testCase4 );
-    XCTAssertNil( login_testCase5 );
 
+    XCTAssertFalse( login_testCase3.isValid );
     XCTAssertFalse( login_testCase4.isValid );
-    XCTAssertFalse( login_testCase5.isValid );
 
-    XCTAssertNotNil( login_testCase0 );
+    /* They all is invalid... */
     [ login_testCase0 setDefault: YES error: &error ];
+    login_testCase1.isDefault = NO;
+    [ login_testCase2 setIsDefault: YES ];
+    [ login_testCase3 setDefault: NO error: &error ];
 
-    if ( error ) NSLog( @"%@", error );
     XCTAssertNotNil( error );
     XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainInvalid );
+    WSCPrintNSError( error );
 
     // ----------------------------------------------------------------------------------
     // Finished with testing: Restore to the origin status
@@ -502,7 +545,7 @@
     XCTAssertNil( error );
 
     OSStatus resultCode = SecKeychainSetDefault( NULL );
-    WSCPrintError( resultCode );
+    WSCPrintSecErrorCode( resultCode );
 
     // TODO: Waiting for a nagtive testing.
     }
