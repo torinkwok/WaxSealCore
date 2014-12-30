@@ -64,7 +64,7 @@
 
 /** Creates and returns a `WSCKeychain` object using the given URL, password, interaction prompt and inital access rights.
 
-  This class method creates an empty keychain. The *_Password* and *_InitialAccess* parameters are optional.
+  This class method creates an empty keychain. The `_Password` and `_InitialAccess` parameters are optional.
   If user interaction to create a keychain is posted, the newly-created keychain is automatically unlocked after creation.
 
   The system ensures that a default keychain is created for the user at login, thus, in most cases, 
@@ -81,8 +81,8 @@
                    pass `nil` if the value of _DoesPromptUser is `YES`.
 
   @param _DoesPromptUser A `BOOL` value representing whether to display a password dialog to the user.
-                         Set this value to `YES` to display a password dialog or *NO* otherwise.
-                         If you pass `YES`, any value passed for *_Password* will be ignored, 
+                         Set this value to `YES` to display a password dialog or `NO` otherwise.
+                         If you pass `YES`, any value passed for `_Password` will be ignored,
                          and a dialog for the user to enter a password is presented.
 
   @param _InitalAccess An WSCAccess object indicating the initial access rights for the new keychain,
