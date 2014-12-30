@@ -147,6 +147,30 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
                     becomesDefault: ( BOOL )_WillBecomeDefault
                              error: ( NSError** )_Error
     {
+    /* The _URL and _Password parameters must not be nil */
+    if ( !_URL && !_Password  )
+        return nil;
+
+    /* The _URL must has the file scheme */
+    if ( ![ _URL isFileURL ] )
+        {
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: NSCocoaErrorDomain
+                                           code: NSFileWriteInvalidFileNameError
+                                       userInfo: nil ];
+        return nil;
+        }
+
+    /* The keychain must be not already exist */
+    if ( [ _URL checkResourceIsReachableAndReturnError: nil ] )
+        {
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: NSCocoaErrorDomain
+                                           code: NSFileWriteFileExistsError
+                                       userInfo: nil ];
+        return nil;
+        }
+
     OSStatus resultCode = errSecSuccess;
 
     SecKeychainRef newSecKeychain = NULL;
@@ -157,15 +181,14 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
                                   , &newSecKeychain
                                   );
 
+    WSCKeychain* newKeychain = nil;
     if ( resultCode == errSecSuccess )
         {
-        WSCKeychain* newKeychain = [ WSCKeychain keychainWithSecKeychainRef: newSecKeychain ];
+        newKeychain = [ WSCKeychain keychainWithSecKeychainRef: newSecKeychain ];
         CFRelease( newSecKeychain );
 
-////        if ( _WillBecomeDefault )
-//            // TODO: Set the new keychain as default
-
-        return newKeychain;
+        if ( _WillBecomeDefault )
+            [ newKeychain setDefault: YES error: _Error ];
         }
     else
         {
@@ -179,9 +202,13 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
                                        ];
             CFRelease( cfErrorDesc );
             }
-
-        return nil;
         }
+
+//    if ( *_Error )
+//        /* Log for easy to debug */
+//        WSCPrintNSError( *_Error );
+
+    return newKeychain;
     }
 
 /* Creates and returns a WSCKeychain object using the 

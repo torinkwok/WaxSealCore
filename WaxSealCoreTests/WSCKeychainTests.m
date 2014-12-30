@@ -72,7 +72,7 @@
 
 - ( WSCKeychain* ) randomKeychain;
 
-- ( NSURL* ) URLForTestCase: ( SEL )_Selector
+- ( NSURL* ) URLForTestCase: ( NSString* )_TestCase
                  doesPrompt: ( BOOL )_DoesPrompt
                deleteExists: ( BOOL )_DeleteExits;
 
@@ -103,7 +103,7 @@
     self.defaultFileManager = [ NSFileManager defaultManager ];
     self.passwordForTest = @"waxsealcore";
 
-    NSURL* URLForPublicKeychain = [ self URLForTestCase: _cmd doesPrompt: NO deleteExists: NO ];
+    NSURL* URLForPublicKeychain = [ self URLForTestCase: NSStringFromSelector( _cmd ) doesPrompt: NO deleteExists: NO ];
     /* If the the public keychain is not already exists, create one */
     if ( ![ URLForPublicKeychain checkResourceIsReachableAndReturnError: &error ] )
         {
@@ -252,7 +252,49 @@
 
 - ( void ) testPublicAPIsForCreatingKeychains
     {
+    NSError* error = nil;
 
+    // ----------------------------------------------------------------------------------
+    // Test Case 0
+    // ----------------------------------------------------------------------------------
+    NSURL* URLForNewKeychain_testCase0 = [ self URLForTestCase: [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase0" ]
+                                                    doesPrompt: NO
+                                                  deleteExists: YES ];
+
+    XCTAssertFalse( [ URLForNewKeychain_testCase0 checkResourceIsReachableAndReturnError: nil ] );
+    WSCKeychain* newKeychainNonPrompt_testCase0 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase0
+                                                                       password: self.passwordForTest
+                                                                 doesPromptUser: NO
+                                                                  initialAccess: nil
+                                                                 becomesDefault: NO
+                                                                          error: &error ];
+    XCTAssertNotNil( newKeychainNonPrompt_testCase0 );
+    XCTAssertNil( error );
+    WSCPrintNSError( error );
+    XCTAssertTrue( newKeychainNonPrompt_testCase0.isValid );
+    XCTAssertTrue( WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_testCase0.secKeychain ) );
+    XCTAssertFalse( newKeychainNonPrompt_testCase0.isDefault );
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 1
+    // ----------------------------------------------------------------------------------
+    NSURL* URLForNewKeychain_testCase1 = [ self URLForTestCase: [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase0" ]
+                                                    doesPrompt: NO
+                                                  deleteExists: YES ];
+
+    XCTAssertFalse( [ URLForNewKeychain_testCase1 checkResourceIsReachableAndReturnError: nil ] );
+    WSCKeychain* newKeychainWithPrompt_testCase1 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase1
+                                                                       password: self.passwordForTest
+                                                                 doesPromptUser: YES
+                                                                  initialAccess: nil
+                                                                 becomesDefault: NO
+                                                                          error: &error ];
+    XCTAssertNotNil( newKeychainWithPrompt_testCase1 );
+    XCTAssertNil( error );
+    WSCPrintNSError( error );
+    XCTAssertTrue( newKeychainWithPrompt_testCase1.isValid );
+    XCTAssertTrue( WSCKeychainIsSecKeychainValid( newKeychainWithPrompt_testCase1.secKeychain ) );
+    XCTAssertFalse( newKeychainWithPrompt_testCase1.isDefault );
     }
 
 - ( void ) testURLProperty
@@ -498,12 +540,16 @@
     /* URL of keychain for test case 1
      * Destination location: /var/folders/fv/k_p7_fbj4fzbvflh4905fn1m0000gn/T/NSTongG_nonPrompt....keychain
      */
-    NSURL* URLForNewKeychain_nonPrompt = [ self URLForTestCase: _cmd doesPrompt: NO deleteExists: YES ];
+    NSURL* URLForNewKeychain_nonPrompt = [ self URLForTestCase: NSStringFromSelector( _cmd )
+                                                    doesPrompt: NO
+                                                  deleteExists: YES ];
 
     /* URL of keychain for test case 2
      * Destination location: /var/folders/fv/k_p7_fbj4fzbvflh4905fn1m0000gn/T/NSTongG_withPrompt....keychain
      */
-    NSURL* URLForNewKeychain_withPrompt = [ self URLForTestCase: _cmd doesPrompt: YES deleteExists: YES ];
+    NSURL* URLForNewKeychain_withPrompt = [ self URLForTestCase: NSStringFromSelector( _cmd )
+                                                     doesPrompt: YES
+                                                   deleteExists: YES ];
 
     // Create sec keychain for test case 1
     SecKeychainRef secKeychain_nonPrompt = NULL;
@@ -578,7 +624,10 @@
     // ------------------------------------------------------------------------------------
     // Test case 1
     // ------------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_testCase1 = [ self URLForTestCase: _cmd doesPrompt: NO deleteExists: YES ];
+    NSURL* URLForNewKeychain_testCase1 = [ self URLForTestCase: NSStringFromSelector( _cmd )
+                                                    doesPrompt: NO
+                                                  deleteExists: YES ];
+
     WSCKeychain* newKeychain_testCase1 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase1
                                                               password: self.passwordForTest
                                                         doesPromptUser: NO
@@ -840,13 +889,13 @@
     return randomKeychain;
     }
 
-- ( NSURL* ) URLForTestCase: ( SEL )_Selector
+- ( NSURL* ) URLForTestCase: ( NSString* )_TestCase
                  doesPrompt: ( BOOL )_DoesPrompt
                deleteExists: ( BOOL )_DeleteExits
     {
     NSString* keychainName = [ NSString stringWithFormat: @"WSC_%@_%@.keychain"
                                                         , _DoesPrompt ? @"withPrompt" : @"nonPrompt"
-                                                        , NSStringFromSelector( _Selector ) ];
+                                                        , _TestCase ];
 
     NSURL* newURL = [ [ NSURL URLForTemporaryDirectory ] URLByAppendingPathComponent: keychainName ];
 

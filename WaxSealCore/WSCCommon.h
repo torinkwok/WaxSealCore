@@ -72,7 +72,7 @@
 #define WSCPrintNSError( _ErrorObject )     \
     if ( _ErrorObject )                     \
         {                                   \
-        NSLog( @"%@", _ErrorObject );       \
+        NSLog( @"Error Occured (%s: %d):\n%@", __PRETTY_FUNCTION__, __LINE__, _ErrorObject );       \
         _ErrorObject = nil;                 \
         }
 
