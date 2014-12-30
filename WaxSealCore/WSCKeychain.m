@@ -42,10 +42,8 @@
     {
     if ( self = [ super init ] )
         {
-        NSString* path = WSCKeychainGetPathOfKeychain( _SecKeychainRef );
-
         /* Ensure that the _SecKeychainRef does reference an exist keychain file */
-        if ( _SecKeychainRef && path )
+        if ( _SecKeychainRef && WSCKeychainIsSecKeychainValid( _SecKeychainRef ) )
             self->_secKeychain = ( SecKeychainRef )CFRetain( _SecKeychainRef );
         else
             return nil;
@@ -89,6 +87,11 @@ NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
         }
 
     return nil;
+    }
+
+BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
+    {
+    return WSCKeychainGetPathOfKeychain( _Keychain ) ? YES : NO;
     }
 
 @implementation WSCKeychain

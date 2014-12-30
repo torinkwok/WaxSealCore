@@ -211,6 +211,7 @@
 @end // WSCKeychain + WSCKeychainPrivateInitialization
 
 NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain );
+BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain );
 
 //////////////////////////////////////////////////////////////////////////////
 
