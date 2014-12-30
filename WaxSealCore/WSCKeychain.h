@@ -71,11 +71,13 @@
   you do not need to call this method yourself. Users can create additional keychains, or change the default,
   by using the Keychain Access application. However, a missing default keychain is not recreated automatically,
   and you may receive an error from other methods if a default keychain does not exist.
-  In that case, you can use this class method with a `YES` value for *_WillBecomeDefault* parameter, to create a new default keychain.
+  In that case, you can use this class method with a `YES` value for `_WillBecomeDefault` parameter, to create a new default keychain.
   You can also call this method to create a private temporary keychain for your application’s use,
   in cases where no user interaction can occur.
 
-  @param _URL Specify the URL in which the new keychain should be sotred
+  @param _URL Specify the URL in which the new keychain should be sotred.
+               The URL in this parameter must not be a file reference URL. 
+               This parameter must not be nil.
 
   @param _Password A NSString object containing the password which is used to protect the new keychain,
                    pass `nil` if the value of _DoesPromptUser is `YES`.
@@ -113,6 +115,21 @@
   */
 + ( instancetype ) keychainWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef;
 
+/** Opens a keychain from the location specified by a given URL.
+
+  @param _URLOfKeychain The file URL that identifies the keychain file you want to open. 
+                         The URL in this parameter must not be a file reference URL. 
+                         This parameter must not be nil.
+  
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+                You may specify `nil` for this parameter if you don't want the error information.
+
+  @return A `WSCKeychain` object represented a keychain located at the given URL.
+  */
++ ( instancetype ) keychainWithContentsOfURL: ( NSURL* )_URLOfKeychain
+                                       error: ( NSError** )_Error;
+
 /** Opens and returns a `WSCKeychain` object representing the `login.keychain` for current user.
 
   This method will search for the `login.keychain` at `~/Library/Keychains`,
@@ -130,19 +147,6 @@
   @return A `WSCKeychain` object representing the `System.keychain`.
   */
 + ( instancetype ) system;
-
-/** Opens a keychain from the location specified by a given URL.
-
-  @param _URLOfKeychain The URL from which to open keychain.
-  
-  @param _Error On input, a pointer to an error object.
-                If an error occurs, this pointer is set to an actual error object containing the error information.
-                You may specify `nil` for this parameter if you don't want the error information.
-
-  @return A `WSCKeychain` object represented a keychain located at the given URL.
-  */
-+ ( instancetype ) keychainWithContentsOfURL: ( NSURL* )_URLOfKeychain
-                                       error: ( NSError** )_Error;
 
 #pragma mark Public Programmatic Interfaces for Managing Keychains
 /** @name Managing Keychains */

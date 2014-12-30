@@ -125,6 +125,22 @@
     self.randomURLsAutodeletePool = [ NSMutableSet set ];
     }
 
+- ( void ) tearDown
+    {
+    [ [ WSCKeychain login ] setDefault: YES error: nil ];
+
+    for ( NSURL* _URL in self.randomURLsAutodeletePool )
+        if ( [ _URL checkResourceIsReachableAndReturnError: nil ] )
+            [ [ NSFileManager defaultManager ] removeItemAtURL: _URL error: nil ];
+
+    [ self.publicKeychain release ];
+    [ self.passwordForTest release ];
+    [ self.randomURLsAutodeletePool release ];
+    }
+
+// -----------------------------------------------------------------
+    #pragma Test the Programmatic Interfaces for Creating Keychains
+// -----------------------------------------------------------------
 - ( void ) testGetPathOfKeychain
     {
     NSError* error = nil;
@@ -222,22 +238,6 @@
     XCTAssertNil( pathOfInvalidDefault_negativeTestCase3 );
     }
 
-- ( void ) tearDown
-    {
-    [ [ WSCKeychain login ] setDefault: YES error: nil ];
-
-    for ( NSURL* _URL in self.randomURLsAutodeletePool )
-        if ( [ _URL checkResourceIsReachableAndReturnError: nil ] )
-            [ [ NSFileManager defaultManager ] removeItemAtURL: _URL error: nil ];
-
-    [ self.publicKeychain release ];
-    [ self.passwordForTest release ];
-    [ self.randomURLsAutodeletePool release ];
-    }
-
-// -----------------------------------------------------------------
-    #pragma Test the Programmatic Interfaces for Creating Keychains
-// -----------------------------------------------------------------
 - ( void ) testPublicAPIsForCreatingKeychains
     {
 
@@ -292,16 +292,72 @@
 - ( void ) testLoginClassMethod
     {
     NSError* error = nil;
+    NSURL* destURL = [ [ NSURL URLForTemporaryDirectory ] URLByAppendingPathComponent: @"login.keychain" ];
 
-    WSCKeychain* login_test1 = [ WSCKeychain login ];
-    XCTAssertNotNil( login_test1 );
+    // ----------------------------------------------------------------------------------
+    // Test Case
+    // ----------------------------------------------------------------------------------
+    WSCKeychain* login_testCase0 = [ WSCKeychain login ];
+    WSCKeychain* login_testCase1 = [ WSCKeychain login ];
+    WSCKeychain* login_testCase3 = [ WSCKeychain login ];
 
-    [ login_test1 setDefault: YES error: &error ];
+    XCTAssertNotNil( login_testCase0 );
+    XCTAssertNotNil( login_testCase1 );
+    XCTAssertNotNil( login_testCase3 );
 
-    if ( error )
-        NSLog( @"%@", error );
+    XCTAssertTrue( login_testCase0.isValid );
+    XCTAssertTrue( login_testCase1.isValid );
+    XCTAssertTrue( login_testCase3.isValid );
+
+    XCTAssertEqual( login_testCase0, login_testCase1 );
+    XCTAssertEqual( login_testCase1, login_testCase3 );
+    XCTAssertEqual( login_testCase3, login_testCase0 );
+
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case
+    // ----------------------------------------------------------------------------------
+    /* Moved the login.keychain, no [ WSCKeychain login ] is no longer valid:
+     * [ WSCKeychain login ].isValid will be NO.
+     */
+    [ [ NSFileManager defaultManager ] moveItemAtURL: [ NSURL sharedURLForLoginKeychain ]
+                                               toURL: destURL
+                                               error: &error ];
+
+    XCTAssertFalse( login_testCase0.isValid );
+    XCTAssertFalse( login_testCase1.isValid );
+    XCTAssertFalse( login_testCase3.isValid );
 
     XCTAssertNil( error );
+    if ( error )
+        {
+        NSLog( @"%@", error );
+        error = nil;
+        }
+
+    WSCKeychain* login_testCase4 = [ WSCKeychain login ];
+    WSCKeychain* login_testCase5 = [ WSCKeychain login ];
+
+    XCTAssertNil( login_testCase4 );
+    XCTAssertNil( login_testCase5 );
+
+    XCTAssertFalse( login_testCase4.isValid );
+    XCTAssertFalse( login_testCase5.isValid );
+
+    XCTAssertNotNil( login_testCase0 );
+    [ login_testCase0 setDefault: YES error: &error ];
+
+    if ( error ) NSLog( @"%@", error );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainInvalid );
+
+    // ----------------------------------------------------------------------------------
+    // Finished with testing: Restore to the origin status
+    // ----------------------------------------------------------------------------------
+    [ [ NSFileManager defaultManager ] moveItemAtURL: destURL
+                                               toURL: [ NSURL sharedURLForLoginKeychain ]
+                                               error: &error ];
     }
 
 - ( void ) testSystemClassMethod
@@ -597,8 +653,8 @@
     NSLog( @"Case 3: %p     %lu", keychainForTestCase3, keychainForTestCase3.hash );
     NSLog( @"Case 4: %p     %lu", keychainForTestCase4, keychainForTestCase4.hash );
 
-    XCTAssertNotEqual( keychainForTestCase1, keychainForTestCase2 );
-    XCTAssertNotEqual( keychainForTestCase2, keychainForTestCase3 );
+    XCTAssertEqual( keychainForTestCase1, keychainForTestCase2 );
+    XCTAssertEqual( keychainForTestCase2, keychainForTestCase3 );
     XCTAssertNotEqual( keychainForTestCase3, keychainForTestCase4 );
 
     XCTAssertEqual( keychainForTestCase1.hash, keychainForTestCase2.hash );

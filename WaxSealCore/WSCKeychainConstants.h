@@ -44,7 +44,11 @@ typedef NS_ENUM( NSUInteger, WSCKeychainErrorCode )
     {
     /** The URL of a keychain file cannot be a directory.
       */
-    WSCKeychainCannotBeDirectory = 1U
+      WSCKeychainCannotBeDirectory = 1U
+
+    /** The keychain is no longer valid.
+      */
+    , WSCKeychainInvalid = 2U
     };
 
 //////////////////////////////////////////////////////////////////////////////

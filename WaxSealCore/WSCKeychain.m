@@ -189,34 +189,6 @@ NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
     return [ [ [ self alloc ] p_initWithSecKeychainRef: _SecKeychainRef ] autorelease ];
     }
 
-/* Opens and returns a WSCKeychain object representing the login.keychain for current user. 
- */
-+ ( instancetype ) login
-    {
-    NSError* error = nil;
-
-    WSCKeychain* loginKeychain = [ WSCKeychain keychainWithContentsOfURL: [ NSURL sharedURLForLoginKeychain ]
-                                                                   error: &error ];
-    if ( error )
-        /* Log for easy to debug */
-        NSLog( @"%@", error );
-
-    return loginKeychain;
-    }
-
-+ ( instancetype ) system
-    {
-    NSError* error = nil;
-
-    WSCKeychain* systemKeychain = [ WSCKeychain keychainWithContentsOfURL: [ NSURL sharedURLForSystemKeychain ]
-                                                                    error: &error ];
-    if ( error )
-        /* Log for easy to debug */
-        NSLog( @"%@", error );
-
-    return systemKeychain;
-    }
-
 /* Opens a keychain from the location specified by a given URL.
  */
 + ( instancetype ) keychainWithContentsOfURL: ( NSURL* )_URLOfKeychain
@@ -259,6 +231,51 @@ NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
         }
 
     return nil;
+    }
+
+/* Opens and returns a WSCKeychain object representing the login.keychain for current user. 
+ */
+WSCKeychain static* s_login = nil;
++ ( instancetype ) login
+    {
+    dispatch_once_t static onceToken;
+
+    dispatch_once( &onceToken
+                 , ( dispatch_block_t )^( void )
+                    {
+                    NSError* error = nil;
+
+                    s_login = [ [ WSCKeychain keychainWithContentsOfURL: [ NSURL sharedURLForLoginKeychain ]
+                                                                error: &error ] retain ];
+                    if ( error )
+                        /* Log for easy to debug */
+                        NSLog( @"%@", error );
+                    } );
+
+    if ( s_login.isValid )
+        return s_login;
+    else
+        return nil;
+    }
+
+WSCKeychain static* s_system = nil;
++ ( instancetype ) system
+    {
+    dispatch_once_t static onceToken;
+
+    dispatch_once( &onceToken
+                 , ( dispatch_block_t )^( void )
+                    {
+                    NSError* error = nil;
+
+                    s_system = [ [ WSCKeychain keychainWithContentsOfURL: [ NSURL sharedURLForSystemKeychain ]
+                                                                   error: &error ] retain ];
+                    if ( error )
+                        /* Log for easy to debug */
+                        NSLog( @"%@", error );
+                    } );
+
+    return s_system;
     }
 
 #pragma mark Public Programmatic Interfaces for Managing Keychains
@@ -306,6 +323,15 @@ NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
 - ( void ) setDefault: ( BOOL )_IsDefault
                 error: ( NSError** )_Error
     {
+    if ( !self.isValid )
+        {
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                           code: WSCKeychainInvalid
+                                       userInfo: @{ NSLocalizedDescriptionKey : NSLocalizedString( @"Current keychain is no longer valid!", nil ) } ];
+        return;
+        }
+
     OSStatus resultCode = errSecSuccess;
 
     if ( _IsDefault )
