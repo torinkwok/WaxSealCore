@@ -33,7 +33,8 @@
 
 #import "WSCKeychain.h"
 #import "NSURL+WSCKeychainURL.h"
-#import "WSCKeychainConstants.h"
+#import "WSCKeychainError.h"
+#import "WSCKeychainErrorPrivate.h"
 
 #pragma mark Private Programmatic Interfaces for Creating Keychains
 @implementation WSCKeychain ( WSCKeychainPrivateInitialization )
@@ -157,7 +158,7 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                            code: WSCKeychainKeychainURLIsInvalidError
-                                       userInfo: @{ NSLocalizedDescriptionKey : NSLocalizedString( WSCKeychainKeychainURLIsInvalidErrorDescription, nil ) } ];
+                                       userInfo: nil ];
         return nil;
         }
 
@@ -167,7 +168,7 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                            code: WSCKeychainKeychainFileExistsError
-                                       userInfo: @{ NSLocalizedDescriptionKey : NSLocalizedString( WSCKeychainKeychainFileExistsErrorDescription, nil ) } ];
+                                       userInfo: nil ];
         return nil;
         }
 
@@ -251,8 +252,7 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
             /* If the given path is a directory or the given path is NOT a directory but there is no such file */
             *_Error = [ NSError errorWithDomain: isDir ? WSCKeychainErrorDomain : NSCocoaErrorDomain
                                            code: isDir ? WSCKeychainCannotBeDirectoryError : NSFileNoSuchFileError
-                                       userInfo: isDir ? @{ NSLocalizedDescriptionKey : NSLocalizedString( WSCKeychainCannotBeDirectoryErrorDescription, nil ) }
-                                                       : nil ];
+                                       userInfo: nil ];
             }
         }
 
@@ -354,7 +354,7 @@ WSCKeychain static* s_system = nil;
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                            code: WSCKeychainInvalidError
-                                       userInfo: @{ NSLocalizedDescriptionKey : NSLocalizedString( WSCKeychainInvalidErrorDescription, nil ) } ];
+                                       userInfo: nil ];
         return;
         }
 

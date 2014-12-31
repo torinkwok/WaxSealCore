@@ -31,12 +31,18 @@
  **                                                                         **
  ****************************************************************************/
 
-#import "WSCKeychainConstantsPrivate.h"
+#import <Foundation/Foundation.h>
 
-NSString* const WSCKeychainCannotBeDirectoryErrorDescription = @"The URL of a keychain file cannot be a directory.";
-NSString* const WSCKeychainInvalidErrorDescription = @"Current keychain is no longer valid.";
-NSString* const WSCKeychainKeychainFileExistsErrorDescription = @"The keychain couldn't be created because a file with the same name already exists.";
-NSString* const WSCKeychainKeychainURLIsInvalidErrorDescription = @"The keychain couldn’t be created because the URL is invalid.";
+NSString extern* const WSCKeychainCannotBeDirectoryErrorDescription;
+NSString extern* const WSCKeychainInvalidErrorDescription;
+NSString extern* const WSCKeychainKeychainFileExistsErrorDescription;
+NSString extern* const WSCKeychainKeychainURLIsInvalidErrorDescription;
+
+@interface NSError ( WSCKeychainError )
++ ( NSError* ) alternative_errorWithDomain: ( NSString* )_ErrorDomain
+                                      code: ( NSInteger )_ErrorCode
+                                  userInfo: ( NSDictionary* )_UserInfo;
+@end
 
 //////////////////////////////////////////////////////////////////////////////
 
