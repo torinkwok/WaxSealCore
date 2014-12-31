@@ -276,25 +276,43 @@
     XCTAssertFalse( newKeychainNonPrompt_testCase0.isDefault );
 
     // ----------------------------------------------------------------------------------
-    // Test Case 1
+    // Negative Test Case 0: With a same URL as newKeychainNonPrompt_testCase0's
     // ----------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_testCase1 = [ self URLForTestCase: [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase0" ]
-                                                    doesPrompt: NO
-                                                  deleteExists: YES ];
+    /* Same as URLForNewKeychain_testCase0 */
+    NSURL* URLForNewKeychain_negativeTestCase0 = URLForNewKeychain_testCase0;
 
-    XCTAssertFalse( [ URLForNewKeychain_testCase1 checkResourceIsReachableAndReturnError: nil ] );
-    WSCKeychain* newKeychainWithPrompt_testCase1 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase1
-                                                                       password: self.passwordForTest
-                                                                 doesPromptUser: YES
-                                                                  initialAccess: nil
-                                                                 becomesDefault: NO
-                                                                          error: &error ];
-    XCTAssertNotNil( newKeychainWithPrompt_testCase1 );
-    XCTAssertNil( error );
+    /* The file identified by URLForNewKeychain_testCase0 must be already exist due to above code */
+    XCTAssertTrue( [ URLForNewKeychain_negativeTestCase0 checkResourceIsReachableAndReturnError: nil ] );
+    WSCKeychain* newKeychainNonPrompt_negativeCase0 = [ WSCKeychain keychainWithURL: URLForNewKeychain_negativeTestCase0
+                                                                           password: self.passwordForTest
+                                                                     doesPromptUser: NO
+                                                                      initialAccess: nil
+                                                                     becomesDefault: NO
+                                                                              error: &error ];
+    XCTAssertNil( newKeychainNonPrompt_negativeCase0 );
+    XCTAssertNotNil( error );
     WSCPrintNSError( error );
-    XCTAssertTrue( newKeychainWithPrompt_testCase1.isValid );
-    XCTAssertTrue( WSCKeychainIsSecKeychainValid( newKeychainWithPrompt_testCase1.secKeychain ) );
-    XCTAssertFalse( newKeychainWithPrompt_testCase1.isDefault );
+    XCTAssertFalse( newKeychainNonPrompt_negativeCase0.isValid );
+    XCTAssertFalse( WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_negativeCase0.secKeychain ) );
+    XCTAssertFalse( newKeychainNonPrompt_negativeCase0.isDefault );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 1: With a incorrect URL
+    // ----------------------------------------------------------------------------------
+    NSURL* URLForNewKeychain_negativeTestCase1 = [ NSURL URLWithString: @"Incorrect URL" ];
+    XCTAssertFalse( [ URLForNewKeychain_negativeTestCase1 checkResourceIsReachableAndReturnError: nil ] );
+    WSCKeychain* newKeychainWithPrompt_negativeCase1 = [ WSCKeychain keychainWithURL: URLForNewKeychain_negativeTestCase1
+                                                                            password: self.passwordForTest /* Will be ignored */
+                                                                      doesPromptUser: YES
+                                                                       initialAccess: nil
+                                                                      becomesDefault: NO
+                                                                               error: &error ];
+    XCTAssertNil( newKeychainWithPrompt_negativeCase1 );
+    XCTAssertNotNil( error );
+    WSCPrintNSError( error );
+    XCTAssertFalse( newKeychainWithPrompt_negativeCase1.isValid );
+    XCTAssertFalse( WSCKeychainIsSecKeychainValid( newKeychainWithPrompt_negativeCase1.secKeychain ) );
+    XCTAssertFalse( newKeychainWithPrompt_negativeCase1.isDefault );
     }
 
 - ( void ) testURLProperty
@@ -446,7 +464,7 @@
 
     XCTAssertNotNil( error );
     XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
-    XCTAssertEqual( error.code, WSCKeychainInvalid );
+    XCTAssertEqual( error.code, WSCKeychainInvalidError );
     WSCPrintNSError( error );
 
     // ----------------------------------------------------------------------------------
@@ -529,7 +547,7 @@
     if ( error ) NSLog( @"%@", error );
     XCTAssertNotNil( error );
     XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
-    XCTAssertEqual( error.code, WSCKeychainCannotBeDirectory );
+    XCTAssertEqual( error.code, WSCKeychainCannotBeDirectoryError );
     XCTAssertNil( incorrectKeychain_negativeTestCase3 );
     }
 

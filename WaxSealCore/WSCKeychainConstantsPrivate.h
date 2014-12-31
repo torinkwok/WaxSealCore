@@ -31,33 +31,10 @@
  **                                                                         **
  ****************************************************************************/
 
-#import <Security/Security.h>
-#import <Foundation/Foundation.h>
-
-/** `WSCKeychain` error domain.
-  */
-NSString extern* const WSCKeychainErrorDomain;
-
-/** `NSError` code in `WSCKeychainErrorDomain` error domain
-  */
-typedef NS_ENUM( NSUInteger, WSCKeychainErrorCode )
-    {
-    /** The URL of a keychain file cannot be a directory.
-      */
-      WSCKeychainCannotBeDirectoryError = 1U
-
-    /** Current keychain is no longer valid.
-      */
-    , WSCKeychainInvalidError = 2U
-
-    /** The keychain couldn't be created because a file with the same name already exists.
-      */
-    , WSCKeychainKeychainFileExistsError = 3U
-
-    /** The keychain couldn’t be created because the URL is invalid.
-      */
-    , WSCKeychainKeychainURLIsInvalidError = 4U
-    };
+NSString extern* const WSCKeychainCannotBeDirectoryErrorDescription;
+NSString extern* const WSCKeychainInvalidErrorDescription;
+NSString extern* const WSCKeychainKeychainFileExistsErrorDescription;
+NSString extern* const WSCKeychainKeychainURLIsInvalidErrorDescription;
 
 //////////////////////////////////////////////////////////////////////////////
 

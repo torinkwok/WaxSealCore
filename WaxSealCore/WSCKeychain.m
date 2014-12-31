@@ -155,9 +155,9 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     if ( ![ _URL isFileURL ] )
         {
         if ( _Error )
-            *_Error = [ NSError errorWithDomain: NSCocoaErrorDomain
-                                           code: NSFileWriteInvalidFileNameError
-                                       userInfo: nil ];
+            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                           code: WSCKeychainKeychainURLIsInvalidError
+                                       userInfo: @{ NSLocalizedDescriptionKey : NSLocalizedString( WSCKeychainKeychainURLIsInvalidErrorDescription, nil ) } ];
         return nil;
         }
 
@@ -165,9 +165,9 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     if ( [ _URL checkResourceIsReachableAndReturnError: nil ] )
         {
         if ( _Error )
-            *_Error = [ NSError errorWithDomain: NSCocoaErrorDomain
-                                           code: NSFileWriteFileExistsError
-                                       userInfo: nil ];
+            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                           code: WSCKeychainKeychainFileExistsError
+                                       userInfo: @{ NSLocalizedDescriptionKey : NSLocalizedString( WSCKeychainKeychainFileExistsErrorDescription, nil ) } ];
         return nil;
         }
 
@@ -203,10 +203,6 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
             CFRelease( cfErrorDesc );
             }
         }
-
-//    if ( *_Error )
-//        /* Log for easy to debug */
-//        WSCPrintNSError( *_Error );
 
     return newKeychain;
     }
@@ -254,8 +250,8 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
             {
             /* If the given path is a directory or the given path is NOT a directory but there is no such file */
             *_Error = [ NSError errorWithDomain: isDir ? WSCKeychainErrorDomain : NSCocoaErrorDomain
-                                           code: isDir ? WSCKeychainCannotBeDirectory : NSFileNoSuchFileError
-                                       userInfo: isDir ? @{ NSLocalizedDescriptionKey : NSLocalizedString( @"Cannot be a directory", nil ) }
+                                           code: isDir ? WSCKeychainCannotBeDirectoryError : NSFileNoSuchFileError
+                                       userInfo: isDir ? @{ NSLocalizedDescriptionKey : NSLocalizedString( WSCKeychainCannotBeDirectoryErrorDescription, nil ) }
                                                        : nil ];
             }
         }
@@ -357,8 +353,8 @@ WSCKeychain static* s_system = nil;
         {
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                           code: WSCKeychainInvalid
-                                       userInfo: @{ NSLocalizedDescriptionKey : NSLocalizedString( @"Current keychain is no longer valid!", nil ) } ];
+                                           code: WSCKeychainInvalidError
+                                       userInfo: @{ NSLocalizedDescriptionKey : NSLocalizedString( WSCKeychainInvalidErrorDescription, nil ) } ];
         return;
         }
 
