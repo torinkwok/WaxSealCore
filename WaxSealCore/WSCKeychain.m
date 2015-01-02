@@ -150,12 +150,12 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
 /* Creates and returns a WSCKeychain object using the given URL, password, 
  * interaction prompt and inital access rights. 
  */
-+ ( instancetype ) keychainWithURL: ( NSURL* )_URL
-                          password: ( NSString* )_Password
-                    doesPromptUser: ( BOOL )_DoesPromptUser
-                     initialAccess: ( WSCAccess* )_InitalAccess
-                    becomesDefault: ( BOOL )_WillBecomeDefault
-                             error: ( NSError** )_Error
++ ( instancetype ) p_keychainWithURL: ( NSURL* )_URL
+                            password: ( NSString* )_Password
+                      doesPromptUser: ( BOOL )_DoesPromptUser
+                       initialAccess: ( WSCAccess* )_InitalAccess
+                      becomesDefault: ( BOOL )_WillBecomeDefault
+                               error: ( NSError** )_Error
     {
     if ( !_URL /* The _URL and _Password parameters must not be nil */
             || ![ _URL isFileURL ] /* The _URL must has the file scheme */ )
@@ -402,12 +402,12 @@ WSCKeychain static* s_system = nil;
                 {
                 /* TODO: Create a temporary keychain, make it default, then delete it */
                 NSURL* URLForTempKeychain = [ [ NSURL URLForTemporaryDirectory ] URLByAppendingPathComponent: [ NSString stringWithFormat: @"%lu", NSStringFromSelector( _cmd ).hash ] ];
-                WSCKeychain* tempKeychain = [ WSCKeychain keychainWithURL: URLForTempKeychain
-                                                                 password: [ NSString stringWithFormat: @"%lu", NSStringFromSelector( _cmd ).hash ]
-                                                           doesPromptUser: NO
-                                                            initialAccess: nil
-                                                           becomesDefault: NO
-                                                                    error: nil ];
+                WSCKeychain* tempKeychain = [ WSCKeychain p_keychainWithURL: URLForTempKeychain
+                                                                   password: [ NSString stringWithFormat: @"%lu", NSStringFromSelector( _cmd ).hash ]
+                                                             doesPromptUser: NO
+                                                              initialAccess: nil
+                                                             becomesDefault: NO
+                                                                      error: nil ];
                 SecKeychainSetDefault( tempKeychain.secKeychain );
                 [ [ NSFileManager defaultManager ] removeItemAtURL: URLForTempKeychain error: nil ];
                 }

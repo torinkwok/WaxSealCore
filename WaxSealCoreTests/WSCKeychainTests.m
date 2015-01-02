@@ -107,12 +107,12 @@
     /* If the the public keychain is not already exists, create one */
     if ( ![ URLForPublicKeychain checkResourceIsReachableAndReturnError: &error ] )
         {
-        self.publicKeychain = [ WSCKeychain keychainWithURL: URLForPublicKeychain
-                                                   password: self.passwordForTest
-                                             doesPromptUser: NO
-                                              initialAccess: nil
-                                             becomesDefault: NO
-                                                      error: &error ];
+        self.publicKeychain = [ WSCKeychain p_keychainWithURL: URLForPublicKeychain
+                                                     password: self.passwordForTest
+                                               doesPromptUser: NO
+                                                initialAccess: nil
+                                               becomesDefault: NO
+                                                        error: &error ];
         }
     else  /* If it's already here, open it */
         {
@@ -199,12 +199,12 @@
     // Negative Test Case 2
     // ----------------------------------------------------------------------------------
     NSURL* randomURL_negativeTestCase2 = [ self randomURLForKeychain ];
-    WSCKeychain* randomKeychain_negativeTest2 = [ WSCKeychain keychainWithURL: randomURL_negativeTestCase2
-                                                                     password: self.passwordForTest
-                                                               doesPromptUser: NO
-                                                                initialAccess: nil
-                                                               becomesDefault: NO
-                                                                        error: &error ];
+    WSCKeychain* randomKeychain_negativeTest2 = [ WSCKeychain p_keychainWithURL: randomURL_negativeTestCase2
+                                                                       password: self.passwordForTest
+                                                                 doesPromptUser: NO
+                                                                  initialAccess: nil
+                                                                 becomesDefault: NO
+                                                                          error: &error ];
     XCTAssertNil( error );
     if ( error ) NSLog( @"%@", error );
     [ randomKeychain_negativeTest2 setDefault: YES error: nil ];
@@ -226,12 +226,12 @@
     // Negative Test Case 3
     // ----------------------------------------------------------------------------------
     NSURL* randomURL_negativeTestCase3 = [ self randomURLForKeychain ];
-    WSCKeychain* randomKeychain_negativeTest3 = [ WSCKeychain keychainWithURL: randomURL_negativeTestCase3
-                                                                     password: self.passwordForTest
-                                                               doesPromptUser: NO
-                                                                initialAccess: nil
-                                                               becomesDefault: NO
-                                                                        error: &error ];
+    WSCKeychain* randomKeychain_negativeTest3 = [ WSCKeychain p_keychainWithURL: randomURL_negativeTestCase3
+                                                                       password: self.passwordForTest
+                                                                 doesPromptUser: NO
+                                                                  initialAccess: nil
+                                                                 becomesDefault: NO
+                                                                          error: &error ];
     XCTAssertNil( error );
     if ( error ) NSLog( @"%@", error );
     [ randomKeychain_negativeTest3 setDefault: YES error: nil ];
@@ -262,12 +262,12 @@
                                                   deleteExists: YES ];
 
     XCTAssertFalse( [ URLForNewKeychain_testCase0 checkResourceIsReachableAndReturnError: nil ] );
-    WSCKeychain* newKeychainNonPrompt_testCase0 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase0
-                                                                       password: self.passwordForTest
-                                                                 doesPromptUser: NO
-                                                                  initialAccess: nil
-                                                                 becomesDefault: NO
-                                                                          error: &error ];
+    WSCKeychain* newKeychainNonPrompt_testCase0 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_testCase0
+                                                                         password: self.passwordForTest
+                                                                   doesPromptUser: NO
+                                                                    initialAccess: nil
+                                                                   becomesDefault: NO
+                                                                            error: &error ];
     XCTAssertNotNil( newKeychainNonPrompt_testCase0 );
     XCTAssertNil( error );
     WSCPrintNSError( error );
@@ -283,12 +283,12 @@
                                                   deleteExists: YES ];
 
     XCTAssertFalse( [ URLForNewKeychain_testCase1 checkResourceIsReachableAndReturnError: nil ] );
-    WSCKeychain* newKeychainWithPrompt_testCase1 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase1
-                                                                        password: nil // Will be ignored
-                                                                  doesPromptUser: YES
-                                                                   initialAccess: nil
-                                                                  becomesDefault: YES   // Sets the new keychain as default
-                                                                           error: &error ];
+    WSCKeychain* newKeychainWithPrompt_testCase1 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_testCase1
+                                                                          password: nil // Will be ignored
+                                                                    doesPromptUser: YES
+                                                                     initialAccess: nil
+                                                                    becomesDefault: YES   // Sets the new keychain as default
+                                                                             error: &error ];
     XCTAssertNotNil( newKeychainWithPrompt_testCase1 );
     XCTAssertNil( error );
     WSCPrintNSError( error );
@@ -304,12 +304,12 @@
 
     /* The file identified by URLForNewKeychain_testCase0 must be already exist due to above code */
     XCTAssertTrue( [ URLForNewKeychain_negativeTestCase0 checkResourceIsReachableAndReturnError: nil ] );
-    WSCKeychain* newKeychainNonPrompt_negativeCase0 = [ WSCKeychain keychainWithURL: URLForNewKeychain_negativeTestCase0
-                                                                           password: self.passwordForTest
-                                                                     doesPromptUser: NO
-                                                                      initialAccess: nil
-                                                                     becomesDefault: NO
-                                                                              error: &error ];
+    WSCKeychain* newKeychainNonPrompt_negativeCase0 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_negativeTestCase0
+                                                                             password: self.passwordForTest
+                                                                       doesPromptUser: NO
+                                                                        initialAccess: nil
+                                                                       becomesDefault: NO
+                                                                                error: &error ];
     XCTAssertNil( newKeychainNonPrompt_negativeCase0 );
     XCTAssertNotNil( error );
     WSCPrintNSError( error );
@@ -322,12 +322,12 @@
     // ----------------------------------------------------------------------------------
     NSURL* URLForNewKeychain_negativeTestCase1 = [ NSURL URLWithString: @"https://encrypted.google.com" ];
     XCTAssertFalse( [ URLForNewKeychain_negativeTestCase1 checkResourceIsReachableAndReturnError: nil ] );
-    WSCKeychain* newKeychainWithPrompt_negativeCase1 = [ WSCKeychain keychainWithURL: URLForNewKeychain_negativeTestCase1
-                                                                            password: self.passwordForTest /* Will be ignored */
-                                                                      doesPromptUser: YES
-                                                                       initialAccess: nil
-                                                                      becomesDefault: NO
-                                                                               error: &error ];
+    WSCKeychain* newKeychainWithPrompt_negativeCase1 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_negativeTestCase1
+                                                                              password: self.passwordForTest /* Will be ignored */
+                                                                        doesPromptUser: YES
+                                                                         initialAccess: nil
+                                                                        becomesDefault: NO
+                                                                                 error: &error ];
     XCTAssertNil( newKeychainWithPrompt_negativeCase1 );
     XCTAssertNotNil( error );
     WSCPrintNSError( error );
@@ -338,12 +338,12 @@
     // ----------------------------------------------------------------------------------
     // Negative Test Case 1: With a nil for URL parameter
     // ----------------------------------------------------------------------------------
-    WSCKeychain* newKeychainWithPrompt_negativeCase2 = [ WSCKeychain keychainWithURL: nil
-                                                                            password: self.passwordForTest /* Will be ignored */
-                                                                      doesPromptUser: YES
-                                                                       initialAccess: nil
-                                                                      becomesDefault: NO
-                                                                               error: &error ];
+    WSCKeychain* newKeychainWithPrompt_negativeCase2 = [ WSCKeychain p_keychainWithURL: nil
+                                                                              password: self.passwordForTest /* Will be ignored */
+                                                                        doesPromptUser: YES
+                                                                         initialAccess: nil
+                                                                        becomesDefault: NO
+                                                                                 error: &error ];
     XCTAssertNil( newKeychainWithPrompt_negativeCase2 );
     XCTAssertNotNil( error );
     WSCPrintNSError( error );
@@ -358,12 +358,12 @@
                                                             doesPrompt: YES
                                                           deleteExists: YES ];
 
-    WSCKeychain* newKeychainWithPrompt_negativeCase3 = [ WSCKeychain keychainWithURL: URLForNewKeychain_negativeTestCase3
-                                                                            password: nil /* Will be ignored */
-                                                                      doesPromptUser: NO
-                                                                       initialAccess: nil
-                                                                      becomesDefault: NO
-                                                                               error: &error ];
+    WSCKeychain* newKeychainWithPrompt_negativeCase3 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_negativeTestCase3
+                                                                              password: nil /* Will be ignored */
+                                                                        doesPromptUser: NO
+                                                                         initialAccess: nil
+                                                                        becomesDefault: NO
+                                                                                 error: &error ];
     XCTAssertNil( newKeychainWithPrompt_negativeCase3 );
     XCTAssertNotNil( error );
     WSCPrintNSError( error );
@@ -397,12 +397,12 @@
     // Negative Test Case 0
     // ----------------------------------------------------------------------------------
     NSURL* randomURL_negativeTestCase1 = [ self randomURLForKeychain ];
-    WSCKeychain* randomKeychain_negativeTestCase1 = [ WSCKeychain keychainWithURL: randomURL_negativeTestCase1
-                                                                     password: self.passwordForTest
-                                                               doesPromptUser: NO
-                                                                initialAccess: nil
-                                                               becomesDefault: NO
-                                                                        error: &error ];
+    WSCKeychain* randomKeychain_negativeTestCase1 = [ WSCKeychain p_keychainWithURL: randomURL_negativeTestCase1
+                                                                           password: self.passwordForTest
+                                                                     doesPromptUser: NO
+                                                                      initialAccess: nil
+                                                                     becomesDefault: NO
+                                                                              error: &error ];
     XCTAssertNil( error );
     if ( error ) NSLog( @"%@", error );
     [ randomKeychain_negativeTestCase1 setDefault: YES error: nil ];
@@ -703,12 +703,12 @@
                                                     doesPrompt: NO
                                                   deleteExists: YES ];
 
-    WSCKeychain* newKeychain_testCase1 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase1
-                                                              password: self.passwordForTest
-                                                        doesPromptUser: NO
-                                                         initialAccess: nil
-                                                        becomesDefault: NO
-                                                                 error: &error ];
+    WSCKeychain* newKeychain_testCase1 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_testCase1
+                                                                password: self.passwordForTest
+                                                          doesPromptUser: NO
+                                                           initialAccess: nil
+                                                          becomesDefault: NO
+                                                                   error: &error ];
 
     XCTAssertNil( error, @"Error occured while creating the new keychain!" );
     XCTAssertNotNil( newKeychain_testCase1 );
@@ -729,12 +729,12 @@
     // ------------------------------------------------------------------------------------
     NSURL* URLForNewKeychain_testCase2 = [ self randomURLForKeychain ];
     NSLog( @"URLForNewKeychain_testCase2: %@", URLForNewKeychain_testCase2 );
-    WSCKeychain* newKeychain_testCase2 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase2
-                                                              password: self.passwordForTest
-                                                        doesPromptUser: NO
-                                                         initialAccess: nil
-                                                        becomesDefault: NO
-                                                                 error: &error ];
+    WSCKeychain* newKeychain_testCase2 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_testCase2
+                                                                password: self.passwordForTest
+                                                          doesPromptUser: NO
+                                                           initialAccess: nil
+                                                          becomesDefault: NO
+                                                                   error: &error ];
     newKeychain_testCase2.isDefault = NO;
     XCTAssertFalse( newKeychain_testCase2.isDefault );
     XCTAssertNil( error, @"Error occured while setting the new keychain as default!" );
@@ -747,12 +747,12 @@
     // Test case 3
     // ------------------------------------------------------------------------------------
     NSURL* URLForNewKeychain_testCase3 = [ self randomURLForKeychain ];
-    WSCKeychain* newKeychain_testCase3 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase3
-                                                              password: self.passwordForTest
-                                                        doesPromptUser: NO
-                                                         initialAccess: nil
-                                                        becomesDefault: NO
-                                                                 error: &error ];
+    WSCKeychain* newKeychain_testCase3 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_testCase3
+                                                                password: self.passwordForTest
+                                                          doesPromptUser: NO
+                                                           initialAccess: nil
+                                                          becomesDefault: NO
+                                                                   error: &error ];
     XCTAssertFalse( newKeychain_testCase3.isDefault );
     newKeychain_testCase3.isDefault = YES;
     XCTAssertTrue( newKeychain_testCase3.isDefault );
@@ -766,12 +766,12 @@
     // Test case 4
     // ------------------------------------------------------------------------------------
     NSURL* URLForNewKeychain_testCase4 = [ self randomURLForKeychain ];
-    WSCKeychain* newKeychain_testCase4 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase4
-                                                              password: self.passwordForTest
-                                                        doesPromptUser: NO
-                                                         initialAccess: nil
-                                                        becomesDefault: NO
-                                                                 error: &error ];
+    WSCKeychain* newKeychain_testCase4 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_testCase4
+                                                                password: self.passwordForTest
+                                                          doesPromptUser: NO
+                                                           initialAccess: nil
+                                                          becomesDefault: NO
+                                                                   error: &error ];
     XCTAssertFalse( newKeychain_testCase4.isDefault );
     [ newKeychain_testCase4 setDefault: YES error: &error ];
     XCTAssertTrue( newKeychain_testCase4.isDefault );
@@ -955,12 +955,12 @@
 - ( WSCKeychain* ) randomKeychain
     {
     NSURL* randomURL = [ self randomURLForKeychain ];
-    WSCKeychain* randomKeychain = [ WSCKeychain keychainWithURL: randomURL
-                                                       password: self.passwordForTest
-                                                 doesPromptUser: NO
-                                                  initialAccess: nil
-                                                 becomesDefault: NO
-                                                          error: nil ];
+    WSCKeychain* randomKeychain = [ WSCKeychain p_keychainWithURL: randomURL
+                                                         password: self.passwordForTest
+                                                   doesPromptUser: NO
+                                                    initialAccess: nil
+                                                   becomesDefault: NO
+                                                            error: nil ];
     return randomKeychain;
     }
 

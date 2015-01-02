@@ -99,12 +99,12 @@
                 
   @return A `WSCKeychain` object initialized with above parameters.
   */
-+ ( instancetype ) keychainWithURL: ( NSURL* )_URL
-                          password: ( NSString* )_Password
-                    doesPromptUser: ( BOOL )_DoesPromptUser
-                     initialAccess: ( WSCAccess* )_InitalAccess
-                    becomesDefault: ( BOOL )_WillBecomeDefault
-                             error: ( NSError** )_Error;
+//+ ( instancetype ) p_keychainWithURL: ( NSURL* )_URL
+//                           password: ( NSString* )_Password
+//                     doesPromptUser: ( BOOL )_DoesPromptUser
+//                      initialAccess: ( WSCAccess* )_InitalAccess
+//                     becomesDefault: ( BOOL )_WillBecomeDefault
+//                              error: ( NSError** )_Error;
 
 /** Creates and returns a `WSCKeychain` object using the given reference to the instance of *SecKeychain* opaque type.
 
@@ -208,6 +208,14 @@
 #pragma mark Private Programmatic Interfaces for Creating Keychains
 @interface WSCKeychain ( WSCKeychainPrivateInitialization )
 - ( instancetype ) p_initWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef;
+
++ ( instancetype ) p_keychainWithURL: ( NSURL* )_URL
+                            password: ( NSString* )_Password
+                      doesPromptUser: ( BOOL )_DoesPromptUser
+                       initialAccess: ( WSCAccess* )_InitalAccess
+                      becomesDefault: ( BOOL )_WillBecomeDefault
+                               error: ( NSError** )_Error;
+
 @end // WSCKeychain + WSCKeychainPrivateInitialization
 
 NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain );
