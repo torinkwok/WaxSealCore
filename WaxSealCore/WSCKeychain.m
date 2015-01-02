@@ -90,6 +90,7 @@ NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
     return nil;
     }
 
+/* Determine whether a specified keychain is valid, based on the path */
 BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     {
     return WSCKeychainGetPathOfKeychain( _Keychain ) ? YES : NO;
@@ -138,6 +139,14 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
 
 #pragma mark Public Programmatic Interfaces for Creating Keychains
 
+//+ ( instancetype ) keychainWhosePasswordIsObtainedFromUserWithURL: ( NSURL* )_URL
+//                                                    initialAccess: ( WSCAccess* )_InitalAccess
+//                                                   becomesDefault: ( BOOL )_WillBecomeDefault
+//                                                            error: ( NSError** )_Error
+//    {
+//
+//    }
+
 /* Creates and returns a WSCKeychain object using the given URL, password, 
  * interaction prompt and inital access rights. 
  */
@@ -148,14 +157,12 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
                     becomesDefault: ( BOOL )_WillBecomeDefault
                              error: ( NSError** )_Error
     {
-    /* The _URL and _Password parameters must not be nil */
-    if ( !_URL && !_Password  )
-        return nil;
-
-    /* The _URL must has the file scheme */
-    if ( ![ _URL isFileURL ] )
+    if ( !_URL /* The _URL and _Password parameters must not be nil */
+            || ![ _URL isFileURL ] /* The _URL must has the file scheme */ )
         {
         if ( _Error )
+            /* Error Description: 
+             * The keychain couldn’t be created because the URL is invalid. */
             *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                            code: WSCKeychainKeychainURLIsInvalidError
                                        userInfo: nil ];
@@ -166,8 +173,21 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     if ( [ _URL checkResourceIsReachableAndReturnError: nil ] )
         {
         if ( _Error )
+            /* Error Description: 
+             * The keychain couldn't be created because a file with the same name already exists. */
             *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                            code: WSCKeychainKeychainFileExistsError
+                                       userInfo: nil ];
+        return nil;
+        }
+
+    if ( !_Password && !_DoesPromptUser  )
+        {
+        if ( _Error )
+            /* Error Description:
+             * One or more parameters passed to the method were not valid. */
+            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                           code: WSCKeychainInvalidParametersError
                                        userInfo: nil ];
         return nil;
         }
