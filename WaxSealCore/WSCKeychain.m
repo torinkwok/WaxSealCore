@@ -245,6 +245,33 @@ WSCKeychain static* s_system = nil;
     return s_system;
     }
 
+#pragma mark Public Programmatic Interfaces for Deleting Keychains
+
+/* Deletes the specified keychains from the default keychain search list, 
+ * and removes the keychain itself if it is a keychain file stored locally.
+ */
++ ( void ) deleteKeychain: ( WSCKeychain* )_Keychain
+                    error: ( NSError** )_Error
+    {
+    
+    }
+
+/* Deletes one or more keychains specified in an array from the default keychain search list, 
+ * and removes the keychain itself if it is a file.
+ */
++ ( void ) deleteKeychains: ( NSArray* )_Keychains
+                     error: ( NSError** )_Error
+    {
+    __block OSStatus resultCode = errSecSuccess;
+
+    [ _Keychains enumerateObjectsUsingBlock:
+        ^( WSCKeychain* _Keychain, NSUInteger _Index, BOOL* _Step )
+            {
+            resultCode = SecKeychainDelete( _Keychain.secKeychain );
+            
+            } ];
+    }
+
 #pragma mark Public Programmatic Interfaces for Managing Keychains
 
 /* Retrieves a WSCKeychain object represented the current default keychain. */
