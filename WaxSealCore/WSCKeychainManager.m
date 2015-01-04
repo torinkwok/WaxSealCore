@@ -38,6 +38,8 @@
 
 @implementation WSCKeychainManager
 
+@synthesize delegate = _delegate;
+
 #pragma mark Creating Keychain Manager
 /* Returns the shared keychain manager object for the process. */
 WSCKeychainManager static* s_defaultManager = nil;
@@ -52,6 +54,47 @@ WSCKeychainManager static* s_defaultManager = nil;
                     } );
 
     return s_defaultManager;
+    }
+
+#pragma mark Creating and Deleting Keychains
+/* Deletes one or more keychains specified in an array from the default keychain search list, 
+ * and removes the keychain itself if it is a file. 
+ */
+- ( BOOL ) deleteKeychains: ( NSArray* )_Keychains
+                     error: ( NSError** )_Error
+    {
+    __block OSStatus resultCode = errSecSuccess;
+    __block BOOL isSuccess = NO;
+
+    [ _Keychains enumerateObjectsUsingBlock:
+        ^( WSCKeychain* _Keychain, NSUInteger _Index, BOOL* _Stop )
+            {
+            /* If delegate does not implement keychainManager:shouldDeleteKeychain: method */
+            if ( ![ self.delegate respondsToSelector: @selector( keychainManager:shouldDeleteKeychain: ) ]
+                    /* or delegate does implement it and this delegate method returns YES */
+                    || ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldDeleteKeychain: ) ]
+                            && [ self.delegate keychainManager: self shouldDeleteKeychain: _Keychain ] ) )
+                {
+                resultCode = SecKeychainDelete( _Keychain.secKeychain );
+
+                if ( resultCode != errSecSuccess )
+                    {
+                    WSCPrintSecErrorCode( resultCode );
+
+                    if ( _Error )
+                        WSCFillErrorParam( resultCode, _Error );
+
+                    if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:deletingKeychain: ) ]
+                                    && ![ self.delegate keychainManager: self shouldProceedAfterError: *_Error deletingKeychain: _Keychain ] )
+                        {
+                        isSuccess = YES;
+                        *_Stop = YES;
+                        }
+                    }
+                }
+            } ];
+
+    return isSuccess;
     }
 
 #pragma mark Managing Keychains

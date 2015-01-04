@@ -46,8 +46,11 @@
 @interface WSCKeychainManager : NSObject
     {
 @private
-
+    id <WSCKeychainManagerDelegate> _delegate;
     }
+
+/** The `WSCKeychainManager` object's delegate. */
+@property ( nonatomic, unsafe_unretained ) id <WSCKeychainManagerDelegate> delegate;
 
 #pragma mark Creating Keychain Manager
 /** @name Creating Keychain Manager */
@@ -69,7 +72,7 @@
 /** Deletes the specified keychains from the default keychain search list, and removes the keychain itself if it is a keychain file stored locally.
 
   Prior to deleting each keychain, the keychain manager asks its delegate if it should actually do so. 
-  It does this by calling the [–keychainManager:shouldDeleteDeleteKeychain:](-[WSCKeychainManagerDelegate keychainManager:shouldDeleteDeleteKeychain:]) method;
+  It does this by calling the [keychainManager:shouldDeleteKeychain:](-[WSCKeychainManagerDelegate keychainManager:shouldDeleteKeychain:]) method;
   If the delegate method returns `YES`, or if the delegate does not implement the appropriate methods, 
   the keychain manager proceeds to delete the specified keychain. 
   If there is an error deleting a keychain, the keychain manager may also call the delegate’s 
@@ -88,7 +91,7 @@
                 If an error occurs, this pointer is set to an actual error object containing the error information.
                 You may specify *nil* for this parameter if you don't want the error information.
 
-  @return `YES` if the keychain was removed successfully or if *_Keychain* was `nil`. Returns `NO` if an error occured. 
+  @return `YES` if the keychain was deleted successfully or if *_Keychain* was `nil`. Returns `NO` if an error occured. 
           If the delegate aborts the operaton for a keychain, this method returns `YES`.
 
   @sa +deleteKeychains:error:
@@ -96,10 +99,10 @@
 - ( BOOL ) deleteKeychain: ( WSCKeychain* )_Keychain
                     error: ( NSError** )_Error;
 
-/** Deletes one or more keychains specified in an array from the default keychain search list, and removes the keychain itself if it is a file.
+/** Deletes one or more keychains specified in an array from the default keychain search list, and removes the keychain itself if it is a file stored locally.
 
   Prior to deleting each keychain, the keychain manager asks its delegate if it should actually do so. 
-  It does this by calling the [–keychainManager:shouldDeleteDeleteKeychain:](-[WSCKeychainManagerDelegate keychainManager:shouldDeleteDeleteKeychain:]) method;
+  It does this by calling the [keychainManager:shouldDeleteKeychain:](-[WSCKeychainManagerDelegate keychainManager:shouldDeleteKeychain:]) method;
   If the delegate method returns `YES`, or if the delegate does not implement the appropriate methods, 
   the keychain manager proceeds to delete the specified keychain. 
   If there is an error deleting a keychain, the keychain manager may also call the delegate’s 
@@ -118,7 +121,7 @@
                 If an error occurs, this pointer is set to an actual error object containing the error information.
                 You may specify *nil* for this parameter if you don't want the error information.
                     
-  @return `YES` if the keychain was removed successfully or if *_Keychain* was `nil`. Returns `NO` if an error occured. 
+  @return `YES` if the keychain was deleted successfully or if *_Keychain* was `nil`. Returns `NO` if an error occured.
           If the delegate aborts the operaton for a keychain, this method returns `YES`.
 
   @sa +deleteKeychain:error:
@@ -160,7 +163,7 @@
     @warning You should associate your delegate with a unique instance of `WSCKeychainManager` class,
              as opposed to the shared instance.
   */
-@protocol WSCKeychainManagerDelegate
+@protocol WSCKeychainManagerDelegate <NSObject>
 
 @optional
 #pragma mark Deleting a Keychain
@@ -178,7 +181,7 @@
   @return `YES` if the specified keychain should be deleted or `NO` if it should not be deleted.
   */
 - ( BOOL )     keychainManager: ( WSCKeychainManager* )_KeychainManager
-    shouldDeleteDeleteKeychain: ( WSCKeychain* )_Keychain;
+          shouldDeleteKeychain: ( WSCKeychain* )_Keychain;
 
 /** Asks the delegate if the operation should continue after an error occurs while deleting the specified keychain.
 

@@ -172,7 +172,42 @@
     [ defaultManager_negative2 retain ];
     [ defaultManager_negative2 autorelease ];
     }
+#if 0
+- ( void ) testDeletingKeychains
+    {
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
 
+    NSURL* URLForTest0 = [ self URLForTestCase: [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase0" ]
+                                    doesPrompt: NO
+                                  deleteExists: YES ];
+
+    WSCKeychain* test0 = [ WSCKeychain keychainWithURL: URLForTest0
+                                              password: self.passwordForTest
+                                         initialAccess: nil
+                                        becomesDefault: YES
+                                                 error: &error ];
+
+    NSURL* URLForTest1 = [ self URLForTestCase: [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase1" ]
+                                    doesPrompt: NO
+                                  deleteExists: YES ];
+
+    WSCKeychain* test1 = [ WSCKeychain keychainWithURL: URLForTest1
+                                              password: self.passwordForTest
+                                         initialAccess: nil
+                                        becomesDefault: YES
+                                                 error: &error ];
+
+    NSArray* keychains = @[ ( __bridge id )test0.secKeychain
+                          , [ NSNull null ]
+                          , ( __bridge id )test1.secKeychain
+                          ];
+
+    resultCode = SecKeychainDelete( test0.secKeychain );
+    if ( resultCode != errSecSuccess )
+        WSCPrintSecErrorCode( resultCode );
+    }
+#endif
 @end // WSCKeychainManagerTests test case
 
 //////////////////////////////////////////////////////////////////////////////

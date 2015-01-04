@@ -198,49 +198,6 @@
   */
 + ( instancetype ) system;
 
-#pragma mark Public Programmatic Interfaces for Deleting Keychains
-/** @name Deleting Keychains */
-
-/** Deletes the specified keychains from the default keychain search list, and removes the keychain itself if it is a keychain file stored locally.
-
-  The keychain may be a file stored locally, a smart card, or retrieved from a network server using non-file-based database protocols. 
-  This method deletes the keychain only if it is a local file.
-
-  This method does not release the memory used by the keychain object; you must call the -release method to release the keychain object when you are finished with it.
-
-  @param _Keychain A single keychain object you wish to delete. 
-                   To delete more than one keychain, please use +deleteKeychains:error: class method.
-                   Passing `nil` to this parameter returns an `NSError` object which encapsulated `WSCKeychainInvalidParametersError` error code.
-                   
-  @param _Error On input, a pointer to an error object.
-                If an error occurs, this pointer is set to an actual error object containing the error information.
-                You may specify *nil* for this parameter if you don't want the error information.
-
-  @sa +deleteKeychains:error:
-  */
-+ ( void ) deleteKeychain: ( WSCKeychain* )_Keychain
-                    error: ( NSError** )_Error;
-
-/** Deletes one or more keychains specified in an array from the default keychain search list, and removes the keychain itself if it is a file.
-
-  The keychain may be a file stored locally, a smart card, or retrieved from a network server using non-file-based database protocols. 
-  This method deletes the keychain only if it is a local file.
-
-  This method does not release the memory used by the keychain object; you must call the -release method to release each keychain object when you are finished with it.
-  
-  @param _Keychains An array of keychains you wish to delete. 
-                    To delete keychain one by one, please use +deleteKeychain:error: class method.
-                    Passing `nil` to this parameter returns an `NSError` object which encapsulated `WSCKeychainInvalidParametersError` error code.
-
-  @param _Error On input, a pointer to an error object.
-                If an error occurs, this pointer is set to an actual error object containing the error information.
-                You may specify *nil* for this parameter if you don't want the error information.
-                    
-  @sa +deleteKeychain:error:
-  */
-+ ( void ) deleteKeychains: ( NSArray* )_Keychains
-                     error: ( NSError** )_Error;
-
 #pragma mark Public Programmatic Interfaces for Managing Keychains
 /** @name Managing Keychains */
 
