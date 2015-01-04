@@ -69,11 +69,11 @@
          , __func__                                                                 \
          )
 
-#define WSCPrintNSError( _ErrorObject )                                             \
-    if ( _ErrorObject )                                                             \
-        {                                                                           \
-        NSLog( @"Error Occured (%s: %d):\n%@", __PRETTY_FUNCTION__, __LINE__, _ErrorObject );       \
-        _ErrorObject = nil;                                                         \
+#define WSCPrintNSError( _ErrorObject )                                                         \
+    if ( _ErrorObject )                                                                         \
+        {                                                                                       \
+        NSLog( @"Error Occured (%s: %d):\n%@", __PRETTY_FUNCTION__, __LINE__, _ErrorObject );   \
+        _ErrorObject = nil;                                                                     \
         }
 
 void WSCFillErrorParam( OSStatus _ResultCode, NSError** _ErrorParam );

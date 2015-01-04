@@ -92,7 +92,7 @@
                 You may specify *nil* for this parameter if you don't want the error information.
 
   @return `YES` if the keychain was deleted successfully or if *_Keychain* was `nil`. Returns `NO` if an error occured. 
-          If the delegate aborts the operaton for a keychain, this method returns `YES`.
+          If the delegate aborts the operation for a keychain, this method returns `YES`.
 
   @sa +deleteKeychains:error:
   */
@@ -122,7 +122,7 @@
                 You may specify *nil* for this parameter if you don't want the error information.
                     
   @return `YES` if the keychain was deleted successfully or if *_Keychain* was `nil`. Returns `NO` if an error occured.
-          If the delegate aborts the operaton for a keychain, this method returns `YES`.
+          If the delegate aborts the operation for a keychain, this method returns `YES`.
 
   @sa +deleteKeychain:error:
   */

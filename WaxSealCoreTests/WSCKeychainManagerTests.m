@@ -63,6 +63,63 @@
 
 @end
 
+#pragma mark WSCKeychainTests + WSCKeychainManagerTests
+@interface WSCKeychainManagerTests ( WSCKeychainManagerDelegateTests ) <WSCKeychainManagerDelegate>
+
+- ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
+      shouldDeleteKeychain: ( WSCKeychain* )_Keychain;
+
+- ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
+   shouldProceedAfterError: ( NSError* )_Error
+          deletingKeychain: ( WSCKeychain* )_Keychain;
+@end
+
+@implementation WSCKeychainManagerTests ( WSCKeychainManagerDelegateTests )
+
+- ( NSInteger ) extractNumberFromTestCaseKeychain: ( WSCKeychain* )_Keychain
+    {
+    NSArray* pathComponents = [ [ _Keychain.URL lastPathComponent ] componentsSeparatedByString: @"_" ];
+    NSString* lastComponents = [ pathComponents.lastObject stringByDeletingPathExtension ];
+
+    NSInteger number = 0;
+
+    NSString* testCasePrefix = @"testCase";
+    NSString* negativeTestCasePrefix = @"negativeTestCase";
+    if ( [ lastComponents hasPrefix: testCasePrefix ] )
+        number = [ lastComponents substringFromIndex: testCasePrefix.length ].integerValue;
+    else
+        number = [ lastComponents substringFromIndex: negativeTestCasePrefix.length ].integerValue;
+
+    return number;
+    }
+
+- ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
+      shouldDeleteKeychain: ( WSCKeychain* )_Keychain
+    {
+    NSInteger number = [ self extractNumberFromTestCaseKeychain: _Keychain ];
+
+    // Odd number
+    if ( number % 2 )
+        return NO;
+    else // Even number
+        return YES;
+    }
+
+- ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
+   shouldProceedAfterError: ( NSError* )_Error
+          deletingKeychain: ( WSCKeychain* )_Keychain
+    {
+    NSInteger number = [ self extractNumberFromTestCaseKeychain: _Keychain ];
+
+    // Odd number
+    if ( number % 2 )
+        return YES;
+    else // Even number
+        return NO;
+    }
+
+@end // WSCKeychainTests + WSCKeychainManagerTests
+
 // --------------------------------------------------------
 #pragma mark Interface of Utilities for Easy to Test
 // --------------------------------------------------------
@@ -159,6 +216,162 @@
     return YES;
     }
 
+- ( BOOL ) fileManager:( NSFileManager* )_FileManager
+   shouldMoveItemAtURL:( NSURL* )_SrcURL
+                 toURL:( NSURL* )_DstURL
+    {
+    NSLog( @"File Manager: %@", _FileManager );
+    NSLog( @"Src URL: %@", _SrcURL );
+    NSLog( @"Dst URL: %@", _DstURL );
+
+    return NO;
+    }
+
+- ( void ) testDeletingKeychains
+    {
+    NSError* error = nil;
+    BOOL isSuccess = NO;
+
+    [ [ WSCKeychainManager defaultManager ] setDelegate: self ];
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 0
+    // ----------------------------------------------------------------------------------
+    NSURL* URLForKeychan_testCase0 = [ self URLForTestCase: [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase0" ]
+                                                doesPrompt: NO
+                                              deleteExists: YES ];
+
+    WSCKeychain* keychain_testCase0 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase0
+                                                           password: self.passwordForTest
+                                                      initialAccess: nil
+                                                     becomesDefault: YES
+                                                              error: &error ];
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 1
+    // ----------------------------------------------------------------------------------
+    NSURL* URLForKeychan_testCase1 = [ self URLForTestCase: [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase1" ]
+                                                doesPrompt: NO
+                                              deleteExists: YES ];
+
+    WSCKeychain* keychain_testCase1 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase1
+                                                           password: self.passwordForTest
+                                                      initialAccess: nil
+                                                     becomesDefault: YES
+                                                              error: &error ];
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 2
+    // ----------------------------------------------------------------------------------
+    NSURL* URLForKeychan_testCase2 = [ self URLForTestCase: [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase2" ]
+                                                doesPrompt: NO
+                                              deleteExists: YES ];
+
+    WSCKeychain* keychain_testCase2 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase2
+                                                           password: self.passwordForTest
+                                                      initialAccess: nil
+                                                     becomesDefault: YES
+                                                              error: &error ];
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 3
+    // ----------------------------------------------------------------------------------
+    NSURL* URLForKeychan_testCase3 = [ self URLForTestCase: [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase3" ]
+                                                doesPrompt: NO
+                                              deleteExists: YES ];
+
+    WSCKeychain* keychain_testCase3 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase3
+                                                           password: self.passwordForTest
+                                                      initialAccess: nil
+                                                     becomesDefault: YES
+                                                              error: &error ];
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 4
+    // ----------------------------------------------------------------------------------
+    NSURL* URLForKeychan_testCase4 = [ self URLForTestCase: [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase4" ]
+                                                doesPrompt: NO
+                                              deleteExists: YES ];
+
+    WSCKeychain* keychain_testCase4 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase4
+                                                           password: self.passwordForTest
+                                                      initialAccess: nil
+                                                     becomesDefault: YES
+                                                              error: &error ];
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 5
+    // ----------------------------------------------------------------------------------
+    NSURL* URLForKeychan_testCase5 = [ self URLForTestCase: [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase5" ]
+                                                doesPrompt: NO
+                                              deleteExists: YES ];
+
+    WSCKeychain* keychain_testCase5 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase5
+                                                           password: self.passwordForTest
+                                                      initialAccess: nil
+                                                     becomesDefault: YES
+                                                              error: &error ];
+    XCTAssertTrue( keychain_testCase0.isValid );
+    XCTAssertTrue( keychain_testCase1.isValid );
+    XCTAssertTrue( keychain_testCase2.isValid );
+    XCTAssertTrue( keychain_testCase3.isValid );
+    XCTAssertTrue( keychain_testCase4.isValid );
+    XCTAssertTrue( keychain_testCase5.isValid );
+
+    NSArray* oddNumbered = @[ keychain_testCase1
+                            , keychain_testCase3
+                            , keychain_testCase5
+                            ];
+
+    NSArray* evenNumbered = @[ keychain_testCase0
+                             , keychain_testCase2
+                             , keychain_testCase4
+                             ];
+
+    isSuccess = [ [ WSCKeychainManager defaultManager ] deleteKeychains: oddNumbered
+                                                                  error: &error ];
+    XCTAssertTrue( isSuccess );
+    XCTAssertTrue( keychain_testCase1.isValid );
+    XCTAssertTrue( keychain_testCase3.isValid );
+    XCTAssertTrue( keychain_testCase5.isValid );
+
+    isSuccess = [ [ WSCKeychainManager defaultManager ] deleteKeychains: evenNumbered
+                                                                  error: &error ];
+    XCTAssertTrue( isSuccess );
+    XCTAssertFalse( keychain_testCase0.isValid );
+    XCTAssertFalse( keychain_testCase2.isValid );
+    XCTAssertFalse( keychain_testCase4.isValid );
+
+    [ WSCKeychainManager defaultManager ].delegate = nil;
+
+    isSuccess = [ [ WSCKeychainManager defaultManager ] deleteKeychains: oddNumbered
+                                                                  error: &error ];
+    XCTAssertTrue( isSuccess );
+    XCTAssertFalse( keychain_testCase1.isValid );
+    XCTAssertFalse( keychain_testCase3.isValid );
+    XCTAssertFalse( keychain_testCase5.isValid );
+
+    isSuccess = [ [ WSCKeychainManager defaultManager ] deleteKeychains: oddNumbered
+                                                                  error: &error ];
+    XCTAssertNotNil( error );
+    WSCPrintNSError( error );
+    XCTAssertFalse( isSuccess );
+
+    WSCKeychainManager* anotherKeychainManager = [ [ [ WSCKeychainManager alloc ] init ] autorelease ];
+    [ anotherKeychainManager setDelegate: self ];
+    isSuccess = [ anotherKeychainManager deleteKeychains: evenNumbered
+                                                   error: &error ];
+    XCTAssertNotNil( error );
+    WSCPrintNSError( error );
+    XCTAssertTrue( isSuccess );
+
+    isSuccess = [ anotherKeychainManager deleteKeychains: oddNumbered
+                                                   error: &error ];
+    XCTAssertNotNil( error );
+    WSCPrintNSError( error );
+    XCTAssertTrue( isSuccess );
+    }
+
 - ( void ) testDefaultManager
     {
     NSError* error = nil;
@@ -251,36 +464,6 @@
     [ defaultManager_negative2 retainCount ];
     [ defaultManager_negative2 retain ];
     [ defaultManager_negative2 autorelease ];
-    }
-
-- ( void ) testDeletingKeychains
-    {
-    NSError* error = nil;
-    OSStatus resultCode = errSecSuccess;
-
-    NSURL* URLForTest0 = [ self URLForTestCase: [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase0" ]
-                                    doesPrompt: NO
-                                  deleteExists: YES ];
-
-    WSCKeychain* test0 = [ WSCKeychain keychainWithURL: URLForTest0
-                                              password: self.passwordForTest
-                                         initialAccess: nil
-                                        becomesDefault: YES
-                                                 error: &error ];
-
-    NSURL* URLForTest1 = [ self URLForTestCase: [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase1" ]
-                                    doesPrompt: NO
-                                  deleteExists: YES ];
-
-    WSCKeychain* test1 = [ WSCKeychain keychainWithURL: URLForTest1
-                                              password: self.passwordForTest
-                                         initialAccess: nil
-                                        becomesDefault: YES
-                                                 error: &error ];
-
-    resultCode = SecKeychainDelete( test0.secKeychain );
-    if ( resultCode != errSecSuccess )
-        WSCPrintSecErrorCode( resultCode );
     }
 
 @end // WSCKeychainManagerTests test case
