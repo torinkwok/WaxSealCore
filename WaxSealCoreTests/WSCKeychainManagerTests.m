@@ -33,12 +33,13 @@
 
 #import <XCTest/XCTest.h>
 
+#import "WSCKeychain.h"
 #import "WSCKeychainManager.h"
 
 // --------------------------------------------------------
 #pragma mark Interface of WSCKeychainManagerTests case
 // --------------------------------------------------------
-@interface WSCKeychainManagerTests : XCTestCase
+@interface WSCKeychainManagerTests : XCTestCase <NSFileManagerDelegate>
 
 @end
 
@@ -54,8 +55,39 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+- ( BOOL )      fileManager: ( NSFileManager* )_FileManager
+    shouldProceedAfterError: ( NSError* )_Error
+            movingItemAtURL: ( NSURL* )_URL
+                      toURL: ( NSURL* )_DstURL
+    {
+    NSLog( @"File Manager: %@", _FileManager );
+    NSLog( @"Error: %@", _Error );
+    NSLog( @"URL: %@", _URL );
+    NSLog( @"Dest URL: %@", _DstURL );
+
+    return NO;
+    }
+
+- ( BOOL )      fileManager: ( NSFileManager* )_FileManager
+    shouldProceedAfterError: ( NSError* )_Error
+          removingItemAtURL: ( NSURL* )_URL
+    {
+    NSLog( @"File Manager: %@", _FileManager );
+    NSLog( @"Error: %@", _Error );
+    NSLog( @"URL: %@", _URL );
+
+    return YES;
+    }
+
 - ( void ) testDefaultManager
     {
+    NSError* error = nil;
+    NSURL* URLForSubtitles = [ NSURL URLWithString: @"file:///Users/EsquireTongG/Documents/Certificates.cer" ];
+//    NSURL* dstURL = [ NSURL URLWithString: @"file:///Users/EsquireTongG" ];
+
+    [ [ NSFileManager defaultManager ] setDelegate: self ];
+    [ [ NSFileManager defaultManager ] removeItemAtURL: URLForSubtitles error: &error ];
+
     // ----------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------

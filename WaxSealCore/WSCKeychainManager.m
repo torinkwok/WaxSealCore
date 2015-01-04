@@ -31,10 +31,14 @@
  **                                                                         **
  ****************************************************************************/
 
+#import "WSCKeychain.h"
 #import "WSCKeychainManager.h"
+#import "WSCKeychainError.h"
+#import "WSCKeychainErrorPrivate.h"
 
 @implementation WSCKeychainManager
 
+#pragma mark Creating Keychain Manager
 /* Returns the shared keychain manager object for the process. */
 WSCKeychainManager static* s_defaultManager = nil;
 + ( instancetype ) defaultManager
@@ -48,6 +52,30 @@ WSCKeychainManager static* s_defaultManager = nil;
                     } );
 
     return s_defaultManager;
+    }
+
+#pragma mark Managing Keychains
+/* Sets the specified keychain as default keychain. */
+- ( BOOL ) setDefaultKeychain: ( WSCKeychain* )_Keychain
+                        error: ( NSError** )_Error
+    {
+    BOOL isSuccess = NO;
+
+    if ( !_Keychain.isValid )
+        {
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                           code: WSCKeychainInvalidError
+                                       userInfo: nil ];
+        return NO;
+        }
+
+    if ( !_Keychain.isDefault )
+        {
+        
+        }
+
+    return isSuccess;
     }
 
 #pragma mark Overrides for Singleton Objects
