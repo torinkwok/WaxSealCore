@@ -84,6 +84,14 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
 @dynamic URL;
 @dynamic isDefault;
 
+- ( NSString* ) description
+    {
+    return [ NSString stringWithFormat: @"%@", @{ @"Keychain Name"  : self.URL.lastPathComponent
+                                                , @"Keychain URL"   : self.URL
+                                                , @"Is Valid"       : self.isValid ? @"Valid" : @"Invalid"
+                                                } ];
+    }
+
 #pragma mark Properties
 /* The URL for the receiver. (read-only) */
 - ( NSURL* ) URL

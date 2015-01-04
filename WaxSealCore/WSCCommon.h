@@ -61,20 +61,35 @@
     if ( _Object )              \
         CFRelease( _Object )    \
 
-#define WSCPrintSecErrorCode( _ResultCode )                                         \
-    NSLog( @"Error Occured (%d): `%@' (Line: %d Function/Method: %s)"               \
-         , _ResultCode                                                              \
-         , ( __bridge NSString* )SecCopyErrorMessageString( resultCode, NULL )      \
-         , __LINE__                                                                 \
-         , __func__                                                                 \
-         )
+#define WSCPrintSecErrorCode( _ResultCode )                                     \
+    {                                                                           \
+    CFStringRef cfErrorDesc = SecCopyErrorMessageString( _ResultCode, NULL );   \
+                                                                                \
+    NSLog( @"Error Occured: %d (LINE%d FUNCTION/METHOD: %s in %s): `%@' "       \
+         , _ResultCode                                                          \
+         , __LINE__                                                             \
+         , __PRETTY_FUNCTION__                                                  \
+         , __FILE__                                                             \
+         , ( __bridge NSString* )cfErrorDesc                                    \
+         );                                                                     \
+                                                                                \
+    CFRelease( cfErrorDesc );                                                   \
+    }
 
-#define WSCPrintNSError( _ErrorObject )                                                         \
-    if ( _ErrorObject )                                                                         \
-        {                                                                                       \
-        NSLog( @"Error Occured (%s: %d):\n%@", __PRETTY_FUNCTION__, __LINE__, _ErrorObject );   \
-        _ErrorObject = nil;                                                                     \
+#define WSCPrintNSErrorForLog( _ErrorObject )               \
+    if ( _ErrorObject )                                     \
+        {                                                   \
+        NSLog( @"Error Occured: (%s: LINE%d in %s):\n%@"    \
+             , __PRETTY_FUNCTION__                          \
+             , __LINE__                                     \
+             , __FILE__                                     \
+             , _ErrorObject                                 \
+             );                                             \
         }
+
+#define WSCPrintNSErrorForUnitTest( _ErrorObject )          \
+    WSCPrintNSErrorForLog( _ErrorObject )                   \
+    _ErrorObject = nil;
 
 void WSCFillErrorParam( OSStatus _ResultCode, NSError** _ErrorParam );
 

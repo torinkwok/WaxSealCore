@@ -57,6 +57,15 @@ WSCKeychainManager static* s_defaultManager = nil;
     }
 
 #pragma mark Creating and Deleting Keychains
+/* Deletes the specified keychains from the default keychain search list, 
+ * and removes the keychain itself if it is a keychain file stored locally.
+ */
+- ( BOOL ) deleteKeychain: ( WSCKeychain* )_Keychain
+                    error: ( NSError** )_Error
+    {
+    return [ self deleteKeychains: @[ _Keychain ] error: _Error ];
+    }
+
 /* Deletes one or more keychains specified in an array from the default keychain search list, 
  * and removes the keychain itself if it is a file. 
  */
@@ -79,8 +88,6 @@ WSCKeychainManager static* s_defaultManager = nil;
 
                 if ( resultCode != errSecSuccess )
                     {
-                    WSCPrintSecErrorCode( resultCode );
-
                     if ( _Error )
                         WSCFillErrorParam( resultCode, _Error );
 
@@ -93,14 +100,11 @@ WSCKeychainManager static* s_defaultManager = nil;
                                                              deletingKeychain: _Keychain ];
                         if ( !shouldContinue )
                             {
-                            /* Just as described in the documentation:
-                             * if the delegate aborts the operation for a keychain, this method returns YES. */
-                            isSuccess = YES;
-
+                            isSuccess = NO;
                             *_Stop = YES;
                             }
                         else
-                            isSuccess = NO;
+                            WSCPrintNSErrorForLog( *_Error );
                         }
                     else /* If delegate does not implements 
                           * keychainManager:shouldProceedAfterError:deletingKeychain: at all */

@@ -269,7 +269,7 @@
                                                                           error: &error ];
     XCTAssertNotNil( newKeychainNonPrompt_testCase0 );
     XCTAssertNil( error );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
     XCTAssertTrue( newKeychainNonPrompt_testCase0.isValid );
     XCTAssertTrue( WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_testCase0.secKeychain ) );
     XCTAssertFalse( newKeychainNonPrompt_testCase0.isDefault );
@@ -289,7 +289,7 @@
                                                                           error: &error ];
     XCTAssertNotNil( newKeychainNonPrompt_testCase1 );
     XCTAssertNil( error );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
     XCTAssertTrue( newKeychainNonPrompt_testCase1.isValid );
     XCTAssertTrue( WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_testCase1.secKeychain ) );
     XCTAssertTrue( newKeychainNonPrompt_testCase1.isDefault );
@@ -309,7 +309,7 @@
                                                                                   error: &error ];
     XCTAssertNil( newKeychainNonPrompt_negativeTestCase0 );
     XCTAssertNotNil( error );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
     XCTAssertFalse( newKeychainNonPrompt_negativeTestCase0.isValid );
     XCTAssertFalse( WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_negativeTestCase0.secKeychain ) );
     XCTAssertFalse( newKeychainNonPrompt_negativeTestCase0.isDefault );
@@ -327,7 +327,7 @@
                                                                                   error: &error ];
     XCTAssertNil( newKeychainNonPrompt_negativeTestCase1 );
     XCTAssertNotNil( error );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
     XCTAssertFalse( newKeychainNonPrompt_negativeTestCase1.isValid );
     XCTAssertFalse( WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_negativeTestCase1.secKeychain ) );
     XCTAssertFalse( newKeychainNonPrompt_negativeTestCase1.isDefault );
@@ -342,7 +342,7 @@
                                                                                   error: &error ];
     XCTAssertNil( newKeychainNonPrompt_negativeTestCase2 );
     XCTAssertNotNil( error );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
     XCTAssertFalse( newKeychainNonPrompt_negativeTestCase2.isValid );
     XCTAssertFalse( WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_negativeTestCase2.secKeychain ) );
     XCTAssertFalse( newKeychainNonPrompt_negativeTestCase2.isDefault );
@@ -367,7 +367,7 @@
                                                                    error: &error ];
     XCTAssertNotNil( newKeychainNonPrompt_testCase0 );
     XCTAssertNil( error );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
     XCTAssertTrue( newKeychainNonPrompt_testCase0.isValid );
     XCTAssertTrue( WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_testCase0.secKeychain ) );
     XCTAssertFalse( newKeychainNonPrompt_testCase0.isDefault );
@@ -387,7 +387,7 @@
                                                                    error: &error ];
     XCTAssertNotNil( newKeychainNonPrompt_testCase1 );
     XCTAssertNil( error );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
     XCTAssertTrue( newKeychainNonPrompt_testCase1.isValid );
     XCTAssertTrue( WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_testCase1.secKeychain ) );
     XCTAssertTrue( newKeychainNonPrompt_testCase1.isDefault );
@@ -405,7 +405,7 @@
                                                                    error: &error ];
     XCTAssertNil( newKeychainNonPrompt_negativeTestCase0 );
     XCTAssertNotNil( error );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
     XCTAssertFalse( newKeychainNonPrompt_negativeTestCase0.isValid );
     XCTAssertFalse( WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_negativeTestCase0.secKeychain ) );
     XCTAssertFalse( newKeychainNonPrompt_negativeTestCase0.isDefault );
@@ -420,45 +420,10 @@
                                                                    error: &error ];
     XCTAssertNil( newKeychainNonPrompt_negativeTestCase1 );
     XCTAssertNotNil( error );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
     XCTAssertFalse( newKeychainNonPrompt_negativeTestCase1.isValid );
     XCTAssertFalse( WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_negativeTestCase1.secKeychain ) );
     XCTAssertFalse( newKeychainNonPrompt_negativeTestCase1.isDefault );
-    }
-
-- ( void ) testDeletingKeychains
-    {
-    NSError* error = nil;
-    OSStatus resultCode = errSecSuccess;
-
-    NSURL* URLForTest0 = [ self URLForTestCase: [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase0" ]
-                                    doesPrompt: NO
-                                  deleteExists: YES ];
-
-    WSCKeychain* test0 = [ WSCKeychain keychainWithURL: URLForTest0
-                                              password: self.passwordForTest
-                                         initialAccess: nil
-                                        becomesDefault: YES
-                                                 error: &error ];
-
-    NSURL* URLForTest1 = [ self URLForTestCase: [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase1" ]
-                                    doesPrompt: NO
-                                  deleteExists: YES ];
-
-    WSCKeychain* test1 = [ WSCKeychain keychainWithURL: URLForTest1
-                                              password: self.passwordForTest
-                                         initialAccess: nil
-                                        becomesDefault: YES
-                                                 error: &error ];
-
-    NSArray* keychains = @[ ( __bridge id )test0.secKeychain
-                          , [ NSNull null ]
-                          , ( __bridge id )test1.secKeychain
-                          ];
-
-    resultCode = SecKeychainDelete( test0.secKeychain );
-    if ( resultCode != errSecSuccess )
-        WSCPrintSecErrorCode( resultCode );
     }
 
 - ( void ) testPublicAPIsForCreatingKeychains
@@ -481,7 +446,7 @@
                                                                             error: &error ];
     XCTAssertNotNil( newKeychainNonPrompt_testCase0 );
     XCTAssertNil( error );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
     XCTAssertTrue( newKeychainNonPrompt_testCase0.isValid );
     XCTAssertTrue( WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_testCase0.secKeychain ) );
     XCTAssertFalse( newKeychainNonPrompt_testCase0.isDefault );
@@ -502,7 +467,7 @@
                                                                              error: &error ];
     XCTAssertNotNil( newKeychainWithPrompt_testCase1 );
     XCTAssertNil( error );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
     XCTAssertTrue( newKeychainWithPrompt_testCase1.isValid );
     XCTAssertTrue( WSCKeychainIsSecKeychainValid( newKeychainWithPrompt_testCase1.secKeychain ) );
     XCTAssertTrue( newKeychainWithPrompt_testCase1.isDefault );
@@ -523,7 +488,7 @@
                                                                                 error: &error ];
     XCTAssertNil( newKeychainNonPrompt_negativeCase0 );
     XCTAssertNotNil( error );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
     XCTAssertFalse( newKeychainNonPrompt_negativeCase0.isValid );
     XCTAssertFalse( WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_negativeCase0.secKeychain ) );
     XCTAssertFalse( newKeychainNonPrompt_negativeCase0.isDefault );
@@ -542,7 +507,7 @@
                                                                                  error: &error ];
     XCTAssertNil( newKeychainWithPrompt_negativeCase1 );
     XCTAssertNotNil( error );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
     XCTAssertFalse( newKeychainWithPrompt_negativeCase1.isValid );
     XCTAssertFalse( WSCKeychainIsSecKeychainValid( newKeychainWithPrompt_negativeCase1.secKeychain ) );
     XCTAssertFalse( newKeychainWithPrompt_negativeCase1.isDefault );
@@ -558,7 +523,7 @@
                                                                                  error: &error ];
     XCTAssertNil( newKeychainWithPrompt_negativeCase2 );
     XCTAssertNotNil( error );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
     XCTAssertFalse( newKeychainWithPrompt_negativeCase2.isValid );
     XCTAssertFalse( WSCKeychainIsSecKeychainValid( newKeychainWithPrompt_negativeCase2.secKeychain ) );
     XCTAssertFalse( newKeychainWithPrompt_negativeCase2.isDefault );
@@ -578,7 +543,7 @@
                                                                                  error: &error ];
     XCTAssertNil( newKeychainWithPrompt_negativeCase3 );
     XCTAssertNotNil( error );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
     XCTAssertFalse( newKeychainWithPrompt_negativeCase3.isValid );
     XCTAssertFalse( WSCKeychainIsSecKeychainValid( newKeychainWithPrompt_negativeCase3.secKeychain ) );
     XCTAssertFalse( newKeychainWithPrompt_negativeCase3.isDefault );
@@ -714,7 +679,7 @@
     XCTAssertFalse( login_testCase2.isValid );
 
     XCTAssertNil( error );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
 
     WSCKeychain* login_testCase3 = [ WSCKeychain login ];
     WSCKeychain* login_testCase4 = [ WSCKeychain login ];
@@ -734,7 +699,7 @@
     XCTAssertNotNil( error );
     XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainInvalidError );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
 
     // ----------------------------------------------------------------------------------
     // Finished with testing: Restore to the origin status
@@ -771,7 +736,7 @@
                                                                            error: &error ];
     XCTAssertNil( error );
     XCTAssertNotNil( correctKeychain_test1 );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
 
     // ------------------------------------------------------------------------------------
     // The URL location of system.keychain. (/Users/${USER_NAME}/Keychains/system.keychain)
@@ -781,7 +746,7 @@
                                                                            error: &error ];
     XCTAssertNil( error );
     XCTAssertNotNil( correctKeychain_test2 );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
 
     // ------------------------------------------------------------------------------------
     // The URL location is completely wrong. Hum...it's not a URL at all.
@@ -793,7 +758,7 @@
     XCTAssertEqualObjects( error.domain, NSCocoaErrorDomain );
     XCTAssertEqual( error.code, NSFileNoSuchFileError );
     XCTAssertNil( incorrectKeychain_nagativeTestCase1 );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
 
     // ------------------------------------------------------------------------------------
     // The URL location is not completely wrong, however the format is incorrect.
@@ -806,7 +771,7 @@
     XCTAssertEqualObjects( error.domain, NSCocoaErrorDomain );
     XCTAssertEqual( error.code, NSFileNoSuchFileError );
     XCTAssertNil( incorrectKeychain_nagativeTestCase2 );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
 
     // ----------------------------------------------------------------------------------------------------------
     // The URL location is a directory instead of file with .keychain extention, however the format is incorrect.
@@ -817,7 +782,7 @@
     XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainCannotBeDirectoryError );
     XCTAssertNil( incorrectKeychain_negativeTestCase3 );
-    WSCPrintNSError( error );
+    WSCPrintNSErrorForUnitTest( error );
     }
 
 - ( void ) testPrivateAPIsForCreatingKeychains

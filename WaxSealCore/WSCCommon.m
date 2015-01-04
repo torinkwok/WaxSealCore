@@ -32,6 +32,7 @@
  ****************************************************************************/
 
 #import "WSCCommon.h"
+#import <Foundation/Foundation.h>
 
 inline void WSCFillErrorParam( OSStatus _ResultCode, NSError** _ErrorParam )
     {
