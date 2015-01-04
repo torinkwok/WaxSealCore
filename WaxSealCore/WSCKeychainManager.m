@@ -44,7 +44,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     dispatch_once( &onceToken
                  , ( dispatch_block_t )^( void )
                     {
-                    s_defaultManager = [ [ [ WSCKeychainManager alloc ] init ] autorelease ];
+                    s_defaultManager = [ [ WSCKeychainManager alloc ] init ];
                     } );
 
     return s_defaultManager;

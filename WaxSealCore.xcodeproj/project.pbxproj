@@ -125,12 +125,12 @@
 			children = (
 				83C7237E1A4C1AA60084221A /* WSCKeychain.h */,
 				83C7237F1A4C1AA60084221A /* WSCKeychain.m */,
-				834D20E91A4EEA4400539F49 /* NSURL+WSCKeychainURL.h */,
-				834D20EA1A4EEA4400539F49 /* NSURL+WSCKeychainURL.m */,
 				834D20E21A4EDD6900539F49 /* WSCKeychainError.h */,
 				834D20E31A4EDD6900539F49 /* WSCKeychainError.m */,
 				8339FA521A542D2C00240AD0 /* WSCKeychainErrorPrivate.h */,
 				8339FA531A542D2C00240AD0 /* WSCKeychainErrorPrivate.m */,
+				834D20E91A4EEA4400539F49 /* NSURL+WSCKeychainURL.h */,
+				834D20EA1A4EEA4400539F49 /* NSURL+WSCKeychainURL.m */,
 			);
 			name = WSCKeychain;
 			sourceTree = "<group>";
