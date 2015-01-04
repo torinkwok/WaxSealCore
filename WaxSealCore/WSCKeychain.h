@@ -300,6 +300,7 @@
 
 #pragma mark Private Programmatic Interfaces for Creating Keychains
 @interface WSCKeychain ( WSCKeychainPrivateInitialization )
+
 - ( instancetype ) p_initWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef;
 
 + ( instancetype ) p_keychainWithURL: ( NSURL* )_URL

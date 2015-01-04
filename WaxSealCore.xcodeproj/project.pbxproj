@@ -17,6 +17,7 @@
 		834D20EB1A4EEA4400539F49 /* NSURL+WSCKeychainURL.h in Headers */ = {isa = PBXBuildFile; fileRef = 834D20E91A4EEA4400539F49 /* NSURL+WSCKeychainURL.h */; };
 		834D20EC1A4EEA4400539F49 /* NSURL+WSCKeychainURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 834D20EA1A4EEA4400539F49 /* NSURL+WSCKeychainURL.m */; };
 		834D20EE1A4EEF7900539F49 /* NSURL+WSCKeychainURLTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 834D20ED1A4EEF7900539F49 /* NSURL+WSCKeychainURLTests.m */; };
+		8368A0011A58FE90000CF7ED /* WSCKeychainManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8368A0001A58FE90000CF7ED /* WSCKeychainManagerTests.m */; };
 		838221111A4C214A00EF9945 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 838221101A4C214A00EF9945 /* README.md */; };
 		838221141A4C229B00EF9945 /* WSCAccess.h in Headers */ = {isa = PBXBuildFile; fileRef = 838221121A4C229B00EF9945 /* WSCAccess.h */; };
 		838221151A4C229B00EF9945 /* WSCAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = 838221131A4C229B00EF9945 /* WSCAccess.m */; };
@@ -62,6 +63,7 @@
 		834D20E91A4EEA4400539F49 /* NSURL+WSCKeychainURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+WSCKeychainURL.h"; sourceTree = "<group>"; };
 		834D20EA1A4EEA4400539F49 /* NSURL+WSCKeychainURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+WSCKeychainURL.m"; sourceTree = "<group>"; };
 		834D20ED1A4EEF7900539F49 /* NSURL+WSCKeychainURLTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+WSCKeychainURLTests.m"; sourceTree = "<group>"; };
+		8368A0001A58FE90000CF7ED /* WSCKeychainManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCKeychainManagerTests.m; sourceTree = "<group>"; };
 		838221091A4C1DC400EF9945 /* DocumentationHelper.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DocumentationHelper.xcodeproj; path = DocumentationHelper/DocumentationHelper.xcodeproj; sourceTree = "<group>"; };
 		838221101A4C214A00EF9945 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
 		838221121A4C229B00EF9945 /* WSCAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSCAccess.h; sourceTree = "<group>"; };
@@ -217,6 +219,7 @@
 		83C7238C1A4C1AA60084221A /* WaxSealCoreTests */ = {
 			isa = PBXGroup;
 			children = (
+				8368A0001A58FE90000CF7ED /* WSCKeychainManagerTests.m */,
 				8339FA571A54457000240AD0 /* WSCKeychainErrorTests.m */,
 				834D20ED1A4EEF7900539F49 /* NSURL+WSCKeychainURLTests.m */,
 				83C723921A4C1AA60084221A /* WSCKeychainTests.m */,
@@ -379,6 +382,7 @@
 				8339FA581A54457000240AD0 /* WSCKeychainErrorTests.m in Sources */,
 				834D20EE1A4EEF7900539F49 /* NSURL+WSCKeychainURLTests.m in Sources */,
 				83C723931A4C1AA60084221A /* WSCKeychainTests.m in Sources */,
+				8368A0011A58FE90000CF7ED /* WSCKeychainManagerTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
