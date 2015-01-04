@@ -221,10 +221,10 @@
 		83C7238C1A4C1AA60084221A /* WaxSealCoreTests */ = {
 			isa = PBXGroup;
 			children = (
+				83C723921A4C1AA60084221A /* WSCKeychainTests.m */,
 				8368A0001A58FE90000CF7ED /* WSCKeychainManagerTests.m */,
 				8339FA571A54457000240AD0 /* WSCKeychainErrorTests.m */,
 				834D20ED1A4EEF7900539F49 /* NSURL+WSCKeychainURLTests.m */,
-				83C723921A4C1AA60084221A /* WSCKeychainTests.m */,
 				83C7238D1A4C1AA60084221A /* Supporting Files */,
 			);
 			path = WaxSealCoreTests;
