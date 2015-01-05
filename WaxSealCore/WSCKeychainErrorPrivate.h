@@ -34,7 +34,7 @@
 #import <Foundation/Foundation.h>
 
 NSString extern* const WSCKeychainCannotBeDirectoryErrorDescription;
-NSString extern* const WSCKeychainInvalidErrorDescription;
+NSString extern* const WSCKeychainKeychainIsInvalidErrorDescription;
 NSString extern* const WSCKeychainKeychainFileExistsErrorDescription;
 NSString extern* const WSCKeychainKeychainURLIsInvalidErrorDescription;
 

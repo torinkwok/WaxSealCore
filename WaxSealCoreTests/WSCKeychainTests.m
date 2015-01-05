@@ -698,7 +698,7 @@
 
     XCTAssertNotNil( error );
     XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
-    XCTAssertEqual( error.code, WSCKeychainInvalidError );
+    XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     WSCPrintNSErrorForUnitTest( error );
 
     // ----------------------------------------------------------------------------------

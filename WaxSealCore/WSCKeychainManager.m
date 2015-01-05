@@ -197,7 +197,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     if ( !_Keychain.isValid /* If the keychain is invalid */ )
         {
         newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                        code: WSCKeychainInvalidError
+                                        code: WSCKeychainKeychainIsInvalidError
                                     userInfo: nil ];
         if ( _Error )
             *_Error = [ newError copy ];

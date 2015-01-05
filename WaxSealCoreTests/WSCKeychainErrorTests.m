@@ -74,7 +74,7 @@
     // Test Case 1: same as previous test case excepts error code
     // ----------------------------------------------------------
     NSError* error_testCase1 = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                                    code: WSCKeychainInvalidError
+                                                    code: WSCKeychainKeychainIsInvalidError
                                                 userInfo: nil ];
     XCTAssertNotNil( error_testCase1 );
     XCTAssertNotNil( error_testCase1.userInfo );

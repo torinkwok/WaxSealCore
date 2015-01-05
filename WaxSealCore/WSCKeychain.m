@@ -308,7 +308,7 @@ WSCKeychain static* s_system = nil;
         {
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                           code: WSCKeychainInvalidError
+                                           code: WSCKeychainKeychainIsInvalidError
                                        userInfo: nil ];
         return;
         }
