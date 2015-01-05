@@ -103,6 +103,7 @@
     return number;
     }
 
+#pragma mark Deleting a Keychain
 - ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
       shouldDeleteKeychain: ( WSCKeychain* )_Keychain
     {
@@ -117,6 +118,29 @@
 - ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
    shouldProceedAfterError: ( NSError* )_Error
           deletingKeychain: ( WSCKeychain* )_Keychain
+    {
+    if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
+            || _KeychainManager == self.testManager1 )
+        return YES;
+    else
+        return NO;
+    }
+
+#pragma mark Making a Keychain Default
+- ( BOOL )     keychainManager: ( WSCKeychainManager* )_KeychainManager
+    shouldSetKeychainAsDefault: ( WSCKeychain* )_Keychain
+    {
+    if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
+            || _KeychainManager == self.testManager1
+            || _KeychainManager == self.testManager3 )
+        return YES;
+    else
+        return NO;
+    }
+
+- ( BOOL )  keychainManager: ( WSCKeychainManager* )_KeychainManager
+    shouldProceedAfterError: ( NSError* )_Error
+   settingKeychainAsDefault: ( WSCKeychain* )_Keychain
     {
     if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
             || _KeychainManager == self.testManager1 )
@@ -232,6 +256,17 @@
     XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     WSCPrintNSErrorForUnitTest( error );
 
+    WSCKeychain* olderDefault = nil;
+
+    /* WARNING: current default keychain is login.keychain */
+    olderDefault = [ [ WSCKeychainManager defaultManager ] setDefaultKeychain: [ WSCKeychain login ]
+                                                                        error: &error ];
+    XCTAssertNotNil( olderDefault );
+    XCTAssertEqualObjects( olderDefault, [ WSCKeychain login ] );
+    XCTAssertEqualObjects( [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: nil ]
+                         , [ WSCKeychain login ]
+                         );
+
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
@@ -242,8 +277,22 @@
     WSCKeychain* keychain_testCase0 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase0
                                                            password: self.passwordForTest
                                                       initialAccess: nil
-                                                     becomesDefault: YES
+                                                     becomesDefault: NO
                                                               error: &error ];
+
+    /* WARNING: current default keychain is login.keychain */
+    XCTAssertTrue( [ WSCKeychain login ].isDefault );
+    XCTAssertFalse( keychain_testCase0.isDefault );
+    olderDefault = [ [ WSCKeychainManager defaultManager ] setDefaultKeychain: keychain_testCase0
+                                                                        error: &error ];
+    XCTAssertFalse( [ WSCKeychain login ].isDefault );
+    XCTAssertTrue( keychain_testCase0.isDefault );
+
+    XCTAssertNotNil( olderDefault );
+    XCTAssertEqualObjects( olderDefault, [ WSCKeychain login ] );
+    XCTAssertEqualObjects( [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: nil ]
+                         , keychain_testCase0
+                         );
 
     // ----------------------------------------------------------------------------------
     // Test Case 1
@@ -255,8 +304,22 @@
     WSCKeychain* keychain_testCase1 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase1
                                                            password: self.passwordForTest
                                                       initialAccess: nil
-                                                     becomesDefault: YES
+                                                     becomesDefault: NO
                                                               error: &error ];
+
+    /* WARNING: current default keychain is keychain_testCase0 */
+    XCTAssertTrue( keychain_testCase0.isDefault );
+    XCTAssertFalse( keychain_testCase1.isDefault );
+    olderDefault = [ [ WSCKeychainManager defaultManager ] setDefaultKeychain: keychain_testCase1
+                                                                        error: &error ];
+    XCTAssertFalse( keychain_testCase0.isDefault );
+    XCTAssertTrue( keychain_testCase1.isDefault );
+
+    XCTAssertNotNil( olderDefault );
+    XCTAssertEqualObjects( olderDefault, keychain_testCase0 );
+    XCTAssertEqualObjects( [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: nil ]
+                         , keychain_testCase1
+                         );
 
     // ----------------------------------------------------------------------------------
     // Test Case 2
@@ -271,6 +334,17 @@
                                                      becomesDefault: YES
                                                               error: &error ];
 
+    /* WARNING: keychain_testCase2 is already default */
+    XCTAssertFalse( keychain_testCase1.isDefault );
+    XCTAssertTrue( keychain_testCase2.isDefault );
+    olderDefault = [ [ WSCKeychainManager defaultManager ] setDefaultKeychain: keychain_testCase2
+                                                                        error: &error ];
+    XCTAssertNotNil( olderDefault );
+    XCTAssertEqualObjects( olderDefault, keychain_testCase2 );
+    XCTAssertEqualObjects( [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: nil ]
+                         , keychain_testCase2
+                         );
+
     // ----------------------------------------------------------------------------------
     // Test Case 3
     // ----------------------------------------------------------------------------------
@@ -281,8 +355,22 @@
     WSCKeychain* keychain_testCase3 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase3
                                                            password: self.passwordForTest
                                                       initialAccess: nil
-                                                     becomesDefault: YES
+                                                     becomesDefault: NO
                                                               error: &error ];
+
+    /* WARNING: current default keychain is keychain_testCase2 */
+    XCTAssertTrue( keychain_testCase2.isDefault );
+    XCTAssertFalse( keychain_testCase3.isDefault );
+    olderDefault = [ self.testManager1 setDefaultKeychain: keychain_testCase3
+                                                    error: &error ];
+    XCTAssertFalse( keychain_testCase2.isDefault );
+    XCTAssertTrue( keychain_testCase3.isDefault );
+
+    XCTAssertNotNil( olderDefault );
+    XCTAssertEqualObjects( olderDefault, keychain_testCase2 );
+    XCTAssertEqualObjects( [ self.testManager3 currentDefaultKeychain: nil ]
+                         , keychain_testCase3
+                         );
 
     // ----------------------------------------------------------------------------------
     // Test Case 4
@@ -294,8 +382,25 @@
     WSCKeychain* keychain_testCase4 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase4
                                                            password: self.passwordForTest
                                                       initialAccess: nil
-                                                     becomesDefault: YES
+                                                     becomesDefault: NO
                                                               error: &error ];
+
+    /* WARNING: current default keychain is keychain_testCase3 */
+    XCTAssertTrue( keychain_testCase3.isDefault );
+    XCTAssertFalse( keychain_testCase4.isDefault );
+
+    /* We are using self.testManager2, 
+     * so the delegate method keychainManager:shouldSetKeychainAsDefault: returns NO */
+    olderDefault = [ self.testManager2 setDefaultKeychain: keychain_testCase4
+                                                    error: &error ];
+    XCTAssertTrue( keychain_testCase3.isDefault );
+    XCTAssertFalse( keychain_testCase4.isDefault );
+
+    XCTAssertNil( olderDefault );
+    XCTAssertNotEqualObjects( olderDefault, keychain_testCase3 );
+    XCTAssertEqualObjects( [ self.testManager3 currentDefaultKeychain: nil ]
+                         , keychain_testCase3
+                         );
 
     // ----------------------------------------------------------------------------------
     // Test Case 5
@@ -310,6 +415,19 @@
                                                      becomesDefault: YES
                                                               error: &error ];
 
+    /* WARNING: current default keychain is already keychain_testCase5 */
+    XCTAssertFalse( keychain_testCase4.isDefault );
+    XCTAssertTrue( keychain_testCase5.isDefault );
+    olderDefault = [ self.testManager3 setDefaultKeychain: keychain_testCase5
+                                                    error: &error ];
+    XCTAssertTrue( keychain_testCase5.isDefault );
+
+    XCTAssertNotNil( olderDefault );
+    XCTAssertEqualObjects( keychain_testCase5, olderDefault );
+    XCTAssertEqualObjects( [ self.testManager1 currentDefaultKeychain: nil ]
+                         , keychain_testCase5
+                         );
+
     // ----------------------------------------------------------------------------------
     // Test Case 6
     // ----------------------------------------------------------------------------------
@@ -320,8 +438,25 @@
     WSCKeychain* keychain_testCase6 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase6
                                                            password: self.passwordForTest
                                                       initialAccess: nil
-                                                     becomesDefault: YES
+                                                     becomesDefault: NO
                                                               error: &error ];
+
+    /* WARNING: current default keychain is keychain_testCase5 */
+    XCTAssertFalse( keychain_testCase6.isDefault );
+    XCTAssertTrue( keychain_testCase5.isDefault );
+
+    /* We are using self.testManager2, 
+     * so the delegate method keychainManager:shouldSetKeychainAsDefault: returns NO */
+    olderDefault = [ self.testManager2 setDefaultKeychain: keychain_testCase6
+                                                    error: &error ];
+    XCTAssertFalse( keychain_testCase6.isDefault );
+    XCTAssertTrue( keychain_testCase5.isDefault );
+
+    XCTAssertNil( olderDefault );
+    XCTAssertNotEqualObjects( keychain_testCase6, olderDefault );
+    XCTAssertEqualObjects( [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: nil ]
+                         , keychain_testCase5
+                         );
 
     // ----------------------------------------------------------------------------------
     // Test Case 7
@@ -333,8 +468,19 @@
     WSCKeychain* keychain_testCase7 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase7
                                                            password: self.passwordForTest
                                                       initialAccess: nil
-                                                     becomesDefault: YES
+                                                     becomesDefault: NO
                                                               error: &error ];
+
+    /* WARNING: current default keychain is keychain_testCase6 */
+    XCTAssertFalse( keychain_testCase7.isDefault );
+    olderDefault = [ self.testManager3 setDefaultKeychain: keychain_testCase7
+                                                    error: &error ];
+    XCTAssertTrue( keychain_testCase7.isDefault );
+    XCTAssertFalse( keychain_testCase6.isDefault );
+    XCTAssertEqualObjects( [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: nil ]
+                         , keychain_testCase7
+                         );
+
     XCTAssertTrue( keychain_testCase0.isValid );
     XCTAssertTrue( keychain_testCase1.isValid );
     XCTAssertTrue( keychain_testCase2.isValid );
@@ -344,6 +490,8 @@
     XCTAssertTrue( keychain_testCase6.isValid );
     XCTAssertTrue( keychain_testCase7.isValid );
 
+    /* Delete keychain_testCase6 */
+    XCTAssertTrue( keychain_testCase6.isValid );
     isSuccess = [ [ WSCKeychainManager defaultManager ] deleteKeychain: keychain_testCase6
                                                                  error: &error ];
     XCTAssertTrue( isSuccess );
@@ -351,12 +499,39 @@
     XCTAssertFalse( keychain_testCase6.isValid );
     WSCPrintNSErrorForUnitTest( error );
 
+    /* Now keychain_testCase6 is invalid */
+    XCTAssertFalse( keychain_testCase6.isValid );
+
+    /* We are using self.testManager1, 
+     * so the delegate method keychainManager:shouldProceedAfterError:settingKeychainAsDefault: returns NO */
+    olderDefault = [ self.testManager3 setDefaultKeychain: keychain_testCase6
+                                                    error: &error ];
+    XCTAssertNotNil( error );
+    XCTAssertNil( olderDefault );
+    /* Because the setting is failure, current keychain has not been changed */
+    XCTAssertEqualObjects( keychain_testCase7, [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: nil ] );
+    WSCPrintNSErrorForUnitTest( error );
+
+    /* Delete keychain_testCase7 */
     isSuccess = [ [ WSCKeychainManager defaultManager ] deleteKeychain: keychain_testCase7
                                                                  error: &error ];
     XCTAssertTrue( isSuccess );
     XCTAssertNil( error );
     XCTAssertFalse( keychain_testCase7.isValid );
     WSCPrintNSErrorForUnitTest( error );
+
+    /* WARNING: Now keychain_testCase7 is invalid */
+    XCTAssertFalse( keychain_testCase7.isValid );
+
+    /* We are using self.testManager3
+     * so the delegate method keychainManager:shouldProceedAfterError:settingKeychainAsDefault: returns YES */
+    olderDefault = [ self.testManager1 setDefaultKeychain: keychain_testCase7
+                                                    error: &error ];
+    XCTAssertNotNil( error );
+    /* The olderDefault is nil due to the keychain_testCase7 (older default keychain ) has been deleted
+     * it's invalid now. */
+    XCTAssertNil( olderDefault );
+    XCTAssertNil( [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: nil ] );
 
     NSArray* oddNumbered = @[ keychain_testCase1
                             , keychain_testCase7
@@ -417,6 +592,45 @@
     XCTAssertNotNil( error );
     WSCPrintNSErrorForUnitTest( error );
     XCTAssertFalse( isSuccess );
+
+    //-----------------------------------------------------------------------//
+
+    olderDefault = [ self.testManager1 setDefaultKeychain: [ WSCKeychain login ] error: &error ];
+    XCTAssertNil( olderDefault );
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertEqualObjects( [ WSCKeychain login ], [ self.testManager2 currentDefaultKeychain: nil ] );
+
+    olderDefault = [ self.testManager1 setDefaultKeychain: nil error: &error ];
+    /* We are using self.testManager1,
+     * the delegate method keychainManager:shouldProceedAfterError:settingKeychainAsDefault: returns YES
+     * so the olderDefault isn't nil */
+    XCTAssertNotNil( olderDefault );
+    XCTAssertEqualObjects( olderDefault, [ WSCKeychain login ] );
+
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
+    WSCPrintNSErrorForUnitTest( error );
+
+    olderDefault = [ self.testManager2 setDefaultKeychain: nil error: &error ];
+    /* We are using self.testManager2,
+     * the delegate method keychainManager:shouldProceedAfterError:settingKeychainAsDefault: returns NO
+     * so the olderDefault isn't nil */
+    XCTAssertNil( olderDefault );
+
+    olderDefault = [ self.testManager3 setDefaultKeychain: ( WSCKeychain* )[ NSDate date ] error: &error ];
+    XCTAssertNil( olderDefault );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
+    WSCPrintNSErrorForUnitTest( error );
+
+    olderDefault = [ self.testManager3 setDefaultKeychain: [ WSCKeychain system ] error: &error ];
+    XCTAssertNil( olderDefault );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, NSOSStatusErrorDomain );
+    WSCPrintNSErrorForUnitTest( error );
     }
 
 - ( void ) testRetrievingCurrentDefaultKeychain
@@ -460,6 +674,11 @@
     XCTAssertEqualObjects( defaultKeychain_testCase3, defaultKeychain_testCase4 );
     XCTAssertEqualObjects( defaultKeychain_testCase4, defaultKeychain_testCase5 );
     XCTAssertEqualObjects( defaultKeychain_testCase5, defaultKeychain_testCase0 );
+    }
+
+- ( void ) testSetCurrentDefaultKeychain
+    {
+    // TODO:
     }
 
 - ( void ) testDefaultManager

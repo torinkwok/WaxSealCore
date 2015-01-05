@@ -35,6 +35,7 @@
 #import "NSURL+WSCKeychainURL.h"
 #import "WSCKeychainError.h"
 #import "WSCKeychainErrorPrivate.h"
+#import "WSCKeychainManager.h"
 
 NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
     {
@@ -113,8 +114,13 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
 /* Default state of receiver. */
 - ( BOOL ) isDefault
     {
+    NSError* error = nil;
+
     /* Determine whether receiver is default by comparing with the URL of current default */
-    return [ self isEqualTo: [ WSCKeychain currentDefaultKeychain ] ];
+    BOOL yesOrNo = [ self isEqualTo: [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: &error ] ];
+    WSCPrintNSErrorForLog( error );
+
+    return yesOrNo;
     }
 
 - ( void ) setIsDefault: ( BOOL )_IsDefault
