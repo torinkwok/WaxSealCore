@@ -63,7 +63,7 @@ WSCKeychainManager static* s_defaultManager = nil;
 - ( BOOL ) deleteKeychain: ( WSCKeychain* )_Keychain
                     error: ( NSError** )_Error
     {
-    if ( !_Keychain )
+    if ( !_Keychain || ![ _Keychain isKindOfClass: [ WSCKeychain class ] ] )
         {
         /* As described in the documentation:
          * Passing nil to this parameter returns an NSError object 
@@ -147,13 +147,12 @@ WSCKeychainManager static* s_defaultManager = nil;
                     }
                 }
 
-            /* If the delegate implements keychainManager:shouldDeleteKeychain: method but it returns NO, 
-             * keychain manager bypasses the deleting operation, jump to here.
-             *
-             * As described in the documented:
-             * if the delegate aborts the operation for a keychain, this method returns YES.
-             * so we have no necessary to assign NO to isSuccess variable.
-             */
+            // If the delegate implements keychainManager:shouldDeleteKeychain: method but it returns NO,
+            // keychain manager bypasses the deleting operation, jump to here.
+            //
+            // As described in the documented:
+            // if the delegate aborts the operation for a keychain, this method returns YES.
+            // so we have no necessary to assign NO to isSuccess variable.
             } ];
 
     return isSuccess;
@@ -164,23 +163,90 @@ WSCKeychainManager static* s_defaultManager = nil;
 - ( WSCKeychain* ) setDefaultKeychain: ( WSCKeychain* )_Keychain
                                 error: ( NSError** )_Error;
     {
-    BOOL isSuccess = NO;
+    /* If the delegate aborts the setting operation, just returns nil */
+    if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldSetKeychainAsDefault: ) ]
+            && ![ self.delegate keychainManager: self shouldSetKeychainAsDefault: _Keychain ] )
+        return nil;
+
+    OSStatus resultCode = errSecSuccess;
+
+    //------------------------------------------------------------//
+    /* Before setting a new default keychain,
+     * let us retrieve the older default keychain */
+    SecKeychainRef secOlderDefaultKeychain = NULL;
+    resultCode = SecKeychainCopyDefault( &secOlderDefaultKeychain );
+
+    WSCKeychain* olderDefaultKeychain = [ WSCKeychain keychainWithSecKeychainRef: secOlderDefaultKeychain ];
+    CFRelease( secOlderDefaultKeychain );
+    secOlderDefaultKeychain = NULL;
+    //------------------------------------------------------------//
+
+    // If the delegate method returns `YES`,
+    // or the delegate does not implement the keychainManager:shouldSetKeychainAsDefault: method at all,
+    // continue to set the specified keychain as default.
+
+    NSError* newError = nil;
+    if ( !_Keychain || ![ _Keychain isKindOfClass: [ WSCKeychain class ] ] )
+        {
+        newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                        code: WSCKeychainInvalidParametersError
+                                    userInfo: nil ];
+
+        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:settingKeychainAsDefault: ) ]
+                && [ self.delegate keychainManager: self shouldProceedAfterError: newError settingKeychainAsDefault: _Keychain ] )
+            {
+            if ( _Error )
+                *_Error = [ newError copy ];
+
+            return olderDefaultKeychain;
+            }
+        else
+            return nil;
+        }
 
     if ( !_Keychain.isValid )
         {
-        if ( _Error )
-            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                           code: WSCKeychainInvalidError
-                                       userInfo: nil ];
-        return NO;
+        newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                        code: WSCKeychainInvalidError
+                                    userInfo: nil ];
+
+        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:settingKeychainAsDefault: ) ]
+                && [ self.delegate keychainManager: self shouldProceedAfterError: newError settingKeychainAsDefault: _Keychain ] )
+            {
+            if ( _Error )
+                *_Error = [ newError copy ];
+
+            return olderDefaultKeychain;
+            }
+        else
+            return nil;
         }
 
-    if ( !_Keychain.isDefault )
+    if ( !_Keychain.isDefault /* If the specified keychain is not default */ )
         {
-        
+        resultCode = SecKeychainSetDefault( _Keychain.secKeychain );
+
+        if ( resultCode != errSecSuccess )
+            {
+            WSCFillErrorParam( resultCode, &newError );
+
+            if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:settingKeychainAsDefault: ) ]
+                    && [ self.delegate keychainManager: self shouldProceedAfterError: newError settingKeychainAsDefault: _Keychain ] )
+                {
+                if ( _Error )
+                    *_Error = [ newError copy ];
+
+                return olderDefaultKeychain;
+                }
+            else
+                return nil;
+            }
         }
 
-    return isSuccess;
+    // If the specified keychain is already default,
+    // skip all the steps.
+
+    return olderDefaultKeychain;
     }
 
 /* Retrieves a `WSCKeychain` object represented the current default keychain. */

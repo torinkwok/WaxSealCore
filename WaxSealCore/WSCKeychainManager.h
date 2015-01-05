@@ -241,6 +241,7 @@
   @param _Keychain The keychain that the keychain manager tried to make default.
 
   @return `YES` if the specified keychain should be made the default; otherwise, `NO`.
+          If you do not implement this method, the keychain manager assumes a response of `YES`.
 
   @sa [– setDefaultKeychain:error:](-[WSCKeychainManager setDefaultKeychain:error:])
   */
@@ -250,8 +251,8 @@
 /** Asks he delegate if the operation should continue after an error occurs while setting the specified keychain as default.
 
   The keychan manager calls this method when there is a problem setting the specified keychain as default.
-  If you return `YES`, the keychain manager continues setting `nil` as default.
-  
+  If you return `YES`, the keychain manager continues returning the older default keychain regardless of what happens.
+
   @param _KeychainManager The keychain manager that attempted to set the specified keychain as default.
   
   @param _Error The error that occured while attempting to set the specified keychain as default.
@@ -260,7 +261,7 @@
   
   @return `YES` if the operation should proceed or `NO` if it should be aborted.
           If you do not implement this method, the keychain manager assumes a response of `NO`.
-          
+
   @sa [– setDefaultKeychain:error:](-[WSCKeychainManager setDefaultKeychain:error:])
   */
 - ( BOOL )  keychainManager: ( WSCKeychainManager* )_KeychainManager
