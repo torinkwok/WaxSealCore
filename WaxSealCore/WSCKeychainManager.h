@@ -152,10 +152,11 @@
                 If an error occurs, this pointer is set to an actual error object containing the error information.
                 You may specify `nil` for this parameter if you don't want the error information.
 
-  @return The older default keychain if the specified keychain was made default successfully. 
+  @return The older default keychain if the specified keychain was made default successfully.
+          If there is not an older default keychain (perhaps the older default keychain has been deleted, moved or renamed), returns `nil`.
           Returns `nil` if an error occured.
           If the delegate aborts the operation for the keychain, this method returns `nil`.
-          
+
   @sa -currentDefaultKeychain:
   */
 - ( WSCKeychain* ) setDefaultKeychain: ( WSCKeychain* )_Keychain
