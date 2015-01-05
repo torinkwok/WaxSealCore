@@ -36,6 +36,8 @@
 #import "WSCKeychain.h"
 #import "WSCKeychainManager.h"
 #import "NSURL+WSCKeychainURL.h"
+#import "WSCKeychainError.h"
+#import "WSCKeychainErrorPrivate.h"
 
 // --------------------------------------------------------
 #pragma mark Interface of WSCKeychainManagerTests case
@@ -216,6 +218,20 @@
 
     [ [ WSCKeychainManager defaultManager ] setDelegate: self ];
 
+    [ [ WSCKeychainManager defaultManager ] deleteKeychains: nil
+                                                      error: &error ];
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
+    WSCPrintNSErrorForUnitTest( error );
+
+    [ [ WSCKeychainManager defaultManager ] deleteKeychain: nil
+                                                     error: &error ];
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
+    WSCPrintNSErrorForUnitTest( error );
+
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
@@ -333,12 +349,14 @@
     XCTAssertTrue( isSuccess );
     XCTAssertNil( error );
     XCTAssertFalse( keychain_testCase6.isValid );
+    WSCPrintNSErrorForUnitTest( error );
 
     isSuccess = [ [ WSCKeychainManager defaultManager ] deleteKeychain: keychain_testCase7
                                                                  error: &error ];
     XCTAssertTrue( isSuccess );
     XCTAssertNil( error );
     XCTAssertFalse( keychain_testCase7.isValid );
+    WSCPrintNSErrorForUnitTest( error );
 
     NSArray* oddNumbered = @[ keychain_testCase1
                             , keychain_testCase7

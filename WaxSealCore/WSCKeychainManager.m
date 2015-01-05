@@ -63,7 +63,21 @@ WSCKeychainManager static* s_defaultManager = nil;
 - ( BOOL ) deleteKeychain: ( WSCKeychain* )_Keychain
                     error: ( NSError** )_Error
     {
-    return [ self deleteKeychains: @[ _Keychain ] error: _Error ];
+    if ( !_Keychain )
+        {
+        /* As described in the documentation:
+         * Passing nil to this parameter returns an NSError object 
+         * which encapsulated WSCKeychainInvalidParametersError error code. 
+         */
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                           code: WSCKeychainInvalidParametersError
+                                       userInfo: nil ];
+        return NO;
+        }
+
+    return [ self deleteKeychains: @[ _Keychain ? _Keychain : [ NSNull null ] ]
+                            error: _Error ];
     }
 
 /* Deletes one or more keychains specified in an array from the default keychain search list, 
@@ -72,6 +86,19 @@ WSCKeychainManager static* s_defaultManager = nil;
 - ( BOOL ) deleteKeychains: ( NSArray* )_Keychains
                      error: ( NSError** )_Error
     {
+    if ( !_Keychains )
+        {
+        /* As described in the documentation:
+         * Passing nil to this parameter returns an NSError object 
+         * which encapsulated WSCKeychainInvalidParametersError error code. 
+         */
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                           code: WSCKeychainInvalidParametersError
+                                       userInfo: nil ];
+        return NO;
+        }
+
     __block OSStatus resultCode = errSecSuccess;
     __block BOOL isSuccess = YES;
 
