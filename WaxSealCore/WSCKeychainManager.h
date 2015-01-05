@@ -133,6 +133,13 @@
 /** @name Managing Keychains */
 
 /** Sets the specified keychain as default keychain.
+
+  Prior to making the keychain default, the keychain manager asks its delegate if it should actually do so.
+  It does this by calling the [keychainManager:shouldSetKeychainAsDefault:](-[WSCKeychainManagerDelegate keychainManager:shouldSetKeychainAsDefault:]) method;
+  If the delegate method returns `YES`, or if the delegate does not implement the appropriate methods,
+  the keychain manager proceeds to make the specified keychain default.
+  If there is an error making a keychain default, the keychain manager may also call the delegate's
+  [keychainManager:shouldProceedAfterError:settingKeychainAsDefault:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:settingKeychainAsDefault:]) method to determine how to proceed.
   
   In most cases, your application should not need to set the default keychain, 
   because this is a choice normally made by the user. You may call this method to change where a
@@ -145,11 +152,27 @@
                 If an error occurs, this pointer is set to an actual error object containing the error information.
                 You may specify `nil` for this parameter if you don't want the error information.
 
-  @return `YES` if the keychain was made default successfully or if keychain was nil. Returns `NO` if an error occurred. 
-          If the delegate aborts the operation for the keychain, this method returns `YES`.
+  @return The older default keychain if the specified keychain was made default successfully. 
+          Returns `nil` if an error occured.
+          If the delegate aborts the operation for the keychain, this method returns `nil`.
+          
+  @sa -currentDefaultKeychain:
   */
-- ( BOOL ) setDefaultKeychain: ( WSCKeychain* )_Keychain
-                        error: ( NSError** )_Error;
+- ( WSCKeychain* ) setDefaultKeychain: ( WSCKeychain* )_Keychain
+                                error: ( NSError** )_Error;
+
+/** Retrieves a `WSCKeychain` object represented the current default keychain.
+
+  Return `nil` if there is no default keychain.
+  
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+
+  @return A `WSCKeychain` object represented the current default keychain.
+  
+  @sa -setDefaultKeychain:error:
+  */
+- ( WSCKeychain* ) currentDefaultKeychain: ( NSError** )_Error;
 
 @end // WSCKeychainManager
 
@@ -179,6 +202,9 @@
   @param _Keychain The keychain that the keychain manager tried to delete.
   
   @return `YES` if the specified keychain should be deleted or `NO` if it should not be deleted.
+  
+  @sa [– deleteKeychain:error:](-[WSCKeychainManager deleteKeychain:error:])
+  @sa [– deleteKeychains:error:](-[WSCKeychainManager deleteKeychains:error:])
   */
 - ( BOOL )     keychainManager: ( WSCKeychainManager* )_KeychainManager
           shouldDeleteKeychain: ( WSCKeychain* )_Keychain;
@@ -196,13 +222,49 @@
   
   @return `YES` if the operation should proceed or `NO` if it should be aborted. 
           If you do not implement this method, the keychain manager assumes a response of `NO`.
+          
+  @sa [– deleteKeychain:error:](-[WSCKeychainManager deleteKeychain:error:])
+  @sa [– deleteKeychains:error:](-[WSCKeychainManager deleteKeychains:error:])
   */
 - ( BOOL )     keychainManager: ( WSCKeychainManager* )_KeychainManager
        shouldProceedAfterError: ( NSError* )_Error
               deletingKeychain: ( WSCKeychain* )_Keychain;
 
+#pragma mark Making a Keychain Default
+/** @name Making a Keychain Default */
+
+/** Asks the delegate whether the specified keychain should be made default.
+
+  @param _KeychainManager The keychain manager that attempted to make the specified keychain default.
+
+  @param _Keychain The keychain that the keychain manager tried to make default.
+
+  @return `YES` if the specified keychain should be made the default; otherwise, `NO`.
+
+  @sa [– setDefaultKeychain:error:](-[WSCKeychainManager setDefaultKeychain:error:])
+  */
 - ( BOOL )     keychainManager: ( WSCKeychainManager* )_KeychainManager
     shouldSetKeychainAsDefault: ( WSCKeychain* )_Keychain;
+
+/** Asks he delegate if the operation should continue after an error occurs while setting the specified keychain as default.
+
+  The keychan manager calls this method when there is a problem setting the specified keychain as default.
+  If you return `YES`, the keychain manager continues setting `nil` as default.
+  
+  @param _KeychainManager The keychain manager that attempted to set the specified keychain as default.
+  
+  @param _Error The error that occured while attempting to set the specified keychain as default.
+  
+  @param _Keychain The keychain that the keychain manager tried to make the default.
+  
+  @return `YES` if the operation should proceed or `NO` if it should be aborted.
+          If you do not implement this method, the keychain manager assumes a response of `NO`.
+          
+  @sa [– setDefaultKeychain:error:](-[WSCKeychainManager setDefaultKeychain:error:])
+  */
+- ( BOOL )  keychainManager: ( WSCKeychainManager* )_KeychainManager
+    shouldProceedAfterError: ( NSError* )_Error
+   settingKeychainAsDefault: ( WSCKeychain* )_Keychain;
 
 @end // WSCKeychainManagerDelegate protocol
 

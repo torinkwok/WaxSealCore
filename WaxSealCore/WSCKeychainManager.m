@@ -161,8 +161,8 @@ WSCKeychainManager static* s_defaultManager = nil;
 
 #pragma mark Managing Keychains
 /* Sets the specified keychain as default keychain. */
-- ( BOOL ) setDefaultKeychain: ( WSCKeychain* )_Keychain
-                        error: ( NSError** )_Error
+- ( WSCKeychain* ) setDefaultKeychain: ( WSCKeychain* )_Keychain
+                                error: ( NSError** )_Error;
     {
     BOOL isSuccess = NO;
 
@@ -181,6 +181,33 @@ WSCKeychainManager static* s_defaultManager = nil;
         }
 
     return isSuccess;
+    }
+
+/* Retrieves a `WSCKeychain` object represented the current default keychain. */
+- ( WSCKeychain* ) currentDefaultKeychain: ( NSError** )_Error
+    {
+    OSStatus resultCode = errSecSuccess;
+
+    SecKeychainRef currentDefaultSecKeychain = NULL;
+    resultCode = SecKeychainCopyDefault( &currentDefaultSecKeychain );
+
+    if ( resultCode == errSecSuccess )
+        {
+        /* If the keychain file referenced by currentDefaultSecKeychain is invalid or doesn't exist
+         * (perhaps it has been deleted, renamed or moved), this method will return nil
+         */
+        WSCKeychain* currentDefaultKeychain = [ WSCKeychain keychainWithSecKeychainRef: currentDefaultSecKeychain ];
+
+        CFRelease( currentDefaultSecKeychain );
+        return currentDefaultKeychain;
+        }
+    else
+        {
+        if ( _Error )
+            WSCFillErrorParam( resultCode, _Error );
+
+        return nil;
+        }
     }
 
 #pragma mark Overrides for Singleton Objects

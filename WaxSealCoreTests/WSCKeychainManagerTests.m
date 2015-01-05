@@ -419,6 +419,49 @@
     XCTAssertFalse( isSuccess );
     }
 
+- ( void ) testRetrievingCurrentDefaultKeychain
+    {
+    NSError* error = nil;
+
+    WSCKeychain* defaultKeychain_testCase0 = [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+
+    WSCKeychain* defaultKeychain_testCase1 = [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+
+    WSCKeychain* defaultKeychain_testCase2 = [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+
+    WSCKeychain* defaultKeychain_testCase3 = [ self.testManager1 currentDefaultKeychain: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+
+    WSCKeychain* defaultKeychain_testCase4 = [ self.testManager2 currentDefaultKeychain: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+
+    WSCKeychain* defaultKeychain_testCase5 = [ self.testManager3 currentDefaultKeychain: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+
+    XCTAssertNotEqual( defaultKeychain_testCase0, defaultKeychain_testCase1 );
+    XCTAssertNotEqual( defaultKeychain_testCase1, defaultKeychain_testCase2 );
+    XCTAssertNotEqual( defaultKeychain_testCase2, defaultKeychain_testCase3 );
+    XCTAssertNotEqual( defaultKeychain_testCase3, defaultKeychain_testCase4 );
+    XCTAssertNotEqual( defaultKeychain_testCase4, defaultKeychain_testCase5 );
+    XCTAssertNotEqual( defaultKeychain_testCase5, defaultKeychain_testCase0 );
+
+    XCTAssertEqualObjects( defaultKeychain_testCase0, defaultKeychain_testCase1 );
+    XCTAssertEqualObjects( defaultKeychain_testCase1, defaultKeychain_testCase2 );
+    XCTAssertEqualObjects( defaultKeychain_testCase2, defaultKeychain_testCase3 );
+    XCTAssertEqualObjects( defaultKeychain_testCase3, defaultKeychain_testCase4 );
+    XCTAssertEqualObjects( defaultKeychain_testCase4, defaultKeychain_testCase5 );
+    XCTAssertEqualObjects( defaultKeychain_testCase5, defaultKeychain_testCase0 );
+    }
+
 - ( void ) testDefaultManager
     {
     NSError* error = nil;
