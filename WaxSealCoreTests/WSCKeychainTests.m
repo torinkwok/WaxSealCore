@@ -36,6 +36,7 @@
 #import "WSCKeychain.h"
 #import "NSURL+WSCKeychainURL.h"
 #import "WSCKeychainError.h"
+#import "WSCKeychainManager.h"
 
 // --------------------------------------------------------
 #pragma mark Interface of WSCKeychainTests case
@@ -52,6 +53,8 @@
      * we will clear it in -[ WSCKeychainTests tearDown ] method
      */
     NSMutableSet*   _randomURLsAutodeletePool;
+
+    WSCKeychainManager* _keychainManager;
     }
 
 @property ( nonatomic, retain ) WSCKeychain* publicKeychain;
@@ -60,6 +63,8 @@
 @property ( nonatomic, copy ) NSString* passwordForTest;
 
 @property ( nonatomic, retain ) NSMutableSet* randomURLsAutodeletePool;
+
+@property ( nonatomic, retain ) WSCKeychainManager* keychainManager;
 
 @end
 
@@ -123,11 +128,13 @@
         }
 
     self.randomURLsAutodeletePool = [ NSMutableSet set ];
+
+    self.keychainManager = [ [ [ WSCKeychainManager alloc ] init ] autorelease ];
     }
 
 - ( void ) tearDown
     {
-    [ [ WSCKeychain login ] setDefault: YES error: nil ];
+    [ self.keychainManager setDefaultKeychain: [ WSCKeychain login ] error: nil ];
 
     for ( NSURL* _URL in self.randomURLsAutodeletePool )
         if ( [ _URL checkResourceIsReachableAndReturnError: nil ] )
@@ -148,7 +155,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 1
     // ----------------------------------------------------------------------------------
-    [ self.publicKeychain setDefault: YES error: nil ];
+    [ self.keychainManager setDefaultKeychain: self.self.publicKeychain error: &error ];
     SecKeychainRef defaultKeychain_testCase1 = NULL;
     SecKeychainCopyDefault( &defaultKeychain_testCase1 );
     NSString* pathOfDefaultKeychain_testCase1 = WSCKeychainGetPathOfKeychain( defaultKeychain_testCase1 );
@@ -157,7 +164,7 @@
     XCTAssertTrue( WSCKeychainIsSecKeychainValid( defaultKeychain_testCase1 ) );
 
     XCTAssertNotNil( pathOfDefaultKeychain_testCase1 );
-    XCTAssertEqualObjects( pathOfDefaultKeychain_testCase1, [ WSCKeychain currentDefaultKeychain ].URL.path );
+    XCTAssertEqualObjects( pathOfDefaultKeychain_testCase1, [ self.keychainManager currentDefaultKeychain: nil ].URL.path );
 
     // ----------------------------------------------------------------------------------
     // Test case 2
@@ -207,7 +214,7 @@
                                                                           error: &error ];
     XCTAssertNil( error );
     if ( error ) NSLog( @"%@", error );
-    [ randomKeychain_negativeTest2 setDefault: YES error: nil ];
+    [ self.keychainManager setDefaultKeychain: randomKeychain_negativeTest2 error: nil ];
 
     XCTAssertTrue( randomKeychain_negativeTest2.isValid );
     XCTAssertTrue( WSCKeychainIsSecKeychainValid( randomKeychain_negativeTest2.secKeychain ) );
@@ -217,7 +224,7 @@
     XCTAssertFalse( WSCKeychainIsSecKeychainValid( randomKeychain_negativeTest2.secKeychain ) );
 
     /* This is the difference between nagative test case 2 and case 3: */
-    SecKeychainRef invalidDefault_negativeTestCase2 = [ WSCKeychain currentDefaultKeychain ].secKeychain;
+    SecKeychainRef invalidDefault_negativeTestCase2 = [ self.keychainManager currentDefaultKeychain: nil ].secKeychain;
     NSString* pathOfInvalidDefault_negativeTestCase2 = WSCKeychainGetPathOfKeychain( invalidDefault_negativeTestCase2 );
     NSLog( @"pathOfInvalidDefault_negativeTestCase2: %@", pathOfInvalidDefault_negativeTestCase2 );
     XCTAssertNil( pathOfInvalidDefault_negativeTestCase2 );
@@ -234,7 +241,7 @@
                                                                           error: &error ];
     XCTAssertNil( error );
     if ( error ) NSLog( @"%@", error );
-    [ randomKeychain_negativeTest3 setDefault: YES error: nil ];
+    [ self.keychainManager setDefaultKeychain: randomKeychain_negativeTest3 error: nil ];
 
     XCTAssertTrue( randomKeychain_negativeTest3.isValid );
     XCTAssertTrue( WSCKeychainIsSecKeychainValid( randomKeychain_negativeTest3.secKeychain ) );
@@ -564,7 +571,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 1
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychain_test2 = [ [ WSCKeychain currentDefaultKeychain: &error ] URL ];
+    NSURL* URLForKeychain_test2 = [ [ self.keychainManager currentDefaultKeychain: &error ] URL ];
 
     NSLog( @"Path for current default keychain: %@", URLForKeychain_test2 );
     XCTAssertNotNil( URLForKeychain_test2 );
@@ -582,11 +589,11 @@
                                                                               error: &error ];
     XCTAssertNil( error );
     if ( error ) NSLog( @"%@", error );
-    [ randomKeychain_negativeTestCase1 setDefault: YES error: nil ];
+    [ self.keychainManager setDefaultKeychain: randomKeychain_negativeTestCase1 error: nil ];
 
     /* This keychain has be invalid */
     [ [ NSFileManager defaultManager ] removeItemAtURL: randomURL_negativeTestCase1 error: nil ];
-    XCTAssertNil( [ WSCKeychain currentDefaultKeychain ] );
+    XCTAssertNil( [ self.keychainManager currentDefaultKeychain: nil ] );
     XCTAssertNil( randomKeychain_negativeTestCase1.URL );
     }
 
@@ -691,14 +698,20 @@
     XCTAssertFalse( login_testCase4.isValid );
 
     /* They all is invalid... */
-    [ login_testCase0 setDefault: YES error: &error ];
-    login_testCase1.isDefault = NO;
-    [ login_testCase2 setIsDefault: YES ];
-    [ login_testCase3 setDefault: NO error: &error ];
-
+    [ self.keychainManager setDefaultKeychain: login_testCase0 error: &error ];
+    [ self.keychainManager setDefaultKeychain: login_testCase1 error: &error ];
+    [ self.keychainManager setDefaultKeychain: login_testCase2 error: &error ];
     XCTAssertNotNil( error );
     XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
+    WSCPrintNSErrorForUnitTest( error );
+
+    /* The all is nil... */
+    [ self.keychainManager setDefaultKeychain: login_testCase3 error: &error ];
+    [ self.keychainManager setDefaultKeychain: login_testCase4 error: &error ];
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     WSCPrintNSErrorForUnitTest( error );
 
     // ----------------------------------------------------------------------------------
@@ -846,8 +859,8 @@
     {
     NSError* error = nil;
 
-    WSCKeychain* currentDefaultKeychain_testCase1 = [ WSCKeychain currentDefaultKeychain ];
-    WSCKeychain* currentDefaultKeychain_testCase2 = [ WSCKeychain currentDefaultKeychain: &error ];
+    WSCKeychain* currentDefaultKeychain_testCase1 = [ self.keychainManager currentDefaultKeychain: &error ];
+    WSCKeychain* currentDefaultKeychain_testCase2 = [ self.keychainManager currentDefaultKeychain: &error ];
 
     XCTAssertNotNil( currentDefaultKeychain_testCase1 );
 
@@ -858,147 +871,6 @@
     WSCPrintSecErrorCode( resultCode );
 
     // TODO: Waiting for a nagtive testing.
-    }
-
-- ( void ) testSetDefaultMethods
-    {
-    NSError* error = nil;
-
-    // ------------------------------------------------------------------------------------
-    // Test case 0
-    // ------------------------------------------------------------------------------------
-    [ [ WSCKeychain login ] setDefault: YES error: &error ];
-    XCTAssertFalse( self.publicKeychain.isDefault );
-    XCTAssertTrue( [ WSCKeychain login ].isDefault );
-    XCTAssertNil( error, @"Error occured while setting the login.keychain back as default!" );
-    XCTAssertEqualObjects( [ WSCKeychain currentDefaultKeychain ], [ WSCKeychain login ] );
-
-    // ------------------------------------------------------------------------------------
-    // Test case 1
-    // ------------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_testCase1 = [ self URLForTestCase: NSStringFromSelector( _cmd )
-                                                    doesPrompt: NO
-                                                  deleteExists: YES ];
-
-    WSCKeychain* newKeychain_testCase1 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_testCase1
-                                                                password: self.passwordForTest
-                                                          doesPromptUser: NO
-                                                           initialAccess: nil
-                                                          becomesDefault: NO
-                                                                   error: &error ];
-
-    XCTAssertNil( error, @"Error occured while creating the new keychain!" );
-    XCTAssertNotNil( newKeychain_testCase1 );
-    XCTAssertTrue( newKeychain_testCase1.isValid );
-    XCTAssertTrue( WSCKeychainIsSecKeychainValid( newKeychain_testCase1.secKeychain ) );
-
-    XCTAssertFalse( newKeychain_testCase1.isDefault );
-    [ newKeychain_testCase1 setDefault: YES error: &error ];
-    XCTAssertTrue( newKeychain_testCase1.isDefault );
-    XCTAssertNil( error, @"Error occured while setting the new keychain as default!" );
-    XCTAssertEqualObjects( [ WSCKeychain currentDefaultKeychain ], newKeychain_testCase1 );
-    [ newKeychain_testCase1 setDefault: NO error: &error ];
-    XCTAssertFalse( newKeychain_testCase1.isDefault );
-    XCTAssertEqualObjects( [ WSCKeychain currentDefaultKeychain ], [ WSCKeychain login ] );
-
-    // ------------------------------------------------------------------------------------
-    // Test case 2
-    // ------------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_testCase2 = [ self randomURLForKeychain ];
-    NSLog( @"URLForNewKeychain_testCase2: %@", URLForNewKeychain_testCase2 );
-    WSCKeychain* newKeychain_testCase2 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_testCase2
-                                                                password: self.passwordForTest
-                                                          doesPromptUser: NO
-                                                           initialAccess: nil
-                                                          becomesDefault: NO
-                                                                   error: &error ];
-    newKeychain_testCase2.isDefault = NO;
-    XCTAssertFalse( newKeychain_testCase2.isDefault );
-    XCTAssertNil( error, @"Error occured while setting the new keychain as default!" );
-    XCTAssertTrue( newKeychain_testCase2.isValid );
-    XCTAssertTrue( WSCKeychainIsSecKeychainValid( newKeychain_testCase2.secKeychain ) );
-
-    XCTAssertNotEqualObjects( [ WSCKeychain currentDefaultKeychain ], newKeychain_testCase2 );
-
-    // ------------------------------------------------------------------------------------
-    // Test case 3
-    // ------------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_testCase3 = [ self randomURLForKeychain ];
-    WSCKeychain* newKeychain_testCase3 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_testCase3
-                                                                password: self.passwordForTest
-                                                          doesPromptUser: NO
-                                                           initialAccess: nil
-                                                          becomesDefault: NO
-                                                                   error: &error ];
-    XCTAssertFalse( newKeychain_testCase3.isDefault );
-    newKeychain_testCase3.isDefault = YES;
-    XCTAssertTrue( newKeychain_testCase3.isDefault );
-    XCTAssertNil( error, @"Error occured while setting the new keychain as default!" );
-    XCTAssertTrue( newKeychain_testCase3.isValid );
-    XCTAssertTrue( WSCKeychainIsSecKeychainValid( newKeychain_testCase3.secKeychain ) );
-
-    XCTAssertEqualObjects( [ WSCKeychain currentDefaultKeychain ], newKeychain_testCase3 );
-
-    // ------------------------------------------------------------------------------------
-    // Test case 4
-    // ------------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_testCase4 = [ self randomURLForKeychain ];
-    WSCKeychain* newKeychain_testCase4 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_testCase4
-                                                                password: self.passwordForTest
-                                                          doesPromptUser: NO
-                                                           initialAccess: nil
-                                                          becomesDefault: NO
-                                                                   error: &error ];
-    XCTAssertFalse( newKeychain_testCase4.isDefault );
-    [ newKeychain_testCase4 setDefault: YES error: &error ];
-    XCTAssertTrue( newKeychain_testCase4.isDefault );
-    XCTAssertNil( error, @"Error occured while setting the new keychain as default!" );
-    XCTAssertTrue( newKeychain_testCase4.isValid );
-    XCTAssertTrue( WSCKeychainIsSecKeychainValid( newKeychain_testCase4.secKeychain ) );
-
-    XCTAssertEqualObjects( [ WSCKeychain currentDefaultKeychain ], newKeychain_testCase4 );
-
-    // ------------------------------------------------------------------------------------
-    // Test case 5
-    // ------------------------------------------------------------------------------------
-    XCTAssertFalse( [ WSCKeychain login ].isDefault );
-    [ [ WSCKeychain login ] setDefault: YES error: &error ];
-    XCTAssertTrue( [ WSCKeychain login ].isDefault );
-    XCTAssertNil( error, @"Error occured while setting the login.keychain back as default!" );
-    XCTAssertEqualObjects( [ WSCKeychain currentDefaultKeychain ], [ WSCKeychain login ] );
-
-    // ------------------------------------------------------------------------------------
-    // Negative Test case 0
-    // ------------------------------------------------------------------------------------
-    /* Now the login.keychain is already default */
-    XCTAssertTrue( [ WSCKeychain currentDefaultKeychain ].isValid );
-    XCTAssertTrue( WSCKeychainIsSecKeychainValid( [ WSCKeychain currentDefaultKeychain ].secKeychain ) );
-    [ [ WSCKeychain login ] setDefault: NO error: &error ];
-    [ WSCKeychain login ].isDefault = NO;
-    XCTAssertFalse( [ WSCKeychain currentDefaultKeychain ].isValid );
-    XCTAssertFalse( WSCKeychainIsSecKeychainValid( [ WSCKeychain currentDefaultKeychain ].secKeychain ) );
-
-    XCTAssertNil( error, @"Error occured while setting the login.keychain back as default!" );
-    XCTAssertNotEqualObjects( [ WSCKeychain currentDefaultKeychain ], [ WSCKeychain login ] );
-    NSLog( @"Current Default URL: %@", [ WSCKeychain currentDefaultKeychain ].URL );
-    NSLog( @"Current Default: %@", [ WSCKeychain currentDefaultKeychain ] );
-    XCTAssertNil( [ WSCKeychain currentDefaultKeychain ] );
-    [ [ WSCKeychain login ] setDefault: YES error: &error ];
-    XCTAssertTrue( [ WSCKeychain login ].isDefault );
-    XCTAssertNil( error );
-    XCTAssertNotNil( [ WSCKeychain currentDefaultKeychain ] );
-    XCTAssertEqualObjects( [ WSCKeychain login ], [ WSCKeychain currentDefaultKeychain ] );
-
-    // ------------------------------------------------------------------------------------
-    // Negative Test case 1
-    // ------------------------------------------------------------------------------------
-    XCTAssertFalse( [ WSCKeychain system ].isDefault );
-    [ [ WSCKeychain system ] setDefault: YES error: &error ];
-    XCTAssertFalse( [ WSCKeychain system ].isDefault );
-    XCTAssertNotNil( [ WSCKeychain currentDefaultKeychain ] );
-    XCTAssertNotNil( error );
-    XCTAssertNotNil( [ WSCKeychain currentDefaultKeychain ] );
-    NSLog( @"%@", error );
     }
 
 - ( void ) testIsValid

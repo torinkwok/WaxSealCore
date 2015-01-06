@@ -84,6 +84,7 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
 
 @dynamic URL;
 @dynamic isDefault;
+@dynamic isValid;
 
 - ( NSString* ) description
     {
@@ -123,13 +124,10 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     return yesOrNo;
     }
 
-- ( void ) setIsDefault: ( BOOL )_IsDefault
+/* Returns a Boolean value that indicates whether the receiver is currently valid. */
+- ( BOOL ) isValid
     {
-    NSError* error = nil;
-    [ self setDefault: _IsDefault error: &error ];
-
-    if ( error )
-        NSLog( @"%@", error );
+    return self.URL ? YES : NO;
     }
 
 #pragma mark Public Programmatic Interfaces for Creating Keychains
@@ -260,109 +258,6 @@ WSCKeychain static* s_system = nil;
     }
 
 #pragma mark Public Programmatic Interfaces for Managing Keychains
-
-/* Retrieves a WSCKeychain object represented the current default keychain. */
-+ ( instancetype ) currentDefaultKeychain
-    {
-    return [ self currentDefaultKeychain: nil ];
-    }
-
-+ ( instancetype ) currentDefaultKeychain: ( NSError** )_Error
-    {
-    OSStatus resultCode = errSecSuccess;
-
-    SecKeychainRef currentDefaultSecKeychain = NULL;
-    resultCode = SecKeychainCopyDefault( &currentDefaultSecKeychain );
-
-    if ( resultCode == errSecSuccess )
-        {
-        /* If the keychain file referenced by currentDefaultSecKeychain is invalid or doesn't exist
-         * (perhaps it has been deleted, renamed or moved), this method will return nil
-         */
-        WSCKeychain* currentDefaultKeychain = [ WSCKeychain keychainWithSecKeychainRef: currentDefaultSecKeychain ];
-
-        CFRelease( currentDefaultSecKeychain );
-        return currentDefaultKeychain;
-        }
-    else
-        {
-        if ( _Error )
-            {
-            CFStringRef cfErrorDesc = SecCopyErrorMessageString( resultCode, NULL );
-            *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain
-                                           code: resultCode
-                                       userInfo: @{ NSLocalizedDescriptionKey : NSLocalizedString( ( __bridge NSString* )cfErrorDesc, nil ) }
-                                       ];
-            CFRelease( cfErrorDesc );
-            }
-
-        return nil;
-        }
-    }
-
-/* Sets current keychain as default keychain. */
-- ( void ) setDefault: ( BOOL )_IsDefault
-                error: ( NSError** )_Error
-    {
-    if ( !self.isValid )
-        {
-        if ( _Error )
-            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                           code: WSCKeychainKeychainIsInvalidError
-                                       userInfo: nil ];
-        return;
-        }
-
-    OSStatus resultCode = errSecSuccess;
-
-    if ( _IsDefault )
-        {
-        if ( !self.isDefault /* If receiver is not already default... */ )
-            {
-            resultCode = SecKeychainSetDefault( self->_secKeychain );
-
-            if ( resultCode != errSecSuccess )
-                WSCFillErrorParam( resultCode, _Error );
-            } /* ... if receiver is already default, do nothing. */
-        }
-    else
-        {
-        if ( self.isDefault /* If receiver is already default... */ )
-            {
-            /* Cancel the default state for receiver */
-            WSCKeychain* loginKeychain = [ WSCKeychain login ]; // TODO:
-
-            /* If we receiver is login.keychain */
-            if ( [ self isEqualToKeychain: loginKeychain ] )
-                {
-                /* TODO: Create a temporary keychain, make it default, then delete it */
-                NSURL* URLForTempKeychain = [ [ NSURL URLForTemporaryDirectory ] URLByAppendingPathComponent: [ NSString stringWithFormat: @"%lu", NSStringFromSelector( _cmd ).hash ] ];
-                WSCKeychain* tempKeychain = [ WSCKeychain p_keychainWithURL: URLForTempKeychain
-                                                                   password: [ NSString stringWithFormat: @"%lu", NSStringFromSelector( _cmd ).hash ]
-                                                             doesPromptUser: NO
-                                                              initialAccess: nil
-                                                             becomesDefault: NO
-                                                                      error: nil ];
-                SecKeychainSetDefault( tempKeychain.secKeychain );
-                [ [ NSFileManager defaultManager ] removeItemAtURL: URLForTempKeychain error: nil ];
-                }
-            else
-                {
-                /* if login.keychain is already exists, and receiver is not login.keychain
-                 * cancel default state of receiver, make login.keychain default */
-                resultCode = SecKeychainSetDefault( loginKeychain.secKeychain );
-                }
-
-            } /* ... if receiver is not already default, do nothing. */
-        }
-    }
-
-/* Returns a Boolean value that indicates whether the receiver is currently valid. */
-- ( BOOL ) isValid
-    {
-    return self.URL ? YES : NO;
-    }
-
 /* Returns a Boolean value that indicates 
  * whether a given keychain is equal to receiver using an URL comparision. 
  */
@@ -522,7 +417,7 @@ WSCKeychain static* s_system = nil;
         CFRelease( newSecKeychain );
 
         if ( _WillBecomeDefault )
-            [ newKeychain setDefault: YES error: _Error ];
+            [ [ WSCKeychainManager defaultManager ] setDefaultKeychain: newKeychain error: _Error ];
         }
     else
         {

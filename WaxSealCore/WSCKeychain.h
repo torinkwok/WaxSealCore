@@ -57,7 +57,13 @@
   password or other keychain items are added, but since this is a user choice, 
   you should set the default keychain back to the user specified keychain when you are done.
   */
-@property ( assign, setter = setIsDefault: ) BOOL isDefault;
+@property ( assign, readonly ) BOOL isDefault;
+
+/** Boolean value that indicates whether the receiver is currently valid.
+
+  `YES` if the receiver is still capable of referring to a valid keychain file; otherwise, *NO*.
+  */
+@property ( assign, readonly ) BOOL isValid;
 
 #pragma mark Public Programmatic Interfaces for Creating Keychains
 /** @name Creating Keychains */
@@ -200,47 +206,6 @@
 
 #pragma mark Public Programmatic Interfaces for Managing Keychains
 /** @name Managing Keychains */
-
-/** Retrieves a `WSCKeychain` object represented the current default keychain.
-
-  Return `nil` if there is no default keychain.
-
-  @return A `WSCKeychain` object represented the current default keychain.
-  */
-+ ( instancetype ) currentDefaultKeychain;
-
-/** Retrieves a `WSCKeychain` object represented the current default keychain.
-
-  Return `nil` if there is no default keychain.
-  
-  @param _Error On input, a pointer to an error object.
-                If an error occurs, this pointer is set to an actual error object containing the error information.
-
-  @return A `WSCKeychain` object represented the current default keychain.
-  */
-+ ( instancetype ) currentDefaultKeychain: ( NSError** )_Error;
-
-/** Sets current keychain as default keychain.
-  
-  In most cases, your application should not need to set the default keychain, 
-  because this is a choice normally made by the user. You may call this method to change where a
-  password or other keychain items are added, but since this is a user choice, 
-  you should set the default keychain back to the user specified keychain when you are done.
-  
-  @param _IsDefault `YES` if you want the receiver be made default; otherwise, *NO*.
-
-  @param _Error On input, a pointer to an error object.
-                If an error occurs, this pointer is set to an actual error object containing the error information.
-                You may specify `nil` for this parameter if you don't want the error information.
-  */
-- ( void ) setDefault: ( BOOL )_IsDefault
-                error: ( NSError** )_Error;
-
-/** Returns a Boolean value that indicates whether the receiver is currently valid.
-
-  @return `YES` if the receiver is still capable of referring to a valid keychain file; otherwise, *NO*.
-  */
-- ( BOOL ) isValid;
 
 /** Returns a Boolean value that indicates whether a given keychain is equal to receiver using an URL comparision.
 

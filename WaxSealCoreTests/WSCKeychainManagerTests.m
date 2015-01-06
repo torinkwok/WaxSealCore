@@ -55,9 +55,9 @@
      */
     NSMutableSet*   _randomURLsAutodeletePool;
 
-    WSCKeychainManager* testManager1;
-    WSCKeychainManager* testManager2;
-    WSCKeychainManager* testManager3;
+    WSCKeychainManager* _testManager1;
+    WSCKeychainManager* _testManager2;
+    WSCKeychainManager* _testManager3;
     }
 
 @property ( nonatomic, retain ) WSCKeychain* publicKeychain;
@@ -178,6 +178,10 @@
 
 @synthesize randomURLsAutodeletePool = _randomURLsAutodeletePool;
 
+@synthesize testManager1 = _testManager1;
+@synthesize testManager2 = _testManager2;
+@synthesize testManager3 = _testManager3;
+
 - ( void ) setUp
     {
     NSError* error = nil;
@@ -220,7 +224,7 @@
 
 - ( void ) tearDown
     {
-    [ [ WSCKeychain login ] setDefault: YES error: nil ];
+    [ [ WSCKeychainManager defaultManager ] setDefaultKeychain: [ WSCKeychain login ] error: nil ];
 
     for ( NSURL* _URL in self->_randomURLsAutodeletePool )
         if ( [ _URL checkResourceIsReachableAndReturnError: nil ] )
@@ -239,8 +243,6 @@
     {
     NSError* error = nil;
     BOOL isSuccess = NO;
-
-    [ [ WSCKeychainManager defaultManager ] setDelegate: self ];
 
     [ [ WSCKeychainManager defaultManager ] deleteKeychains: nil
                                                       error: &error ];
@@ -547,17 +549,17 @@
 
     isSuccess = [ [ WSCKeychainManager defaultManager ] deleteKeychains: oddNumbered
                                                                   error: &error ];
-    XCTAssertTrue( isSuccess );
+    XCTAssertFalse( isSuccess );
     XCTAssertFalse( keychain_testCase1.isValid );
-    XCTAssertFalse( keychain_testCase3.isValid );
-    XCTAssertFalse( keychain_testCase5.isValid );
+    XCTAssertTrue( keychain_testCase3.isValid );
+    XCTAssertTrue( keychain_testCase5.isValid );
 
     isSuccess = [ [ WSCKeychainManager defaultManager ] deleteKeychains: evenNumbered
                                                                   error: &error ];
-    XCTAssertTrue( isSuccess );
-    XCTAssertFalse( keychain_testCase0.isValid );
-    XCTAssertFalse( keychain_testCase2.isValid );
-    XCTAssertFalse( keychain_testCase4.isValid );
+    XCTAssertFalse( isSuccess );
+    XCTAssertTrue( keychain_testCase0.isValid );
+    XCTAssertTrue( keychain_testCase2.isValid );
+    XCTAssertTrue( keychain_testCase4.isValid );
     XCTAssertFalse( keychain_testCase6.isValid );
 
     [ WSCKeychainManager defaultManager ].delegate = nil;
@@ -566,8 +568,8 @@
                                                                   error: &error ];
     XCTAssertFalse( isSuccess );
     XCTAssertFalse( keychain_testCase1.isValid );
-    XCTAssertFalse( keychain_testCase3.isValid );
-    XCTAssertFalse( keychain_testCase5.isValid );
+    XCTAssertTrue( keychain_testCase3.isValid );
+    XCTAssertTrue( keychain_testCase5.isValid );
 
     isSuccess = [ [ WSCKeychainManager defaultManager ] deleteKeychains: oddNumbered
                                                                   error: &error ];
@@ -683,13 +685,6 @@
 
 - ( void ) testDefaultManager
     {
-    NSError* error = nil;
-    NSURL* URLForSubtitles = [ NSURL URLWithString: @"file:///Users/EsquireTongG/Documents/Certificates.cer" ];
-//    NSURL* dstURL = [ NSURL URLWithString: @"file:///Users/EsquireTongG" ];
-
-    [ [ NSFileManager defaultManager ] setDelegate: self ];
-    [ [ NSFileManager defaultManager ] removeItemAtURL: URLForSubtitles error: &error ];
-
     // ----------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------
