@@ -155,7 +155,7 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
         WSCPrintNSErrorForLog( error );
 
     return ( keychainStatus & kSecReadPermStatus ) == 0;
-    }is
+    }
 
 /* Boolean value that indicates whether the receiver is writable. */
 - ( BOOL ) isWritable

@@ -26,7 +26,7 @@
  **                   \\    _  _\\| \//  |//_   _ \// _                     **
  **                  ^ `^`^ ^`` `^ ^` ``^^`  `^^` `^ `^                     **
  **                                                                         **
- **                       Copyright (c) 2014 Tong G.                        **
+ **                       Copyright (c) 2015 Tong G.                        **
  **                          ALL RIGHTS RESERVED.                           **
  **                                                                         **
  ****************************************************************************/
@@ -180,32 +180,103 @@
 
 /** Lock the specified keychain.
 
+  Prior to locking the specified keychain, the keychain manager asks its delegate if it should actually do so.
+  It does this by calling the [keychainManager:shouldLockKeychain:](-[WSCKeychainManagerDelegate keychainManager:shouldLockKeychain:]) method;
+  If the delegate method returns `YES`, or if the delegate does not implement the appropriate methods,
+  the keychain manager proceeds to lock the specified keychain.
+  If there is an error locking a keychain, the keychain manager may also call the delegate's
+  [keychainManager:shouldProceedAfterError:lockingKeychain:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:lockingKeychain:]) method to determine how to proceed.
+
   Your application should not invoke this method unless you are responding the user's request to lock the keychain.
   In general, you should leave the keychain unlocked so that the user does not have to unlock it again in another application.
 
   @param _Keychain The keychain you wish to lock. 
-         Passing `nil` to this parameter returns an `NSError` object which encapsulated `WSCKeychainInvalidParametersError` error code.
-         And passing an invalid keychain to this parameter returns an `NSError` object which encapsulated `WSCKeychainKeychainIsInvalidError` error code.
+                   Passing `nil` to this parameter returns an `NSError` object which encapsulated `WSCKeychainInvalidParametersError` error code.
+                   And passing an invalid keychain to this parameter returns an `NSError` object which encapsulated `WSCKeychainKeychainIsInvalidError` error code.
     
   @param _Error On input, a pointer to an error object.
                 If an error occurs, this pointer is set to an actual error object containing the error information.
+                
+  @return `YES` if the specified keychain was locked successfully; otherwise, `NO`.
   */
-- ( void ) lockKeychain: ( WSCKeychain* )_Keychain
+- ( BOOL ) lockKeychain: ( WSCKeychain* )_Keychain
                   error: ( NSError** )_Error;
 
 /** Locks all keychains belonging to the current user.
 
+  Prior to locking all keychains, the keychain manager asks its delegate if it should actually do so.
+  It does this by calling the [keychainManagerShoulLockAllKeychains:](-[WSCKeychainManagerDelegate keychainManagerShoulLockAllKeychains:]) method;
+  If the delegate method returns `YES`, or if the delegate does not implement the appropriate methods,
+  the keychain manager proceeds to lock all keychains.
+  If there is an error locking all keychains, the keychain manager may also call the delegate's
+  [keychainManager:shouldProceedLockingAllKeychainsAfterError:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedLockingAllKeychainsAfterError:]) method to determine how to proceed.
+
   Your application should not invoke this method unless you are responding the user's request to lock the keychain.
   In general, you should leave the keychain unlocked so that the user does not have to unlock it again in another application.
 
-  @return If an error occurs, an `NSError` object containing the error information; otherwise, `nil`.
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+
+  @return `YES` if all the keychains were locked successfully; otherwise, `NO`.
   */
-- ( NSError* ) lockAllKeychains;
+- ( BOOL ) lockAllKeychains: ( NSError** )_Error;
 
-- ( void ) unlockKeychain: ( WSCKeychain* )_Keychain
-             withPassword: ( NSString* )_Password;
+/** Unlocks a keychain with an explicitly provided password.
 
-- ( void ) unlockKeychainWithUserInteraction: ( WSCKeychain* )_Keychain;
+  Prior to unlocking the specified keychain with the specified password, the keychain manager asks its delegate if it should actually do so.
+  It does this by calling the [keychainManager:shouldUnlockKeychain:withPassword:](-[WSCKeychainManagerDelegate keychainManager:shouldUnlockKeychain:withPassword:]) method;
+  If the delegate method returns `YES`, or if the delegate does not implement the appropriate methods,
+  the keychain manager proceeds to unlock the specified keychain with the specified password.
+  If there is an error unlocking a keychain, the keychain manager may also call the delegate's
+  [keychainManager:shouldProceedAfterError:unlockingKeychain:withPassword:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:unlockingKeychain:withPassword:]) method to determine how to proceed.
+
+  In most cases, your application does not need to invoke this method directly, 
+  since most WaxSealCore APIs and the underlying Keychain Services functions that require an unlocked keychain do so for you.
+  If your application needs to verify that a keychain is unlocked, inspect the [isLocked]([WSCKeychain isLocked]) property.
+
+  @param _Keychain The keychain you wish to unlock.
+                   Passing `nil` to this parameter returns an `NSError` object which encapsulated `WSCKeychainInvalidParametersError` error code.
+                   And passing an invalid keychain to this parameter returns an `NSError` object which encapsulated `WSCKeychainKeychainIsInvalidError` error code.
+
+  @param _Password A string containing the password for the specified keychain.
+                   This parameter must not be `nil`.
+
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+
+  @return `YES` if the specified keychain was unlocked successfully; otherwise, `NO`.
+  */
+- ( BOOL ) unlockKeychain: ( WSCKeychain* )_Keychain
+             withPassword: ( NSString* )_Password
+                    error: ( NSError** )_Error;
+
+/** Unlocks a keychain with the user interaction which is used to retrieve password from the user.
+
+  This method will display an Unlock Keychain dialog box.
+  If the specified keychain is currently unlocked, the Unlock Keychain dialog won't be displayed.
+
+  Prior to unlocking the specified keychain with user interaction, the keychain manager asks its delegate if it should actually do so.
+  It does this by calling the [keychainManager:shouldUnlockKeychainWithUserInteraction:](-[WSCKeychainManagerDelegate keychainManager:shouldUnlockKeychainWithUserInteraction:]) method;
+  If the delegate method returns `YES`, or if the delegate does not implement the appropriate methods,
+  the keychain manager proceeds to unlock the specified keychain with user interaction.
+  If there is an error unlocking a keychain, the keychain manager may also call the delegate's
+  [keychainManager:shouldUnlockKeychainWithUserInteraction:](-[WSCKeychainManagerDelegate keychainManager:shouldUnlockKeychainWithUserInteraction:]) method to determine how to proceed.
+
+  In most cases, your application does not need to invoke this method directly, 
+  since most WaxSealCore APIs and underlying Keychain Services functions that require an unlocked keychain do so for you.
+  If your application needs to verify that a keychain is unlocked, inspect the [isLocked]([WSCKeychain isLocked]) property.
+
+  @param _Keychain The keychain you wish to unlock.
+                   Passing `nil` to this parameter returns an `NSError` object which encapsulated `WSCKeychainInvalidParametersError` error code.
+                   And passing an invalid keychain to this parameter returns an `NSError` object which encapsulated `WSCKeychainKeychainIsInvalidError` error code.
+                   
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+                
+  @return `YES` if the specified keychain was unlocked successfully; otherwise, `NO`.
+  */
+- ( BOOL ) unlockKeychainWithUserInteraction: ( WSCKeychain* )_Keychain
+                                       error: ( NSError** )_Error;
 
 @end // WSCKeychainManager
 
@@ -280,7 +351,7 @@
 - ( BOOL )     keychainManager: ( WSCKeychainManager* )_KeychainManager
     shouldSetKeychainAsDefault: ( WSCKeychain* )_Keychain;
 
-/** Asks he delegate if the operation should continue after an error occurs while setting the specified keychain as default.
+/** Asks the delegate if the operation should continue after an error occurs while setting the specified keychain as default.
 
   The keychan manager calls this method when there is a problem setting the specified keychain as default.
   If you return `YES`, the keychain manager continues returning the older default keychain regardless of what happens.
@@ -299,6 +370,140 @@
 - ( BOOL )  keychainManager: ( WSCKeychainManager* )_KeychainManager
     shouldProceedAfterError: ( NSError* )_Error
    settingKeychainAsDefault: ( WSCKeychain* )_Keychain;
+
+#pragma mark Locking Keychains
+/** @name Locking Keychains */
+
+/** Asks the delegate whether the specified keychain should be locked.
+
+  If you do not implement this method, the keychain manager assumes a repsonse of `YES`.
+
+  @param _KeychainManager The keychain manager that attempted to lock the specified keychain.
+  
+  @param _Keychain The keychain that the keychain manager tried to lock.
+  
+  @return `YES` if the specified keychain should be locked or `NO` if it should not be locked.
+  
+  @sa [- lockKeychain:error:](-[WSCKeychainManager lockKeychain:error:])
+  */
+- ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
+        shouldLockKeychain: ( WSCKeychain* )_Keychain;
+
+/** Asks the delegate if the operation should continue after an error occurs while locking the specified keychain.
+
+  @param _KeychainManager The keychain manager that attempted to lock the specified keychain.
+  
+  @param _Error The error that occurred while attempting to lock the specified keychain.
+
+  @param _Keychain The keychain that the keychain manager tried to lock.
+  
+  @return `YES` if the operation should proceed or `NO` if it should be aborted. 
+          If you do not implement this method, the keychain manager assumes a response of `NO`.
+          
+  @sa [- lockKeychain:error:](-[WSCKeychainManager lockKeychain:error:])
+  */
+- ( BOOL )  keychainManager: ( WSCKeychainManager* )_KeychainManager
+    shouldProceedAfterError: ( NSError* )_Error
+            lockingKeychain: ( WSCKeychain* )_Keychain;
+
+/** Asks the delegate whether all the keychains should be locked.
+  
+  If you do not implement this method, the keychain manager assumes a repsonse of `YES`.
+  
+  @param _KeychainManager The keychain manager that attempted to lock all the keychains.
+  
+  @return `YES` if all the keychains should be locked or `NO` if they should not be locked.
+
+  @sa [- lockAllKeychains:](-[WSCKeychainManager lockAllKeychains:])
+  */
+- ( BOOL ) keychainManagerShoulLockAllKeychains: ( WSCKeychainManager* )_KeychainManager;
+
+/** Asks the delegate if the operation should continue after an error occurs while locking all the keychains.
+
+  @param _KeychainManager The keychain manager that attempted to lock all the keychains.
+  
+  @param _Error The error that occurred while attempting to lock all the keychains.
+  
+  @return `YES` if the operation should proceed or `NO` if it should be aborted. 
+          If you do not implement this method, the keychain manager assumes a response of `NO`.
+
+  @sa [- lockAllKeychains:](-[WSCKeychainManager lockAllKeychains:])
+  */
+- ( BOOL )                     keychainManager: ( WSCKeychainManager* )_KeychainManager
+    shouldProceedLockingAllKeychainsAfterError: ( NSError* )_Error;
+
+#pragma mark Unlocking Keychains
+/** @name Unlocking Keychains */
+
+/** Asks the delegate whether the specified keychain should be unlocked with the specified password.
+
+  If you do not implement this method, the keychain manager assumes a repsonse of `YES`.
+
+  @param _KeychainManager The keychain manager that attempted to unlock the specified keychain with the specified password.
+  
+  @param _Keychain The keychain that the keychain manager tried to unlock.
+  
+  @param _Password A string containing the password for the keychain that the keychain manager tried to unlock.
+  
+  @return `YES` if the specified keychain should be unlocked or `NO` if it should not be unlocked.
+
+  @sa [- unlockKeychain:withPassword:error:](-[WSCKeychainManager unlockKeychain:withPassword:error:])
+  */
+- ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
+      shouldUnlockKeychain: ( WSCKeychain* )_Keychain
+              withPassword: ( NSString* )_Password;
+
+/** Asks the delegate if the operation should continue after an error occurs while unlocking the specified keychain with the specified password.
+
+  @param _KeychainManager The keychain manager that attempted to unlock the specified keychain with the specified password.
+  
+  @param _Error The error that occurred while attempting to unlock the specified keychain with the specified password.
+
+  @param _Keychain The keychain that the keychain manager tried to unlock.
+  
+  @param _Password A string containing the password for the keychain that the keychain manager tried to unlock.
+  
+  @return `YES` if the operation should proceed or `NO` if it should be aborted. 
+          If you do not implement this method, the keychain manager assumes a response of `NO`.
+          
+  @sa [- unlockKeychain:withPassword:error:](-[WSCKeychainManager unlockKeychain:withPassword:error:])
+  */
+- ( BOOL )  keychainManager: ( WSCKeychainManager* )_KeychainManager
+    shouldProceedAfterError: ( NSError* )_Error
+          unlockingKeychain: ( WSCKeychain* )_Keychain
+               withPassword: ( NSString* )_Password;
+
+/** Asks the delegate whether the specified keychain should be unlocked with user interaction.
+
+  If you do not implement this method, the keychain manager assumes a repsonse of `YES`.
+
+  @param _KeychainManager The keychain manager that attempted to unlock the specified keychain with user interaction.
+  
+  @param _Keychain The keychain that the keychain manager tried to unlock.
+  
+  @return `YES` if the specified keychain should be unlocked or `NO` if it should not be unlocked.
+
+  @sa [- unlockKeychainWithUserInteraction:error:](-[WSCKeychainManager unlockKeychainWithUserInteraction:error:])
+  */
+- ( BOOL )                    keychainManager: ( WSCKeychainManager* )_KeychainManager
+      shouldUnlockKeychainWithUserInteraction: ( WSCKeychain* )_Keychain;
+
+/** Asks the delegate if the operation should continue after an error occurs while unlocking the specified keychain with user interaction.
+
+  @param _KeychainManager The keychain manager that attempted to unlock the specified keychain with user interaction.
+  
+  @param _Error The error that occurred while attempting to unlock the specified keychain with user interaction.
+
+  @param _Keychain The keychain that the keychain manager tried to unlock.
+  
+  @return `YES` if the operation should proceed or `NO` if it should be aborted. 
+          If you do not implement this method, the keychain manager assumes a response of `NO`.
+          
+  @sa [- unlockKeychainWithUserInteraction:error:](-[WSCKeychainManager unlockKeychainWithUserInteraction:error:])
+  */
+- ( BOOL )               keychainManager: ( WSCKeychainManager* )_KeychainManager
+                 shouldProceedAfterError: ( NSError* )_Error
+    unlockingKeychainWithUserInteraction: ( WSCKeychain* )_Keychain;
 
 @end // WSCKeychainManagerDelegate protocol
 
