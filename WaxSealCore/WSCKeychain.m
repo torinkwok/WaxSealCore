@@ -85,6 +85,9 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
 @dynamic URL;
 @dynamic isDefault;
 @dynamic isValid;
+@dynamic isLocked;
+@dynamic isReadable;
+@dynamic isWritable;
 
 - ( NSString* ) description
     {
@@ -128,6 +131,42 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
 - ( BOOL ) isValid
     {
     return self.URL ? YES : NO;
+    }
+
+/* Returns a Boolean value that indicates whether the receiver is currently locked. */
+- ( BOOL ) isLocked
+    {
+    NSError* error = nil;
+
+    SecKeychainStatus keychainStatus = [ self p_keychainStatus: &error ];
+    if ( error )
+        WSCPrintNSErrorForLog( error );
+
+    return ( keychainStatus & kSecUnlockStateStatus ) != 0;
+    }
+
+/* Boolean value that indicates whether the receiver is readable. */
+- ( BOOL ) isReadable
+    {
+    NSError* error = nil;
+
+    SecKeychainStatus keychainStatus = [ self p_keychainStatus: &error ];
+    if ( error )
+        WSCPrintNSErrorForLog( error );
+
+    return ( keychainStatus & kSecReadPermStatus ) == 0;
+    }is
+
+/* Boolean value that indicates whether the receiver is writable. */
+- ( BOOL ) isWritable
+    {
+    NSError* error = nil;
+
+    SecKeychainStatus keychainStatus = [ self p_keychainStatus: &error ];
+    if ( error )
+        WSCPrintNSErrorForLog( error );
+
+    return ( keychainStatus & kSecWritePermStatus ) == 0;
     }
 
 #pragma mark Public Programmatic Interfaces for Creating Keychains
@@ -197,7 +236,7 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
             else
                 {
                 WSCPrintSecErrorCode( resultCode );
-                WSCFillErrorParam( resultCode, _Error );
+                WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
                 }
             }
         else
@@ -355,7 +394,9 @@ WSCKeychain static* s_system = nil;
     return self;
     }
 
-/* Creates and returns a WSCKeychain object using the given URL, password, 
+/* Objective-C wrapper for SecKeychainCreate() function.
+ *
+ * Creates and returns a WSCKeychain object using the given URL, password,
  * interaction prompt and inital access rights. 
  */
 + ( instancetype ) p_keychainWithURL: ( NSURL* )_URL
@@ -437,6 +478,29 @@ WSCKeychain static* s_system = nil;
     }
 
 @end // WSCKeychain + WSCKeychainPrivateInitialization
+
+#pragma mark Private Programmatic Interfaces for Managing Keychains
+@implementation WSCKeychain ( WSCKeychainPrivateManagement )
+
+/* Objective-C wrapper for SecKeychainGetStatus() function */
+- ( SecKeychainStatus ) p_keychainStatus: ( NSError** )_Error
+    {
+    OSStatus resultCode = errSecSuccess;
+
+    SecKeychainStatus keychainStatus = 0U;
+    resultCode = SecKeychainGetStatus( self.secKeychain, &keychainStatus );
+
+    if ( resultCode != errSecSuccess )
+        {
+        WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+
+        return 0U;
+        }
+
+    return keychainStatus;
+    }
+
+@end // WSCKeychain + WSCKeychainPrivateManagement
 
 //////////////////////////////////////////////////////////////////////////////
 

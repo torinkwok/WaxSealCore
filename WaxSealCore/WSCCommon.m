@@ -34,7 +34,7 @@
 #import "WSCCommon.h"
 #import <Foundation/Foundation.h>
 
-inline void WSCFillErrorParam( OSStatus _ResultCode, NSError** _ErrorParam )
+inline void WSCFillErrorParamWithSecErrorCode( OSStatus _ResultCode, NSError** _ErrorParam )
     {
     CFStringRef cfErrorDesc = SecCopyErrorMessageString( _ResultCode, NULL );
     *_ErrorParam = [ [ NSError errorWithDomain: NSOSStatusErrorDomain

@@ -175,6 +175,38 @@
   */
 - ( WSCKeychain* ) currentDefaultKeychain: ( NSError** )_Error;
 
+#pragma mark Locking and Unlocking Keychains
+/** @name Locking and Unlocking Keychains */
+
+/** Lock the specified keychain.
+
+  Your application should not invoke this method unless you are responding the user's request to lock the keychain.
+  In general, you should leave the keychain unlocked so that the user does not have to unlock it again in another application.
+
+  @param _Keychain The keychain you wish to lock. 
+         Passing `nil` to this parameter returns an `NSError` object which encapsulated `WSCKeychainInvalidParametersError` error code.
+         And passing an invalid keychain to this parameter returns an `NSError` object which encapsulated `WSCKeychainKeychainIsInvalidError` error code.
+    
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+  */
+- ( void ) lockKeychain: ( WSCKeychain* )_Keychain
+                  error: ( NSError** )_Error;
+
+/** Locks all keychains belonging to the current user.
+
+  Your application should not invoke this method unless you are responding the user's request to lock the keychain.
+  In general, you should leave the keychain unlocked so that the user does not have to unlock it again in another application.
+
+  @return If an error occurs, an `NSError` object containing the error information; otherwise, `nil`.
+  */
+- ( NSError* ) lockAllKeychains;
+
+- ( void ) unlockKeychain: ( WSCKeychain* )_Keychain
+             withPassword: ( NSString* )_Password;
+
+- ( void ) unlockKeychainWithUserInteraction: ( WSCKeychain* )_Keychain;
+
 @end // WSCKeychainManager
 
 #pragma mark WSCKeychainManagerDelegate Protocol

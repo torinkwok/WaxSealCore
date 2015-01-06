@@ -116,7 +116,7 @@ WSCKeychainManager static* s_defaultManager = nil;
                 if ( resultCode != errSecSuccess )
                     {
                     if ( _Error )
-                        WSCFillErrorParam( resultCode, _Error );
+                        WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
 
                     /* If delegate implements keychainManager:shouldDeleteKeychain: method */
                     if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:deletingKeychain: ) ] )
@@ -215,7 +215,7 @@ WSCKeychainManager static* s_defaultManager = nil;
 
         if ( resultCode != errSecSuccess )
             {
-            WSCFillErrorParam( resultCode, &newError );
+            WSCFillErrorParamWithSecErrorCode( resultCode, &newError );
 
             if ( _Error )
                 *_Error = [ newError copy ];
@@ -255,7 +255,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     else
         {
         if ( _Error )
-            WSCFillErrorParam( resultCode, _Error );
+            WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
 
         return nil;
         }

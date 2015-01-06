@@ -91,7 +91,7 @@
     WSCPrintNSErrorForLog( _ErrorObject )                   \
     _ErrorObject = nil;
 
-void WSCFillErrorParam( OSStatus _ResultCode, NSError** _ErrorParam );
+void WSCFillErrorParamWithSecErrorCode( OSStatus _ResultCode, NSError** _ErrorParam );
 
 //////////////////////////////////////////////////////////////////////////////
 

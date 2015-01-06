@@ -50,7 +50,7 @@
   */
 @property ( retain, readonly ) NSURL* URL;
 
-/** Default state of receiver.
+/** Default state of receiver. (read-only)
 
   In most cases, your application should not need to set the default keychain, 
   because this is a choice normally made by the user. You may call this method to change where a
@@ -59,11 +59,29 @@
   */
 @property ( assign, readonly ) BOOL isDefault;
 
-/** Boolean value that indicates whether the receiver is currently valid.
+/** Boolean value that indicates whether the receiver is currently valid. (read-only)
 
   `YES` if the receiver is still capable of referring to a valid keychain file; otherwise, *NO*.
   */
 @property ( assign, readonly ) BOOL isValid;
+
+/** Boolean value that indicates whether the receiver is currently locked. (read-only)
+
+  `YES` if the receiver is currently locked, otherwise, `NO`.
+  */
+@property ( assign, readonly ) BOOL isLocked;
+
+/** Boolean value that indicates whether the receiver is readable. (read-only)
+
+  `YES` if the receiver is readable, otherwise, `NO`.
+  */
+@property ( assign, readonly ) BOOL isReadable;
+
+/** Boolean value that indicates whether the receiver is writable. (read-only)
+
+  `YES` if the receiver is writable, otherwise, `NO`.
+  */
+@property ( assign, readonly ) BOOL isWritable;
 
 #pragma mark Public Programmatic Interfaces for Creating Keychains
 /** @name Creating Keychains */
@@ -91,7 +109,7 @@
   @param _InitalAccess An WSCAccess object indicating the initial access rights for the new keychain,
                        A keychain's access rights determine which application have permission to user the keychain.
                        You may pass `nil` for the standard access rights
-                       
+
   @param _WillBecomeDefault A `BOOL` value representing whether to set the new keychain as default keychain.
 
   @param _Error On input, a pointer to an error object. 
@@ -225,6 +243,7 @@
 
 - ( instancetype ) p_initWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef;
 
+/* Objective-C wrapper for SecKeychainCreate() function */
 + ( instancetype ) p_keychainWithURL: ( NSURL* )_URL
                             password: ( NSString* )_Password
                       doesPromptUser: ( BOOL )_DoesPromptUser
@@ -233,6 +252,14 @@
                                error: ( NSError** )_Error;
 
 @end // WSCKeychain + WSCKeychainPrivateInitialization
+
+#pragma mark Private Programmatic Interfaces for Managing Keychains
+@interface WSCKeychain ( WSCKeychainPrivateManagement )
+
+/* Objective-C wrapper for SecKeychainGetStatus() function */
+- ( SecKeychainStatus ) p_keychainStatus: ( NSError** )_Error;
+
+@end // WSCKeychain + WSCKeychainPrivateManagement
 
 NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain );
 BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain );

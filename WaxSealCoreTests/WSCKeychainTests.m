@@ -602,6 +602,21 @@
     /* Test in testSetDefaultMethods() */
     }
 
+- ( void ) testsIsLockedProperty
+    {
+    // TODO:
+    }
+
+- ( void ) testsIsReadableProperty
+    {
+    // TODO:
+    }
+
+- ( void ) testsIsWritableProperty
+    {
+    // TODO:
+    }
+
 - ( void ) testLoginClassMethod
     {
     NSError* error = nil;
