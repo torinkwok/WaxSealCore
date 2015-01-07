@@ -149,6 +149,52 @@
         return NO;
     }
 
+- ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
+        shouldLockKeychain: ( WSCKeychain* )_Keychain
+    {
+    if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
+            || _KeychainManager == self.testManager1
+            || _KeychainManager == self.testManager3 )
+        return YES;
+    else
+        return NO;
+    }
+
+- ( BOOL )  keychainManager: ( WSCKeychainManager* )_KeychainManager
+    shouldProceedAfterError: ( NSError* )_Error
+            lockingKeychain: ( WSCKeychain* )_Keychain
+    {
+    if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
+            || _KeychainManager == self.testManager1 )
+        return YES;
+    else
+        return NO;
+    }
+
+- ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
+      shouldUnlockKeychain: ( WSCKeychain* )_Keychain
+              withPassword: ( NSString* )_Password
+    {
+    if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
+            || _KeychainManager == self.testManager1
+            || _KeychainManager == self.testManager3 )
+        return YES;
+    else
+        return NO;
+    }
+
+- ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
+   shouldProceedAfterError: ( NSError* )_Error
+         unlockingKeychain: ( WSCKeychain* )_Keychain
+              withPassword: ( NSString* )_Password
+    {
+    if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
+            || _KeychainManager == self.testManager1 )
+        return YES;
+    else
+        return NO;
+    }
+
 @end // WSCKeychainTests + WSCKeychainManagerTests
 
 // --------------------------------------------------------
@@ -229,6 +275,10 @@
     for ( NSURL* _URL in self->_randomURLsAutodeletePool )
         if ( [ _URL checkResourceIsReachableAndReturnError: nil ] )
             [ [ NSFileManager defaultManager ] removeItemAtURL: _URL error: nil ];
+
+    [ self->_testManager3 unlockKeychain: [ WSCKeychain login ]
+                            withPassword: @"Dontbeabitch77!."
+                                   error: nil ];
 
     [ self->_publicKeychain release ];
     [ self->_passwordForTest release ];
@@ -681,6 +731,154 @@
 - ( void ) testSetCurrentDefaultKeychain
     {
     // TODO:
+    }
+
+- ( void ) testLockKeychain
+    {
+    NSError* error = nil;
+    BOOL isSuccess = NO;
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 0: Lock login.keychain
+    // ----------------------------------------------------------------------------------
+    /* We are using self.testManager2
+     * so the delegate method keychainManager:shouldLockKeychain: returns NO */
+    isSuccess = [ self.testManager2 lockKeychain: [ WSCKeychain login ]
+                                           error: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertFalse( isSuccess );
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 1: Lock login.keychain
+    // ----------------------------------------------------------------------------------
+    isSuccess = [ self.testManager3 lockKeychain: [ WSCKeychain login ]
+                                           error: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertTrue( isSuccess );
+    XCTAssertTrue( [ WSCKeychain login ].isLocked );
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 2: Lock system.keychain
+    // ----------------------------------------------------------------------------------
+    isSuccess = [ self.testManager3 lockKeychain: [ WSCKeychain system ]
+                                           error: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertTrue( isSuccess );
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 3: Lock self.publicKeychains
+    // ----------------------------------------------------------------------------------
+    isSuccess = [ self.testManager1 lockKeychain: self.publicKeychain
+                                           error: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertTrue( isSuccess );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 0: Lock keychain with nil parameter
+    // ----------------------------------------------------------------------------------
+    /* We are using self.testManager2
+     * so the delegate method keychainManager:shouldLockKeychain: returns NO */
+    isSuccess = [ self.testManager2 lockKeychain: nil
+                                           error: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertFalse( isSuccess );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 1: Lock keychain with NSDate object
+    // ----------------------------------------------------------------------------------
+    /* We are using self.testManager2
+     * so the delegate method keychainManager:shouldProceedAfterError:lockingKeychain: returns YES */
+    isSuccess = [ self.testManager1 lockKeychain: ( WSCKeychain* )[ NSDate date ]
+                                           error: &error ];
+    XCTAssertNotNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertTrue( isSuccess );
+
+    /* We are using self.testManager3
+     * so the delegate method keychainManager:shouldProceedAfterError:lockingKeychain: returns NO */
+    isSuccess = [ self.testManager3 lockKeychain: ( WSCKeychain* )[ NSDate date ]
+                                           error: &error ];
+    XCTAssertNotNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertFalse( isSuccess );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 2: Lock keychain with invalid keychain
+    // ----------------------------------------------------------------------------------
+    NSURL* URLForKeychain_negativeTestCase2 = [ self URLForTestCase: [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"negativeCase2" ]
+                                                         doesPrompt: NO
+                                                       deleteExists: YES ];
+
+    WSCKeychain* keychain_negativeTestCase2 = [ WSCKeychain keychainWithURL: URLForKeychain_negativeTestCase2
+                                                                   password: self.passwordForTest
+                                                              initialAccess: nil
+                                                             becomesDefault: NO
+                                                                      error: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertTrue( keychain_negativeTestCase2.isValid );
+    [ self.testManager3 deleteKeychain: keychain_negativeTestCase2 error: nil ];
+    XCTAssertFalse( keychain_negativeTestCase2.isValid );
+
+    /* We are using self.testManager1
+     * so the delegate method keychainManager:shouldProceedAfterError:lockingKeychain: returns YES */
+    isSuccess = [ self.testManager1 lockKeychain: keychain_negativeTestCase2
+                                           error: &error ];
+    XCTAssertNotNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertTrue( isSuccess );
+
+    /* We are using self.testManager3
+     * so the delegate method keychainManager:shouldProceedAfterError:lockingKeychain: returns NO */
+    isSuccess = [ self.testManager3 lockKeychain: keychain_negativeTestCase2
+                                           error: &error ];
+    XCTAssertNotNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertFalse( isSuccess );
+    }
+
+- ( void ) testUnlockKeychain
+    {
+    NSError* error = nil;
+    BOOL isSuccess = NO;
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 0: Unlock login.keychain with an incorrect password
+    // ----------------------------------------------------------------------------------
+    isSuccess = [ self.testManager3 unlockKeychain: [ WSCKeychain login ]
+                                      withPassword: @"123456"  // whatever
+                                             error: &error ];
+    XCTAssertNotNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertFalse( isSuccess );
+    XCTAssertTrue( [ WSCKeychain login ].isLocked );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 1: Unlock login.keychain with nil
+    // ----------------------------------------------------------------------------------
+    isSuccess = [ self.testManager1 unlockKeychain: [ WSCKeychain login ]
+                                      withPassword: nil
+                                             error: &error ];
+    XCTAssertNotNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertTrue( isSuccess );
+    XCTAssertTrue( [ WSCKeychain login ].isLocked );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 1: Unlock login.keychain with NSNumber object
+    // ----------------------------------------------------------------------------------
+    isSuccess = [ self.testManager3 unlockKeychain: [ WSCKeychain login ]
+                                      withPassword: ( NSString* )@149 // whatever
+                                             error: &error ];
+    XCTAssertNotNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertFalse( isSuccess );
+    XCTAssertTrue( [ WSCKeychain login ].isLocked );
     }
 
 - ( void ) testDefaultManager

@@ -120,11 +120,12 @@ WSCKeychainManager static* s_defaultManager = nil;
 
                     /* If delegate implements keychainManager:shouldDeleteKeychain: method */
                     if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:deletingKeychain: ) ] )
-                        /* which means the deleting operation shouldn't continue after an error occurs */
                         {
                         BOOL shouldContinue = [ self.delegate keychainManager: self
                                                       shouldProceedAfterError: *_Error
                                                              deletingKeychain: _Keychain ];
+
+                        /* which means the deleting operation shouldn't continue after an error occurs */
                         if ( !shouldContinue )
                             {
                             isSuccess = NO;
@@ -259,6 +260,148 @@ WSCKeychainManager static* s_defaultManager = nil;
 
         return nil;
         }
+    }
+
+#pragma mark Locking and Unlocking Keychains
+/* Lock the specified keychain. */
+- ( BOOL ) lockKeychain: ( WSCKeychain* )_Keychain
+                  error: ( NSError** )_Error
+    {
+    /* If the delegate aborts the setting operation, just returns NO */
+    if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldLockKeychain: ) ]
+            && ![ self.delegate keychainManager: self shouldLockKeychain: _Keychain ] )
+        return NO;
+
+    NSError* newError = nil;
+    if ( !_Keychain || ![ _Keychain isKindOfClass: [ WSCKeychain class ] ] )
+        {
+        newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                        code: WSCKeychainInvalidParametersError
+                                    userInfo: nil ];
+        if ( _Error )
+            *_Error = [ newError copy ];
+
+        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:lockingKeychain: ) ]
+                && [ self.delegate keychainManager: self shouldProceedAfterError: newError lockingKeychain: _Keychain ] )
+            return YES;
+        else
+            return NO;
+        }
+
+    if ( !_Keychain.isValid /* If the keychain is invalid */ )
+        {
+        newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                        code: WSCKeychainKeychainIsInvalidError
+                                    userInfo: nil ];
+        if ( _Error )
+            *_Error = [ newError copy ];
+
+        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:lockingKeychain: ) ]
+                && [ self.delegate keychainManager: self shouldProceedAfterError: newError lockingKeychain: _Keychain ] )
+            return YES;
+        else
+            return NO;
+        }
+
+    if ( !_Keychain.isLocked /* The keychain must not be locked */ )
+        {
+        OSStatus resultCode = errSecSuccess;
+
+        resultCode = SecKeychainLock( _Keychain.secKeychain );
+        if ( resultCode != errSecSuccess )
+            {
+            WSCFillErrorParamWithSecErrorCode( resultCode, &newError );
+
+            if ( _Error )
+                *_Error = [ newError copy ];
+
+            if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:lockingKeychain: ) ]
+                    && [ self.delegate keychainManager: self shouldProceedAfterError: newError lockingKeychain: _Keychain ] )
+                return YES;
+            else
+                return NO;
+            }
+        }
+
+    // If every parameters is correct but the keychain has been already locked:
+    // do nothing, just returns YES, which means the locking operation is successful.
+    return YES;
+    }
+
+/* Locks all keychains belonging to the current user. */
+//- ( BOOL ) lockAllKeychains: ( NSError** )_Error
+//    {
+//    // TODO:
+//    }
+
+/* Unlocks a keychain with an explicitly provided password. */
+- ( BOOL ) unlockKeychain: ( WSCKeychain* )_Keychain
+             withPassword: ( NSString* )_Password
+                    error: ( NSError** )_Error
+    {
+    if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldUnlockKeychain:withPassword: ) ]
+            && ![ self.delegate keychainManager: self shouldUnlockKeychain: _Keychain withPassword: _Password ] )
+        return NO;
+
+    NSError* newError = nil;
+    if ( !_Keychain || ![ _Keychain isKindOfClass: [ WSCKeychain class ] ]
+            || !_Password || ![ _Password isKindOfClass: [ NSString class ] ] )
+        {
+        newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                        code: WSCKeychainInvalidParametersError
+                                    userInfo: nil ];
+        if ( _Error )
+            *_Error = [ newError copy ];
+
+        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:unlockingKeychain:withPassword: ) ]
+                && [ self.delegate keychainManager: self shouldProceedAfterError: newError unlockingKeychain: _Keychain withPassword: _Password ] )
+            return YES;
+        else
+            return NO;
+        }
+
+    if ( !_Keychain.isValid /* If the keychain is invalid */ )
+        {
+        newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                        code: WSCKeychainKeychainIsInvalidError
+                                    userInfo: nil ];
+        if ( _Error )
+            *_Error = [ newError copy ];
+
+        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:unlockingKeychain:withPassword: ) ]
+                && [ self.delegate keychainManager: self shouldProceedAfterError: newError unlockingKeychain: _Keychain withPassword: _Password ] )
+            return YES;
+        else
+            return NO;
+        }
+
+    if ( _Keychain.isLocked /* The keychain must not be unlocked */ )
+        {
+        OSStatus resultCode = errSecSuccess;
+
+        resultCode = SecKeychainUnlock( _Keychain.secKeychain
+                                      , ( UInt32 )_Password.length
+                                      , _Password.UTF8String
+                                      , YES
+                                      );
+        if ( resultCode != errSecSuccess )
+            {
+            WSCFillErrorParamWithSecErrorCode( resultCode, &newError );
+
+            if ( _Error )
+                *_Error = [ newError copy ];
+
+            if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:unlockingKeychain:withPassword: ) ]
+                    && [ self.delegate keychainManager: self shouldProceedAfterError: newError unlockingKeychain: _Keychain withPassword: _Password ] )
+                return YES;
+            else
+                return NO;
+            }
+        }
+
+    // If every parameters is correct but the keychain has been already unlocked:
+    // do nothing, just returns YES, which means the unlocking operation is successful.
+    return YES;
     }
 
 #pragma mark Overrides for Singleton Objects

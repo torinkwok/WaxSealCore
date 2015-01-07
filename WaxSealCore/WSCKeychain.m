@@ -94,6 +94,7 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     return [ NSString stringWithFormat: @"%@", @{ @"Keychain Name"  : self.URL.lastPathComponent
                                                 , @"Keychain URL"   : self.URL
                                                 , @"Is Valid"       : self.isValid ? @"Valid" : @"Invalid"
+                                                , @"Lock Status"    : self.isLocked ? @"Locked" : @"Unlocked"
                                                 } ];
     }
 
@@ -142,7 +143,7 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     if ( error )
         WSCPrintNSErrorForLog( error );
 
-    return ( keychainStatus & kSecUnlockStateStatus ) != 0;
+    return ( keychainStatus & kSecUnlockStateStatus ) == 0;
     }
 
 /* Boolean value that indicates whether the receiver is readable. */
@@ -154,7 +155,7 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     if ( error )
         WSCPrintNSErrorForLog( error );
 
-    return ( keychainStatus & kSecReadPermStatus ) == 0;
+    return ( keychainStatus & kSecReadPermStatus ) != 0;
     }
 
 /* Boolean value that indicates whether the receiver is writable. */
@@ -166,7 +167,7 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     if ( error )
         WSCPrintNSErrorForLog( error );
 
-    return ( keychainStatus & kSecWritePermStatus ) == 0;
+    return ( keychainStatus & kSecWritePermStatus ) != 0;
     }
 
 #pragma mark Public Programmatic Interfaces for Creating Keychains
