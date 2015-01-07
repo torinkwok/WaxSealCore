@@ -280,6 +280,10 @@
                             withPassword: @"Dontbeabitch77!."
                                    error: nil ];
 
+    [ self->_testManager3 unlockKeychain: [ WSCKeychain system ]
+                            withPassword: @"Isgtforever77!."
+                                   error: nil ];
+
     [ self->_publicKeychain release ];
     [ self->_passwordForTest release ];
     [ self->_randomURLsAutodeletePool release ];
@@ -846,6 +850,78 @@
     {
     NSError* error = nil;
     BOOL isSuccess = NO;
+
+    [ self.testManager3 lockKeychain: [ WSCKeychain login ]
+                               error: nil ];
+
+    [ self.testManager3 lockKeychain: [ WSCKeychain system ]
+                               error: nil ];
+
+    [ self.testManager3 lockKeychain: self.publicKeychain
+                               error: nil ];
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 0: Unlock login.keychain with correct password
+    // ----------------------------------------------------------------------------------
+    isSuccess = [ self.testManager3 unlockKeychain: [ WSCKeychain login ]
+                                      withPassword: @"Dontbeabitch77!."
+                                             error: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertTrue( isSuccess );
+    XCTAssertFalse( [ WSCKeychain login ].isLocked );
+
+    [ self.testManager1 lockKeychain: [ WSCKeychain login ]
+                               error: nil ];
+
+    [ self.testManager3 lockKeychain: [ WSCKeychain system ]
+                               error: nil ];
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 1: Unlock System.keychain with user interaction
+    // ----------------------------------------------------------------------------------
+//    isSuccess = [ self.testManager1 unlockKeychain: [ WSCKeychain system ]
+//                                      withPassword: @"Isgtforever77!."
+//                                             error: &error ];
+//    XCTAssertNil( error );
+//    WSCPrintNSErrorForUnitTest( error );
+//    XCTAssertTrue( isSuccess );
+//    XCTAssertFalse( [ WSCKeychain system ].isLocked );
+//
+//    [ self.testManager1 lockKeychain: [ WSCKeychain login ]
+//                               error: nil ];
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 2: Unlock self.publicKeychain
+    // ----------------------------------------------------------------------------------
+    /* We are using self.testManager2
+     * so the delegate method keychainManager:shouldProceedAfterError:lockingKeychain: returns YES */
+    isSuccess = [ self.testManager2 unlockKeychain: self.publicKeychain
+                                      withPassword: self.passwordForTest
+                                             error: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertFalse( isSuccess );
+    XCTAssertTrue( self.publicKeychain.isLocked );
+
+    isSuccess = [ self.testManager1 unlockKeychain: self.publicKeychain
+                                      withPassword: @"123456"
+                                             error: &error ];
+    XCTAssertNotNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+
+    /* We are using self.testManager1
+     * so the delegate method keychainManager:shouldProceedAfterError:lockingKeychain: returns YES */
+    XCTAssertTrue( isSuccess );
+    XCTAssertTrue( self.publicKeychain.isLocked );
+
+    isSuccess = [ self.testManager3 unlockKeychain: self.publicKeychain
+                                      withPassword: self.passwordForTest
+                                             error: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertTrue( isSuccess );
+    XCTAssertFalse( self.publicKeychain.isLocked );
 
     // ----------------------------------------------------------------------------------
     // Negative Test Case 0: Unlock login.keychain with an incorrect password
