@@ -280,10 +280,6 @@
                             withPassword: @"Dontbeabitch77!."
                                    error: nil ];
 
-    [ self->_testManager3 unlockKeychain: [ WSCKeychain system ]
-                            withPassword: @"Isgtforever77!."
-                                   error: nil ];
-
     [ self->_publicKeychain release ];
     [ self->_passwordForTest release ];
     [ self->_randomURLsAutodeletePool release ];
