@@ -22,6 +22,8 @@
 		838221111A4C214A00EF9945 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 838221101A4C214A00EF9945 /* README.md */; };
 		838221141A4C229B00EF9945 /* WSCAccess.h in Headers */ = {isa = PBXBuildFile; fileRef = 838221121A4C229B00EF9945 /* WSCAccess.h */; };
 		838221151A4C229B00EF9945 /* WSCAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = 838221131A4C229B00EF9945 /* WSCAccess.m */; };
+		839FE2F61A5E18FA00DCED3C /* NSString+OMCString.h in Headers */ = {isa = PBXBuildFile; fileRef = 839FE2F41A5E18FA00DCED3C /* NSString+OMCString.h */; };
+		839FE2F71A5E18FA00DCED3C /* NSString+OMCString.m in Sources */ = {isa = PBXBuildFile; fileRef = 839FE2F51A5E18FA00DCED3C /* NSString+OMCString.m */; };
 		83C7237C1A4C1AA60084221A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 83C7237A1A4C1AA60084221A /* InfoPlist.strings */; };
 		83C723801A4C1AA60084221A /* WSCKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 83C7237F1A4C1AA60084221A /* WSCKeychain.m */; };
 		83C723871A4C1AA60084221A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723861A4C1AA60084221A /* XCTest.framework */; };
@@ -69,6 +71,8 @@
 		838221101A4C214A00EF9945 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
 		838221121A4C229B00EF9945 /* WSCAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSCAccess.h; sourceTree = "<group>"; };
 		838221131A4C229B00EF9945 /* WSCAccess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCAccess.m; sourceTree = "<group>"; };
+		839FE2F41A5E18FA00DCED3C /* NSString+OMCString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+OMCString.h"; sourceTree = "<group>"; };
+		839FE2F51A5E18FA00DCED3C /* NSString+OMCString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+OMCString.m"; sourceTree = "<group>"; };
 		83C7236E1A4C1AA60084221A /* WaxSealCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WaxSealCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		83C723741A4C1AA60084221A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		83C723791A4C1AA60084221A /* WaxSealCore-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WaxSealCore-Info.plist"; sourceTree = "<group>"; };
@@ -116,8 +120,7 @@
 		830A4F221A5830F500F4EAA7 /* WSCKeychainManager */ = {
 			isa = PBXGroup;
 			children = (
-				830A4F1E1A5830E900F4EAA7 /* WSCKeychainManager.h */,
-				830A4F1F1A5830E900F4EAA7 /* WSCKeychainManager.m */,
+				839FE2F11A5E0BC500DCED3C /* Public */,
 			);
 			name = WSCKeychainManager;
 			sourceTree = "<group>";
@@ -125,14 +128,8 @@
 		834D20E71A4EDD7700539F49 /* WSCKeychain */ = {
 			isa = PBXGroup;
 			children = (
-				83C7237E1A4C1AA60084221A /* WSCKeychain.h */,
-				83C7237F1A4C1AA60084221A /* WSCKeychain.m */,
-				834D20E21A4EDD6900539F49 /* WSCKeychainError.h */,
-				834D20E31A4EDD6900539F49 /* WSCKeychainError.m */,
-				8339FA521A542D2C00240AD0 /* WSCKeychainErrorPrivate.h */,
-				8339FA531A542D2C00240AD0 /* WSCKeychainErrorPrivate.m */,
-				834D20E91A4EEA4400539F49 /* NSURL+WSCKeychainURL.h */,
-				834D20EA1A4EEA4400539F49 /* NSURL+WSCKeychainURL.m */,
+				839FE2F01A5E0BAA00DCED3C /* Private */,
+				839FE2EE1A5E0BA400DCED3C /* Public */,
 			);
 			name = WSCKeychain;
 			sourceTree = "<group>";
@@ -140,8 +137,7 @@
 		834D20E81A4EDD8700539F49 /* WSCAccess */ = {
 			isa = PBXGroup;
 			children = (
-				838221121A4C229B00EF9945 /* WSCAccess.h */,
-				838221131A4C229B00EF9945 /* WSCAccess.m */,
+				839FE2F21A5E0BD600DCED3C /* Public */,
 			);
 			name = WSCAccess;
 			sourceTree = "<group>";
@@ -154,9 +150,51 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		839FE2EE1A5E0BA400DCED3C /* Public */ = {
+			isa = PBXGroup;
+			children = (
+				8339FA521A542D2C00240AD0 /* WSCKeychainErrorPrivate.h */,
+				8339FA531A542D2C00240AD0 /* WSCKeychainErrorPrivate.m */,
+			);
+			name = Public;
+			sourceTree = "<group>";
+		};
+		839FE2F01A5E0BAA00DCED3C /* Private */ = {
+			isa = PBXGroup;
+			children = (
+				83C7237E1A4C1AA60084221A /* WSCKeychain.h */,
+				83C7237F1A4C1AA60084221A /* WSCKeychain.m */,
+				834D20E21A4EDD6900539F49 /* WSCKeychainError.h */,
+				834D20E31A4EDD6900539F49 /* WSCKeychainError.m */,
+				834D20E91A4EEA4400539F49 /* NSURL+WSCKeychainURL.h */,
+				834D20EA1A4EEA4400539F49 /* NSURL+WSCKeychainURL.m */,
+			);
+			name = Private;
+			sourceTree = "<group>";
+		};
+		839FE2F11A5E0BC500DCED3C /* Public */ = {
+			isa = PBXGroup;
+			children = (
+				830A4F1E1A5830E900F4EAA7 /* WSCKeychainManager.h */,
+				830A4F1F1A5830E900F4EAA7 /* WSCKeychainManager.m */,
+			);
+			name = Public;
+			sourceTree = "<group>";
+		};
+		839FE2F21A5E0BD600DCED3C /* Public */ = {
+			isa = PBXGroup;
+			children = (
+				838221121A4C229B00EF9945 /* WSCAccess.h */,
+				838221131A4C229B00EF9945 /* WSCAccess.m */,
+			);
+			name = Public;
+			sourceTree = "<group>";
+		};
 		83C723641A4C1AA60084221A = {
 			isa = PBXGroup;
 			children = (
+				839FE2F41A5E18FA00DCED3C /* NSString+OMCString.h */,
+				839FE2F51A5E18FA00DCED3C /* NSString+OMCString.m */,
 				83C723771A4C1AA60084221A /* WaxSealCore */,
 				83C7238C1A4C1AA60084221A /* WaxSealCoreTests */,
 				83C723701A4C1AA60084221A /* Frameworks */,
@@ -251,6 +289,7 @@
 				83E966341A4D8135008FDEE8 /* WSCCommon.h in Headers */,
 				834D20E41A4EDD6900539F49 /* WSCKeychainError.h in Headers */,
 				8339FA541A542D2C00240AD0 /* WSCKeychainErrorPrivate.h in Headers */,
+				839FE2F61A5E18FA00DCED3C /* NSString+OMCString.h in Headers */,
 				834D20EB1A4EEA4400539F49 /* NSURL+WSCKeychainURL.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -367,6 +406,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				839FE2F71A5E18FA00DCED3C /* NSString+OMCString.m in Sources */,
 				83E966371A4D82B0008FDEE8 /* WSCCommon.m in Sources */,
 				83C723801A4C1AA60084221A /* WSCKeychain.m in Sources */,
 				838221151A4C229B00EF9945 /* WSCAccess.m in Sources */,

@@ -38,6 +38,7 @@
 #import "NSURL+WSCKeychainURL.h"
 #import "WSCKeychainError.h"
 #import "WSCKeychainErrorPrivate.h"
+#import "NSString+OMCString.h"
 
 // --------------------------------------------------------
 #pragma mark Interface of WSCKeychainManagerTests case
@@ -840,6 +841,44 @@
     XCTAssertNotNil( error );
     WSCPrintNSErrorForUnitTest( error );
     XCTAssertFalse( isSuccess );
+    }
+
+- ( void ) testLockAllKeychains
+    {
+    SecKeychainLockAll();
+
+    CFArrayRef cfSearchList = NULL;
+    SecKeychainCopySearchList( &cfSearchList );
+
+    NSLog( @"SearchListCount: %lu %@", CFArrayGetCount( cfSearchList ), ( __bridge NSArray* )cfSearchList );
+
+    CFRelease( cfSearchList );
+    }
+
+- ( void ) testSetSearchList
+    {
+    CFArrayRef cfSearchList = NULL;
+    SecKeychainCopySearchList( &cfSearchList );
+
+    NSMutableArray* newSearchList = [ NSMutableArray array ];
+    [ ( __bridge NSArray* )cfSearchList enumerateObjectsUsingBlock:
+        ^( id _SecKeychain, NSUInteger _Index, BOOL* _Stop )
+            {
+            [ newSearchList addObject: [ WSCKeychain keychainWithSecKeychainRef: ( __bridge SecKeychainRef )_SecKeychain ] ];
+            } ];
+
+    NSMutableArray* newSecSearchList = [ NSMutableArray array ];
+    [ newSearchList enumerateObjectsUsingBlock:
+        ^( WSCKeychain* _Keychain, NSUInteger _Index, BOOL* _Stop )
+            {
+            if ( ![ _Keychain.URL.path contains: @"testCase3" ]
+                    && ![ _Keychain.URL.path contains: @"testCase5" ] )
+                [ newSecSearchList addObject: ( __bridge id )_Keychain.secKeychain ];
+            } ];
+
+    SecKeychainSetSearchList( ( __bridge CFArrayRef )newSecSearchList );
+
+    CFRelease( cfSearchList );
     }
 
 - ( void ) testUnlockKeychain

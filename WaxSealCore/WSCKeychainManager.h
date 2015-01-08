@@ -278,6 +278,39 @@
 - ( BOOL ) unlockKeychainWithUserInteraction: ( WSCKeychain* )_Keychain
                                        error: ( NSError** )_Error;
 
+#pragma mark Searching for Keychains Items
+/** @name Searching for Keychains Items */
+
+/** Retrieves a keychain search list.
+  
+  @return The keychain search list for current user.
+  
+  @sa setKeychainSearchList:
+  */
+- ( NSArray* ) keychainSearchList;
+
+/** Specifies the list of keychains to use in the default keychain search list.
+
+  Prior to updating the current default keychain search list, the keychain manager asks its delegate if it should actually do so.
+  It does this by calling the [keychainManager:shouldUpdateKeychainSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldUpdateKeychainSearchList:]) method;
+  If the delegate method returns `YES`, or if the delegate does not implement the appropriate methods,
+  the keychain manager proceeds to update the current default keychain search list with a new list of keychains specified in *_Keychains* parameter.
+  If there is an error updating search list, the keychain manager may also call the delegate's
+  [keychainManager:shouldProceedAfterError:updatingKeychainSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:updatingKeychainSearchList:]) method to determine how to proceed.
+
+  The default keychain search list is displayed as the keychain list in the Keychain Access utility.
+
+  If you use this method to change the keychain search list, the list displayed in Keychain Access changes accordingly.
+  
+  To obtain the current default keychain search list, use the keychainSearchList method.
+
+  @param _Keychains An array of keychain objects (of class WSCKeychain) specifying the list of keychains to use in the new default keychain search list.
+                    Passing an empty array clears the search list.
+  
+  @sa keychainSearchList
+  */
+- ( BOOL ) setKeychainSearchList: ( NSArray* )_Keychains;
+
 @end // WSCKeychainManager
 
 #pragma mark WSCKeychainManagerDelegate Protocol
@@ -504,6 +537,41 @@
 - ( BOOL )               keychainManager: ( WSCKeychainManager* )_KeychainManager
                  shouldProceedAfterError: ( NSError* )_Error
     unlockingKeychainWithUserInteraction: ( WSCKeychain* )_Keychain;
+
+#pragma mark Searching for Keychains Items
+/** @name Searching for Keychains Items */
+
+/** Asks the delegate whether the current default keychain search list should be changed.
+
+  If you do not implement this method, the keychain manager assumes a repsonse of `YES`.
+
+  @param _KeychainManager The keychain manager that attempted to change the current default keychain search list.
+  
+  @param _SearchList An array of keychain objects (of class WSCKeychain) specifying the list of keychains to use in the new default keychain search list.
+  
+  @return `YES` if the current default keychain search list should be updated or `NO` if it should not be updated.
+
+  @sa [- keychainManager:shouldProceedAfterError:updatingKeychainSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:updatingKeychainSearchList:])
+  */
+- ( BOOL )         keychainManager: ( WSCKeychainManager* )_KeychainManager
+    shouldUpdateKeychainSearchList: ( NSArray* )_SearchList;
+
+/** Asks the delegate if the operation should continue after an error occurs while updating the current default keychain search list.
+
+  @param _KeychainManager The keychain manager that attempted to change the current default keychain search list.
+  
+  @param _Error The error that occurred while attempting to update the current default keychain search list.
+
+  @param _SearchList An array of keychain objects (of class WSCKeychain) specifying the list of keychains to use in the new default keychain search list.
+  
+  @return `YES` if the operation should proceed or `NO` if it should be aborted. 
+          If you do not implement this method, the keychain manager assumes a response of `NO`.
+          
+  @sa [- keychainManager:shouldUpdateKeychainSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldUpdateKeychainSearchList:])
+  */
+- ( BOOL )   keychainManager: ( WSCKeychainManager* )_KeychainManager
+     shouldProceedAfterError: ( NSError* )_Error
+  updatingKeychainSearchList: ( NSArray* )_SearchList;
 
 @end // WSCKeychainManagerDelegate protocol
 
