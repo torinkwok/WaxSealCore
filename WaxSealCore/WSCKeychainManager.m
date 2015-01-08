@@ -115,14 +115,17 @@ WSCKeychainManager static* s_defaultManager = nil;
 
                 if ( resultCode != errSecSuccess )
                     {
+                    NSError* newError = nil;
+                    WSCFillErrorParamWithSecErrorCode( resultCode, &newError );
+
                     if ( _Error )
-                        WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+                        *_Error = [ newError copy ];
 
                     /* If delegate implements keychainManager:shouldDeleteKeychain: method */
                     if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:deletingKeychain: ) ] )
                         {
                         BOOL shouldContinue = [ self.delegate keychainManager: self
-                                                      shouldProceedAfterError: *_Error
+                                                      shouldProceedAfterError: newError
                                                              deletingKeychain: _Keychain ];
 
                         /* which means the deleting operation shouldn't continue after an error occurs */
@@ -132,7 +135,7 @@ WSCKeychainManager static* s_defaultManager = nil;
                             *_Stop = YES;
                             }
                         else
-                            WSCPrintNSErrorForLog( *_Error );
+                            WSCPrintNSErrorForLog( newError );
                         }
                     else /* If delegate does not implements 
                           * keychainManager:shouldProceedAfterError:deletingKeychain: at all */
@@ -402,6 +405,43 @@ WSCKeychainManager static* s_defaultManager = nil;
     // If every parameters is correct but the keychain has been already unlocked:
     // do nothing, just returns YES, which means the unlocking operation is successful.
     return YES;
+    }
+
+#pragma mark Searching for Keychains Items
+
+/* Retrieves a keychain search list. 
+ */
+- ( NSArray* ) keychainSearchList
+    {
+    OSStatus resultCode = errSecSuccess;
+    NSError* error = nil;
+
+    CFArrayRef secSearchList = NULL;
+    resultCode = SecKeychainCopySearchList( &secSearchList );
+
+    // As described in the documentation,
+    // return nil if an error occurs:
+    if ( resultCode != errSecSuccess )
+        {
+        WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+        WSCPrintNSErrorForLog( error );
+
+        return nil;
+        }
+
+    NSMutableArray* newSearchList = [ NSMutableArray array ];
+    [ ( __bridge NSArray* )secSearchList enumerateObjectsUsingBlock:
+        ^( id _SecKeychain /* The SecKeychain object waiting for be encapsulated with WSCKeychain class */
+         , NSUInteger _Index
+         , BOOL* _Stop )
+        {
+        [ newSearchList addObject:
+            [ WSCKeychain keychainWithSecKeychainRef: ( __bridge SecKeychainRef )_SecKeychain ] ];
+        } ];
+
+    CFRelease( secSearchList );
+
+    return [ [ newSearchList copy ] autorelease ];
     }
 
 #pragma mark Overrides for Singleton Objects

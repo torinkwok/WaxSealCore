@@ -283,7 +283,9 @@
 
 /** Retrieves a keychain search list.
   
-  @return The keychain search list for current user.
+  @return The keychain search list for current user. 
+          Returns `nil` if an error occurs.
+          Returns an empty array if the current keychain search list is empty.
   
   @sa setKeychainSearchList:
   */

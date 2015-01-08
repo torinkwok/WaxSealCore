@@ -845,14 +845,17 @@
 
 - ( void ) testLockAllKeychains
     {
-    SecKeychainLockAll();
+//    SecKeychainLockAll();
+    }
 
-    CFArrayRef cfSearchList = NULL;
-    SecKeychainCopySearchList( &cfSearchList );
+- ( void ) testGetSearchList
+    {
+    NSArray* currentSearchList_testCase0 = [ [ WSCKeychainManager defaultManager ] keychainSearchList ];
 
-    NSLog( @"SearchListCount: %lu %@", CFArrayGetCount( cfSearchList ), ( __bridge NSArray* )cfSearchList );
+    XCTAssertNotNil( currentSearchList_testCase0 );
 
-    CFRelease( cfSearchList );
+    NSLog( @"Current Search List Count: %lu %@", currentSearchList_testCase0.count
+                                               , currentSearchList_testCase0 );
     }
 
 - ( void ) testSetSearchList
