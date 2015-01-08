@@ -296,7 +296,7 @@
   Prior to updating the current default keychain search list, the keychain manager asks its delegate if it should actually do so.
   It does this by calling the [keychainManager:shouldUpdateKeychainSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldUpdateKeychainSearchList:]) method;
   If the delegate method returns `YES`, or if the delegate does not implement the appropriate methods,
-  the keychain manager proceeds to update the current default keychain search list with a new list of keychains specified in *_Keychains* parameter.
+  the keychain manager proceeds to update the current default keychain search list with a new list of keychains specified in *_SearchList* parameter.
   If there is an error updating search list, the keychain manager may also call the delegate's
   [keychainManager:shouldProceedAfterError:updatingKeychainSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:updatingKeychainSearchList:]) method to determine how to proceed.
 
@@ -306,12 +306,18 @@
   
   To obtain the current default keychain search list, use the keychainSearchList method.
 
-  @param _Keychains An array of keychain objects (of class WSCKeychain) specifying the list of keychains to use in the new default keychain search list.
-                    Passing an empty array clears the search list.
+  @param _SearchList An array of keychain objects (of class WSCKeychain) specifying the list of keychains to use in the new default keychain search list.
+                     Passing an empty array clears the search list.
+                     This parameter must not be nil.
+                    
+  @return The older default keychain search list if the current keychain search list was updated successfully.
+          Returns `nil` if an error occured.
+          If the delegate aborts the operation for the keychain, this method returns `nil`.
   
   @sa keychainSearchList
   */
-- ( BOOL ) setKeychainSearchList: ( NSArray* )_Keychains;
+- ( NSArray* ) setKeychainSearchList: ( NSArray* )_SearchList
+                               error: ( NSError** )_Error;
 
 @end // WSCKeychainManager
 

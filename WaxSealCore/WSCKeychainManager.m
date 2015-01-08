@@ -444,6 +444,85 @@ WSCKeychainManager static* s_defaultManager = nil;
     return [ [ newSearchList copy ] autorelease ];
     }
 
+/* Specifies the list of keychains to use in the default keychain search list. 
+ */
+- ( NSArray* ) setKeychainSearchList: ( NSArray* )_SearchList
+                               error: ( NSError** )_Error;
+    {
+    // If the delegate aborts the operation for the keychain, this method returns `nil`.
+    if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldUpdateKeychainSearchList: ) ]
+            && ![ self.delegate keychainManager: self shouldUpdateKeychainSearchList: _SearchList ] )
+        return nil;
+
+    // Before updating the default keychain search list
+    // let's retrieve the older search list in order to return it
+    NSArray* olderSearchList = [ self keychainSearchList ];
+
+    NSError* newError = nil;
+    if ( !_SearchList || ![ _SearchList isKindOfClass: [ NSArray class ] ] )
+        {
+        newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                        code: WSCKeychainInvalidParametersError
+                                    userInfo: nil ];
+        if ( _Error )
+            // TODO: check the copy method
+            *_Error = [ [ newError copy ] autorelease ];
+
+        // If the delegate implements this delegate method
+        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:updatingKeychainSearchList: ) ]
+                // and this delegate method returns YES
+                && [ self.delegate keychainManager: self shouldProceedAfterError: newError updatingKeychainSearchList: _SearchList ] )
+            // although an error occured, returns the older search list anyway
+            return olderSearchList;
+        else
+            return nil;
+        }
+
+    OSStatus resultCode = errSecSuccess;
+    NSMutableArray* secSearchList = [ NSMutableArray array ];
+
+    NSEnumerator* searchListEnumerator = [ _SearchList objectEnumerator ];
+    WSCKeychain* _SecKeychain = nil;
+    while ( _SecKeychain = [ searchListEnumerator nextObject ] )
+        {
+        if ( !_SecKeychain.isValid )
+            {
+            newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                            code: WSCKeychainKeychainIsInvalidError
+                                        userInfo: nil ]; // TODO: maybe we should find a more appropriate description for this kind of context
+            if ( _Error )
+                *_Error = [ [ newError copy ] autorelease ];
+
+            // If the delegate implements this delegate method
+            if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:updatingKeychainSearchList: ) ]
+                    // and this delegate method returns YES
+                    && [ self.delegate keychainManager: self shouldProceedAfterError: newError updatingKeychainSearchList: _SearchList ] )
+                continue;
+            else
+                break;
+            }
+
+        [ secSearchList addObject: ( __bridge id )_SecKeychain.secKeychain ];
+        }
+
+    // Okay, if there is not any problem so far, update the search list
+    resultCode = SecKeychainSetSearchList( ( __bridge CFArrayRef )secSearchList );
+    if ( resultCode != errSecSuccess )
+        {
+        WSCFillErrorParamWithSecErrorCode( resultCode, &newError );
+
+        // If the delegate implements this delegate method
+        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:updatingKeychainSearchList: ) ]
+                // and this delegate method returns YES
+                && [ self.delegate keychainManager: self shouldProceedAfterError: newError updatingKeychainSearchList: _SearchList ] )
+            ;
+        else
+            return nil;
+        }
+
+    return olderSearchList;
+    }
+
 #pragma mark Overrides for Singleton Objects
 /* Overriding implementation of -[ WSCKeychain retain ] for own singleton object */
 - ( instancetype ) retain
