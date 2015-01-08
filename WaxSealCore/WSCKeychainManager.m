@@ -464,9 +464,6 @@ WSCKeychainManager static* s_defaultManager = nil;
         newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                         code: WSCKeychainInvalidParametersError
                                     userInfo: nil ];
-        if ( _Error )
-            // TODO: check the copy method
-            *_Error = [ [ newError copy ] autorelease ];
 
         // If the delegate implements this delegate method
         if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:updatingKeychainSearchList: ) ]
@@ -475,37 +472,67 @@ WSCKeychainManager static* s_defaultManager = nil;
             // although an error occured, returns the older search list anyway
             return olderSearchList;
         else
+            {
+            if ( _Error )
+                *_Error = [ newError copy ];
+
             return nil;
+            }
         }
 
     OSStatus resultCode = errSecSuccess;
+
+    //====================================================================================//
+    // Get an array of references of SecKeychain objects from the _SearchList parameter,
+    // which is an array of WSCKeychain objects
+
     NSMutableArray* secSearchList = [ NSMutableArray array ];
 
     NSEnumerator* searchListEnumerator = [ _SearchList objectEnumerator ];
     WSCKeychain* _SecKeychain = nil;
     while ( _SecKeychain = [ searchListEnumerator nextObject ] )
         {
-        if ( !_SecKeychain.isValid )
-            {
-            newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                            code: WSCKeychainKeychainIsInvalidError
-                                        userInfo: nil ]; // TODO: maybe we should find a more appropriate description for this kind of context
-            if ( _Error )
-                *_Error = [ [ newError copy ] autorelease ];
+        NSError* errorPassedInDelegateMethod = nil;
 
+        if ( !_SecKeychain || ![ _SecKeychain isKindOfClass: [ WSCKeychain class ] ] )
+            {
+            errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                                               code: WSCKeychainInvalidParametersError
+                                                            // TODO: maybe we should find a more appropriate description for this kind of context
+                                                           userInfo: nil ];
+            }
+        else if ( !_SecKeychain.isValid )
+            {
+            errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                                               code: WSCKeychainKeychainIsInvalidError
+                                                           // TODO: maybe we should find a more appropriate description for this kind of context
+                                                           userInfo: nil ];
+            }
+
+        // Error occured
+        if ( errorPassedInDelegateMethod )
+            {
             // If the delegate implements this delegate method
             if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:updatingKeychainSearchList: ) ]
                     // and this delegate method returns YES
-                    && [ self.delegate keychainManager: self shouldProceedAfterError: newError updatingKeychainSearchList: _SearchList ] )
+                    && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod updatingKeychainSearchList: _SearchList ] )
+                // Ignore the error anyway...
                 continue;
             else
-                break;
+                {
+                if ( _Error )
+                    *_Error = [ errorPassedInDelegateMethod copy ];
+
+                return nil;
+                }
             }
 
         [ secSearchList addObject: ( __bridge id )_SecKeychain.secKeychain ];
         }
 
-    // Okay, if there is not any problem so far, update the search list
+    //====================================================================================//
+    // Okay, if there is NOT any problem so far, update the search list
+
     resultCode = SecKeychainSetSearchList( ( __bridge CFArrayRef )secSearchList );
     if ( resultCode != errSecSuccess )
         {
@@ -519,6 +546,8 @@ WSCKeychainManager static* s_defaultManager = nil;
         else
             return nil;
         }
+
+    //====================================================================================//
 
     return olderSearchList;
     }

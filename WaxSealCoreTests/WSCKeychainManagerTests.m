@@ -196,6 +196,33 @@
         return NO;
     }
 
+- ( BOOL )         keychainManager: ( WSCKeychainManager* )_KeychainManager
+    shouldUpdateKeychainSearchList: ( NSArray* )_SearchList
+    {
+    if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
+            || _KeychainManager == self.testManager1
+            || _KeychainManager == self.testManager3 )
+        return YES;
+    else
+        return NO;
+    }
+
+- ( BOOL )     keychainManager: ( WSCKeychainManager* )_KeychainManager
+       shouldProceedAfterError: ( NSError* )_Error
+    updatingKeychainSearchList: ( NSArray* )_SearchList
+    {
+    if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
+            || _KeychainManager == self.testManager1 )
+        {
+        if ( _Error.code == WSCKeychainKeychainIsInvalidError )
+            return NO;
+        else
+            return YES;
+        }
+    else
+        return NO;
+    }
+
 @end // WSCKeychainTests + WSCKeychainManagerTests
 
 // --------------------------------------------------------
@@ -860,28 +887,140 @@
 
 - ( void ) testSetSearchList
     {
-    CFArrayRef cfSearchList = NULL;
-    SecKeychainCopySearchList( &cfSearchList );
+    NSError* error = nil;
+    NSArray* commonOriginalSearchList = nil;
+#if 0
+    NSURL* fuckingURL = [ NSURL URLWithString: @"file:///Users/EsquireTongG/" ];
+    [ [ NSFileManager defaultManager ] removeItemAtURL: fuckingURL error: &error ];
+#endif
+    // -------------------------------------------------------------------------------------------------------
+    // Test Case 0: Set a new keychain search list which contains only one keychain: self.publicKeychain
+    // -------------------------------------------------------------------------------------------------------
+    NSArray* olderSearchList = [ [ WSCKeychainManager defaultManager ] setKeychainSearchList: @[ self.publicKeychain ]
+                                                                                       error: &error ];
+    commonOriginalSearchList = [ NSArray arrayWithArray: olderSearchList ];
 
-    NSMutableArray* newSearchList = [ NSMutableArray array ];
-    [ ( __bridge NSArray* )cfSearchList enumerateObjectsUsingBlock:
-        ^( id _SecKeychain, NSUInteger _Index, BOOL* _Stop )
-            {
-            [ newSearchList addObject: [ WSCKeychain keychainWithSecKeychainRef: ( __bridge SecKeychainRef )_SecKeychain ] ];
-            } ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertNotNil( olderSearchList );
 
-    NSMutableArray* newSecSearchList = [ NSMutableArray array ];
-    [ newSearchList enumerateObjectsUsingBlock:
+    // -------------------------------------------------------------------------------------------------------
+    // Restored
+    // -------------------------------------------------------------------------------------------------------
+    olderSearchList = [ [ WSCKeychainManager defaultManager ] setKeychainSearchList: olderSearchList
+                                                                              error: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertNotNil( olderSearchList );
+
+    // System.keychain and self.publicKeychain
+    XCTAssertEqual( olderSearchList.count, 2 );
+
+    // -------------------------------------------------------------------------------------------------------
+    // Negative Test Case 0: invoke secKeychainSearchList:error: with an incorrect parameter
+    // -------------------------------------------------------------------------------------------------------
+    NSURL* URLForKeychain_negativeTestCase1 = [ self URLForTestCase: [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"negativeCase1" ]
+                                                         doesPrompt: NO
+                                                       deleteExists: YES ];
+
+    WSCKeychain* keychain_negativeTestCase1 = [ WSCKeychain keychainWithURL: URLForKeychain_negativeTestCase1
+                                                                   password: self.passwordForTest
+                                                              initialAccess: nil
+                                                             becomesDefault: NO
+                                                                      error: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertNotNil( keychain_negativeTestCase1 );
+
+    XCTAssertTrue( keychain_negativeTestCase1.isValid );
+    BOOL isSuccess = NO;
+    isSuccess = [ self.testManager1 deleteKeychain: keychain_negativeTestCase1 error: &error ];
+    XCTAssertFalse( keychain_negativeTestCase1.isValid );
+    XCTAssertTrue( isSuccess );
+
+    // -------------------------------------------------------------------------------------------------------
+
+    olderSearchList = [ [ WSCKeychainManager defaultManager ] setKeychainSearchList: nil
+                                                                              error: &error ];
+    XCTAssertNotNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertNil( olderSearchList );
+
+    olderSearchList = [ self.testManager1 setKeychainSearchList: nil
+                                                          error: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertNotNil( olderSearchList );
+
+    olderSearchList = [ self.testManager1 setKeychainSearchList: @[ keychain_negativeTestCase1 ]
+                                                          error: &error ];
+    XCTAssertNotNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertNil( olderSearchList );
+
+    olderSearchList = [ self.testManager1 setKeychainSearchList: ( NSArray* )[ NSSet setWithObject: self.publicKeychain ]
+                                                                              error: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertNotNil( olderSearchList );
+
+    // -------------------------------------------------------------------------------------------------------
+    // Negative Test Case 1: invoke secKeychainSearchList:error: with an keychains array which contains some invalid keychain object
+    // -------------------------------------------------------------------------------------------------------
+    olderSearchList = [ [ WSCKeychainManager defaultManager ] setKeychainSearchList: @[ self.publicKeychain ]
+                                                                              error: &error ];
+    XCTAssertNotNil( olderSearchList );
+
+    NSMutableArray* goodAndBadKeychains = [ NSMutableArray arrayWithObject: [ NSNull null ] ];
+    [ goodAndBadKeychains addObject: @23 ];
+    [ goodAndBadKeychains addObject: [ NSDate date ] ];
+    [ goodAndBadKeychains addObject: commonOriginalSearchList[ 0 ] ];
+    [ goodAndBadKeychains addObject: commonOriginalSearchList[ 1 ] ];
+    [ goodAndBadKeychains addObject: keychain_negativeTestCase1 ];
+
+    [ commonOriginalSearchList enumerateObjectsUsingBlock:
         ^( WSCKeychain* _Keychain, NSUInteger _Index, BOOL* _Stop )
             {
-            if ( ![ _Keychain.URL.path contains: @"testCase3" ]
-                    && ![ _Keychain.URL.path contains: @"testCase5" ] )
-                [ newSecSearchList addObject: ( __bridge id )_Keychain.secKeychain ];
+            if ( _Index != 0 || _Index != 1 )
+                [ goodAndBadKeychains addObject: _Keychain ];
             } ];
 
-    SecKeychainSetSearchList( ( __bridge CFArrayRef )newSecSearchList );
+    /* We are using default keychain manager
+     * so the delegate method keychainManager:shouldProceedAfterError:updatingSearchList: returns NO */
+    olderSearchList = [ [ WSCKeychainManager defaultManager ] setKeychainSearchList: goodAndBadKeychains
+                                                                              error: &error ];
+    XCTAssertNotNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertNil( olderSearchList );
 
-    CFRelease( cfSearchList );
+
+    /* We are using default self.testManager2
+     * so the delegate method keychainManager:shouldUpdateSearchList: returns NO */
+    olderSearchList = [ self.testManager2 setKeychainSearchList: goodAndBadKeychains
+                                                          error: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertNil( olderSearchList );
+
+    /* We are using self.testManager1
+     * and there is an error object whose code will be WSCKeychainKeychainIsInvalidError,
+     * so the delegate method keychainManager:shouldProceedAfterError:updatingSearchList: returns NO */
+    olderSearchList = [ self.testManager1 setKeychainSearchList: goodAndBadKeychains
+                                                          error: &error ];
+    XCTAssertNotNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertNil( olderSearchList );
+
+    [ goodAndBadKeychains removeObject: keychain_negativeTestCase1 ];
+
+    /* We are using self.testManager1
+     * and the error code will only be WSCKeychainInvalidParametersError
+     * so the delegate method keychainManager:shouldProceedAfterError:updatingSearchList: returns YES */
+    olderSearchList = [ self.testManager1 setKeychainSearchList: goodAndBadKeychains
+                                                          error: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertNotNil( olderSearchList );
     }
 
 - ( void ) testUnlockKeychain
