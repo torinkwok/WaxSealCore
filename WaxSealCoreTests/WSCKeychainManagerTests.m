@@ -1082,7 +1082,7 @@
     isSuccess = [ self.testManager1 unlockKeychain: self.publicKeychain
                                       withPassword: @"123456"
                                              error: &error ];
-    XCTAssertNotNil( error );
+    XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
 
     /* We are using self.testManager1
@@ -1115,18 +1115,46 @@
     isSuccess = [ self.testManager1 unlockKeychain: [ WSCKeychain login ]
                                       withPassword: nil
                                              error: &error ];
-    XCTAssertNotNil( error );
+    XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
     XCTAssertTrue( isSuccess );
     XCTAssertTrue( [ WSCKeychain login ].isLocked );
 
     // ----------------------------------------------------------------------------------
-    // Negative Test Case 1: Unlock login.keychain with NSNumber object
+    // Negative Test Case 2: Unlock login.keychain with NSNumber object
     // ----------------------------------------------------------------------------------
     isSuccess = [ self.testManager3 unlockKeychain: [ WSCKeychain login ]
                                       withPassword: ( NSString* )@149 // whatever
                                              error: &error ];
     XCTAssertNotNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertFalse( isSuccess );
+    XCTAssertTrue( [ WSCKeychain login ].isLocked );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 3: Unloc an invalid keychain and incorrect type of password parameter
+    // ----------------------------------------------------------------------------------
+    NSURL* URLForKeychain_negativeTestCase3 = [ self URLForTestCase: [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"negativeCase2" ]
+                                                         doesPrompt: NO
+                                                       deleteExists: YES ];
+
+    WSCKeychain* keychain_negativeTestCase3 = [ WSCKeychain keychainWithURL: URLForKeychain_negativeTestCase3
+                                                                   password: self.passwordForTest
+                                                              initialAccess: nil
+                                                             becomesDefault: NO
+                                                                      error: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertTrue( keychain_negativeTestCase3.isValid );
+    [ self.testManager3 deleteKeychain: keychain_negativeTestCase3 error: nil ];
+    XCTAssertFalse( keychain_negativeTestCase3.isValid );
+
+    isSuccess = [ self.testManager3 unlockKeychain: keychain_negativeTestCase3
+                                      withPassword: ( NSString* )@149 // whatever
+                                             error: &error ];
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     WSCPrintNSErrorForUnitTest( error );
     XCTAssertFalse( isSuccess );
     XCTAssertTrue( [ WSCKeychain login ].isLocked );

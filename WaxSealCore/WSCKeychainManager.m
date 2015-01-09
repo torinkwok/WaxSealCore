@@ -289,6 +289,7 @@ WSCKeychainManager static* s_defaultManager = nil;
                                         code: WSCKeychainKeychainIsInvalidError
                                     userInfo: nil ];
 
+    // If indeed there an error
     if ( errorPassedInDelegateMethod )
         {
         if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:lockingKeychain: ) ]
@@ -314,14 +315,16 @@ WSCKeychainManager static* s_defaultManager = nil;
             {
             WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
 
-            if ( _Error )
-                *_Error = [ errorPassedInDelegateMethod copy ];
-
             if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:lockingKeychain: ) ]
                     && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod lockingKeychain: _Keychain ] )
                 return YES;
             else
+                {
+                if ( _Error )
+                    *_Error = [ errorPassedInDelegateMethod copy ];
+
                 return NO;
+                }
             }
         }
 
@@ -345,36 +348,34 @@ WSCKeychainManager static* s_defaultManager = nil;
             && ![ self.delegate keychainManager: self shouldUnlockKeychain: _Keychain withPassword: _Password ] )
         return NO;
 
-    NSError* newError = nil;
-    if ( !_Keychain || ![ _Keychain isKindOfClass: [ WSCKeychain class ] ]
-            || !_Password || ![ _Password isKindOfClass: [ NSString class ] ] )
-        {
-        newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                        code: WSCKeychainInvalidParametersError
-                                    userInfo: nil ];
-        if ( _Error )
-            *_Error = [ newError copy ];
+    NSError* errorPassedInDelegateMethod = nil;
+    if ( !_Keychain || ![ _Keychain isKindOfClass: [ WSCKeychain class ] ] )
+        errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                                           code: WSCKeychainInvalidParametersError
+                                                       userInfo: nil ];
 
+    else if ( !_Keychain.isValid /* If the keychain is invalid */ )
+        errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                                           code: WSCKeychainKeychainIsInvalidError
+                                                       userInfo: nil ];
+
+    else if ( !_Password || ![ _Password isKindOfClass: [ NSString class ] ] )
+        errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                                           code: WSCKeychainInvalidParametersError
+                                                       userInfo: nil ];
+    // If indeed there an error
+    if ( errorPassedInDelegateMethod )
+        {
         if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:unlockingKeychain:withPassword: ) ]
-                && [ self.delegate keychainManager: self shouldProceedAfterError: newError unlockingKeychain: _Keychain withPassword: _Password ] )
+                && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod unlockingKeychain: _Keychain withPassword: _Password ] )
             return YES;
         else
-            return NO;
-        }
+            {
+            if ( _Error )
+                *_Error = [ errorPassedInDelegateMethod copy ];
 
-    if ( !_Keychain.isValid /* If the keychain is invalid */ )
-        {
-        newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                        code: WSCKeychainKeychainIsInvalidError
-                                    userInfo: nil ];
-        if ( _Error )
-            *_Error = [ newError copy ];
-
-        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:unlockingKeychain:withPassword: ) ]
-                && [ self.delegate keychainManager: self shouldProceedAfterError: newError unlockingKeychain: _Keychain withPassword: _Password ] )
-            return YES;
-        else
             return NO;
+            }
         }
 
     if ( _Keychain.isLocked /* The keychain must not be unlocked */ )
@@ -388,16 +389,18 @@ WSCKeychainManager static* s_defaultManager = nil;
                                       );
         if ( resultCode != errSecSuccess )
             {
-            WSCFillErrorParamWithSecErrorCode( resultCode, &newError );
-
-            if ( _Error )
-                *_Error = [ newError copy ];
+            WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
 
             if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:unlockingKeychain:withPassword: ) ]
-                    && [ self.delegate keychainManager: self shouldProceedAfterError: newError unlockingKeychain: _Keychain withPassword: _Password ] )
+                    && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod unlockingKeychain: _Keychain withPassword: _Password ] )
                 return YES;
             else
+                {
+                if ( _Error )
+                    *_Error = [ errorPassedInDelegateMethod copy ];
+
                 return NO;
+                }
             }
         }
 
