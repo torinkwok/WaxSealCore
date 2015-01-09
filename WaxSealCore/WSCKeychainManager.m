@@ -279,7 +279,6 @@ WSCKeychainManager static* s_defaultManager = nil;
         errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                                            code: WSCKeychainKeychainIsInvalidError
                                                        userInfo: nil ];
-
     // If indeed there an error
     if ( errorPassedInDelegateMethod )
         {
