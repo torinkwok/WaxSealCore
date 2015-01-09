@@ -172,48 +172,35 @@ WSCKeychainManager static* s_defaultManager = nil;
             && ![ self.delegate keychainManager: self shouldSetKeychainAsDefault: _Keychain ] )
         return nil;
 
-    /* Before setting a new default keychain,
-     * let us retrieve the older default keychain */
+    // Before setting a new default keychain,
+    // let us retrieve the older default keychain.
     WSCKeychain* olderDefaultKeychain = [ self currentDefaultKeychain: nil ];
 
     // If the delegate method returns `YES`,
     // or the delegate does not implement the keychainManager:shouldSetKeychainAsDefault: method at all,
     // continue to set the specified keychain as default.
 
-    NSError* newError = nil;
-    OSStatus resultCode = errSecSuccess;
-
-    if ( !_Keychain || ![ _Keychain isKindOfClass: [ WSCKeychain class ] ] )
-        {
-        newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
+    NSError* errorPassedInMethodDelegate = nil;
+    if ( !_Keychain /* If the _Keychain parameter is nil */
+            || ![ _Keychain isKindOfClass: [ WSCKeychain class ] ] /* or it's not a WSCKeychain object */ )
+        errorPassedInMethodDelegate = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                         code: WSCKeychainInvalidParametersError
                                     userInfo: nil ];
 
-        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:settingKeychainAsDefault: ) ]
-                && [ self.delegate keychainManager: self shouldProceedAfterError: newError settingKeychainAsDefault: _Keychain ] )
-            return olderDefaultKeychain;
-        else
-            {
-            if ( _Error )
-                *_Error = [ newError copy ];
-
-            return nil;
-            }
-        }
-
-    if ( !_Keychain.isValid /* If the keychain is invalid */ )
-        {
-        newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
+    else if ( !_Keychain.isValid /* If the keychain is invalid */ )
+        errorPassedInMethodDelegate = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                         code: WSCKeychainKeychainIsInvalidError
                                     userInfo: nil ];
-
+    // If indeed there an error
+    if ( errorPassedInMethodDelegate )
+        {
         if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:settingKeychainAsDefault: ) ]
-                && [ self.delegate keychainManager: self shouldProceedAfterError: newError settingKeychainAsDefault: _Keychain ] )
+                && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInMethodDelegate settingKeychainAsDefault: _Keychain ] )
             return olderDefaultKeychain;
         else
             {
             if ( _Error )
-                *_Error = [ newError copy ];
+                *_Error = [ errorPassedInMethodDelegate copy ];
 
             return nil;
             }
@@ -221,19 +208,19 @@ WSCKeychainManager static* s_defaultManager = nil;
 
     if ( !_Keychain.isDefault /* If the specified keychain is not default */ )
         {
-        resultCode = SecKeychainSetDefault( _Keychain.secKeychain );
+        OSStatus resultCode = SecKeychainSetDefault( _Keychain.secKeychain );
 
         if ( resultCode != errSecSuccess )
             {
-            WSCFillErrorParamWithSecErrorCode( resultCode, &newError );
+            WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInMethodDelegate );
 
             if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:settingKeychainAsDefault: ) ]
-                    && [ self.delegate keychainManager: self shouldProceedAfterError: newError settingKeychainAsDefault: _Keychain ] )
+                    && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInMethodDelegate settingKeychainAsDefault: _Keychain ] )
                 return olderDefaultKeychain;
             else
                 {
                 if ( _Error )
-                    *_Error = [ newError copy ];
+                    *_Error = [ errorPassedInMethodDelegate copy ];
 
                 return nil;
                 }
