@@ -821,7 +821,7 @@
      * so the delegate method keychainManager:shouldProceedAfterError:lockingKeychain: returns YES */
     isSuccess = [ self.testManager1 lockKeychain: ( WSCKeychain* )[ NSDate date ]
                                            error: &error ];
-    XCTAssertNotNil( error );
+    XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
     XCTAssertTrue( isSuccess );
 
@@ -855,7 +855,7 @@
      * so the delegate method keychainManager:shouldProceedAfterError:lockingKeychain: returns YES */
     isSuccess = [ self.testManager1 lockKeychain: keychain_negativeTestCase2
                                            error: &error ];
-    XCTAssertNotNil( error );
+    XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
     XCTAssertTrue( isSuccess );
 

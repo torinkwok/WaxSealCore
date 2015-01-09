@@ -176,6 +176,9 @@ WSCKeychainManager static* s_defaultManager = nil;
     // let us retrieve the older default keychain.
     WSCKeychain* olderDefaultKeychain = [ self currentDefaultKeychain: nil ];
 
+    // ====================================================================================================//
+    // Parameters Detection
+
     // If the delegate method returns `YES`,
     // or the delegate does not implement the keychainManager:shouldSetKeychainAsDefault: method at all,
     // continue to set the specified keychain as default.
@@ -205,6 +208,8 @@ WSCKeychainManager static* s_defaultManager = nil;
             return nil;
             }
         }
+
+    // ====================================================================================================//
 
     if ( !_Keychain.isDefault /* If the specified keychain is not default */ )
         {
@@ -270,36 +275,35 @@ WSCKeychainManager static* s_defaultManager = nil;
             && ![ self.delegate keychainManager: self shouldLockKeychain: _Keychain ] )
         return NO;
 
-    NSError* newError = nil;
+    // ====================================================================================================//
+    // Parameters Detection
+
+    NSError* errorPassedInDelegateMethod = nil;
     if ( !_Keychain || ![ _Keychain isKindOfClass: [ WSCKeychain class ] ] )
-        {
-        newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                        code: WSCKeychainInvalidParametersError
-                                    userInfo: nil ];
-        if ( _Error )
-            *_Error = [ newError copy ];
+        errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                                           code: WSCKeychainInvalidParametersError
+                                                       userInfo: nil ];
 
-        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:lockingKeychain: ) ]
-                && [ self.delegate keychainManager: self shouldProceedAfterError: newError lockingKeychain: _Keychain ] )
-            return YES;
-        else
-            return NO;
-        }
-
-    if ( !_Keychain.isValid /* If the keychain is invalid */ )
-        {
-        newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
+    else if ( !_Keychain.isValid /* If the keychain is invalid */ )
+        errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                         code: WSCKeychainKeychainIsInvalidError
                                     userInfo: nil ];
-        if ( _Error )
-            *_Error = [ newError copy ];
 
+    if ( errorPassedInDelegateMethod )
+        {
         if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:lockingKeychain: ) ]
-                && [ self.delegate keychainManager: self shouldProceedAfterError: newError lockingKeychain: _Keychain ] )
+                && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod lockingKeychain: _Keychain ] )
             return YES;
         else
+            {
+            if ( _Error )
+                *_Error = [ errorPassedInDelegateMethod copy ];
+
             return NO;
+            }
         }
+
+    // ====================================================================================================//
 
     if ( !_Keychain.isLocked /* The keychain must not be locked */ )
         {
@@ -308,13 +312,13 @@ WSCKeychainManager static* s_defaultManager = nil;
         resultCode = SecKeychainLock( _Keychain.secKeychain );
         if ( resultCode != errSecSuccess )
             {
-            WSCFillErrorParamWithSecErrorCode( resultCode, &newError );
+            WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
 
             if ( _Error )
-                *_Error = [ newError copy ];
+                *_Error = [ errorPassedInDelegateMethod copy ];
 
             if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:lockingKeychain: ) ]
-                    && [ self.delegate keychainManager: self shouldProceedAfterError: newError lockingKeychain: _Keychain ] )
+                    && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod lockingKeychain: _Keychain ] )
                 return YES;
             else
                 return NO;
