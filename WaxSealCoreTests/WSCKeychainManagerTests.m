@@ -607,7 +607,7 @@
      * so the delegate method keychainManager:shouldProceedAfterError:settingKeychainAsDefault: returns YES */
     olderDefault = [ self.testManager1 setDefaultKeychain: keychain_testCase7
                                                     error: &error ];
-    XCTAssertNotNil( error );
+    XCTAssertNil( error );
     /* The olderDefault is nil due to the keychain_testCase7 (older default keychain ) has been deleted
      * it's invalid now. */
     XCTAssertNil( olderDefault );
@@ -688,9 +688,7 @@
     XCTAssertNotNil( olderDefault );
     XCTAssertEqualObjects( olderDefault, [ WSCKeychain login ] );
 
-    XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
-    XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
+    XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
 
     olderDefault = [ self.testManager2 setDefaultKeychain: nil error: &error ];

@@ -118,9 +118,6 @@ WSCKeychainManager static* s_defaultManager = nil;
                     NSError* newError = nil;
                     WSCFillErrorParamWithSecErrorCode( resultCode, &newError );
 
-                    if ( _Error )
-                        *_Error = [ newError copy ];
-
                     /* If delegate implements keychainManager:shouldDeleteKeychain: method */
                     if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:deletingKeychain: ) ] )
                         {
@@ -140,6 +137,9 @@ WSCKeychainManager static* s_defaultManager = nil;
                     else /* If delegate does not implements 
                           * keychainManager:shouldProceedAfterError:deletingKeychain: at all */
                         {
+                        if ( _Error )
+                            *_Error = [ newError copy ];
+
                         isSuccess = NO;
 
                         /* Just as described in the documentation:
@@ -188,14 +188,17 @@ WSCKeychainManager static* s_defaultManager = nil;
         newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                         code: WSCKeychainInvalidParametersError
                                     userInfo: nil ];
-        if ( _Error )
-            *_Error = [ newError copy ];
 
         if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:settingKeychainAsDefault: ) ]
                 && [ self.delegate keychainManager: self shouldProceedAfterError: newError settingKeychainAsDefault: _Keychain ] )
             return olderDefaultKeychain;
         else
+            {
+            if ( _Error )
+                *_Error = [ newError copy ];
+
             return nil;
+            }
         }
 
     if ( !_Keychain.isValid /* If the keychain is invalid */ )
@@ -203,14 +206,17 @@ WSCKeychainManager static* s_defaultManager = nil;
         newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                         code: WSCKeychainKeychainIsInvalidError
                                     userInfo: nil ];
-        if ( _Error )
-            *_Error = [ newError copy ];
 
         if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:settingKeychainAsDefault: ) ]
                 && [ self.delegate keychainManager: self shouldProceedAfterError: newError settingKeychainAsDefault: _Keychain ] )
             return olderDefaultKeychain;
         else
+            {
+            if ( _Error )
+                *_Error = [ newError copy ];
+
             return nil;
+            }
         }
 
     if ( !_Keychain.isDefault /* If the specified keychain is not default */ )
@@ -221,14 +227,16 @@ WSCKeychainManager static* s_defaultManager = nil;
             {
             WSCFillErrorParamWithSecErrorCode( resultCode, &newError );
 
-            if ( _Error )
-                *_Error = [ newError copy ];
-
             if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:settingKeychainAsDefault: ) ]
                     && [ self.delegate keychainManager: self shouldProceedAfterError: newError settingKeychainAsDefault: _Keychain ] )
                 return olderDefaultKeychain;
             else
+                {
+                if ( _Error )
+                    *_Error = [ newError copy ];
+
                 return nil;
+                }
             }
         }
 
