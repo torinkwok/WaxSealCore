@@ -241,7 +241,7 @@
                    And passing an invalid keychain to this parameter returns an `NSError` object which encapsulated `WSCKeychainKeychainIsInvalidError` error code.
 
   @param _Password A string containing the password for the specified keychain.
-                   This parameter must not be `nil`.
+                   This parameter must **NOT** be `nil`.
 
   @param _Error On input, a pointer to an error object.
                 If an error occurs, this pointer is set to an actual error object containing the error information.
@@ -289,7 +289,7 @@
           Returns `nil` if an error occurs.
           Returns an empty array if the current keychain search list is empty.
   
-  @sa setKeychainSearchList:
+  @sa setKeychainSearchList:error:
   */
 - ( NSArray* ) keychainSearchList;
 
@@ -310,7 +310,10 @@
 
   @param _SearchList An array of keychain objects (of class WSCKeychain) specifying the list of keychains to use in the new default keychain search list.
                      Passing an empty array clears the search list.
-                     This parameter must not be nil.
+                     This parameter must **NOT** be nil.
+
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
                     
   @return The older default keychain search list if the current keychain search list was updated successfully.
           Returns `nil` if an error occured.
