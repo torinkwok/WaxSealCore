@@ -104,6 +104,36 @@
     return number;
     }
 
+#if 0
+- ( BOOL )        fileManager: ( NSFileManager* )_FileManager
+        shouldRemoveItemAtURL: ( NSURL* )_URL
+    {
+    return YES;
+    }
+
+- ( BOOL )      fileManager: ( NSFileManager* )_FileManager
+    shouldProceedAfterError: ( NSError* )_Error
+          removingItemAtURL: ( NSURL* )_URL
+    {
+    return YES;
+    }
+
+- ( void ) testFileManagerDelegate
+    {
+    NSError* error = nil;
+    BOOL isSuccess = NO;
+
+    NSFileManager* fileManager = [ NSFileManager defaultManager ];
+    [ fileManager setDelegate: self ];
+//    isSuccess = [ fileManager removeItemAtURL: [ NSURL URLWithString: @"file:///Users/EsquireTongG/build.perl-5.21.5.log" ]
+//                                        error: &error ];
+
+    isSuccess = [ fileManager removeItemAtURL: ( NSURL* )[ NSDate date ]
+                                        error: &error ];
+    }
+
+#endif
+
 #pragma mark Deleting a Keychain
 - ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
       shouldDeleteKeychain: ( WSCKeychain* )_Keychain
@@ -122,7 +152,12 @@
     {
     if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
             || _KeychainManager == self.testManager1 )
-        return YES;
+        {
+        if ( _Error.code == WSCKeychainKeychainIsInvalidError )
+            return NO;
+        else
+            return YES;
+        }
     else
         return NO;
     }
@@ -614,15 +649,20 @@
     XCTAssertNil( [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: nil ] );
 
     NSArray* oddNumbered = @[ keychain_testCase1
-                            , keychain_testCase7
+                            , [ NSNull null ]       // Keychain Parameter is nil
                             , keychain_testCase3
+                            , @324                  // Invalid Parameter
+                            , keychain_testCase7    // Invalid Keychain
                             , keychain_testCase5
                             ];
 
-    NSArray* evenNumbered = @[ keychain_testCase6
+    NSArray* evenNumbered = @[ @34
+                             , [ NSDate date ]
                              , keychain_testCase0
                              , keychain_testCase2
                              , keychain_testCase4
+                             , [ NSNull null ]       // Keychain Parameter is nil
+                             , keychain_testCase6
                              ];
 
     isSuccess = [ [ WSCKeychainManager defaultManager ] deleteKeychains: oddNumbered
@@ -658,8 +698,10 @@
     isSuccess = [ self.testManager1 deleteKeychains: evenNumbered
                                               error: &error ];
     XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     WSCPrintNSErrorForUnitTest( error );
-    XCTAssertTrue( isSuccess );
+    XCTAssertFalse( isSuccess );
 
     isSuccess = [ self.testManager2 deleteKeychains: oddNumbered
                                               error: &error ];
@@ -708,6 +750,38 @@
     XCTAssertNil( olderDefault );
     XCTAssertNotNil( error );
     XCTAssertEqualObjects( error.domain, NSOSStatusErrorDomain );
+    WSCPrintNSErrorForUnitTest( error );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test 0 for deleteKeychain:error:
+    // ----------------------------------------------------------------------------------
+    // oddNumbered[ 0 ] is an invalid keychain (it has been deleted)
+    isSuccess = [ self.testManager3 deleteKeychain: oddNumbered[ 0 ] error: &error ];
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
+    WSCPrintNSErrorForUnitTest( error );
+
+    // oddNumbered[ 0 ] is an invalid keychain (it has been deleted)
+    isSuccess = [ self.testManager1 deleteKeychain: oddNumbered[ 0 ] error: &error ];
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
+    WSCPrintNSErrorForUnitTest( error );
+
+    // oddNumbered[ 1 ] is [ NSNull null ] object
+    isSuccess = [ self.testManager1 deleteKeychain: oddNumbered[ 1 ] error: &error ];
+    XCTAssertTrue( isSuccess );
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager3 deleteKeychain: nil error: &error ];
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     WSCPrintNSErrorForUnitTest( error );
     }
 

@@ -63,19 +63,6 @@ WSCKeychainManager static* s_defaultManager = nil;
 - ( BOOL ) deleteKeychain: ( WSCKeychain* )_Keychain
                     error: ( NSError** )_Error
     {
-    if ( !_Keychain || ![ _Keychain isKindOfClass: [ WSCKeychain class ] ] )
-        {
-        /* As described in the documentation:
-         * Passing nil to this parameter returns an NSError object 
-         * which encapsulated WSCKeychainInvalidParametersError error code. 
-         */
-        if ( _Error )
-            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                           code: WSCKeychainInvalidParametersError
-                                       userInfo: nil ];
-        return NO;
-        }
-
     return [ self deleteKeychains: @[ _Keychain ? _Keychain : [ NSNull null ] ]
                             error: _Error ];
     }
@@ -86,12 +73,11 @@ WSCKeychainManager static* s_defaultManager = nil;
 - ( BOOL ) deleteKeychains: ( NSArray* )_Keychains
                      error: ( NSError** )_Error
     {
-    if ( !_Keychains )
+    if ( !_Keychains || ![ _Keychains isKindOfClass: [ NSArray class ] ] )
         {
-        /* As described in the documentation:
-         * Passing nil to this parameter returns an NSError object 
-         * which encapsulated WSCKeychainInvalidParametersError error code. 
-         */
+        // As described in the documentation:
+        // Passing nil to this parameter returns an NSError object
+        // which encapsulated WSCKeychainInvalidParametersError error code.
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                            code: WSCKeychainInvalidParametersError
@@ -99,65 +85,70 @@ WSCKeychainManager static* s_defaultManager = nil;
         return NO;
         }
 
-    __block OSStatus resultCode = errSecSuccess;
-    __block BOOL isSuccess = YES;
+    OSStatus resultCode = errSecSuccess;
+    BOOL isSuccess = YES;
 
-    [ _Keychains enumerateObjectsUsingBlock:
-        ^( WSCKeychain* _Keychain, NSUInteger _Index, BOOL* _Stop )
-            {
-            /* If delegate does not implement keychainManager:shouldDeleteKeychain: method */
-            if ( ![ self.delegate respondsToSelector: @selector( keychainManager:shouldDeleteKeychain: ) ]
-                    /* or delegate does implement it and this delegate method returns YES */
-                    || ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldDeleteKeychain: ) ]
-                            && [ self.delegate keychainManager: self shouldDeleteKeychain: _Keychain ] ) )
-                {
-                resultCode = SecKeychainDelete( _Keychain.secKeychain );
-
-                if ( resultCode != errSecSuccess )
-                    {
-                    NSError* newError = nil;
-                    WSCFillErrorParamWithSecErrorCode( resultCode, &newError );
-
-                    if ( _Error )
-                        *_Error = [ newError copy ];
-
-                    /* If delegate implements keychainManager:shouldDeleteKeychain: method */
-                    if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:deletingKeychain: ) ] )
-                        {
-                        BOOL shouldContinue = [ self.delegate keychainManager: self
-                                                      shouldProceedAfterError: newError
-                                                             deletingKeychain: _Keychain ];
-
-                        /* which means the deleting operation shouldn't continue after an error occurs */
-                        if ( !shouldContinue )
-                            {
-                            isSuccess = NO;
-                            *_Stop = YES;
-                            }
-                        else
-                            WSCPrintNSErrorForLog( newError );
-                        }
-                    else /* If delegate does not implements 
-                          * keychainManager:shouldProceedAfterError:deletingKeychain: at all */
-                        {
-                        isSuccess = NO;
-
-                        /* Just as described in the documentation:
-                         * if the delegate does not implement keychainManager:shouldDeleteKeychain: method
-                         * we will assumes a response of NO,
-                         */
-                        *_Stop = YES;
-                        }
-                    }
-                }
-
+    for ( WSCKeychain* _Keychain in _Keychains )
+        {
+        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldDeleteKeychain: ) ]
+                && ![ self.delegate keychainManager: self shouldDeleteKeychain: _Keychain ] )
             // If the delegate implements keychainManager:shouldDeleteKeychain: method but it returns NO,
             // keychain manager bypasses the deleting operation, jump to here.
             //
             // As described in the documented:
             // if the delegate aborts the operation for a keychain, this method returns YES.
             // so we have no necessary to assign NO to isSuccess variable.
-            } ];
+            continue;
+
+        NSError* errorPassedInDelegateMethod = nil;
+        if ( !_Keychain || ![ _Keychain isKindOfClass: [ WSCKeychain class ] ] )
+            errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                                               code: WSCKeychainInvalidParametersError
+                                                           userInfo: nil ];
+        else if ( !_Keychain.isValid )
+            errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                                               code: WSCKeychainKeychainIsInvalidError
+                                                           userInfo: nil ];
+        // If indeed there an error
+        if ( errorPassedInDelegateMethod )
+            {
+            if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:deletingKeychain: ) ]
+                    && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod deletingKeychain: _Keychain ] )
+                continue;
+            else
+                {
+                if ( _Error )
+                    *_Error = [ errorPassedInDelegateMethod copy ];
+
+                isSuccess = NO;
+                break;
+                }
+            }
+
+        resultCode = SecKeychainDelete( _Keychain.secKeychain );
+        if ( resultCode != errSecSuccess )
+            {
+            WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
+
+            /* If delegate implements keychainManager:shouldDeleteKeychain: method */
+            if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:deletingKeychain: ) ]
+                    && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod deletingKeychain: _Keychain ] )
+                continue;
+            else /* If delegate does not implements 
+                  * keychainManager:shouldProceedAfterError:deletingKeychain: at all */
+                {
+                if ( _Error )
+                    *_Error = [ errorPassedInDelegateMethod copy ];
+
+                isSuccess = NO;
+
+                // Just as described in the documentation:
+                // if the delegate does not implement keychainManager:shouldDeleteKeychain: method
+                // we will assumes a response of NO,
+                break;
+                }
+            }
+        }
 
     return isSuccess;
     }
@@ -187,13 +178,13 @@ WSCKeychainManager static* s_defaultManager = nil;
     if ( !_Keychain /* If the _Keychain parameter is nil */
             || ![ _Keychain isKindOfClass: [ WSCKeychain class ] ] /* or it's not a WSCKeychain object */ )
         errorPassedInMethodDelegate = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                        code: WSCKeychainInvalidParametersError
-                                    userInfo: nil ];
+                                                           code: WSCKeychainInvalidParametersError
+                                                       userInfo: nil ];
 
     else if ( !_Keychain.isValid /* If the keychain is invalid */ )
         errorPassedInMethodDelegate = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                        code: WSCKeychainKeychainIsInvalidError
-                                    userInfo: nil ];
+                                                           code: WSCKeychainKeychainIsInvalidError
+                                                       userInfo: nil ];
     // If indeed there an error
     if ( errorPassedInMethodDelegate )
         {
@@ -286,8 +277,8 @@ WSCKeychainManager static* s_defaultManager = nil;
 
     else if ( !_Keychain.isValid /* If the keychain is invalid */ )
         errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                        code: WSCKeychainKeychainIsInvalidError
-                                    userInfo: nil ];
+                                                           code: WSCKeychainKeychainIsInvalidError
+                                                       userInfo: nil ];
 
     // If indeed there an error
     if ( errorPassedInDelegateMethod )
@@ -497,20 +488,13 @@ WSCKeychainManager static* s_defaultManager = nil;
         NSError* errorPassedInDelegateMethod = nil;
 
         if ( !_SecKeychain || ![ _SecKeychain isKindOfClass: [ WSCKeychain class ] ] )
-            {
             errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                                                code: WSCKeychainInvalidParametersError
-                                                            // TODO: maybe we should find a more appropriate description for this kind of context
                                                            userInfo: nil ];
-            }
         else if ( !_SecKeychain.isValid )
-            {
             errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                                                code: WSCKeychainKeychainIsInvalidError
-                                                           // TODO: maybe we should find a more appropriate description for this kind of context
                                                            userInfo: nil ];
-            }
-
         // Error occured
         if ( errorPassedInDelegateMethod )
             {

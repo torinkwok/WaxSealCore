@@ -115,7 +115,9 @@
   
   @param _Keychains An array of keychains you wish to delete. 
                     To delete keychain one by one, please use -deleteKeychain:error: method.
-                    Passing `nil` to this parameter returns an `NSError` object which encapsulated `WSCKeychainInvalidParametersError` error code.
+                    This parameter must **NOT** be `nil`, passing `nil` to this parameter
+                    just returns an `NSError` object which encapsulated `WSCKeychainInvalidParametersError` error code directly
+                    instead of calling any delegate method in WSCKeychainManagerDelegate delegate protocol.
 
   @param _Error On input, a pointer to an error object.
                 If an error occurs, this pointer is set to an actual error object containing the error information.
