@@ -327,11 +327,11 @@
 /** Removes the specified keychain from the current default search list.
 
   Prior to removing the specified keychain from the current default keychain search list, the keychain manager asks its delegate if it should actually do so.
-  It does this by calling the [keychainManager:shouldRemoveKeychainFromDefaultSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldRemoveKeychainFromDefaultSearchList:]) method;
+  It does this by calling the [keychainManager:shouldRemoveKeychain:fromSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldRemoveKeychain:fromSearchList:]) method;
   If the delegate method returns `YES`, or if the delegate does not implement the appropriate methods,
   the keychain manager proceeds to remove the specified keychain.
   If there is an error removing the specified keychain, the keychain manager may also call the delegate's
-  [keychainManager:shouldProceedAfterError:removingKeychainFromDefaultSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:removingKeychainFromDefaultSearchList:]) method to determine how to proceed.
+  [keychainManager:shouldProceedAfterError:removingKeychain:fromSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:removingKeychain:fromSearchList:]) method to determine how to proceed.
 
   @param _Keychain The keychain you wish to remvoe from search list.
                    Passing `nil` to this parameter returns an `NSError` object which encapsulated `WSCKeychainInvalidParametersError` error code.
@@ -343,8 +343,8 @@
   @return `YES` if the specified keychain was removed from current default search list successfully; 
            otherwise, `NO`.
   */
-- ( BOOL ) removeKeychainFromSearchList: ( WSCKeychain* )_Keychain
-                                  error: ( NSError* )_Error;
+- ( BOOL ) removeKeychainFromDefaultSearchList: ( WSCKeychain* )_Keychain
+                                         error: ( NSError** )_Error;
 
 @end // WSCKeychainManager
 
@@ -616,12 +616,16 @@
   
   @param _Keychain The keychain that the keychain manager tried to remove.
   
+  @param _SearchList An array of keychain objects (of class WSCKeychain) 
+                     specifying the list of keychains from which you want to remove the specified keychain.
+  
   @return `YES` if the current specified keychain should be removed or `NO` if it should not be removed.
   
-  @sa [- keychainManager:shouldProceedAfterError:removingKeychainFromDefaultSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:removingKeychainFromDefaultSearchList:])
+  @sa [- keychainManager:shouldProceedAfterError:removingKeychain:fromSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:removingKeychain:fromSearchList:])
   */
-- ( BOOL )                    keychainManager: ( WSCKeychainManager* )_KeychainManager
-    shouldRemoveKeychainFromDefaultSearchList: ( WSCKeychain* )_Keychain;
+- ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
+      shouldRemoveKeychain: ( WSCKeychain* )_Keychain
+            fromSearchList: ( NSArray* )_SearchList;
 
 /** Asks the delegate if the operation should continue after an error occurs while removing the specified keychain from default keychain search list.
 
@@ -631,14 +635,18 @@
 
   @param _Keychain The keychain that the keychain manager tried to remove.
   
+  @param _SearchList An array of keychain objects (of class WSCKeychain) 
+                     specifying the list of keychains from which you want to remove the specified keychain.
+  
   @return `YES` if the operation should proceed or `NO` if it should be aborted. 
           If you do not implement this method, the keychain manager assumes a response of `NO`.
 
-  @sa [- keychainManager:shouldRemoveKeychainFromDefaultSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldRemoveKeychainFromDefaultSearchList:])
+  @sa [- keychainManager:shouldRemoveKeychain:fromSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldRemoveKeychain:fromSearchList:])
   */
-- ( BOOL )                    keychainManager: ( WSCKeychainManager* )_KeychainManager
-                      shouldProceedAfterError: ( NSError* )_Error
-        removingKeychainFromDefaultSearchList: ( WSCKeychain* )_Keychain;
+- ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
+   shouldProceedAfterError: ( NSError* )_Error
+          removingKeychain: ( WSCKeychain* )_Keychain
+            fromSearchList: ( NSArray* )_SearchList;
 
 @end // WSCKeychainManagerDelegate protocol
 

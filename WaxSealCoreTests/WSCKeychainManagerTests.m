@@ -258,6 +258,10 @@
         return NO;
     }
 
+//- ( BOOL )  keychainManager: ( WSCKeychainManager* )_KeychainManager
+//        shouldProceedAfterError: ( NSError* )_Error
+//        removingKeychainFromDefaultSearchList: ( WSCKeychain* )_Keychain
+
 @end // WSCKeychainTests + WSCKeychainManagerTests
 
 // --------------------------------------------------------
@@ -1093,6 +1097,41 @@
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
     XCTAssertNotNil( olderSearchList );
+    }
+
+- ( void ) testRemovingKeychainFromSearchList
+    {
+    NSError* error = nil;
+    BOOL isSuccess = NO;
+
+    NSArray* commonOriginalSearchList = [ [ WSCKeychainManager defaultManager ] keychainSearchList ];
+
+    // -------------------------------------------------------------------------------------------------------
+    // Test Case 0: Everything is OK
+    // -------------------------------------------------------------------------------------------------------
+    for ( WSCKeychain* _Keychain in commonOriginalSearchList )
+        {
+        isSuccess = [ [ WSCKeychainManager defaultManager ] removeKeychainFromDefaultSearchList: _Keychain
+                                                                                          error: &error ];
+        XCTAssertNil( error );
+        XCTAssertTrue( isSuccess );
+        WSCPrintNSErrorForUnitTest( error );
+        }
+
+    // Restored
+    [ [ WSCKeychainManager defaultManager ] setKeychainSearchList: commonOriginalSearchList error: &error ];
+    XCTAssertNil( error );
+    XCTAssertTrue( isSuccess );
+    WSCPrintNSErrorForUnitTest( error );
+
+    // -------------------------------------------------------------------------------------------------------
+    // Negative Test Case 0: remove keychain with an invalid parameter
+    // -------------------------------------------------------------------------------------------------------
+    isSuccess = [ [ WSCKeychainManager defaultManager ] removeKeychainFromDefaultSearchList: nil
+                                                                                      error: &error ];
+    XCTAssertNotNil( error );
+    XCTAssertFalse( isSuccess );
+    WSCPrintNSErrorForUnitTest( error );
     }
 
 - ( void ) testUnlockKeychain
