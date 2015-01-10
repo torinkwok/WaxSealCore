@@ -332,6 +332,8 @@
   the keychain manager proceeds to add the specified keychain.
   If there is an error removing the specified keychain, the keychain manager may also call the delegate's
   [keychainManager:shouldProceedAfterError:addingKeychain:toSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:addingKeychain:toSearchList:]) method to determine how to proceed.
+  
+  @warning If the specified keychain already exists in default search list, this method will do nothing.
 
   @param _Keychain The keychain you wish to add to default search list.
                    Passing `nil` to this parameter returns an `NSError` object which encapsulated `WSCKeychainInvalidParametersError` error code.
@@ -354,6 +356,8 @@
   the keychain manager proceeds to remove the specified keychain.
   If there is an error removing the specified keychain, the keychain manager may also call the delegate's
   [keychainManager:shouldProceedAfterError:removingKeychain:fromSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:removingKeychain:fromSearchList:]) method to determine how to proceed.
+  
+  @warning If the specified keychain does not exist in default search list, this method will do nothing.
 
   @param _Keychain The keychain you wish to remvoe from search list.
                    Passing `nil` to this parameter returns an `NSError` object which encapsulated `WSCKeychainInvalidParametersError` error code.

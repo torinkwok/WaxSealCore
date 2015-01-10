@@ -537,6 +537,63 @@ WSCKeychainManager static* s_defaultManager = nil;
     return olderSearchList;
     }
 
+/* Addes the specified keychain to the current default search list. */
+- ( BOOL ) addKeychainToDefaultSearchList: ( WSCKeychain* )_Keychain
+                                    error: ( NSError** )_Error
+    {
+    NSMutableArray* defaultSearchList = [ [ self keychainSearchList ] mutableCopy ];
+
+    if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldRemoveKeychain:fromSearchList: ) ]
+            && ![ self.delegate keychainManager: self shouldRemoveKeychain: _Keychain fromSearchList: defaultSearchList ] )
+        return NO;
+
+    NSError* errorPassedInDelegateMethod = nil;
+    if ( !_Keychain || ![ _Keychain isKindOfClass: [ WSCKeychain class ] ] )
+        errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                                           code: WSCKeychainInvalidParametersError
+                                                       userInfo: nil ];
+
+    else if ( !_Keychain.isValid /* If the keychain is invalid */ )
+        errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                                           code: WSCKeychainKeychainIsInvalidError
+                                                       userInfo: nil ];
+    // If indeed there an error
+    if ( errorPassedInDelegateMethod )
+        {
+        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:removingKeychain:fromSearchList: ) ]
+                && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod removingKeychain: _Keychain fromSearchList: defaultSearchList ] )
+            return YES;
+        else
+            {
+            if ( _Error )
+                *_Error = [ errorPassedInDelegateMethod copy ];
+
+            return NO;
+            }
+        }
+
+    // If the parameter is no problem so far
+    [ defaultSearchList addObject: _Keychain ];
+
+    [ self setKeychainSearchList: defaultSearchList error: &errorPassedInDelegateMethod ];
+    if ( errorPassedInDelegateMethod )
+        {
+        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:removingKeychain:fromSearchList: ) ]
+                && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod removingKeychain: _Keychain fromSearchList: defaultSearchList ] )
+            ;
+        else
+            {
+            if ( _Error )
+                *_Error = [ errorPassedInDelegateMethod copy ];
+
+            return NO;
+            }
+        }
+
+    // If everything is okay, successful operation.
+    return YES;
+    }
+
 /* Removes the specified keychain from the current default search list.
  */
 - ( BOOL ) removeKeychainFromDefaultSearchList: ( WSCKeychain* )_Keychain
