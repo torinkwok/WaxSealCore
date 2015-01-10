@@ -258,9 +258,34 @@
         return NO;
     }
 
-//- ( BOOL )  keychainManager: ( WSCKeychainManager* )_KeychainManager
-//        shouldProceedAfterError: ( NSError* )_Error
-//        removingKeychainFromDefaultSearchList: ( WSCKeychain* )_Keychain
+- ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
+      shouldRemoveKeychain: ( WSCKeychain* )_Keychain
+            fromSearchList: ( NSArray* )_SearchList
+    {
+    if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
+            || _KeychainManager == self.testManager1
+            || _KeychainManager == self.testManager3 )
+        return YES;
+    else
+        return NO;
+    }
+
+- ( BOOL )  keychainManager: ( WSCKeychainManager* )_KeychainManager
+    shouldProceedAfterError: ( NSError* )_Error
+           removingKeychain: ( WSCKeychain* )_Keychain
+             fromSearchList: ( NSArray* )_SearchList
+    {
+    if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
+            || _KeychainManager == self.testManager1 )
+        {
+        if ( _Error.code == WSCKeychainKeychainIsInvalidError )
+            return NO;
+        else
+            return YES;
+        }
+    else
+        return NO;
+    }
 
 @end // WSCKeychainTests + WSCKeychainManagerTests
 
@@ -1125,12 +1150,108 @@
     WSCPrintNSErrorForUnitTest( error );
 
     // -------------------------------------------------------------------------------------------------------
-    // Negative Test Case 0: remove keychain with an invalid parameter
+    // Negative Test Case 0: remove keychain with nil
     // -------------------------------------------------------------------------------------------------------
     isSuccess = [ [ WSCKeychainManager defaultManager ] removeKeychainFromDefaultSearchList: nil
                                                                                       error: &error ];
     XCTAssertNotNil( error );
     XCTAssertFalse( isSuccess );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager2 removeKeychainFromDefaultSearchList: nil
+                                                                  error: &error ];
+    XCTAssertNil( error );
+    XCTAssertFalse( isSuccess );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager1 removeKeychainFromDefaultSearchList: nil
+                                                                  error: &error ];
+    XCTAssertNil( error );
+    XCTAssertTrue( isSuccess );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager3 removeKeychainFromDefaultSearchList: nil
+                                                                  error: &error ];
+    XCTAssertNotNil( error );
+    XCTAssertFalse( isSuccess );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ [ WSCKeychainManager defaultManager ] removeKeychainFromDefaultSearchList: ( WSCKeychain* )[ NSNull null ]
+                                                                                      error: &error ];
+    XCTAssertNotNil( error );
+    XCTAssertFalse( isSuccess );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager2 removeKeychainFromDefaultSearchList: ( WSCKeychain* )[ NSDate date ]
+                                                                  error: &error ];
+    XCTAssertNil( error );
+    XCTAssertFalse( isSuccess );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager1 removeKeychainFromDefaultSearchList: ( WSCKeychain* )@341
+                                                                  error: &error ];
+    XCTAssertNil( error );
+    XCTAssertTrue( isSuccess );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager3 removeKeychainFromDefaultSearchList: ( WSCKeychain* )@"waxsealcore"
+                                                                  error: &error ];
+    XCTAssertNotNil( error );
+    XCTAssertFalse( isSuccess );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
+    WSCPrintNSErrorForUnitTest( error );
+
+    // -------------------------------------------------------------------------------------------------------
+    // Negative Test Case 1: remove keychain with invalid keychain (it has been deleted)
+    // -------------------------------------------------------------------------------------------------------
+    NSURL* URLForKeychain_negativeTestCase1 = [ self URLForTestCase: [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"negativeCase1" ]
+                                                         doesPrompt: NO
+                                                       deleteExists: YES ];
+
+    WSCKeychain* keychain_negativeTestCase1 = [ WSCKeychain keychainWithURL: URLForKeychain_negativeTestCase1
+                                                                   password: self.passwordForTest
+                                                              initialAccess: nil
+                                                             becomesDefault: NO
+                                                                      error: &error ];
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+    XCTAssertTrue( keychain_negativeTestCase1.isValid );
+    [ self.testManager3 deleteKeychain: keychain_negativeTestCase1 error: nil ];
+    XCTAssertFalse( keychain_negativeTestCase1.isValid );
+
+    isSuccess = [ [ WSCKeychainManager defaultManager ] removeKeychainFromDefaultSearchList: keychain_negativeTestCase1
+                                                                                      error: &error ];
+    XCTAssertNotNil( error );
+    XCTAssertFalse( isSuccess );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager2 removeKeychainFromDefaultSearchList: keychain_negativeTestCase1
+                                                                  error: &error ];
+    XCTAssertNil( error );
+    XCTAssertFalse( isSuccess );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager1 removeKeychainFromDefaultSearchList: keychain_negativeTestCase1
+                                                                  error: &error ];
+    XCTAssertNotNil( error );
+    XCTAssertFalse( isSuccess );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager3 removeKeychainFromDefaultSearchList: keychain_negativeTestCase1
+                                                                  error: &error ];
+    XCTAssertNotNil( error );
+    XCTAssertFalse( isSuccess );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     WSCPrintNSErrorForUnitTest( error );
     }
 

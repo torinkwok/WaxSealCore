@@ -545,7 +545,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     NSMutableArray* defaultSearchList = [ [ self keychainSearchList ] mutableCopy ];
 
     if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldRemoveKeychain:fromSearchList: ) ]
-            && [ self.delegate keychainManager: self shouldRemoveKeychain: _Keychain fromSearchList: defaultSearchList ] )
+            && ![ self.delegate keychainManager: self shouldRemoveKeychain: _Keychain fromSearchList: defaultSearchList ] )
         return NO;
 
     NSError* errorPassedInDelegateMethod = nil;
