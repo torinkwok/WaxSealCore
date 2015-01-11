@@ -40,6 +40,11 @@
 #import "WSCKeychainErrorPrivate.h"
 #import "NSString+OMCString.h"
 
+@interface TestClassForWSCKeychainManagerDelegate : NSObject <WSCKeychainManagerDelegate>
+@end
+@implementation TestClassForWSCKeychainManagerDelegate
+@end
+
 // --------------------------------------------------------
 #pragma mark Interface of WSCKeychainManagerTests case
 // --------------------------------------------------------
@@ -59,6 +64,9 @@
     WSCKeychainManager* _testManager1;
     WSCKeychainManager* _testManager2;
     WSCKeychainManager* _testManager3;
+    WSCKeychainManager* _testManager4;
+
+    TestClassForWSCKeychainManagerDelegate* _testClassForDelegate;
     }
 
 @property ( nonatomic, retain ) WSCKeychain* publicKeychain;
@@ -71,6 +79,9 @@
 @property ( nonatomic, retain ) WSCKeychainManager* testManager1;
 @property ( nonatomic, retain ) WSCKeychainManager* testManager2;
 @property ( nonatomic, retain ) WSCKeychainManager* testManager3;
+@property ( nonatomic, retain ) WSCKeychainManager* testManager4;
+
+@property ( nonatomic, retain ) TestClassForWSCKeychainManagerDelegate* testClassForDelegate;
 
 @end
 
@@ -348,6 +359,7 @@
 @synthesize testManager1 = _testManager1;
 @synthesize testManager2 = _testManager2;
 @synthesize testManager3 = _testManager3;
+@synthesize testManager4 = _testManager4;
 
 - ( void ) setUp
     {
@@ -383,10 +395,14 @@
     self.testManager1 = [ [ [ WSCKeychainManager alloc ] init ] autorelease ];
     self.testManager2 = [ [ [ WSCKeychainManager alloc ] init ] autorelease ];
     self.testManager3 = [ [ [ WSCKeychainManager alloc ] init ] autorelease ];
+    self.testManager4 = [ [ [ WSCKeychainManager alloc ] init ] autorelease ];
+
+    self.testClassForDelegate = [ [ [ TestClassForWSCKeychainManagerDelegate alloc ] init ] autorelease ];
 
     self.testManager1.delegate = self;
     self.testManager2.delegate = self;
     self.testManager3.delegate = self;
+    self.testManager4.delegate = self.testClassForDelegate;
     }
 
 - ( void ) tearDown
@@ -408,6 +424,8 @@
     [ self->_testManager1 release ];
     [ self->_testManager2 release ];
     [ self->_testManager3 release ];
+
+    [ self->_testClassForDelegate release ];
     }
 
 - ( void ) testDeletingKeychains
@@ -1157,6 +1175,33 @@
     {
     NSError* error = nil;
     BOOL isSuccess = NO;
+
+#if 1
+    isSuccess = [ [ WSCKeychainManager defaultManager ] addKeychainToDefaultSearchList: ( WSCKeychain* )[ NSDate date ] error: &error ];
+    XCTAssertNotNil( error );
+    XCTAssertFalse( isSuccess );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager1 addKeychainToDefaultSearchList: ( WSCKeychain* )[ NSDate date ] error: &error ];
+    XCTAssertNil( error );
+    XCTAssertTrue( isSuccess );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager2 addKeychainToDefaultSearchList: ( WSCKeychain* )[ NSDate date ] error: &error ];
+    XCTAssertNil( error );
+    XCTAssertFalse( isSuccess );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager3 addKeychainToDefaultSearchList: ( WSCKeychain* )[ NSDate date ] error: &error ];
+    XCTAssertNotNil( error );
+    XCTAssertFalse( isSuccess );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager4 addKeychainToDefaultSearchList: ( WSCKeychain* )[ NSDate date ] error: &error ];
+    XCTAssertNotNil( error );
+    XCTAssertFalse( isSuccess );
+    WSCPrintNSErrorForUnitTest( error );
+#endif
 
     NSArray* commonOriginalSearchList = [ [ WSCKeychainManager defaultManager ] keychainSearchList ];
     NSArray* olderSearchList = nil;

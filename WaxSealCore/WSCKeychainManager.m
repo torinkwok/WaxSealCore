@@ -38,9 +38,16 @@
 #import "WSCKeychainError.h"
 #import "WSCKeychainErrorPrivate.h"
 
+#pragma mark WSCKeychainManager + WSCKeychainManagerPrivate
 id static s_guard = ( id )'sgrd';
 @interface WSCKeychainManager ( WSCKeychainManagerPrivate )
+
 - ( void ) p_dontBeABitch: ( NSError** )_Error, ...;
+
+- ( BOOL ) p_shouldProceedAfterError: ( NSError* )_Error
+                           occuredIn: ( SEL )_APISelector
+                         copiedError: ( NSError** )_CopiedError, ...;
+
 @end // WSCKeychainManager + WSCKeychainManagerPrivate
 
 @implementation WSCKeychainManager
@@ -543,7 +550,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     NSMutableArray* defaultSearchList = [ [ self keychainSearchList ] mutableCopy ];
 
     if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldRemoveKeychain:fromSearchList: ) ]
-            && ![ self.delegate keychainManager: self shouldRemoveKeychain: _Keychain fromSearchList: defaultSearchList ] )
+            && ![ self.delegate keychainManager: self shouldAddKeychain: _Keychain toSearchList: defaultSearchList ] )
         return NO;
 
     NSError* errorPassedInDelegateMethod = nil;
@@ -552,36 +559,21 @@ WSCKeychainManager static* s_defaultManager = nil;
 
     // If indeed there an error
     if ( errorPassedInDelegateMethod )
-        {
-        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:removingKeychain:fromSearchList: ) ]
-                && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod removingKeychain: _Keychain fromSearchList: defaultSearchList ] )
-            return YES;
-        else
-            {
-            if ( _Error )
-                *_Error = [ errorPassedInDelegateMethod copy ];
-
-            return NO;
-            }
-        }
-
+        return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
+                                      occuredIn: _cmd
+                                    copiedError: _Error
+                                               , self, errorPassedInDelegateMethod, _Keychain, defaultSearchList
+                                               , s_guard ];
     // If the parameter is no problem so far
     [ defaultSearchList addObject: _Keychain ];
 
     [ self setKeychainSearchList: defaultSearchList error: &errorPassedInDelegateMethod ];
     if ( errorPassedInDelegateMethod )
-        {
-        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:removingKeychain:fromSearchList: ) ]
-                && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod removingKeychain: _Keychain fromSearchList: defaultSearchList ] )
-            ;
-        else
-            {
-            if ( _Error )
-                *_Error = [ errorPassedInDelegateMethod copy ];
-
-            return NO;
-            }
-        }
+        return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
+                                      occuredIn: _cmd
+                                    copiedError: _Error
+                                               , self, errorPassedInDelegateMethod, _Keychain, defaultSearchList
+                                               , s_guard ];
 
     // If everything is okay, successful operation.
     return YES;
@@ -681,6 +673,7 @@ WSCKeychainManager static* s_defaultManager = nil;
 
 @end // WSCKeychainManager class
 
+#pragma mark WSCKeychainManager + WSCKeychainManagerPrivate
 @implementation WSCKeychainManager ( WSCKeychainManagerPrivate )
 
 - ( void ) p_dontBeABitch: ( NSError** )_Error
@@ -731,6 +724,84 @@ WSCKeychainManager static* s_defaultManager = nil;
         }
 
     va_end( variableArguments );
+    }
+
+- ( BOOL ) p_shouldProceedAfterError: ( NSError* )_Error
+                           occuredIn: ( SEL )_APISelector
+                         copiedError: ( NSError** )_CopiedError
+                                    , ...
+    {
+    BOOL shouldProceed = NO;
+
+    if ( self.delegate )
+        {
+        SEL delegateMethodSelector = nil;
+
+        if ( _APISelector == @selector( deleteKeychains:error: ) )
+            delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:deletingKeychain: );
+
+        else if ( _APISelector == @selector( setDefaultKeychain:error: ) )
+            delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:settingKeychainAsDefault: );
+
+        else if ( _APISelector == @selector( lockKeychain:error: ) )
+            delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:lockingKeychain: );
+    #if 0
+        else if ( _APISelector == @selector( lockAllKeychains: ) )
+            delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError );
+    #endif
+        else if ( _APISelector == @selector( unlockKeychain:withPassword:error: ) )
+            delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:unlockingKeychain:withPassword: );
+
+        else if ( _APISelector == @selector( unlockKeychainWithUserInteraction:error: ) )
+            delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:unlockingKeychainWithUserInteraction: );
+
+        else if ( _APISelector == @selector( setKeychainSearchList:error: ) )
+            delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:updatingKeychainSearchList: );
+
+        else if ( _APISelector == @selector( addKeychainToDefaultSearchList:error: ) )
+            delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:addingKeychain:toSearchList: );
+
+        else if ( _APISelector == @selector( removeKeychainFromDefaultSearchList:error: ) )
+            delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:removingKeychain:fromSearchList: );
+
+        // delegateMethodSelector must not be nil
+        if ( delegateMethodSelector
+                // and the delegate must implement the method that be represented by delegateMethodSelector
+                && [ self.delegate respondsToSelector: delegateMethodSelector ] )
+            {
+            NSInvocation* delegateMethodInvocation = [ NSInvocation invocationWithMethodSignature:
+                [ ( NSObject* )self.delegate methodSignatureForSelector: delegateMethodSelector ] ];
+
+            [ delegateMethodInvocation setSelector: delegateMethodSelector ];
+
+            va_list variableArguments;
+            va_start( variableArguments, _CopiedError );
+
+            for ( int _Index = 2 ;; _Index++ )
+                {
+                id arg = va_arg( variableArguments, id );
+                if ( arg == s_guard )
+                    break;
+
+                [ delegateMethodInvocation setArgument: &arg atIndex: _Index ];
+                }
+
+            va_end( variableArguments );
+
+            [ delegateMethodInvocation invokeWithTarget: self.delegate ];
+            [ delegateMethodInvocation getReturnValue: &shouldProceed ];
+            }
+
+        // If there is not a matched delegate method
+        // or the delegate does not implement the corresponding delegate method,
+        // do nothing.
+        }
+
+    if ( !shouldProceed )
+        if ( _CopiedError )
+            *_CopiedError = [ _Error copy ];
+
+    return shouldProceed;
     }
 
 @end // WSCKeychainManager + WSCKeychainManagerPrivate

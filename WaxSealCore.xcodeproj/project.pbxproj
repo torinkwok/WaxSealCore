@@ -128,8 +128,8 @@
 		834D20E71A4EDD7700539F49 /* WSCKeychain */ = {
 			isa = PBXGroup;
 			children = (
-				839FE2F01A5E0BAA00DCED3C /* Private */,
-				839FE2EE1A5E0BA400DCED3C /* Public */,
+				839FE2F01A5E0BAA00DCED3C /* Public */,
+				839FE2EE1A5E0BA400DCED3C /* Private */,
 			);
 			name = WSCKeychain;
 			sourceTree = "<group>";
@@ -150,16 +150,16 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		839FE2EE1A5E0BA400DCED3C /* Public */ = {
+		839FE2EE1A5E0BA400DCED3C /* Private */ = {
 			isa = PBXGroup;
 			children = (
 				8339FA521A542D2C00240AD0 /* WSCKeychainErrorPrivate.h */,
 				8339FA531A542D2C00240AD0 /* WSCKeychainErrorPrivate.m */,
 			);
-			name = Public;
+			name = Private;
 			sourceTree = "<group>";
 		};
-		839FE2F01A5E0BAA00DCED3C /* Private */ = {
+		839FE2F01A5E0BAA00DCED3C /* Public */ = {
 			isa = PBXGroup;
 			children = (
 				83C7237E1A4C1AA60084221A /* WSCKeychain.h */,
@@ -169,7 +169,7 @@
 				834D20E91A4EEA4400539F49 /* NSURL+WSCKeychainURL.h */,
 				834D20EA1A4EEA4400539F49 /* NSURL+WSCKeychainURL.m */,
 			);
-			name = Private;
+			name = Public;
 			sourceTree = "<group>";
 		};
 		839FE2F11A5E0BC500DCED3C /* Public */ = {
