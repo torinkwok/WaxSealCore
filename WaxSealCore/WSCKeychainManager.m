@@ -39,6 +39,9 @@
 #import "WSCKeychainErrorPrivate.h"
 
 id static s_guard = ( id )'sgrd';
+@interface WSCKeychainManager ( WSCKeychainManagerPrivate )
+- ( void ) p_dontBeABitch: ( NSError** )_Error, ...;
+@end // WSCKeychainManager + WSCKeychainManagerPrivate
 
 @implementation WSCKeychainManager
 
@@ -179,16 +182,8 @@ WSCKeychainManager static* s_defaultManager = nil;
     // continue to set the specified keychain as default.
 
     NSError* errorPassedInMethodDelegate = nil;
-    if ( !_Keychain /* If the _Keychain parameter is nil */
-            || ![ _Keychain isKindOfClass: [ WSCKeychain class ] ] /* or it's not a WSCKeychain object */ )
-        errorPassedInMethodDelegate = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                                           code: WSCKeychainInvalidParametersError
-                                                       userInfo: nil ];
+    [ self p_dontBeABitch: &errorPassedInMethodDelegate, _Keychain, [ WSCKeychain class ], s_guard ];
 
-    else if ( !_Keychain.isValid /* If the keychain is invalid */ )
-        errorPassedInMethodDelegate = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                                           code: WSCKeychainKeychainIsInvalidError
-                                                       userInfo: nil ];
     // If indeed there an error
     if ( errorPassedInMethodDelegate )
         {
@@ -541,56 +536,6 @@ WSCKeychainManager static* s_defaultManager = nil;
     return olderSearchList;
     }
 
-- ( void ) p_dontBeABitch: ( NSError** )_Error
-                         , ...
-    {
-    /* The form of variable arguments list:
-       &_Error, argToBeChecked_0(id), typeOfArg_0([ argToBeChecked_0 class ])
-              , argToBeChecked_1(id), typeOfArg_1([ argToBeChecked_1 class ])
-              , argToBeChecked_2(id), typeOfArg_2([ argToBeChecked_2 class ])
-              ...
-              , s_guard 
-     */
-    va_list variableArguments;
-
-    va_start( variableArguments, _Error );
-    while ( true )
-        {
-        // The argument we want to check
-        id argToBeChecked = va_arg( variableArguments, id );
-
-        // Check to see if we have reached the end of variable arguments list
-        if ( argToBeChecked == s_guard )
-            break;
-
-        Class paramClass = va_arg( variableArguments, Class );
-        // The argToBeChecked must not be nil
-        if ( !argToBeChecked
-                // and it must be kind of paramClass
-                || ![ argToBeChecked isKindOfClass: paramClass ] )
-            {
-            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                           code: WSCKeychainInvalidParametersError
-                                       userInfo: nil ];
-            // Short-circuit test:
-            // we have encountered an error, so there is no necessary to proceed checking
-            break;
-            }
-
-        // If argToBeChecked is a keychain, it must not be invalid
-        if ( [ argToBeChecked isKindOfClass: [ WSCKeychain class ] ]
-                && !( ( WSCKeychain* )argToBeChecked ).isValid )
-            {
-            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                           code: WSCKeychainKeychainIsInvalidError
-                                       userInfo: nil ];
-            break;
-            }
-        }
-
-    va_end( variableArguments );
-    }
-
 /* Addes the specified keychain to the current default search list. */
 - ( BOOL ) addKeychainToDefaultSearchList: ( WSCKeychain* )_Keychain
                                     error: ( NSError** )_Error
@@ -742,6 +687,60 @@ WSCKeychainManager static* s_defaultManager = nil;
     }
 
 @end // WSCKeychainManager class
+
+@implementation WSCKeychainManager ( WSCKeychainManagerPrivate )
+
+- ( void ) p_dontBeABitch: ( NSError** )_Error
+                         , ...
+    {
+    /* The form of variable arguments list:
+       &_Error, argToBeChecked_0(id), typeOfArg_0([ argToBeChecked_0 class ])
+              , argToBeChecked_1(id), typeOfArg_1([ argToBeChecked_1 class ])
+              , argToBeChecked_2(id), typeOfArg_2([ argToBeChecked_2 class ])
+              ...
+              , s_guard 
+     */
+    va_list variableArguments;
+
+    va_start( variableArguments, _Error );
+    while ( true )
+        {
+        // The argument we want to check
+        id argToBeChecked = va_arg( variableArguments, id );
+
+        // Check to see if we have reached the end of variable arguments list
+        if ( argToBeChecked == s_guard )
+            break;
+
+        Class paramClass = va_arg( variableArguments, Class );
+        // The argToBeChecked must not be nil
+        if ( !argToBeChecked
+                // and it must be kind of paramClass
+                || ![ argToBeChecked isKindOfClass: paramClass ] )
+            {
+            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                           code: WSCKeychainInvalidParametersError
+                                       userInfo: nil ];
+            // Short-circuit test:
+            // we have encountered an error, so there is no necessary to proceed checking
+            break;
+            }
+
+        // If argToBeChecked is a keychain, it must not be invalid
+        if ( [ argToBeChecked isKindOfClass: [ WSCKeychain class ] ]
+                && !( ( WSCKeychain* )argToBeChecked ).isValid )
+            {
+            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                           code: WSCKeychainKeychainIsInvalidError
+                                       userInfo: nil ];
+            break;
+            }
+        }
+
+    va_end( variableArguments );
+    }
+
+@end // WSCKeychainManager + WSCKeychainManagerPrivate
 
 //////////////////////////////////////////////////////////////////////////////
 
