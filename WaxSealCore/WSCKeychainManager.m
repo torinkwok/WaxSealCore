@@ -595,36 +595,21 @@ WSCKeychainManager static* s_defaultManager = nil;
 
     // If indeed there an error
     if ( errorPassedInDelegateMethod )
-        {
-        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:removingKeychain:fromSearchList: ) ]
-                && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod removingKeychain: _Keychain fromSearchList: defaultSearchList ] )
-            return YES;
-        else
-            {
-            if ( _Error )
-                *_Error = [ errorPassedInDelegateMethod copy ];
-
-            return NO;
-            }
-        }
-
+        return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
+                                      occuredIn: _cmd
+                                    copiedError: _Error
+                                               , self, errorPassedInDelegateMethod, _Keychain, defaultSearchList
+                                               , s_guard ];
     // If the parameter is no problem so far
     [ defaultSearchList removeObject: _Keychain ];
 
     [ self setKeychainSearchList: defaultSearchList error: &errorPassedInDelegateMethod ];
     if ( errorPassedInDelegateMethod )
-        {
-        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:removingKeychain:fromSearchList: ) ]
-                && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod removingKeychain: _Keychain fromSearchList: defaultSearchList ] )
-            ;
-        else
-            {
-            if ( _Error )
-                *_Error = [ errorPassedInDelegateMethod copy ];
-
-            return NO;
-            }
-        }
+        return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
+                                      occuredIn: _cmd
+                                    copiedError: _Error
+                                               , self, errorPassedInDelegateMethod, _Keychain, defaultSearchList
+                                               , s_guard ];
 
     // If everything is okay, successful operation.
     return YES;
