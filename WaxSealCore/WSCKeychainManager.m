@@ -599,15 +599,16 @@ WSCKeychainManager static* s_defaultManager = nil;
         return NO;
 
     NSError* errorPassedInDelegateMethod = nil;
-    if ( !_Keychain || ![ _Keychain isKindOfClass: [ WSCKeychain class ] ] )
-        errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                                           code: WSCKeychainInvalidParametersError
-                                                       userInfo: nil ];
-
-    else if ( !_Keychain.isValid /* If the keychain is invalid */ )
-        errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                                           code: WSCKeychainKeychainIsInvalidError
-                                                       userInfo: nil ];
+    [ self p_dontBeABitch: &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard ];
+//    if ( !_Keychain || ![ _Keychain isKindOfClass: [ WSCKeychain class ] ] )
+//        errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
+//                                                           code: WSCKeychainInvalidParametersError
+//                                                       userInfo: nil ];
+//
+//    else if ( !_Keychain.isValid /* If the keychain is invalid */ )
+//        errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
+//                                                           code: WSCKeychainKeychainIsInvalidError
+//                                                       userInfo: nil ];
     // If indeed there an error
     if ( errorPassedInDelegateMethod )
         {
