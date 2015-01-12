@@ -99,8 +99,10 @@ WSCKeychainManager static* s_defaultManager = nil;
         return NO;
         }
 
+    NSError* errorPassedInDelegateMethod = nil;
     OSStatus resultCode = errSecSuccess;
     BOOL isSuccess = YES;
+    BOOL shouldProceedIfEncounteredAnyError = NO;
 
     for ( WSCKeychain* _Keychain in _Keychains )
         {
@@ -114,27 +116,27 @@ WSCKeychainManager static* s_defaultManager = nil;
             // so we have no necessary to assign NO to isSuccess variable.
             continue;
 
-        NSError* errorPassedInDelegateMethod = nil;
-        if ( !_Keychain || ![ _Keychain isKindOfClass: [ WSCKeychain class ] ] )
-            errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                                               code: WSCKeychainInvalidParametersError
-                                                           userInfo: nil ];
-        else if ( !_Keychain.isValid )
-            errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                                               code: WSCKeychainKeychainIsInvalidError
-                                                           userInfo: nil ];
+        [ self p_dontBeABitch: &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard ];
+
         // If indeed there an error
         if ( errorPassedInDelegateMethod )
             {
-            if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:deletingKeychain: ) ]
-                    && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod deletingKeychain: _Keychain ] )
+            shouldProceedIfEncounteredAnyError = [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
+                                                                        occuredIn: _cmd
+                                                                      copiedError: _Error
+                                                                                 , self, errorPassedInDelegateMethod, _Keychain
+                                                                                 , s_guard ];
+            /* If delegate implements keychainManager:shouldDeleteKeychain: method */
+            if ( shouldProceedIfEncounteredAnyError )
                 continue;
-            else
+            else /* If delegate does not implements 
+                  * keychainManager:shouldProceedAfterError:deletingKeychain: at all */
                 {
-                if ( _Error )
-                    *_Error = [ errorPassedInDelegateMethod copy ];
-
                 isSuccess = NO;
+
+                // Just as described in the documentation:
+                // if the delegate does not implement keychainManager:shouldProceedAfterError:deletingKeychain: method
+                // we will assumes a response of NO,
                 break;
                 }
             }
@@ -144,22 +146,21 @@ WSCKeychainManager static* s_defaultManager = nil;
             {
             WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
 
-            /* If delegate implements keychainManager:shouldDeleteKeychain: method */
-            if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:deletingKeychain: ) ]
-                    && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod deletingKeychain: _Keychain ] )
-                continue;
-            else /* If delegate does not implements 
-                  * keychainManager:shouldProceedAfterError:deletingKeychain: at all */
+            // If indeed there an error
+            if ( errorPassedInDelegateMethod )
                 {
-                if ( _Error )
-                    *_Error = [ errorPassedInDelegateMethod copy ];
-
-                isSuccess = NO;
-
-                // Just as described in the documentation:
-                // if the delegate does not implement keychainManager:shouldDeleteKeychain: method
-                // we will assumes a response of NO,
-                break;
+                shouldProceedIfEncounteredAnyError = [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
+                                                                            occuredIn: _cmd
+                                                                          copiedError: _Error
+                                                                                     , self, errorPassedInDelegateMethod, _Keychain
+                                                                                     , s_guard ];
+                if ( shouldProceedIfEncounteredAnyError )
+                    continue;
+                else
+                    {
+                    isSuccess = NO;
+                    break;
+                    }
                 }
             }
         }

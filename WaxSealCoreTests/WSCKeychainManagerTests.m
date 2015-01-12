@@ -433,6 +433,14 @@
     NSError* error = nil;
     BOOL isSuccess = NO;
 
+    isSuccess = [ self.testManager3 deleteKeychain: [ WSCKeychain system ]
+                                             error: &error ];
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, NSOSStatusErrorDomain );
+    XCTAssertEqual( error.code, 100013 );   // UNIX Permission Denied
+    WSCPrintNSErrorForUnitTest( error );
+
     [ [ WSCKeychainManager defaultManager ] deleteKeychains: nil
                                                       error: &error ];
     XCTAssertNotNil( error );
