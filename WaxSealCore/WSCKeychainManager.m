@@ -345,34 +345,18 @@ WSCKeychainManager static* s_defaultManager = nil;
         return NO;
 
     NSError* errorPassedInDelegateMethod = nil;
-    if ( !_Keychain || ![ _Keychain isKindOfClass: [ WSCKeychain class ] ] )
-        errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                                           code: WSCKeychainInvalidParametersError
-                                                       userInfo: nil ];
+    [ self p_dontBeABitch: &errorPassedInDelegateMethod
+                         , _Keychain, [ WSCKeychain class ]
+                         , _Password, [ NSString class ]
+                         , s_guard ];
 
-    else if ( !_Keychain.isValid /* If the keychain is invalid */ )
-        errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                                           code: WSCKeychainKeychainIsInvalidError
-                                                       userInfo: nil ];
-
-    else if ( !_Password || ![ _Password isKindOfClass: [ NSString class ] ] )
-        errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                                           code: WSCKeychainInvalidParametersError
-                                                       userInfo: nil ];
     // If indeed there an error
     if ( errorPassedInDelegateMethod )
-        {
-        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:unlockingKeychain:withPassword: ) ]
-                && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod unlockingKeychain: _Keychain withPassword: _Password ] )
-            return YES;
-        else
-            {
-            if ( _Error )
-                *_Error = [ errorPassedInDelegateMethod copy ];
-
-            return NO;
-            }
-        }
+        return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
+                                      occuredIn: _cmd
+                                    copiedError: _Error
+                                               , self, errorPassedInDelegateMethod, _Keychain, _Password
+                                               , s_guard ];
 
     if ( _Keychain.isLocked /* The keychain must not be unlocked */ )
         {
@@ -387,16 +371,11 @@ WSCKeychainManager static* s_defaultManager = nil;
             {
             WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
 
-            if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:unlockingKeychain:withPassword: ) ]
-                    && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod unlockingKeychain: _Keychain withPassword: _Password ] )
-                return YES;
-            else
-                {
-                if ( _Error )
-                    *_Error = [ errorPassedInDelegateMethod copy ];
-
-                return NO;
-                }
+            return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
+                                          occuredIn: _cmd
+                                        copiedError: _Error
+                                                   , self, errorPassedInDelegateMethod, _Keychain, _Password
+                                                   , s_guard ];
             }
         }
 
@@ -456,27 +435,24 @@ WSCKeychainManager static* s_defaultManager = nil;
     // let's retrieve the older search list in order to return it
     NSArray* olderSearchList = [ self keychainSearchList ];
 
-    NSError* newError = nil;
-    if ( !_SearchList || ![ _SearchList isKindOfClass: [ NSArray class ] ] )
+    NSError* errorPassedInDelegateMethod = nil;
+    BOOL shouldProceedIfEncounteredAnyError = NO;
+
+    [ self p_dontBeABitch: &errorPassedInDelegateMethod, _SearchList, [ NSArray class ], s_guard ];
+
+    if ( errorPassedInDelegateMethod )
         {
-        newError = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                        code: WSCKeychainInvalidParametersError
-                                    userInfo: nil ];
-
-        // If the delegate implements this delegate method
-        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:updatingKeychainSearchList: ) ]
-                // and this delegate method returns YES
-                && [ self.delegate keychainManager: self shouldProceedAfterError: newError updatingKeychainSearchList: _SearchList ] )
-            // although an error occured, returns the older search list anyway
-            return olderSearchList;
-        else
-            {
-            if ( _Error )
-                *_Error = [ newError copy ];
-
-            return nil;
-            }
+        shouldProceedIfEncounteredAnyError = [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
+                                                                    occuredIn: _cmd
+                                                                  copiedError: _Error
+                                                                             , self, errorPassedInDelegateMethod, _SearchList
+                                                                             , s_guard ];
+        // If the delegate implements this delegate method,
+        // and it returned YES, although an error occured, returns the older search list anyway,
+        // otherwise, returns nil
+        return shouldProceedIfEncounteredAnyError ? olderSearchList : nil;
         }
+
 
     OSStatus resultCode = errSecSuccess;
 
@@ -490,32 +466,20 @@ WSCKeychainManager static* s_defaultManager = nil;
     WSCKeychain* _SecKeychain = nil;
     while ( _SecKeychain = [ searchListEnumerator nextObject ] )
         {
-        NSError* errorPassedInDelegateMethod = nil;
+        [ self p_dontBeABitch: &errorPassedInDelegateMethod, _SecKeychain, [ WSCKeychain class ], s_guard ];
 
-        if ( !_SecKeychain || ![ _SecKeychain isKindOfClass: [ WSCKeychain class ] ] )
-            errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                                               code: WSCKeychainInvalidParametersError
-                                                           userInfo: nil ];
-        else if ( !_SecKeychain.isValid )
-            errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                                               code: WSCKeychainKeychainIsInvalidError
-                                                           userInfo: nil ];
         // Error occured
         if ( errorPassedInDelegateMethod )
             {
-            // If the delegate implements this delegate method
-            if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:updatingKeychainSearchList: ) ]
-                    // and this delegate method returns YES
-                    && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod updatingKeychainSearchList: _SearchList ] )
-                // Ignore the error anyway...
+            shouldProceedIfEncounteredAnyError = [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
+                                                                        occuredIn: _cmd
+                                                                      copiedError: _Error
+                                                                                 , self, errorPassedInDelegateMethod, _SearchList
+                                                                                 , s_guard ];
+            if ( shouldProceedIfEncounteredAnyError )
                 continue;
             else
-                {
-                if ( _Error )
-                    *_Error = [ errorPassedInDelegateMethod copy ];
-
                 return nil;
-                }
             }
 
         [ secSearchList addObject: ( __bridge id )_SecKeychain.secKeychain ];
@@ -527,15 +491,17 @@ WSCKeychainManager static* s_defaultManager = nil;
     resultCode = SecKeychainSetSearchList( ( __bridge CFArrayRef )secSearchList );
     if ( resultCode != errSecSuccess )
         {
-        WSCFillErrorParamWithSecErrorCode( resultCode, &newError );
+        WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
 
-        // If the delegate implements this delegate method
-        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:updatingKeychainSearchList: ) ]
-                // and this delegate method returns YES
-                && [ self.delegate keychainManager: self shouldProceedAfterError: newError updatingKeychainSearchList: _SearchList ] )
-            ;
-        else
-            return nil;
+        shouldProceedIfEncounteredAnyError = [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
+                                                                    occuredIn: _cmd
+                                                                  copiedError: _Error
+                                                                             , self, errorPassedInDelegateMethod, _SearchList
+                                                                             , s_guard ];
+        // If the delegate implements this delegate method,
+        // and it returned YES, although an error occured, returns the older search list anyway,
+        // otherwise, returns nil
+        return shouldProceedIfEncounteredAnyError ? olderSearchList : nil;
         }
 
     //====================================================================================//

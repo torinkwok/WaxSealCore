@@ -1169,6 +1169,13 @@
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
     XCTAssertNotNil( olderSearchList );
+
+    // -------------------------------------------------------------------------------------------------------
+    // Restored
+    [ [ WSCKeychainManager defaultManager ] setKeychainSearchList: commonOriginalSearchList error: &error ];
+    XCTAssertNil( error );
+    XCTAssertNotNil( olderSearchList );
+    WSCPrintNSErrorForUnitTest( error );
     }
 
 - ( void ) testAddingKeychainToSearchlist
