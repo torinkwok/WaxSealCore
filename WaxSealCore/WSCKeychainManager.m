@@ -194,7 +194,6 @@ WSCKeychainManager static* s_defaultManager = nil;
 
     [ self p_dontBeABitch: &errorPassedInMethodDelegate, _Keychain, [ WSCKeychain class ], s_guard ];
 
-    // If indeed there an error
     if ( !errorPassedInMethodDelegate )
         {
         if ( !_Keychain.isDefault /* If the specified keychain is not default */ )
@@ -206,6 +205,7 @@ WSCKeychainManager static* s_defaultManager = nil;
             }
         }
 
+    // If indeed there an error
     if ( errorPassedInMethodDelegate )
         {
         shouldProceedIfEncounteredAnyError = [ self p_shouldProceedAfterError: errorPassedInMethodDelegate
@@ -314,6 +314,23 @@ WSCKeychainManager static* s_defaultManager = nil;
                          , _Password, [ NSString class ]
                          , s_guard ];
 
+    if ( !errorPassedInDelegateMethod )
+        {
+        if ( _Keychain.isLocked /* The keychain must not be unlocked */ )
+            {
+            OSStatus resultCode = errSecSuccess;
+
+            resultCode = SecKeychainUnlock( _Keychain.secKeychain
+                                          , ( UInt32 )_Password.length
+                                          , _Password.UTF8String
+                                          , YES
+                                          );
+
+            if ( resultCode != errSecSuccess )
+                WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
+            }
+        }
+
     // If indeed there an error
     if ( errorPassedInDelegateMethod )
         return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
@@ -321,27 +338,6 @@ WSCKeychainManager static* s_defaultManager = nil;
                                     copiedError: _Error
                                                , self, errorPassedInDelegateMethod, _Keychain, _Password
                                                , s_guard ];
-
-    if ( _Keychain.isLocked /* The keychain must not be unlocked */ )
-        {
-        OSStatus resultCode = errSecSuccess;
-
-        resultCode = SecKeychainUnlock( _Keychain.secKeychain
-                                      , ( UInt32 )_Password.length
-                                      , _Password.UTF8String
-                                      , YES
-                                      );
-        if ( resultCode != errSecSuccess )
-            {
-            WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
-
-            return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
-                                          occuredIn: _cmd
-                                        copiedError: _Error
-                                                   , self, errorPassedInDelegateMethod, _Keychain, _Password
-                                                   , s_guard ];
-            }
-        }
 
     // If every parameters is correct but the keychain has been already unlocked:
     // do nothing, just returns YES, which means the unlocking operation is successful.
@@ -487,17 +483,14 @@ WSCKeychainManager static* s_defaultManager = nil;
     /* _Keychain parameter must be kind of WSCKeychain class, and it must not be invalid or nil */
     [ self p_dontBeABitch: &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard ];
 
-    // If indeed there an error
-    if ( errorPassedInDelegateMethod )
-        return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
-                                      occuredIn: _cmd
-                                    copiedError: _Error
-                                               , self, errorPassedInDelegateMethod, _Keychain, defaultSearchList
-                                               , s_guard ];
-    // If the parameter is no problem so far
-    [ defaultSearchList addObject: _Keychain ];
+    if ( !errorPassedInDelegateMethod )
+        {
+        // If the parameter is no problem so far
+        [ defaultSearchList addObject: _Keychain ];
+        [ self setKeychainSearchList: defaultSearchList error: &errorPassedInDelegateMethod ];
+        }
 
-    [ self setKeychainSearchList: defaultSearchList error: &errorPassedInDelegateMethod ];
+    // If indeed there an error
     if ( errorPassedInDelegateMethod )
         return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
                                       occuredIn: _cmd
@@ -523,17 +516,15 @@ WSCKeychainManager static* s_defaultManager = nil;
     NSError* errorPassedInDelegateMethod = nil;
     [ self p_dontBeABitch: &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard ];
 
-    // If indeed there an error
-    if ( errorPassedInDelegateMethod )
-        return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
-                                      occuredIn: _cmd
-                                    copiedError: _Error
-                                               , self, errorPassedInDelegateMethod, _Keychain, defaultSearchList
-                                               , s_guard ];
-    // If the parameter is no problem so far
-    [ defaultSearchList removeObject: _Keychain ];
+    if ( !errorPassedInDelegateMethod )
+        {
+        // If the parameter is no problem so far
+        [ defaultSearchList removeObject: _Keychain ];
 
-    [ self setKeychainSearchList: defaultSearchList error: &errorPassedInDelegateMethod ];
+        [ self setKeychainSearchList: defaultSearchList error: &errorPassedInDelegateMethod ];
+        }
+
+    // If indeed there an error
     if ( errorPassedInDelegateMethod )
         return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
                                       occuredIn: _cmd
