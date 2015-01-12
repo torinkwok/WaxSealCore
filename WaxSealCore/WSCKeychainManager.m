@@ -276,29 +276,15 @@ WSCKeychainManager static* s_defaultManager = nil;
     // Parameters Detection
 
     NSError* errorPassedInDelegateMethod = nil;
-    if ( !_Keychain || ![ _Keychain isKindOfClass: [ WSCKeychain class ] ] )
-        errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                                           code: WSCKeychainInvalidParametersError
-                                                       userInfo: nil ];
+    [ self p_dontBeABitch: &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard ];
 
-    else if ( !_Keychain.isValid /* If the keychain is invalid */ )
-        errorPassedInDelegateMethod = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                                           code: WSCKeychainKeychainIsInvalidError
-                                                       userInfo: nil ];
     // If indeed there an error
     if ( errorPassedInDelegateMethod )
-        {
-        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:lockingKeychain: ) ]
-                && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod lockingKeychain: _Keychain ] )
-            return YES;
-        else
-            {
-            if ( _Error )
-                *_Error = [ errorPassedInDelegateMethod copy ];
-
-            return NO;
-            }
-        }
+        return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
+                                      occuredIn: _cmd
+                                    copiedError: _Error
+                                               , self, errorPassedInDelegateMethod, _Keychain
+                                               , s_guard ];
 
     // ====================================================================================================//
 
@@ -311,16 +297,11 @@ WSCKeychainManager static* s_defaultManager = nil;
             {
             WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
 
-            if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:lockingKeychain: ) ]
-                    && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInDelegateMethod lockingKeychain: _Keychain ] )
-                return YES;
-            else
-                {
-                if ( _Error )
-                    *_Error = [ errorPassedInDelegateMethod copy ];
-
-                return NO;
-                }
+            return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
+                                          occuredIn: _cmd
+                                        copiedError: _Error
+                                                   , self, errorPassedInDelegateMethod, _Keychain
+                                                   , s_guard ];
             }
         }
 
