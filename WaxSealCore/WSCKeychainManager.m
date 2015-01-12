@@ -330,41 +330,6 @@ WSCKeychainManager static* s_defaultManager = nil;
 
 #pragma mark Searching for Keychains Items
 
-/* Retrieves a keychain search list. 
- */
-- ( NSArray* ) keychainSearchList
-    {
-    OSStatus resultCode = errSecSuccess;
-    NSError* error = nil;
-
-    CFArrayRef secSearchList = NULL;
-    resultCode = SecKeychainCopySearchList( &secSearchList );
-
-    // As described in the documentation,
-    // return nil if an error occurs:
-    if ( resultCode != errSecSuccess )
-        {
-        WSCFillErrorParamWithSecErrorCode( resultCode, &error );
-        WSCPrintNSErrorForLog( error );
-
-        return nil;
-        }
-
-    NSMutableArray* newSearchList = [ NSMutableArray array ];
-    [ ( __bridge NSArray* )secSearchList enumerateObjectsUsingBlock:
-        ^( id _SecKeychain /* The SecKeychain object waiting for be encapsulated with WSCKeychain class */
-         , NSUInteger _Index
-         , BOOL* _Stop )
-        {
-        [ newSearchList addObject:
-            [ WSCKeychain keychainWithSecKeychainRef: ( __bridge SecKeychainRef )_SecKeychain ] ];
-        } ];
-
-    CFRelease( secSearchList );
-
-    return [ [ newSearchList copy ] autorelease ];
-    }
-
 /* Specifies the list of keychains to use in the default keychain search list. 
  */
 - ( NSArray* ) setKeychainSearchList: ( NSArray* )_SearchList
@@ -451,6 +416,41 @@ WSCKeychainManager static* s_defaultManager = nil;
     //====================================================================================//
 
     return olderSearchList;
+    }
+
+/* Retrieves a keychain search list. 
+ */
+- ( NSArray* ) keychainSearchList
+    {
+    OSStatus resultCode = errSecSuccess;
+    NSError* error = nil;
+
+    CFArrayRef secSearchList = NULL;
+    resultCode = SecKeychainCopySearchList( &secSearchList );
+
+    // As described in the documentation,
+    // return nil if an error occurs:
+    if ( resultCode != errSecSuccess )
+        {
+        WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+        WSCPrintNSErrorForLog( error );
+
+        return nil;
+        }
+
+    NSMutableArray* newSearchList = [ NSMutableArray array ];
+    [ ( __bridge NSArray* )secSearchList enumerateObjectsUsingBlock:
+        ^( id _SecKeychain /* The SecKeychain object waiting for be encapsulated with WSCKeychain class */
+         , NSUInteger _Index
+         , BOOL* _Stop )
+        {
+        [ newSearchList addObject:
+            [ WSCKeychain keychainWithSecKeychainRef: ( __bridge SecKeychainRef )_SecKeychain ] ];
+        } ];
+
+    CFRelease( secSearchList );
+
+    return [ [ newSearchList copy ] autorelease ];
     }
 
 /* Addes the specified keychain to the current default search list. */
