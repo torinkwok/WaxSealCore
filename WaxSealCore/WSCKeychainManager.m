@@ -277,11 +277,11 @@ WSCKeychainManager static* s_defaultManager = nil;
     return YES;
     }
 
-/* Locks all keychains belonging to the current user. */
-//- ( BOOL ) lockAllKeychains: ( NSError** )_Error
-//    {
-//    // TODO:
-//    }
+/* Locks all keychains lying in the current default search list belonging to the current user.
+- ( BOOL ) lockAllKeychains: ( NSError** )_Error
+    {
+//    if ( [ self.delegate respondsToSelector: @selector( keychainManager:should
+    }
 
 /* Unlocks a keychain with an explicitly provided password. */
 - ( BOOL ) unlockKeychain: ( WSCKeychain* )_Keychain

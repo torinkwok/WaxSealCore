@@ -204,14 +204,15 @@
 - ( BOOL ) lockKeychain: ( WSCKeychain* )_Keychain
                   error: ( NSError** )_Error;
 
-/** Locks all keychains belonging to the current user.
+/** Locks all keychains lying in the current default search list belonging to the current user.
 
-  Prior to locking all keychains, the keychain manager asks its delegate if it should actually do so.
-  It does this by calling the [keychainManagerShoulLockAllKeychains:](-[WSCKeychainManagerDelegate keychainManagerShoulLockAllKeychains:]) method;
+  Prior to locking each keychain in the current default search list, the keychain manager asks its delegate if it should actually do so.
+  It does this by calling the [keychainManager:shouldLockKeychain:](-[WSCKeychainManagerDelegate keychainManager:shouldLockKeychain:]) method;
   If the delegate method returns `YES`, or if the delegate does not implement the appropriate methods,
-  the keychain manager proceeds to lock all keychains.
-  If there is an error locking all keychains, the keychain manager may also call the delegate's
-  [keychainManager:shouldProceedLockingAllKeychainsAfterError:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedLockingAllKeychainsAfterError:]) method to determine how to proceed.
+  the keychain manager proceeds to lock the specified keychain in search list.
+  If there is an error locking current keychain, the keychain manager may also call the delegate's
+  [keychainManager:shouldProceedAfterError:lockingKeychain:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:lockingKeychain:]) method 
+  to determine whether lock the following keychain in the search list.
 
   Your application should not invoke this method unless you are responding the user's request to lock the keychain.
   In general, you should leave the keychain unlocked so that the user does not have to unlock it again in another application.
@@ -499,32 +500,6 @@
 - ( BOOL )  keychainManager: ( WSCKeychainManager* )_KeychainManager
     shouldProceedAfterError: ( NSError* )_Error
             lockingKeychain: ( WSCKeychain* )_Keychain;
-
-/** Asks the delegate whether all the keychains should be locked.
-  
-  If you do not implement this method, the keychain manager assumes a repsonse of `YES`.
-  
-  @param _KeychainManager The keychain manager that attempted to lock all the keychains.
-  
-  @return `YES` if all the keychains should be locked or `NO` if they should not be locked.
-
-  @sa [- lockAllKeychains:](-[WSCKeychainManager lockAllKeychains:])
-  */
-- ( BOOL ) keychainManagerShoulLockAllKeychains: ( WSCKeychainManager* )_KeychainManager;
-
-/** Asks the delegate if the operation should continue after an error occurs while locking all the keychains.
-
-  @param _KeychainManager The keychain manager that attempted to lock all the keychains.
-  
-  @param _Error The error that occurred while attempting to lock all the keychains.
-  
-  @return `YES` if the operation should proceed or `NO` if it should be aborted. 
-          If you do not implement this method, the keychain manager assumes a response of `NO`.
-
-  @sa [- lockAllKeychains:](-[WSCKeychainManager lockAllKeychains:])
-  */
-- ( BOOL )                     keychainManager: ( WSCKeychainManager* )_KeychainManager
-    shouldProceedLockingAllKeychainsAfterError: ( NSError* )_Error;
 
 #pragma mark Unlocking Keychains
 /** @name Unlocking Keychains */
