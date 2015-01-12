@@ -520,7 +520,6 @@ WSCKeychainManager static* s_defaultManager = nil;
         {
         // If the parameter is no problem so far
         [ defaultSearchList removeObject: _Keychain ];
-
         [ self setKeychainSearchList: defaultSearchList error: &errorPassedInDelegateMethod ];
         }
 
