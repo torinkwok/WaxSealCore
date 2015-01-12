@@ -190,49 +190,38 @@ WSCKeychainManager static* s_defaultManager = nil;
     // continue to set the specified keychain as default.
 
     NSError* errorPassedInMethodDelegate = nil;
+    BOOL shouldProceedIfEncounteredAnyError = NO;
+
     [ self p_dontBeABitch: &errorPassedInMethodDelegate, _Keychain, [ WSCKeychain class ], s_guard ];
 
     // If indeed there an error
+    if ( !errorPassedInMethodDelegate )
+        {
+        if ( !_Keychain.isDefault /* If the specified keychain is not default */ )
+            {
+            OSStatus resultCode = SecKeychainSetDefault( _Keychain.secKeychain );
+
+            if ( resultCode != errSecSuccess )
+                WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInMethodDelegate );
+            }
+        }
+
     if ( errorPassedInMethodDelegate )
         {
-        if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:settingKeychainAsDefault: ) ]
-                && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInMethodDelegate settingKeychainAsDefault: _Keychain ] )
-            return olderDefaultKeychain;
-        else
-            {
-            if ( _Error )
-                *_Error = [ errorPassedInMethodDelegate copy ];
-
-            return nil;
-            }
+        shouldProceedIfEncounteredAnyError = [ self p_shouldProceedAfterError: errorPassedInMethodDelegate
+                                                                    occuredIn: _cmd
+                                                                  copiedError: _Error
+                                                                             , self, errorPassedInMethodDelegate, _Keychain
+                                                                             , s_guard ];
+        // If the delegate implements this delegate method,
+        // and it returned YES, although an error occured, returns the older search list anyway,
+        // otherwise, returns nil
+        return shouldProceedIfEncounteredAnyError ? olderDefaultKeychain : nil;
         }
 
-    // ====================================================================================================//
-
-    if ( !_Keychain.isDefault /* If the specified keychain is not default */ )
-        {
-        OSStatus resultCode = SecKeychainSetDefault( _Keychain.secKeychain );
-
-        if ( resultCode != errSecSuccess )
-            {
-            WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInMethodDelegate );
-
-            if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldProceedAfterError:settingKeychainAsDefault: ) ]
-                    && [ self.delegate keychainManager: self shouldProceedAfterError: errorPassedInMethodDelegate settingKeychainAsDefault: _Keychain ] )
-                return olderDefaultKeychain;
-            else
-                {
-                if ( _Error )
-                    *_Error = [ errorPassedInMethodDelegate copy ];
-
-                return nil;
-                }
-            }
-        }
-
-    // If the specified keychain is already default,
+    // If the there is not any error occured while setting the specified keychain as default keychain
+    // or the it's already default,
     // skip all the steps.
-
     return olderDefaultKeychain;
     }
 

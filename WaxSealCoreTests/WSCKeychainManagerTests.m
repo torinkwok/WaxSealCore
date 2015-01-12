@@ -834,6 +834,7 @@
     XCTAssertNil( olderDefault );
     XCTAssertNotNil( error );
     XCTAssertEqualObjects( error.domain, NSOSStatusErrorDomain );
+    XCTAssertEqual( error.code, -61 );  // Write Permissions Error
     WSCPrintNSErrorForUnitTest( error );
 
     // ----------------------------------------------------------------------------------
