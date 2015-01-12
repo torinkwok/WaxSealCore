@@ -268,6 +268,18 @@ WSCKeychainManager static* s_defaultManager = nil;
     NSError* errorPassedInDelegateMethod = nil;
     [ self p_dontBeABitch: &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard ];
 
+    if ( !errorPassedInDelegateMethod )
+        {
+        if ( !_Keychain.isLocked /* The keychain must not be locked */ )
+            {
+            OSStatus resultCode = errSecSuccess;
+
+            resultCode = SecKeychainLock( _Keychain.secKeychain );
+            if ( resultCode != errSecSuccess )
+                WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
+            }
+        }
+
     // If indeed there an error
     if ( errorPassedInDelegateMethod )
         return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
@@ -275,25 +287,6 @@ WSCKeychainManager static* s_defaultManager = nil;
                                     copiedError: _Error
                                                , self, errorPassedInDelegateMethod, _Keychain
                                                , s_guard ];
-
-    // ====================================================================================================//
-
-    if ( !_Keychain.isLocked /* The keychain must not be locked */ )
-        {
-        OSStatus resultCode = errSecSuccess;
-
-        resultCode = SecKeychainLock( _Keychain.secKeychain );
-        if ( resultCode != errSecSuccess )
-            {
-            WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
-
-            return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
-                                          occuredIn: _cmd
-                                        copiedError: _Error
-                                                   , self, errorPassedInDelegateMethod, _Keychain
-                                                   , s_guard ];
-            }
-        }
 
     // If every parameters is correct but the keychain has been already locked:
     // do nothing, just returns YES, which means the locking operation is successful.
