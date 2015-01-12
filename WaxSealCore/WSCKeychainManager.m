@@ -118,6 +118,13 @@ WSCKeychainManager static* s_defaultManager = nil;
 
         [ self p_dontBeABitch: &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard ];
 
+        if ( !errorPassedInDelegateMethod )
+            {
+            resultCode = SecKeychainDelete( _Keychain.secKeychain );
+            if ( resultCode != errSecSuccess )
+                WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
+            }
+
         // If indeed there an error
         if ( errorPassedInDelegateMethod )
             {
@@ -138,29 +145,6 @@ WSCKeychainManager static* s_defaultManager = nil;
                 // if the delegate does not implement keychainManager:shouldProceedAfterError:deletingKeychain: method
                 // we will assumes a response of NO,
                 break;
-                }
-            }
-
-        resultCode = SecKeychainDelete( _Keychain.secKeychain );
-        if ( resultCode != errSecSuccess )
-            {
-            WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
-
-            // If indeed there an error
-            if ( errorPassedInDelegateMethod )
-                {
-                shouldProceedIfEncounteredAnyError = [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
-                                                                            occuredIn: _cmd
-                                                                          copiedError: _Error
-                                                                                     , self, errorPassedInDelegateMethod, _Keychain
-                                                                                     , s_guard ];
-                if ( shouldProceedIfEncounteredAnyError )
-                    continue;
-                else
-                    {
-                    isSuccess = NO;
-                    break;
-                    }
                 }
             }
         }

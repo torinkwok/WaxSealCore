@@ -698,6 +698,14 @@
     XCTAssertFalse( keychain_testCase6.isValid );
     WSCPrintNSErrorForUnitTest( error );
 
+    XCTAssertFalse( keychain_testCase6.isValid );
+    isSuccess = [ [ WSCKeychainManager defaultManager ] deleteKeychain: keychain_testCase6
+                                                                 error: &error ];
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertFalse( keychain_testCase6.isValid );
+    WSCPrintNSErrorForUnitTest( error );
+
     /* Now keychain_testCase6 is invalid */
     XCTAssertFalse( keychain_testCase6.isValid );
 
