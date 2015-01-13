@@ -45,6 +45,8 @@
 @implementation TestClassForWSCKeychainManagerDelegate
 @end
 
+typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
+
 // --------------------------------------------------------
 #pragma mark Interface of WSCKeychainManagerTests case
 // --------------------------------------------------------
@@ -67,6 +69,8 @@
     WSCKeychainManager* _testManager4;
 
     TestClassForWSCKeychainManagerDelegate* _testClassForDelegate;
+
+    WSCKeychainSelectivelyUnlockKeychainBlock _selectivelyUnlockKeychain;
     }
 
 @property ( nonatomic, retain ) WSCKeychain* publicKeychain;
@@ -82,6 +86,8 @@
 @property ( nonatomic, retain ) WSCKeychainManager* testManager4;
 
 @property ( nonatomic, retain ) TestClassForWSCKeychainManagerDelegate* testClassForDelegate;
+
+@property ( nonatomic, copy ) WSCKeychainSelectivelyUnlockKeychainBlock selectivelyUnlockKeychain;
 
 @end
 
@@ -409,6 +415,33 @@
     self.testManager2.delegate = self;
     self.testManager3.delegate = self;
     self.testManager4.delegate = self.testClassForDelegate;
+
+    self.selectivelyUnlockKeychain =
+        ^( void )
+            {
+            CFArrayRef secSearchList = NULL;
+            SecKeychainCopySearchList( &secSearchList );
+            NSArray* searchList = [ [ WSCKeychainManager defaultManager ] keychainSearchList ];
+
+            NSLog( @"SecKeychain SearchList Count: %lu", CFArrayGetCount( secSearchList ) );
+            NSLog( @"Keychain SearchList Count: %lu", searchList.count );
+
+            for ( WSCKeychain* _Keychain in searchList )
+                {
+                if ( [ _Keychain isEqualToKeychain: [ WSCKeychain login ] ] )
+                    {
+                    [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"Dontbeabitch77!." error: nil ];
+                    continue;
+                    }
+
+                if ( [ _Keychain.URL.path contains: @"withPrompt" ]
+                        || [ _Keychain.URL.path contains: @"WithInteractionPrompt" ] )
+                    [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"isgtforever" error: nil ];
+
+                else if ( [ [ _Keychain.URL path ] contains: @"nonPrompt" ] )
+                    [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: self.passwordForTest error: nil ];
+                }
+            };
     }
 
 - ( void ) tearDown
@@ -432,6 +465,7 @@
     [ self->_testManager3 release ];
 
     [ self->_testClassForDelegate release ];
+    [ self->_selectivelyUnlockKeychain release ];
     }
 
 - ( void ) testDeletingKeychains
@@ -1046,33 +1080,6 @@
     NSError* error = nil;
     BOOL isSuccess = NO;
 
-    void ( ^restoreBlock )( void ) =
-        ^( void )
-        {
-        CFArrayRef secSearchList = NULL;
-        SecKeychainCopySearchList( &secSearchList );
-        NSArray* searchList = [ [ WSCKeychainManager defaultManager ] keychainSearchList ];
-
-        NSLog( @"SecKeychain SearchList Count: %lu", CFArrayGetCount( secSearchList ) );
-        NSLog( @"Keychain SearchList Count: %lu", searchList.count );
-
-        for ( WSCKeychain* _Keychain in searchList )
-            {
-            if ( [ _Keychain isEqualToKeychain: [ WSCKeychain login ] ] )
-                {
-                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"Dontbeabitch77!." error: nil ];
-                continue;
-                }
-
-            if ( [ _Keychain.URL.path contains: @"withPrompt" ]
-                    || [ _Keychain.URL.path contains: @"WithInteractionPrompt" ] )
-                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"isgtforever" error: nil ];
-
-            else if ( [ [ _Keychain.URL path ] contains: @"nonPrompt" ] )
-                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: self.passwordForTest error: nil ];
-            }
-        };
-
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
@@ -1081,7 +1088,7 @@
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
 
-    restoreBlock();
+    self.selectivelyUnlockKeychain();
 
     // ----------------------------------------------------------------------------------
     // Test Case 1
@@ -1091,7 +1098,7 @@
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
 
-    restoreBlock();
+    self.selectivelyUnlockKeychain();
 
     // ----------------------------------------------------------------------------------
     // Test Case 2
@@ -1101,7 +1108,7 @@
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
 
-    restoreBlock();
+    self.selectivelyUnlockKeychain();
 
     // ----------------------------------------------------------------------------------
     // Test Case 3
@@ -1111,7 +1118,7 @@
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
 
-    restoreBlock();
+    self.selectivelyUnlockKeychain();
 
     // ----------------------------------------------------------------------------------
     // Test Case 4
@@ -1121,7 +1128,7 @@
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
 
-    restoreBlock();
+    self.selectivelyUnlockKeychain();
     }
 
 - ( void ) testUnlockKeychainWithPassword
@@ -1261,6 +1268,11 @@
     WSCPrintNSErrorForUnitTest( error );
     XCTAssertFalse( isSuccess );
     XCTAssertTrue( [ WSCKeychain login ].isLocked );
+    }
+
+- ( void ) testUnlockKeychainWithUserInteraction
+    {
+
     }
 
 - ( void ) testSetSearchList

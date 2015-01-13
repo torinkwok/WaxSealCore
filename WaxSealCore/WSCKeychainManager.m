@@ -312,7 +312,6 @@ WSCKeychainManager static* s_defaultManager = nil;
         if ( _Keychain.isLocked /* The keychain must not be unlocked */ )
             {
             OSStatus resultCode = errSecSuccess;
-
             resultCode = SecKeychainUnlock( _Keychain.secKeychain
                                           , ( UInt32 )_Password.length
                                           , _Password.UTF8String
@@ -330,6 +329,42 @@ WSCKeychainManager static* s_defaultManager = nil;
                                       occuredIn: _cmd
                                     copiedError: _Error
                                                , self, errorPassedInDelegateMethod, _Keychain, _Password
+                                               , s_guard ];
+
+    // If every parameters is correct but the keychain has been already unlocked:
+    // do nothing, just returns YES, which means the unlocking operation is successful.
+    return YES;
+    }
+
+/* Unlocks a keychain with the user interaction which is used to retrieve password from the user. */
+- ( BOOL ) unlockKeychainWithUserInteraction: ( WSCKeychain* )_Keychain
+                                       error: ( NSError** )_Error
+    {
+    if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldUnlockKeychainWithUserInteraction: ) ]
+            && ![ self.delegate keychainManager: self shouldUnlockKeychainWithUserInteraction: _Keychain ] )
+        return YES;
+
+    NSError* errorPassedInDelegateMethod = nil;
+    [ self p_dontBeABitch: &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard ];
+
+    if ( !errorPassedInDelegateMethod )
+        {
+        OSStatus resultCode = errSecSuccess;
+        resultCode = SecKeychainUnlock( _Keychain.secKeychain
+                                      , 0
+                                      , NULL
+                                      , NO
+                                      );
+
+        if ( resultCode != errSecSuccess )
+            WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
+        }
+
+    if ( errorPassedInDelegateMethod )
+        return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
+                                      occuredIn: _cmd
+                                    copiedError: _Error
+                                               , self, errorPassedInDelegateMethod, _Keychain
                                                , s_guard ];
 
     // If every parameters is correct but the keychain has been already unlocked:
