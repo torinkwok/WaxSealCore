@@ -504,7 +504,7 @@ WSCKeychainManager static* s_defaultManager = nil;
 
     if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldRemoveKeychain:fromSearchList: ) ]
             && ![ self.delegate keychainManager: self shouldRemoveKeychain: _Keychain fromSearchList: defaultSearchList ] )
-        return NO;
+        return YES;
 
     NSError* errorPassedInDelegateMethod = nil;
     [ self p_dontBeABitch: &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard ];
