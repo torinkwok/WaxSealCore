@@ -1382,7 +1382,7 @@
 
     isSuccess = [ self.testManager2 addKeychainToDefaultSearchList: ( WSCKeychain* )[ NSDate date ] error: &error ];
     XCTAssertNil( error );
-    XCTAssertFalse( isSuccess );
+    XCTAssertTrue( isSuccess );
     WSCPrintNSErrorForUnitTest( error );
 
     isSuccess = [ self.testManager3 addKeychainToDefaultSearchList: ( WSCKeychain* )[ NSDate date ] error: &error ];
@@ -1451,7 +1451,7 @@
     isSuccess = [ self.testManager2 addKeychainToDefaultSearchList: ( WSCKeychain* )[ NSDate date ]
                                                              error: &error ];
     XCTAssertNil( error );
-    XCTAssertFalse( isSuccess );
+    XCTAssertTrue( isSuccess );
     WSCPrintNSErrorForUnitTest( error );
 
     /* We are using self.testManager1
@@ -1502,7 +1502,7 @@
     isSuccess = [ self.testManager2 addKeychainToDefaultSearchList: keychain_negativeTestCase1
                                                              error: &error ];
     XCTAssertNil( error );
-    XCTAssertFalse( isSuccess );
+    XCTAssertTrue( isSuccess );
     WSCPrintNSErrorForUnitTest( error );
 
     isSuccess = [ self.testManager1 addKeychainToDefaultSearchList: keychain_negativeTestCase1
