@@ -1046,34 +1046,82 @@
     NSError* error = nil;
     BOOL isSuccess = NO;
 
+    void ( ^restoreBlock )( void ) =
+        ^( void )
+        {
+        CFArrayRef secSearchList = NULL;
+        SecKeychainCopySearchList( &secSearchList );
+        NSArray* searchList = [ [ WSCKeychainManager defaultManager ] keychainSearchList ];
+
+        NSLog( @"SecKeychain SearchList Count: %lu", CFArrayGetCount( secSearchList ) );
+        NSLog( @"Keychain SearchList Count: %lu", searchList.count );
+
+        for ( WSCKeychain* _Keychain in searchList )
+            {
+            if ( [ _Keychain isEqualToKeychain: [ WSCKeychain login ] ] )
+                {
+                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"Dontbeabitch77!." error: nil ];
+                continue;
+                }
+
+            if ( [ _Keychain.URL.path contains: @"withPrompt" ]
+                    || [ _Keychain.URL.path contains: @"WithInteractionPrompt" ] )
+                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"isgtforever" error: nil ];
+
+            else if ( [ [ _Keychain.URL path ] contains: @"nonPrompt" ] )
+                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: self.passwordForTest error: nil ];
+            }
+        };
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 0
+    // ----------------------------------------------------------------------------------
+    isSuccess = [ [ WSCKeychainManager defaultManager ] lockAllKeychains: &error ];
+    XCTAssertTrue( isSuccess );
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+
+    restoreBlock();
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 1
+    // ----------------------------------------------------------------------------------
     isSuccess = [ self.testManager1 lockAllKeychains: &error ];
     XCTAssertTrue( isSuccess );
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
 
-    // Restored
-    CFArrayRef secSearchList = NULL;
-    SecKeychainCopySearchList( &secSearchList );
-    NSArray* searchList = [ [ WSCKeychainManager defaultManager ] keychainSearchList ];
+    restoreBlock();
 
-    NSLog( @"SecKeychain SearchList Count: %lu", CFArrayGetCount( secSearchList ) );
-    NSLog( @"Keychain SearchList Count: %lu", searchList.count );
+    // ----------------------------------------------------------------------------------
+    // Test Case 2
+    // ----------------------------------------------------------------------------------
+    isSuccess = [ self.testManager2 lockAllKeychains: &error ];
+    XCTAssertTrue( isSuccess );
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
 
-    for ( WSCKeychain* _Keychain in searchList )
-        {
-        if ( [ _Keychain isEqualToKeychain: [ WSCKeychain login ] ] )
-            {
-            [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"Dontbeabitch77!." error: nil ];
-            continue;
-            }
+    restoreBlock();
 
-        if ( [ _Keychain.URL.path contains: @"withPrompt" ]
-                || [ _Keychain.URL.path contains: @"WithInteractionPrompt" ] )
-            [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"isgtforever" error: nil ];
+    // ----------------------------------------------------------------------------------
+    // Test Case 3
+    // ----------------------------------------------------------------------------------
+    isSuccess = [ self.testManager3 lockAllKeychains: &error ];
+    XCTAssertTrue( isSuccess );
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
 
-        else if ( [ [ _Keychain.URL path ] contains: @"nonPrompt" ] )
-            [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: self.passwordForTest error: nil ];
-        }
+    restoreBlock();
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 4
+    // ----------------------------------------------------------------------------------
+    isSuccess = [ self.testManager4 lockAllKeychains: &error ];
+    XCTAssertTrue( isSuccess );
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+
+    restoreBlock();
     }
 
 - ( void ) testUnlockKeychainWithPassword
