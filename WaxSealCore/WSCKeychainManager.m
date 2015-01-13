@@ -244,7 +244,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     /* If the delegate aborts the setting operation, just returns NO */
     if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldLockKeychain: ) ]
             && ![ self.delegate keychainManager: self shouldLockKeychain: _Keychain ] )
-        return NO;
+        return YES;
 
     // ====================================================================================================//
     // Parameters Detection
@@ -277,10 +277,19 @@ WSCKeychainManager static* s_defaultManager = nil;
     return YES;
     }
 
-/* Locks all keychains lying in the current default search list belonging to the current user.
+/* Locks all keychains lying in the current default search list belonging to the current user. */
 - ( BOOL ) lockAllKeychains: ( NSError** )_Error
     {
-//    if ( [ self.delegate respondsToSelector: @selector( keychainManager:should
+    NSArray* searchList = [ self keychainSearchList ];
+    for ( WSCKeychain* _Keychain in searchList )
+        {
+        if ( [ self lockKeychain: _Keychain error: _Error ] )
+            continue;
+        else
+            return NO;
+        }
+
+    return YES;
     }
 
 /* Unlocks a keychain with an explicitly provided password. */

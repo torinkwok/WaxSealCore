@@ -202,7 +202,13 @@
     if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
             || _KeychainManager == self.testManager1
             || _KeychainManager == self.testManager3 )
-        return YES;
+        {
+        if ( [ _Keychain isKindOfClass: [ WSCKeychain class ] ]
+                && [ _Keychain.URL.path contains: @"withPrompt" ] )
+            return NO;
+        else
+            return YES;
+        }
     else
         return NO;
     }
@@ -940,7 +946,7 @@
                                            error: &error ];
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
-    XCTAssertFalse( isSuccess );
+    XCTAssertTrue( isSuccess );
 
     // ----------------------------------------------------------------------------------
     // Test Case 1: Lock login.keychain
@@ -979,7 +985,7 @@
                                            error: &error ];
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
-    XCTAssertFalse( isSuccess );
+    XCTAssertTrue( isSuccess );
 
     // ----------------------------------------------------------------------------------
     // Negative Test Case 1: Lock keychain with NSDate object
@@ -1037,7 +1043,31 @@
 
 - ( void ) testLockAllKeychains
     {
-//    SecKeychainLockAll();
+    NSError* error = nil;
+    BOOL isSuccess = NO;
+
+    isSuccess = [ self.testManager1 lockAllKeychains: &error ];
+    XCTAssertTrue( isSuccess );
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+
+    // Restored
+    NSArray* searchList = [ [ WSCKeychainManager defaultManager ] keychainSearchList ];
+    for ( WSCKeychain* _Keychain in searchList )
+        {
+        if ( [ _Keychain isEqualToKeychain: [ WSCKeychain login ] ] )
+            {
+            [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"Dontbeabitch77!." error: nil ];
+            continue;
+            }
+
+        if ( [ _Keychain.URL.path contains: @"withPrompt" ]
+                || [ _Keychain.URL.path contains: @"WithInteractionPrompt" ] )
+            [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"isgtforever" error: nil ];
+
+        else if ( [ [ _Keychain.URL path ] contains: @"nonPrompt" ] )
+            [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: self.passwordForTest error: nil ];
+        }
     }
 
 - ( void ) testUnlockKeychainWithPassword
