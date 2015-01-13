@@ -1052,7 +1052,13 @@
     WSCPrintNSErrorForUnitTest( error );
 
     // Restored
+    CFArrayRef secSearchList = NULL;
+    SecKeychainCopySearchList( &secSearchList );
     NSArray* searchList = [ [ WSCKeychainManager defaultManager ] keychainSearchList ];
+
+    NSLog( @"SecKeychain SearchList Count: %lu", CFArrayGetCount( secSearchList ) );
+    NSLog( @"Keychain SearchList Count: %lu", searchList.count );
+
     for ( WSCKeychain* _Keychain in searchList )
         {
         if ( [ _Keychain isEqualToKeychain: [ WSCKeychain login ] ] )

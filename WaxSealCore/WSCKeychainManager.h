@@ -285,6 +285,12 @@
 /** @name Searching for Keychains Items */
 
 /** Retrieves a keychain search list.
+
+  This method will only retrieve the valid keychains in the current keychain search list,
+  if a certain keychain in the current search list is already invalid 
+  (perhaps it has been deleted, moved or renamed), it won't be counted in the search list.
+  Which is different from the `SecKeychainCopySearchList()` function in the Keychain Services,
+  this function will count the invalid keychain.
   
   @return The keychain search list for current user. 
           Returns `nil` if an error occurs.

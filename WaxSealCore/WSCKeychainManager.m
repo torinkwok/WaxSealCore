@@ -453,8 +453,10 @@ WSCKeychainManager static* s_defaultManager = nil;
          , NSUInteger _Index
          , BOOL* _Stop )
         {
-        [ newSearchList addObject:
-            [ WSCKeychain keychainWithSecKeychainRef: ( __bridge SecKeychainRef )_SecKeychain ] ];
+        // If the keychain is already invlaid, it shouldn't be counted in the search list
+        if ( WSCKeychainIsSecKeychainValid( ( __bridge SecKeychainRef )_SecKeychain ) )
+            [ newSearchList addObject:
+                [ WSCKeychain keychainWithSecKeychainRef: ( __bridge SecKeychainRef )_SecKeychain ] ];
         } ];
 
     CFRelease( secSearchList );
