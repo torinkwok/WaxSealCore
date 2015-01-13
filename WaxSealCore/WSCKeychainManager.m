@@ -244,6 +244,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     /* If the delegate aborts the setting operation, just returns NO */
     if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldLockKeychain: ) ]
             && ![ self.delegate keychainManager: self shouldLockKeychain: _Keychain ] )
+        // If the delegate aborts the locking operation for a keychain, this method returns YES.
         return YES;
 
     // ====================================================================================================//
@@ -299,6 +300,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     {
     if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldUnlockKeychain:withPassword: ) ]
             && ![ self.delegate keychainManager: self shouldUnlockKeychain: _Keychain withPassword: _Password ] )
+        // If the delegate aborts the unlocking operation for a keychain, this method returns YES.
         return YES;
 
     NSError* errorPassedInDelegateMethod = nil;
@@ -342,6 +344,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     {
     if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldUnlockKeychainWithUserInteraction: ) ]
             && ![ self.delegate keychainManager: self shouldUnlockKeychainWithUserInteraction: _Keychain ] )
+        // If the delegate aborts the unlocking operation for a keychain, this method returns YES.
         return YES;
 
     NSError* errorPassedInDelegateMethod = nil;
@@ -349,15 +352,18 @@ WSCKeychainManager static* s_defaultManager = nil;
 
     if ( !errorPassedInDelegateMethod )
         {
-        OSStatus resultCode = errSecSuccess;
-        resultCode = SecKeychainUnlock( _Keychain.secKeychain
-                                      , 0
-                                      , NULL
-                                      , NO
-                                      );
+        if ( _Keychain.isLocked )
+            {
+            OSStatus resultCode = errSecSuccess;
+            resultCode = SecKeychainUnlock( _Keychain.secKeychain
+                                          , 0
+                                          , NULL
+                                          , NO
+                                          );
 
-        if ( resultCode != errSecSuccess )
-            WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
+            if ( resultCode != errSecSuccess )
+                WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
+            }
         }
 
     if ( errorPassedInDelegateMethod )
@@ -507,6 +513,7 @@ WSCKeychainManager static* s_defaultManager = nil;
 
     if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldRemoveKeychain:fromSearchList: ) ]
             && ![ self.delegate keychainManager: self shouldAddKeychain: _Keychain toSearchList: defaultSearchList ] )
+        // If the delegate aborts the adding operation for a keychain, this method returns YES.
         return YES;
 
     NSError* errorPassedInDelegateMethod = nil;
@@ -541,6 +548,7 @@ WSCKeychainManager static* s_defaultManager = nil;
 
     if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldRemoveKeychain:fromSearchList: ) ]
             && ![ self.delegate keychainManager: self shouldRemoveKeychain: _Keychain fromSearchList: defaultSearchList ] )
+        // If the delegate aborts the removing operation for a keychain, this method returns YES.
         return YES;
 
     NSError* errorPassedInDelegateMethod = nil;

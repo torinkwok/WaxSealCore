@@ -54,6 +54,7 @@ typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
     {
 @private
     WSCKeychain*    _publicKeychain;
+    WSCKeychain*    _publicInvalidKeychain;
 
     NSFileManager*  _defaultFileManager;
     NSString*       _passwordForTest;
@@ -74,6 +75,7 @@ typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
     }
 
 @property ( nonatomic, retain ) WSCKeychain* publicKeychain;
+@property ( nonatomic, retain ) WSCKeychain* publicInvalidKeychain;
 
 @property ( nonatomic, unsafe_unretained ) NSFileManager* defaultFileManager;
 @property ( nonatomic, copy ) NSString* passwordForTest;
@@ -254,6 +256,39 @@ typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
         return NO;
     }
 
+- ( BOOL )                  keychainManager: ( WSCKeychainManager* )_KeychainManager
+    shouldUnlockKeychainWithUserInteraction: ( WSCKeychain* )_Keychain
+    {
+    if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
+            || _KeychainManager == self.testManager1
+            || _KeychainManager == self.testManager3 )
+        {
+        if ( [ _Keychain isKindOfClass: [ WSCKeychain class ] ]
+                && [ _Keychain.URL.path contains: @"withPrompt" ] )
+            return NO;
+        else
+            return YES;
+        }
+    else
+        return NO;
+    }
+
+- ( BOOL )               keychainManager: ( WSCKeychainManager* )_KeychainManager
+                 shouldProceedAfterError: ( NSError* )_Error
+    unlockingKeychainWithUserInteraction: ( WSCKeychain* )_Keychain
+    {
+    if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
+            || _KeychainManager == self.testManager1 )
+        {
+        if ( _Error.code == WSCKeychainKeychainIsInvalidError )
+            return NO;
+        else
+            return YES;
+        }
+    else
+        return NO;
+    }
+
 - ( BOOL )         keychainManager: ( WSCKeychainManager* )_KeychainManager
     shouldUpdateKeychainSearchList: ( NSArray* )_SearchList
     {
@@ -363,6 +398,7 @@ typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
 @implementation WSCKeychainManagerTests
 
 @synthesize publicKeychain = _publicKeychain;
+@synthesize publicInvalidKeychain = _publicInvalidKeychain;
 @synthesize defaultFileManager = _defaultFileManager;
 @synthesize passwordForTest = _passwordForTest;
 
@@ -376,6 +412,7 @@ typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
 - ( void ) setUp
     {
     NSError* error = nil;
+    BOOL isSuccess = NO;
 
     if ( error )
         NSLog( @"%@", error );
@@ -401,6 +438,16 @@ typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
         if ( error )
             NSLog( @"%@", error );
         }
+
+    self.publicInvalidKeychain = [ self randomKeychain ];
+    XCTAssertNotNil( self.publicInvalidKeychain );
+    XCTAssertTrue( self.publicInvalidKeychain.isValid );
+    isSuccess = [ [ WSCKeychainManager defaultManager ] deleteKeychain: self.publicInvalidKeychain
+                                                                 error: &error ];
+    XCTAssertTrue( isSuccess );
+    XCTAssertNil( error );
+    WSCPrintNSErrorForLog( error );
+    XCTAssertFalse( self.publicInvalidKeychain.isValid );
 
     self.randomURLsAutodeletePool = [ NSMutableSet set ];
 
@@ -1272,7 +1319,114 @@ typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
 
 - ( void ) testUnlockKeychainWithUserInteraction
     {
+    NSError* error = nil;
+    BOOL isSuccess = NO;
 
+    isSuccess = [ [ WSCKeychainManager defaultManager ] lockAllKeychains: &error ];
+    XCTAssertTrue( isSuccess );
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+
+    NSArray* searchList = [ [ WSCKeychainManager defaultManager ] keychainSearchList ];
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 0
+    // ----------------------------------------------------------------------------------
+    isSuccess = [ [ WSCKeychainManager defaultManager ] unlockKeychainWithUserInteraction: [ WSCKeychain login ] error: &error ];
+    XCTAssertTrue( isSuccess );
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 1
+    // ----------------------------------------------------------------------------------
+    for ( WSCKeychain* _Keychain in searchList )
+        {
+        isSuccess = [ self.testManager1 unlockKeychainWithUserInteraction: _Keychain
+                                                                    error: &error ];
+        XCTAssertTrue( isSuccess );
+        XCTAssertNil( error );
+        }
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 0
+    // ----------------------------------------------------------------------------------
+    isSuccess = [ [ WSCKeychainManager defaultManager ] unlockKeychainWithUserInteraction: self.publicInvalidKeychain
+                                                                                    error: &error ];
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager1 unlockKeychainWithUserInteraction: self.publicInvalidKeychain
+                                                                error: &error ];
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager2 unlockKeychainWithUserInteraction: self.publicInvalidKeychain
+                                                                error: &error ];
+    XCTAssertTrue( isSuccess );
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager3 unlockKeychainWithUserInteraction: self.publicInvalidKeychain
+                                                                error: &error ];
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager4 unlockKeychainWithUserInteraction: self.publicInvalidKeychain
+                                                                error: &error ];
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
+    WSCPrintNSErrorForUnitTest( error );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 0
+    // ----------------------------------------------------------------------------------
+    isSuccess = [ [ WSCKeychainManager defaultManager ] unlockKeychainWithUserInteraction: nil
+                                                                                    error: &error ];
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager1 unlockKeychainWithUserInteraction: ( WSCKeychain* )[ NSDate date ]
+                                                                error: &error ];
+    XCTAssertTrue( isSuccess );
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager2 unlockKeychainWithUserInteraction: ( WSCKeychain* )@214
+                                                                error: &error ];
+    XCTAssertTrue( isSuccess );
+    XCTAssertNil( error );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager3 unlockKeychainWithUserInteraction: nil
+                                                                error: &error ];
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
+    WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ self.testManager4 unlockKeychainWithUserInteraction: nil
+                                                                error: &error ];
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
+    WSCPrintNSErrorForUnitTest( error );
     }
 
 - ( void ) testSetSearchList
