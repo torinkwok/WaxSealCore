@@ -299,7 +299,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     {
     if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldUnlockKeychain:withPassword: ) ]
             && ![ self.delegate keychainManager: self shouldUnlockKeychain: _Keychain withPassword: _Password ] )
-        return NO;
+        return YES;
 
     NSError* errorPassedInDelegateMethod = nil;
     [ self p_dontBeABitch: &errorPassedInDelegateMethod

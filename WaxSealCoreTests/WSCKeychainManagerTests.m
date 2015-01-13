@@ -1125,7 +1125,7 @@
                                              error: &error ];
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
-    XCTAssertFalse( isSuccess );
+    XCTAssertTrue( isSuccess );
     XCTAssertTrue( self.publicKeychain.isLocked );
 
     isSuccess = [ self.testManager1 unlockKeychain: self.publicKeychain
