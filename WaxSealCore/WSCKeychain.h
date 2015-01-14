@@ -238,32 +238,6 @@
 
 @end // WSCKeychain class
 
-#pragma mark Private Programmatic Interfaces for Creating Keychains
-@interface WSCKeychain ( WSCKeychainPrivateInitialization )
-
-- ( instancetype ) p_initWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef;
-
-/* Objective-C wrapper for SecKeychainCreate() function */
-+ ( instancetype ) p_keychainWithURL: ( NSURL* )_URL
-                            password: ( NSString* )_Password
-                      doesPromptUser: ( BOOL )_DoesPromptUser
-                       initialAccess: ( WSCAccess* )_InitalAccess
-                      becomesDefault: ( BOOL )_WillBecomeDefault
-                               error: ( NSError** )_Error;
-
-@end // WSCKeychain + WSCKeychainPrivateInitialization
-
-#pragma mark Private Programmatic Interfaces for Managing Keychains
-@interface WSCKeychain ( WSCKeychainPrivateManagement )
-
-/* Objective-C wrapper for SecKeychainGetStatus() function */
-- ( SecKeychainStatus ) p_keychainStatus: ( NSError** )_Error;
-
-@end // WSCKeychain + WSCKeychainPrivateManagement
-
-NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain );
-BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain );
-
 //////////////////////////////////////////////////////////////////////////////
 
 /*****************************************************************************

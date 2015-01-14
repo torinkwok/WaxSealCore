@@ -34,6 +34,7 @@
 #import <objc/objc.h>
 
 #import "WSCKeychain.h"
+#import "WSCKeychainPrivate.h"
 #import "WSCKeychainManager.h"
 #import "WSCKeychainError.h"
 #import "WSCKeychainErrorPrivate.h"

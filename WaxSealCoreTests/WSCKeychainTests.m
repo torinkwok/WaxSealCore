@@ -34,6 +34,7 @@
 #import <XCTest/XCTest.h>
 
 #import "WSCKeychain.h"
+#import "WSCKeychainPrivate.h"
 #import "NSURL+WSCKeychainURL.h"
 #import "WSCKeychainError.h"
 #import "WSCKeychainManager.h"
