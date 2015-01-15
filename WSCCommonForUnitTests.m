@@ -41,6 +41,8 @@
 #import "NSString+OMCString.h"
 #import "NSURL+WSCKeychainURL.h"
 
+NSString* _WSCTestPassword = @"waxsealcore";
+
 WSCKeychainSelectivelyUnlockKeychainBlock _WSCSelectivelyUnlockKeychainsBasedOnPassword =
     ^( void )
         {

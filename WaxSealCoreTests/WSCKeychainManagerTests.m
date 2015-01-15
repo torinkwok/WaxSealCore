@@ -53,7 +53,6 @@
     {
 @private
     NSFileManager*  _defaultFileManager;
-    NSString*       _passwordForTest;
 
     WSCKeychainManager* _testManager1;
     WSCKeychainManager* _testManager2;
@@ -66,7 +65,6 @@
     }
 
 @property ( nonatomic, unsafe_unretained ) NSFileManager* defaultFileManager;
-@property ( nonatomic, copy ) NSString* passwordForTest;
 
 @property ( nonatomic, retain ) NSMutableSet* randomURLsAutodeletePool;
 
@@ -358,7 +356,6 @@
 @implementation WSCKeychainManagerTests
 
 @synthesize defaultFileManager = _defaultFileManager;
-@synthesize passwordForTest = _passwordForTest;
 
 @synthesize testManager1 = _testManager1;
 @synthesize testManager2 = _testManager2;
@@ -368,7 +365,6 @@
 - ( void ) setUp
     {
     self.defaultFileManager = [ NSFileManager defaultManager ];
-    self.passwordForTest = @"waxsealcore";
 
     self.randomURLsAutodeletePool = [ NSMutableSet set ];
 
@@ -392,9 +388,6 @@
     [ self->_testManager3 unlockKeychain: [ WSCKeychain login ]
                             withPassword: @"Dontbeabitch77!."
                                    error: nil ];
-
-    [ self->_passwordForTest release ];
-
     [ self->_testManager1 release ];
     [ self->_testManager2 release ];
     [ self->_testManager3 release ];
@@ -450,7 +443,7 @@
                                                        );
 
     WSCKeychain* keychain_testCase0 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase0
-                                                           password: self.passwordForTest
+                                                           password: _WSCTestPassword
                                                       initialAccess: nil
                                                      becomesDefault: NO
                                                               error: &error ];
@@ -478,7 +471,7 @@
                                                        );
 
     WSCKeychain* keychain_testCase1 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase1
-                                                           password: self.passwordForTest
+                                                           password: _WSCTestPassword
                                                       initialAccess: nil
                                                      becomesDefault: NO
                                                               error: &error ];
@@ -506,7 +499,7 @@
                                                        );
 
     WSCKeychain* keychain_testCase2 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase2
-                                                           password: self.passwordForTest
+                                                           password: _WSCTestPassword
                                                       initialAccess: nil
                                                      becomesDefault: YES
                                                               error: &error ];
@@ -531,7 +524,7 @@
                                                        );
 
     WSCKeychain* keychain_testCase3 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase3
-                                                           password: self.passwordForTest
+                                                           password: _WSCTestPassword
                                                       initialAccess: nil
                                                      becomesDefault: NO
                                                               error: &error ];
@@ -559,7 +552,7 @@
                                                        );
 
     WSCKeychain* keychain_testCase4 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase4
-                                                           password: self.passwordForTest
+                                                           password: _WSCTestPassword
                                                       initialAccess: nil
                                                      becomesDefault: NO
                                                               error: &error ];
@@ -590,7 +583,7 @@
                                                        );
 
     WSCKeychain* keychain_testCase5 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase5
-                                                           password: self.passwordForTest
+                                                           password: _WSCTestPassword
                                                       initialAccess: nil
                                                      becomesDefault: YES
                                                               error: &error ];
@@ -617,7 +610,7 @@
                                                        );
 
     WSCKeychain* keychain_testCase6 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase6
-                                                           password: self.passwordForTest
+                                                           password: _WSCTestPassword
                                                       initialAccess: nil
                                                      becomesDefault: NO
                                                               error: &error ];
@@ -648,7 +641,7 @@
                                                        );
 
     WSCKeychain* keychain_testCase7 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase7
-                                                           password: self.passwordForTest
+                                                           password: _WSCTestPassword
                                                       initialAccess: nil
                                                      becomesDefault: NO
                                                               error: &error ];
@@ -992,7 +985,7 @@
                                                                 );
 
     WSCKeychain* keychain_negativeTestCase2 = [ WSCKeychain keychainWithURL: URLForKeychain_negativeTestCase2
-                                                                   password: self.passwordForTest
+                                                                   password: _WSCTestPassword
                                                               initialAccess: nil
                                                              becomesDefault: NO
                                                                       error: &error ];
@@ -1126,7 +1119,7 @@
     /* We are using self.testManager2
      * so the delegate method keychainManager:shouldProceedAfterError:lockingKeychain: returns YES */
     isSuccess = [ self.testManager2 unlockKeychain: _WSCCommonValidKeychainForUnitTests
-                                      withPassword: self.passwordForTest
+                                      withPassword: _WSCTestPassword
                                              error: &error ];
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
@@ -1145,7 +1138,7 @@
     XCTAssertTrue( _WSCCommonValidKeychainForUnitTests.isLocked );
 
     isSuccess = [ self.testManager3 unlockKeychain: _WSCCommonValidKeychainForUnitTests
-                                      withPassword: self.passwordForTest
+                                      withPassword: _WSCTestPassword
                                              error: &error ];
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
@@ -1194,7 +1187,7 @@
                                                                 );
 
     WSCKeychain* keychain_negativeTestCase3 = [ WSCKeychain keychainWithURL: URLForKeychain_negativeTestCase3
-                                                                   password: self.passwordForTest
+                                                                   password: _WSCTestPassword
                                                               initialAccess: nil
                                                              becomesDefault: NO
                                                                       error: &error ];
@@ -1367,7 +1360,7 @@
                                                                 );
 
     WSCKeychain* keychain_negativeTestCase1 = [ WSCKeychain keychainWithURL: URLForKeychain_negativeTestCase1
-                                                                   password: self.passwordForTest
+                                                                   password: _WSCTestPassword
                                                               initialAccess: nil
                                                              becomesDefault: NO
                                                                       error: &error ];
@@ -1600,7 +1593,7 @@
                                                                 );
 
     WSCKeychain* keychain_negativeTestCase1 = [ WSCKeychain keychainWithURL: URLForKeychain_negativeTestCase1
-                                                                   password: self.passwordForTest
+                                                                   password: _WSCTestPassword
                                                               initialAccess: nil
                                                              becomesDefault: NO
                                                                       error: &error ];
@@ -1792,7 +1785,7 @@
                                                                 );
 
     WSCKeychain* keychain_negativeTestCase1 = [ WSCKeychain keychainWithURL: URLForKeychain_negativeTestCase1
-                                                                   password: self.passwordForTest
+                                                                   password: _WSCTestPassword
                                                               initialAccess: nil
                                                              becomesDefault: NO
                                                                       error: &error ];

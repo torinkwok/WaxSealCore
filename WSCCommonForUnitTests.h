@@ -42,6 +42,7 @@ WSCKeychainSelectivelyUnlockKeychainBlock extern _WSCSelectivelyUnlockKeychainsB
 NSMutableSet extern* _WSCKeychainAutodeletePool;
 WSCKeychain  extern* _WSCCommonValidKeychainForUnitTests;
 WSCKeychain  extern* _WSCCommonInvalidKeychainForUnitTests;
+NSString     extern* _WSCTestPassword;
 NSURL*          _WSCRandomURL();
 WSCKeychain*    _WSCRandomKeychain();
 NSURL*          _WSCURLForTestCase( NSString* _TestCase, BOOL _DoesPrompt, BOOL _DeleteExits );
