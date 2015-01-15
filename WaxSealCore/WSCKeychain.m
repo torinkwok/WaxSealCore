@@ -35,7 +35,7 @@
 #import "_WSCKeychainPrivate.h"
 #import "NSURL+WSCKeychainURL.h"
 #import "WSCKeychainError.h"
-#import "WSCKeychainErrorPrivate.h"
+#import "_WSCKeychainErrorPrivate.h"
 #import "WSCKeychainManager.h"
 
 NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )

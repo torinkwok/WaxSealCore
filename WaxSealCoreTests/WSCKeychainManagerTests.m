@@ -38,7 +38,7 @@
 #import "WSCKeychainManager.h"
 #import "NSURL+WSCKeychainURL.h"
 #import "WSCKeychainError.h"
-#import "WSCKeychainErrorPrivate.h"
+#import "_WSCKeychainErrorPrivate.h"
 #import "NSString+OMCString.h"
 
 @interface TestClassForWSCKeychainManagerDelegate : NSObject <WSCKeychainManagerDelegate>

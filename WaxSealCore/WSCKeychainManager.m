@@ -37,7 +37,7 @@
 #import "_WSCKeychainPrivate.h"
 #import "WSCKeychainManager.h"
 #import "WSCKeychainError.h"
-#import "WSCKeychainErrorPrivate.h"
+#import "_WSCKeychainErrorPrivate.h"
 
 #pragma mark WSCKeychainManager + WSCKeychainManagerPrivate
 id static s_guard = ( id )'sgrd';

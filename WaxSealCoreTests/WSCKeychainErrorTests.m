@@ -34,7 +34,7 @@
 #import <XCTest/XCTest.h>
 
 #import "WSCKeychainError.h"
-#import "WSCKeychainErrorPrivate.h"
+#import "_WSCKeychainErrorPrivate.h"
 
 // --------------------------------------------------------
 #pragma mark Interface of WSCKeychainErrorTests case

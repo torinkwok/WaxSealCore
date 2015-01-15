@@ -34,7 +34,7 @@
 #import <objc/runtime.h>
 
 #import "WSCKeychainError.h"
-#import "WSCKeychainErrorPrivate.h"
+#import "_WSCKeychainErrorPrivate.h"
 
 NSString* const WSCKeychainCannotBeDirectoryErrorDescription = @"The URL of a keychain file cannot be a directory.";
 NSString* const WSCKeychainKeychainIsInvalidErrorDescription = @"Current keychain is no longer valid, it may has been deleted, moved or renamed.";
