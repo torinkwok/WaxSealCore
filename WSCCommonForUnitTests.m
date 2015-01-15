@@ -72,7 +72,7 @@ WSCKeychainSelectivelyUnlockKeychainBlock _WSCSelectivelyUnlockKeychainsBasedOnP
 
 // Collection of random URLs,
 // we will clear it and delete all keychains in it in __attribute__( ( constructor ) )s_commonTearDownForUnitTestModules() static function.
-NSMutableSet* _WSCKeychainAutodeletePool;
+NSMutableSet static* s_keychainAutodeletePool;
 __attribute__( ( constructor ) )
 static void s_commonSetUpForUnitTestModules()
     {
@@ -80,7 +80,7 @@ static void s_commonSetUpForUnitTestModules()
     dispatch_once( &onceToken
                  , ( dispatch_block_t )^( void )
                     {
-                    _WSCKeychainAutodeletePool = [ [ NSMutableSet set ] retain ];
+                    s_keychainAutodeletePool = [ [ NSMutableSet set ] retain ];
                     } );
     }
 
@@ -128,7 +128,7 @@ static void s_setUpCommonInvalidKeychain()
 __attribute__( ( destructor ) )
 static void s_commonTearDownForUnitTestModules()
     {
-    for ( WSCKeychain* _Keychain in _WSCKeychainAutodeletePool )
+    for ( WSCKeychain* _Keychain in s_keychainAutodeletePool )
         [ [ WSCKeychainManager defaultManager ] deleteKeychain: _Keychain error: nil ];
     }
 
@@ -189,7 +189,7 @@ NSURL* _WSCURLForTestCase( NSString* _TestCase, BOOL _DoesPrompt, BOOL _DeleteEx
 - ( instancetype ) autodelete
     {
     if ( self.isValid )
-        [ _WSCKeychainAutodeletePool addObject: self ];
+        [ s_keychainAutodeletePool addObject: self ];
 
     return self;
     }

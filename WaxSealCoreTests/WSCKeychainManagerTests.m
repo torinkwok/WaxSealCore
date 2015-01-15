@@ -62,8 +62,6 @@
     WSCKeychainSelectivelyUnlockKeychainBlock _selectivelyUnlockKeychain;
     }
 
-@property ( nonatomic, retain ) NSMutableSet* randomURLsAutodeletePool;
-
 @property ( nonatomic, retain ) WSCKeychainManager* testManager1;
 @property ( nonatomic, retain ) WSCKeychainManager* testManager2;
 @property ( nonatomic, retain ) WSCKeychainManager* testManager3;
@@ -358,8 +356,6 @@
 
 - ( void ) setUp
     {
-    self.randomURLsAutodeletePool = [ NSMutableSet set ];
-
     self.testManager1 = [ [ [ WSCKeychainManager alloc ] init ] autorelease ];
     self.testManager2 = [ [ [ WSCKeychainManager alloc ] init ] autorelease ];
     self.testManager3 = [ [ [ WSCKeychainManager alloc ] init ] autorelease ];

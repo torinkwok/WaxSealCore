@@ -39,7 +39,6 @@ typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
 
 WSCKeychainSelectivelyUnlockKeychainBlock extern _WSCSelectivelyUnlockKeychainsBasedOnPassword;
 
-NSMutableSet extern* _WSCKeychainAutodeletePool;
 WSCKeychain  extern* _WSCCommonValidKeychainForUnitTests;
 WSCKeychain  extern* _WSCCommonInvalidKeychainForUnitTests;
 NSString     extern* _WSCTestPassword;
