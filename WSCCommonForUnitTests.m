@@ -35,7 +35,7 @@
 #import "WSCCommonForUnitTests.h"
 
 #import "WSCKeychain.h"
-#import "WSCKeychainPrivate.h"
+#import "_WSCKeychainPrivate.h"
 #import "WSCKeychainManager.h"
 
 #import "NSString+OMCString.h"
