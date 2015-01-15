@@ -53,7 +53,6 @@
     {
 @private
     WSCKeychain*    _publicKeychain;
-    WSCKeychain*    _publicInvalidKeychain;
 
     NSFileManager*  _defaultFileManager;
     NSString*       _passwordForTest;
@@ -69,7 +68,6 @@
     }
 
 @property ( nonatomic, retain ) WSCKeychain* publicKeychain;
-@property ( nonatomic, retain ) WSCKeychain* publicInvalidKeychain;
 
 @property ( nonatomic, unsafe_unretained ) NSFileManager* defaultFileManager;
 @property ( nonatomic, copy ) NSString* passwordForTest;
@@ -364,7 +362,6 @@
 @implementation WSCKeychainManagerTests
 
 @synthesize publicKeychain = _publicKeychain;
-@synthesize publicInvalidKeychain = _publicInvalidKeychain;
 @synthesize defaultFileManager = _defaultFileManager;
 @synthesize passwordForTest = _passwordForTest;
 
@@ -376,7 +373,6 @@
 - ( void ) setUp
     {
     NSError* error = nil;
-    BOOL isSuccess = NO;
 
     if ( error )
         NSLog( @"%@", error );
@@ -402,16 +398,6 @@
         if ( error )
             NSLog( @"%@", error );
         }
-
-    self.publicInvalidKeychain = _WSCRandomKeychain();
-    XCTAssertNotNil( self.publicInvalidKeychain );
-    XCTAssertTrue( self.publicInvalidKeychain.isValid );
-    isSuccess = [ [ WSCKeychainManager defaultManager ] deleteKeychain: self.publicInvalidKeychain
-                                                                 error: &error ];
-    XCTAssertTrue( isSuccess );
-    XCTAssertNil( error );
-    WSCPrintNSErrorForLog( error );
-    XCTAssertFalse( self.publicInvalidKeychain.isValid );
 
     self.randomURLsAutodeletePool = [ NSMutableSet set ];
 
@@ -1293,7 +1279,7 @@
     // ----------------------------------------------------------------------------------
     // Negative Test Case 0
     // ----------------------------------------------------------------------------------
-    isSuccess = [ [ WSCKeychainManager defaultManager ] unlockKeychainWithUserInteraction: self.publicInvalidKeychain
+    isSuccess = [ [ WSCKeychainManager defaultManager ] unlockKeychainWithUserInteraction: _WSCCommonInvalidKeychainForUnitTests
                                                                                     error: &error ];
     XCTAssertFalse( isSuccess );
     XCTAssertNotNil( error );
@@ -1301,7 +1287,7 @@
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     WSCPrintNSErrorForUnitTest( error );
 
-    isSuccess = [ self.testManager1 unlockKeychainWithUserInteraction: self.publicInvalidKeychain
+    isSuccess = [ self.testManager1 unlockKeychainWithUserInteraction: _WSCCommonInvalidKeychainForUnitTests
                                                                 error: &error ];
     XCTAssertFalse( isSuccess );
     XCTAssertNotNil( error );
@@ -1309,13 +1295,13 @@
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     WSCPrintNSErrorForUnitTest( error );
 
-    isSuccess = [ self.testManager2 unlockKeychainWithUserInteraction: self.publicInvalidKeychain
+    isSuccess = [ self.testManager2 unlockKeychainWithUserInteraction: _WSCCommonInvalidKeychainForUnitTests
                                                                 error: &error ];
     XCTAssertTrue( isSuccess );
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
 
-    isSuccess = [ self.testManager3 unlockKeychainWithUserInteraction: self.publicInvalidKeychain
+    isSuccess = [ self.testManager3 unlockKeychainWithUserInteraction: _WSCCommonInvalidKeychainForUnitTests
                                                                 error: &error ];
     XCTAssertFalse( isSuccess );
     XCTAssertNotNil( error );
@@ -1323,7 +1309,7 @@
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     WSCPrintNSErrorForUnitTest( error );
 
-    isSuccess = [ self.testManager4 unlockKeychainWithUserInteraction: self.publicInvalidKeychain
+    isSuccess = [ self.testManager4 unlockKeychainWithUserInteraction: _WSCCommonInvalidKeychainForUnitTests
                                                                 error: &error ];
     XCTAssertFalse( isSuccess );
     XCTAssertNotNil( error );
