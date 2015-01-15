@@ -20,13 +20,13 @@
 		8368A0011A58FE90000CF7ED /* WSCKeychainManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8368A0001A58FE90000CF7ED /* WSCKeychainManagerTests.m */; };
 		8368A0071A596F70000CF7ED /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723861A4C1AA60084221A /* XCTest.framework */; };
 		837C31871A6736F500BE5E07 /* _WSCKeychainPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C31851A6736F500BE5E07 /* _WSCKeychainPrivate.h */; };
-		837C318D1A67406300BE5E07 /* WSCCommonForUnitTests.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C318B1A67406300BE5E07 /* WSCCommonForUnitTests.h */; };
-		837C318E1A67406300BE5E07 /* WSCCommonForUnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C318C1A67406300BE5E07 /* WSCCommonForUnitTests.m */; };
+		837C318D1A67406300BE5E07 /* _WSCCommonForUnitTests.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C318B1A67406300BE5E07 /* _WSCCommonForUnitTests.h */; };
+		837C318E1A67406300BE5E07 /* _WSCCommonForUnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C318C1A67406300BE5E07 /* _WSCCommonForUnitTests.m */; };
 		838221111A4C214A00EF9945 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 838221101A4C214A00EF9945 /* README.md */; };
 		838221141A4C229B00EF9945 /* WSCAccess.h in Headers */ = {isa = PBXBuildFile; fileRef = 838221121A4C229B00EF9945 /* WSCAccess.h */; };
 		838221151A4C229B00EF9945 /* WSCAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = 838221131A4C229B00EF9945 /* WSCAccess.m */; };
-		839FE2F61A5E18FA00DCED3C /* NSString+OMCString.h in Headers */ = {isa = PBXBuildFile; fileRef = 839FE2F41A5E18FA00DCED3C /* NSString+OMCString.h */; };
-		839FE2F71A5E18FA00DCED3C /* NSString+OMCString.m in Sources */ = {isa = PBXBuildFile; fileRef = 839FE2F51A5E18FA00DCED3C /* NSString+OMCString.m */; };
+		839FE2F61A5E18FA00DCED3C /* NSString+_OMCString.h in Headers */ = {isa = PBXBuildFile; fileRef = 839FE2F41A5E18FA00DCED3C /* NSString+_OMCString.h */; };
+		839FE2F71A5E18FA00DCED3C /* NSString+_OMCString.m in Sources */ = {isa = PBXBuildFile; fileRef = 839FE2F51A5E18FA00DCED3C /* NSString+_OMCString.m */; };
 		83C7237C1A4C1AA60084221A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 83C7237A1A4C1AA60084221A /* InfoPlist.strings */; };
 		83C723801A4C1AA60084221A /* WSCKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 83C7237F1A4C1AA60084221A /* WSCKeychain.m */; };
 		83C723871A4C1AA60084221A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723861A4C1AA60084221A /* XCTest.framework */; };
@@ -38,8 +38,8 @@
 		83C723A01A4C1B280084221A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C7239F1A4C1B280084221A /* Security.framework */; };
 		83C723A21A4C1B2C0084221A /* SecurityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723A11A4C1B2C0084221A /* SecurityFoundation.framework */; };
 		83D8E7801A67696D00F77E28 /* WSCPrivateUtilitiesForEaseOfUnitTestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83D8E77F1A67696D00F77E28 /* WSCPrivateUtilitiesForEaseOfUnitTestTests.m */; };
-		83E966341A4D8135008FDEE8 /* WSCCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 83E966331A4D8135008FDEE8 /* WSCCommon.h */; };
-		83E966371A4D82B0008FDEE8 /* WSCCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E966361A4D82B0008FDEE8 /* WSCCommon.m */; };
+		83E966341A4D8135008FDEE8 /* _WSCCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 83E966331A4D8135008FDEE8 /* _WSCCommon.h */; };
+		83E966371A4D82B0008FDEE8 /* _WSCCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E966361A4D82B0008FDEE8 /* _WSCCommon.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,14 +72,14 @@
 		834D20ED1A4EEF7900539F49 /* NSURL+WSCKeychainURLTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+WSCKeychainURLTests.m"; sourceTree = "<group>"; };
 		8368A0001A58FE90000CF7ED /* WSCKeychainManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCKeychainManagerTests.m; sourceTree = "<group>"; };
 		837C31851A6736F500BE5E07 /* _WSCKeychainPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _WSCKeychainPrivate.h; sourceTree = "<group>"; };
-		837C318B1A67406300BE5E07 /* WSCCommonForUnitTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSCCommonForUnitTests.h; sourceTree = "<group>"; };
-		837C318C1A67406300BE5E07 /* WSCCommonForUnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCCommonForUnitTests.m; sourceTree = "<group>"; };
+		837C318B1A67406300BE5E07 /* _WSCCommonForUnitTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _WSCCommonForUnitTests.h; sourceTree = "<group>"; };
+		837C318C1A67406300BE5E07 /* _WSCCommonForUnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _WSCCommonForUnitTests.m; sourceTree = "<group>"; };
 		838221091A4C1DC400EF9945 /* DocumentationHelper.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DocumentationHelper.xcodeproj; path = DocumentationHelper/DocumentationHelper.xcodeproj; sourceTree = "<group>"; };
 		838221101A4C214A00EF9945 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
 		838221121A4C229B00EF9945 /* WSCAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSCAccess.h; sourceTree = "<group>"; };
 		838221131A4C229B00EF9945 /* WSCAccess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCAccess.m; sourceTree = "<group>"; };
-		839FE2F41A5E18FA00DCED3C /* NSString+OMCString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+OMCString.h"; sourceTree = "<group>"; };
-		839FE2F51A5E18FA00DCED3C /* NSString+OMCString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+OMCString.m"; sourceTree = "<group>"; };
+		839FE2F41A5E18FA00DCED3C /* NSString+_OMCString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+_OMCString.h"; sourceTree = "<group>"; };
+		839FE2F51A5E18FA00DCED3C /* NSString+_OMCString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+_OMCString.m"; sourceTree = "<group>"; };
 		83C7236E1A4C1AA60084221A /* WaxSealCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WaxSealCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		83C723741A4C1AA60084221A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		83C723791A4C1AA60084221A /* WaxSealCore-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WaxSealCore-Info.plist"; sourceTree = "<group>"; };
@@ -96,8 +96,8 @@
 		83C7239F1A4C1B280084221A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		83C723A11A4C1B2C0084221A /* SecurityFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityFoundation.framework; path = System/Library/Frameworks/SecurityFoundation.framework; sourceTree = SDKROOT; };
 		83D8E77F1A67696D00F77E28 /* WSCPrivateUtilitiesForEaseOfUnitTestTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCPrivateUtilitiesForEaseOfUnitTestTests.m; sourceTree = "<group>"; };
-		83E966331A4D8135008FDEE8 /* WSCCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WSCCommon.h; path = WaxSealCore/WSCCommon.h; sourceTree = "<group>"; };
-		83E966361A4D82B0008FDEE8 /* WSCCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WSCCommon.m; path = WaxSealCore/WSCCommon.m; sourceTree = "<group>"; };
+		83E966331A4D8135008FDEE8 /* _WSCCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _WSCCommon.h; path = WaxSealCore/_WSCCommon.h; sourceTree = "<group>"; };
+		83E966361A4D82B0008FDEE8 /* _WSCCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _WSCCommon.m; path = WaxSealCore/_WSCCommon.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,12 +153,12 @@
 		837C318A1A673C4500BE5E07 /* In Common Use */ = {
 			isa = PBXGroup;
 			children = (
-				839FE2F41A5E18FA00DCED3C /* NSString+OMCString.h */,
-				839FE2F51A5E18FA00DCED3C /* NSString+OMCString.m */,
-				83E966331A4D8135008FDEE8 /* WSCCommon.h */,
-				83E966361A4D82B0008FDEE8 /* WSCCommon.m */,
-				837C318B1A67406300BE5E07 /* WSCCommonForUnitTests.h */,
-				837C318C1A67406300BE5E07 /* WSCCommonForUnitTests.m */,
+				839FE2F41A5E18FA00DCED3C /* NSString+_OMCString.h */,
+				839FE2F51A5E18FA00DCED3C /* NSString+_OMCString.m */,
+				83E966331A4D8135008FDEE8 /* _WSCCommon.h */,
+				83E966361A4D82B0008FDEE8 /* _WSCCommon.m */,
+				837C318B1A67406300BE5E07 /* _WSCCommonForUnitTests.h */,
+				837C318C1A67406300BE5E07 /* _WSCCommonForUnitTests.m */,
 			);
 			name = "In Common Use";
 			sourceTree = "<group>";
@@ -304,14 +304,14 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				837C318D1A67406300BE5E07 /* WSCCommonForUnitTests.h in Headers */,
+				837C318D1A67406300BE5E07 /* _WSCCommonForUnitTests.h in Headers */,
 				837C31871A6736F500BE5E07 /* _WSCKeychainPrivate.h in Headers */,
 				830A4F201A5830E900F4EAA7 /* WSCKeychainManager.h in Headers */,
 				838221141A4C229B00EF9945 /* WSCAccess.h in Headers */,
-				83E966341A4D8135008FDEE8 /* WSCCommon.h in Headers */,
+				83E966341A4D8135008FDEE8 /* _WSCCommon.h in Headers */,
 				834D20E41A4EDD6900539F49 /* WSCKeychainError.h in Headers */,
 				8339FA541A542D2C00240AD0 /* _WSCKeychainErrorPrivate.h in Headers */,
-				839FE2F61A5E18FA00DCED3C /* NSString+OMCString.h in Headers */,
+				839FE2F61A5E18FA00DCED3C /* NSString+_OMCString.h in Headers */,
 				834D20EB1A4EEA4400539F49 /* NSURL+WSCKeychainURL.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -428,10 +428,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				839FE2F71A5E18FA00DCED3C /* NSString+OMCString.m in Sources */,
-				83E966371A4D82B0008FDEE8 /* WSCCommon.m in Sources */,
+				839FE2F71A5E18FA00DCED3C /* NSString+_OMCString.m in Sources */,
+				83E966371A4D82B0008FDEE8 /* _WSCCommon.m in Sources */,
 				83C723801A4C1AA60084221A /* WSCKeychain.m in Sources */,
-				837C318E1A67406300BE5E07 /* WSCCommonForUnitTests.m in Sources */,
+				837C318E1A67406300BE5E07 /* _WSCCommonForUnitTests.m in Sources */,
 				838221151A4C229B00EF9945 /* WSCAccess.m in Sources */,
 				8339FA551A542D2C00240AD0 /* _WSCKeychainErrorPrivate.m in Sources */,
 				830A4F211A5830E900F4EAA7 /* WSCKeychainManager.m in Sources */,

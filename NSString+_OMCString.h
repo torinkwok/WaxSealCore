@@ -31,34 +31,17 @@
  **                                                                         **
  ****************************************************************************/
 
-#import "NSString+OMCString.h"
+#define COMPARE_WITH_CASE_INSENSITIVE( _Lhs, _Rhs )                                 \
+    ( [ _Lhs compare: _Rhs options: NSCaseInsensitiveSearch ] == NSOrderedSame )    \
 
-// NSString + OMCString
-@implementation NSString ( OMCString )
+// NSString + OMCCalculation
+@interface NSString ( _OMCString )
 
-- ( BOOL ) contains: ( NSString* )_SubString
-    {
-    BOOL contains = NO;
+- ( BOOL ) contains: ( NSString* )_SubString;
 
-    NSRange range = [ self rangeOfString: _SubString ];
-    if ( range.location != NSNotFound )
-        contains = YES;
+- ( BOOL ) endingAs: ( NSString* )_String;
 
-    return contains;
-    }
-
-- ( BOOL ) endingAs: ( NSString* )_String
-    {
-    BOOL isEndAsThisString = NO;
-
-    NSRange range = [ self rangeOfString: _String ];
-    if ( ( range.location + range.length ) == [ self length ] )
-        isEndAsThisString = YES;
-
-    return isEndAsThisString;
-    }
-
-@end// NSString + OMCString
+@end // NSString + _OMCString
 
 //////////////////////////////////////////////////////////////////////////////
 

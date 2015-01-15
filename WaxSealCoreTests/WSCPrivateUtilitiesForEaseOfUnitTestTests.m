@@ -34,9 +34,9 @@
 #import <XCTest/XCTest.h>
 
 #import "WSCKeychain.h"
-#import "_WSCKeychainPrivate.h"
-
 #import "WSCKeychainManager.h"
+
+#import "_WSCKeychainPrivate.h"
 
 // ---------------------------------------------------------------------------
 #pragma mark Interface of WSCPrivateUtilitiesForEaseOfUnitTestTests case

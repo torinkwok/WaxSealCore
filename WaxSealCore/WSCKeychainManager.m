@@ -34,9 +34,10 @@
 #import <objc/objc.h>
 
 #import "WSCKeychain.h"
-#import "_WSCKeychainPrivate.h"
 #import "WSCKeychainManager.h"
 #import "WSCKeychainError.h"
+
+#import "_WSCKeychainPrivate.h"
 #import "_WSCKeychainErrorPrivate.h"
 
 #pragma mark WSCKeychainManager + WSCKeychainManagerPrivate
@@ -484,7 +485,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     if ( resultCode != errSecSuccess )
         {
         _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
-        WSCPrintNSErrorForLog( error );
+        _WSCPrintNSErrorForLog( error );
 
         return nil;
         }

@@ -26,38 +26,53 @@
  **                   \\    _  _\\| \//  |//_   _ \// _                     **
  **                  ^ `^`^ ^`` `^ ^` ``^^`  `^^` `^ `^                     **
  **                                                                         **
- **                       Copyright (c) 2015 Tong G.                        **
+ **                       Copyright (c) 2014 Tong G.                        **
  **                          ALL RIGHTS RESERVED.                           **
  **                                                                         **
  ****************************************************************************/
 
-#import "WSCCommon.h"
-#import <Foundation/Foundation.h>
+#import "NSString+_OMCString.h"
 
-inline void _WSCFillErrorParamWithSecErrorCode( OSStatus _ResultCode, NSError** _ErrorParam )
+// NSString + _OMCString
+@implementation NSString ( _OMCString )
+
+- ( BOOL ) contains: ( NSString* )_SubString
     {
-    CFStringRef cfErrorDesc = SecCopyErrorMessageString( _ResultCode, NULL );
-    *_ErrorParam = [ [ NSError errorWithDomain: NSOSStatusErrorDomain
-                                          code: _ResultCode
-                                      userInfo: @{ NSLocalizedDescriptionKey : [ ( __bridge NSString* )cfErrorDesc copy ]
-                                                 } ] copy ];
-    CFRelease( cfErrorDesc );
+    BOOL contains = NO;
+
+    NSRange range = [ self rangeOfString: _SubString ];
+    if ( range.location != NSNotFound )
+        contains = YES;
+
+    return contains;
     }
+
+- ( BOOL ) endingAs: ( NSString* )_String
+    {
+    BOOL isEndAsThisString = NO;
+
+    NSRange range = [ self rangeOfString: _String ];
+    if ( ( range.location + range.length ) == [ self length ] )
+        isEndAsThisString = YES;
+
+    return isEndAsThisString;
+    }
+
+@end// NSString + _OMCString
 
 //////////////////////////////////////////////////////////////////////////////
 
 /*****************************************************************************
  **                                                                         **
- **                                                                         **
- **      █████▒█    ██  ▄████▄   ██ ▄█▀       ██████╗ ██╗   ██╗ ██████╗     **
- **    ▓██   ▒ ██  ▓██▒▒██▀ ▀█   ██▄█▒        ██╔══██╗██║   ██║██╔════╝     **
- **    ▒████ ░▓██  ▒██░▒▓█    ▄ ▓███▄░        ██████╔╝██║   ██║██║  ███╗    **
- **    ░▓█▒  ░▓▓█  ░██░▒▓▓▄ ▄██▒▓██ █▄        ██╔══██╗██║   ██║██║   ██║    **
- **    ░▒█░   ▒▒█████▓ ▒ ▓███▀ ░▒██▒ █▄       ██████╔╝╚██████╔╝╚██████╔╝    **
- **     ▒ ░   ░▒▓▒ ▒ ▒ ░ ░▒ ▒  ░▒ ▒▒ ▓▒       ╚═════╝  ╚═════╝  ╚═════╝     **
- **     ░     ░░▒░ ░ ░   ░  ▒   ░ ░▒ ▒░                                     **
- **     ░ ░    ░░░ ░ ░ ░        ░ ░░ ░                                      **
- **              ░     ░ ░      ░  ░                                        **
- **                    ░                                                    **
+ **      _________                                      _______             **
+ **     |___   ___|                                   / ______ \            **
+ **         | |     _______   _______   _______      | /      |_|           **
+ **         | |    ||     || ||     || ||     ||     | |    _ __            **
+ **         | |    ||     || ||     || ||     ||     | |   |__  \           **
+ **         | |    ||     || ||     || ||     ||     | \_ _ __| |  _        **
+ **         |_|    ||_____|| ||     || ||_____||      \________/  |_|       **
+ **                                           ||                            **
+ **                                    ||_____||                            **
  **                                                                         **
  ****************************************************************************/
+///:~

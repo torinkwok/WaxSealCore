@@ -26,36 +26,39 @@
  **                   \\    _  _\\| \//  |//_   _ \// _                     **
  **                  ^ `^`^ ^`` `^ ^` ``^^`  `^^` `^ `^                     **
  **                                                                         **
- **                       Copyright (c) 2014 Tong G.                        **
+ **                       Copyright (c) 2015 Tong G.                        **
  **                          ALL RIGHTS RESERVED.                           **
  **                                                                         **
  ****************************************************************************/
 
-#define COMPARE_WITH_CASE_INSENSITIVE( _Lhs, _Rhs )                                 \
-    ( [ _Lhs compare: _Rhs options: NSCaseInsensitiveSearch ] == NSOrderedSame )    \
+#import <Foundation/Foundation.h>
 
-// NSString + OMCCalculation
-@interface NSString ( OMCString )
+#import "_WSCCommon.h"
 
-- ( BOOL ) contains: ( NSString* )_SubString;
-
-- ( BOOL ) endingAs: ( NSString* )_String;
-
-@end // NSString + OMCString
+inline void _WSCFillErrorParamWithSecErrorCode( OSStatus _ResultCode, NSError** _ErrorParam )
+    {
+    CFStringRef cfErrorDesc = SecCopyErrorMessageString( _ResultCode, NULL );
+    *_ErrorParam = [ [ NSError errorWithDomain: NSOSStatusErrorDomain
+                                          code: _ResultCode
+                                      userInfo: @{ NSLocalizedDescriptionKey : [ ( __bridge NSString* )cfErrorDesc copy ]
+                                                 } ] copy ];
+    CFRelease( cfErrorDesc );
+    }
 
 //////////////////////////////////////////////////////////////////////////////
 
 /*****************************************************************************
  **                                                                         **
- **      _________                                      _______             **
- **     |___   ___|                                   / ______ \            **
- **         | |     _______   _______   _______      | /      |_|           **
- **         | |    ||     || ||     || ||     ||     | |    _ __            **
- **         | |    ||     || ||     || ||     ||     | |   |__  \           **
- **         | |    ||     || ||     || ||     ||     | \_ _ __| |  _        **
- **         |_|    ||_____|| ||     || ||_____||      \________/  |_|       **
- **                                           ||                            **
- **                                    ||_____||                            **
+ **                                                                         **
+ **      █████▒█    ██  ▄████▄   ██ ▄█▀       ██████╗ ██╗   ██╗ ██████╗     **
+ **    ▓██   ▒ ██  ▓██▒▒██▀ ▀█   ██▄█▒        ██╔══██╗██║   ██║██╔════╝     **
+ **    ▒████ ░▓██  ▒██░▒▓█    ▄ ▓███▄░        ██████╔╝██║   ██║██║  ███╗    **
+ **    ░▓█▒  ░▓▓█  ░██░▒▓▓▄ ▄██▒▓██ █▄        ██╔══██╗██║   ██║██║   ██║    **
+ **    ░▒█░   ▒▒█████▓ ▒ ▓███▀ ░▒██▒ █▄       ██████╔╝╚██████╔╝╚██████╔╝    **
+ **     ▒ ░   ░▒▓▒ ▒ ▒ ░ ░▒ ▒  ░▒ ▒▒ ▓▒       ╚═════╝  ╚═════╝  ╚═════╝     **
+ **     ░     ░░▒░ ░ ░   ░  ▒   ░ ░▒ ▒░                                     **
+ **     ░ ░    ░░░ ░ ░ ░        ░ ░░ ░                                      **
+ **              ░     ░ ░      ░  ░                                        **
+ **                    ░                                                    **
  **                                                                         **
  ****************************************************************************/
-///:~

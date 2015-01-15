@@ -31,15 +31,15 @@
  **                                                                         **
  ****************************************************************************/
 
-#import "WSCCommon.h"
-#import "WSCCommonForUnitTests.h"
-
 #import "WSCKeychain.h"
-#import "_WSCKeychainPrivate.h"
 #import "WSCKeychainManager.h"
 
-#import "NSString+OMCString.h"
+#import "NSString+_OMCString.h"
 #import "NSURL+WSCKeychainURL.h"
+
+#import "_WSCCommon.h"
+#import "_WSCKeychainPrivate.h"
+#import "_WSCCommonForUnitTests.h"
 
 NSString* _WSCTestPassword = @"waxsealcore";
 
@@ -101,7 +101,7 @@ static void s_setUpCommonValidKeychain()
                                                                               initialAccess: nil
                                                                              becomesDefault: NO
                                                                                       error: &error ] retain ] autodelete ];
-                    WSCPrintNSErrorForLog( error );
+                    _WSCPrintNSErrorForLog( error );
                     } );
     }
 
@@ -121,7 +121,7 @@ static void s_setUpCommonInvalidKeychain()
                     // We need an invalid keychain, killed it in advance!
                     [ [ WSCKeychainManager defaultManager ] deleteKeychain: _WSCCommonInvalidKeychainForUnitTests
                                                                      error: &error ];
-                    WSCPrintNSErrorForLog( error );
+                    _WSCPrintNSErrorForLog( error );
                     } );
     }
 
@@ -130,6 +130,12 @@ static void s_commonTearDownForUnitTestModules()
     {
     for ( WSCKeychain* _Keychain in s_keychainAutodeletePool )
         [ [ WSCKeychainManager defaultManager ] deleteKeychain: _Keychain error: nil ];
+
+    [ [ WSCKeychainManager defaultManager ] setDefaultKeychain: [ WSCKeychain login ] error: nil ];
+
+    [ [ WSCKeychainManager defaultManager ] unlockKeychain: [ WSCKeychain login ]
+                                              withPassword: @"Dontbeabitch77!."
+                                                     error: nil ];
     }
 
 NSURL* _WSCRandomURL()
@@ -153,7 +159,7 @@ WSCKeychain* _WSCRandomKeychain()
                                                       initialAccess: nil
                                                      becomesDefault: NO
                                                               error: &error ] autodelete ];
-    WSCPrintNSErrorForLog( error );
+    _WSCPrintNSErrorForLog( error );
     return randomKeychain;
     }
 
@@ -173,10 +179,10 @@ NSURL* _WSCURLForTestCase( NSString* _TestCase, BOOL _DoesPrompt, BOOL _DeleteEx
         if ( !error )
             {
             [ [ WSCKeychainManager defaultManager ] deleteKeychain: existKeychain error: &error ];
-            WSCPrintNSErrorForLog( error );
+            _WSCPrintNSErrorForLog( error );
             }
         else
-            WSCPrintNSErrorForLog( error );
+            _WSCPrintNSErrorForLog( error );
         }
 
     return newURL;

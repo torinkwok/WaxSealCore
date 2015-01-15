@@ -32,11 +32,12 @@
  ****************************************************************************/
 
 #import "WSCKeychain.h"
-#import "_WSCKeychainPrivate.h"
 #import "NSURL+WSCKeychainURL.h"
 #import "WSCKeychainError.h"
-#import "_WSCKeychainErrorPrivate.h"
 #import "WSCKeychainManager.h"
+
+#import "_WSCKeychainPrivate.h"
+#import "_WSCKeychainErrorPrivate.h"
 
 NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
     {
@@ -67,7 +68,7 @@ NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
                 return pathOfKeychain;
             }
         else
-            WSCPrintSecErrorCode( resultCode );
+            _WSCPrintSecErrorCode( resultCode );
         }
 
     return nil;
@@ -124,7 +125,7 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
 
     /* Determine whether receiver is default by comparing with the URL of current default */
     BOOL yesOrNo = [ self isEqualTo: [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: &error ] ];
-    WSCPrintNSErrorForLog( error );
+    _WSCPrintNSErrorForLog( error );
 
     return yesOrNo;
     }
@@ -142,7 +143,7 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
 
     SecKeychainStatus keychainStatus = [ self p_keychainStatus: &error ];
     if ( error )
-        WSCPrintNSErrorForLog( error );
+        _WSCPrintNSErrorForLog( error );
 
     return ( keychainStatus & kSecUnlockStateStatus ) == 0;
     }
@@ -154,7 +155,7 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
 
     SecKeychainStatus keychainStatus = [ self p_keychainStatus: &error ];
     if ( error )
-        WSCPrintNSErrorForLog( error );
+        _WSCPrintNSErrorForLog( error );
 
     return ( keychainStatus & kSecReadPermStatus ) != 0;
     }
@@ -166,7 +167,7 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
 
     SecKeychainStatus keychainStatus = [ self p_keychainStatus: &error ];
     if ( error )
-        WSCPrintNSErrorForLog( error );
+        _WSCPrintNSErrorForLog( error );
 
     return ( keychainStatus & kSecWritePermStatus ) != 0;
     }
@@ -237,7 +238,7 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
                 }
             else
                 {
-                WSCPrintSecErrorCode( resultCode );
+                _WSCPrintSecErrorCode( resultCode );
                 _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
                 }
             }
@@ -464,7 +465,7 @@ WSCKeychain static* s_system = nil;
         }
     else
         {
-        WSCPrintSecErrorCode( resultCode );
+        _WSCPrintSecErrorCode( resultCode );
         if ( _Error )
             {
             CFStringRef cfErrorDesc = SecCopyErrorMessageString( resultCode, NULL );

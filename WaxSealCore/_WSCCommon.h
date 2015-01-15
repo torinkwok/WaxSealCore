@@ -57,11 +57,11 @@
 #define USER_DEFAULTS  [ NSUserDefaults standardUserDefaults ]
 #define NOTIFICATION_CENTER [ NSNotificationCenter defaultCenter ]
 
-#define TGRelease( _Object )    \
+#define _TGRelease( _Object )   \
     if ( _Object )              \
         CFRelease( _Object )    \
 
-#define WSCPrintSecErrorCode( _ResultCode )                                     \
+#define _WSCPrintSecErrorCode( _ResultCode )                                    \
     {                                                                           \
     CFStringRef cfErrorDesc = SecCopyErrorMessageString( _ResultCode, NULL );   \
                                                                                 \
@@ -76,7 +76,7 @@
     CFRelease( cfErrorDesc );                                                   \
     }
 
-#define WSCPrintNSErrorForLog( _ErrorObject )               \
+#define _WSCPrintNSErrorForLog( _ErrorObject )              \
     if ( _ErrorObject )                                     \
         {                                                   \
         NSLog( @"Error Occured: (%s: LINE%d in %s):\n%@"    \
@@ -87,8 +87,8 @@
              );                                             \
         }
 
-#define WSCPrintNSErrorForUnitTest( _ErrorObject )          \
-    WSCPrintNSErrorForLog( _ErrorObject )                   \
+#define _WSCPrintNSErrorForUnitTest( _ErrorObject )         \
+    _WSCPrintNSErrorForLog( _ErrorObject )                  \
     _ErrorObject = nil;
 
 void _WSCFillErrorParamWithSecErrorCode( OSStatus _ResultCode, NSError** _ErrorParam );
