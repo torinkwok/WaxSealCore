@@ -44,12 +44,6 @@ inline void _WSCFillErrorParamWithSecErrorCode( OSStatus _ResultCode, NSError** 
     CFRelease( cfErrorDesc );
     }
 
-__attribute__( ( constructor ) )
-static void s_preparingForUnitTests()
-    {
-
-    }
-
 //////////////////////////////////////////////////////////////////////////////
 
 /*****************************************************************************

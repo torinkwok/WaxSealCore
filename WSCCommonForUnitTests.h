@@ -31,9 +31,17 @@
  **                                                                         **
  ****************************************************************************/
 
+@class NSMutableSet;
+@class WSCKeychain;
+
 typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
 
 WSCKeychainSelectivelyUnlockKeychainBlock extern _WSCSelectivelyUnlockKeychainsBasedOnPassword;
+
+NSMutableSet extern* _WSCKeychainAutodeletePool;
+NSURL*          _WSCRandomURL();
+WSCKeychain*    _WSCRandomKeychain();
+NSURL*          _WSCURLForTestCase( NSString* _TestCase, BOOL _DoesPrompt, BOOL _DeleteExits );
 
 //////////////////////////////////////////////////////////////////////////////
 
