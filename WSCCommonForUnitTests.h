@@ -31,11 +31,9 @@
  **                                                                         **
  ****************************************************************************/
 
-#ifdef __OBJC__
-    #import <Cocoa/Cocoa.h>
-    #import "WSCCommon.h"
-    #import "WSCCommonForUnitTests.h"
-#endif
+typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
+
+WSCKeychainSelectivelyUnlockKeychainBlock extern _WSCSelectivelyUnlockKeychainsBasedOnPassword;
 
 //////////////////////////////////////////////////////////////////////////////
 

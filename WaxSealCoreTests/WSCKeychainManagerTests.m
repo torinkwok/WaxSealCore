@@ -46,8 +46,6 @@
 @implementation TestClassForWSCKeychainManagerDelegate
 @end
 
-typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
-
 // --------------------------------------------------------
 #pragma mark Interface of WSCKeychainManagerTests case
 // --------------------------------------------------------
@@ -89,8 +87,6 @@ typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
 @property ( nonatomic, retain ) WSCKeychainManager* testManager4;
 
 @property ( nonatomic, retain ) TestClassForWSCKeychainManagerDelegate* testClassForDelegate;
-
-@property ( nonatomic, copy ) WSCKeychainSelectivelyUnlockKeychainBlock selectivelyUnlockKeychain;
 
 @end
 
@@ -463,33 +459,6 @@ typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
     self.testManager2.delegate = self;
     self.testManager3.delegate = self;
     self.testManager4.delegate = self.testClassForDelegate;
-
-    self.selectivelyUnlockKeychain =
-        ^( void )
-            {
-            CFArrayRef secSearchList = NULL;
-            SecKeychainCopySearchList( &secSearchList );
-            NSArray* searchList = [ [ WSCKeychainManager defaultManager ] keychainSearchList ];
-
-            NSLog( @"SecKeychain SearchList Count: %lu", CFArrayGetCount( secSearchList ) );
-            NSLog( @"Keychain SearchList Count: %lu", searchList.count );
-
-            for ( WSCKeychain* _Keychain in searchList )
-                {
-                if ( [ _Keychain isEqualToKeychain: [ WSCKeychain login ] ] )
-                    {
-                    [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"Dontbeabitch77!." error: nil ];
-                    continue;
-                    }
-
-                if ( [ _Keychain.URL.path contains: @"withPrompt" ]
-                        || [ _Keychain.URL.path contains: @"WithInteractionPrompt" ] )
-                    [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"isgtforever" error: nil ];
-
-                else if ( [ [ _Keychain.URL path ] contains: @"nonPrompt" ] )
-                    [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: self.passwordForTest error: nil ];
-                }
-            };
     }
 
 - ( void ) tearDown
@@ -1136,7 +1105,7 @@ typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
 
-    self.selectivelyUnlockKeychain();
+    _WSCSelectivelyUnlockKeychainsBasedOnPassword();
 
     // ----------------------------------------------------------------------------------
     // Test Case 1
@@ -1146,7 +1115,7 @@ typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
 
-    self.selectivelyUnlockKeychain();
+    _WSCSelectivelyUnlockKeychainsBasedOnPassword();
 
     // ----------------------------------------------------------------------------------
     // Test Case 2
@@ -1156,7 +1125,7 @@ typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
 
-    self.selectivelyUnlockKeychain();
+    _WSCSelectivelyUnlockKeychainsBasedOnPassword();
 
     // ----------------------------------------------------------------------------------
     // Test Case 3
@@ -1166,7 +1135,7 @@ typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
 
-    self.selectivelyUnlockKeychain();
+    _WSCSelectivelyUnlockKeychainsBasedOnPassword();
 
     // ----------------------------------------------------------------------------------
     // Test Case 4
@@ -1176,7 +1145,7 @@ typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
 
-    self.selectivelyUnlockKeychain();
+    _WSCSelectivelyUnlockKeychainsBasedOnPassword();
     }
 
 - ( void ) testUnlockKeychainWithPassword

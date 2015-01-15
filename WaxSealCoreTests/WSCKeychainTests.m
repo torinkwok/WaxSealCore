@@ -605,7 +605,22 @@
 
 - ( void ) testsIsLockedProperty
     {
-    // TODO:
+    NSError* error = nil;
+    BOOL isSucess = NO;
+
+    WSCKeychainManager* defaultManager = [ WSCKeychainManager defaultManager ];
+    NSArray* currentDefaultSearchList = [ defaultManager keychainSearchList ];
+
+    isSucess = [ defaultManager lockAllKeychains: &error ];
+    XCTAssertNil( error );
+    XCTAssertTrue ( isSucess );
+    WSCPrintNSErrorForUnitTest( error );
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 0
+    // ----------------------------------------------------------------------------------
+    for ( WSCKeychain* _Keychain in currentDefaultSearchList )
+        XCTAssertTrue( _Keychain.isLocked );
     }
 
 - ( void ) testsIsReadableProperty
@@ -625,7 +640,7 @@
     NSURL* destURL = [ [ NSURL URLForTemporaryDirectory ] URLByAppendingPathComponent: @"login.keychain" ];
 
     // ----------------------------------------------------------------------------------
-    // Test Case
+    // Test Case 0
     // ----------------------------------------------------------------------------------
     WSCKeychain* login_testCase0 = [ WSCKeychain login ];
     WSCKeychain* login_testCase1 = [ WSCKeychain login ];
