@@ -59,6 +59,9 @@
 NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain );
 BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain );
 
+// The implementations of the private APIs listed here
+// are lying in WSCKeychain.m source.
+
 //////////////////////////////////////////////////////////////////////////////
 
 /*****************************************************************************

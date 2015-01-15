@@ -90,8 +90,8 @@
 		83C7239C1A4C1B1E0084221A /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		83C7239F1A4C1B280084221A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		83C723A11A4C1B2C0084221A /* SecurityFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityFoundation.framework; path = System/Library/Frameworks/SecurityFoundation.framework; sourceTree = SDKROOT; };
-		83E966331A4D8135008FDEE8 /* WSCCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSCCommon.h; sourceTree = "<group>"; };
-		83E966361A4D82B0008FDEE8 /* WSCCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCCommon.m; sourceTree = "<group>"; };
+		83E966331A4D8135008FDEE8 /* WSCCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WSCCommon.h; path = WaxSealCore/WSCCommon.h; sourceTree = "<group>"; };
+		83E966361A4D82B0008FDEE8 /* WSCCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WSCCommon.m; path = WaxSealCore/WSCCommon.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,6 +142,17 @@
 				839FE2F21A5E0BD600DCED3C /* Public */,
 			);
 			name = WSCAccess;
+			sourceTree = "<group>";
+		};
+		837C318A1A673C4500BE5E07 /* In Common Use */ = {
+			isa = PBXGroup;
+			children = (
+				839FE2F41A5E18FA00DCED3C /* NSString+OMCString.h */,
+				839FE2F51A5E18FA00DCED3C /* NSString+OMCString.m */,
+				83E966331A4D8135008FDEE8 /* WSCCommon.h */,
+				83E966361A4D82B0008FDEE8 /* WSCCommon.m */,
+			);
+			name = "In Common Use";
 			sourceTree = "<group>";
 		};
 		8382210A1A4C1DC400EF9945 /* Products */ = {
@@ -196,10 +207,9 @@
 		83C723641A4C1AA60084221A = {
 			isa = PBXGroup;
 			children = (
-				839FE2F41A5E18FA00DCED3C /* NSString+OMCString.h */,
-				839FE2F51A5E18FA00DCED3C /* NSString+OMCString.m */,
 				83C723771A4C1AA60084221A /* WaxSealCore */,
 				83C7238C1A4C1AA60084221A /* WaxSealCoreTests */,
+				837C318A1A673C4500BE5E07 /* In Common Use */,
 				83C723701A4C1AA60084221A /* Frameworks */,
 				83C7236F1A4C1AA60084221A /* Products */,
 				838221101A4C214A00EF9945 /* README.md */,
@@ -250,8 +260,6 @@
 		83C723781A4C1AA60084221A /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				83E966331A4D8135008FDEE8 /* WSCCommon.h */,
-				83E966361A4D82B0008FDEE8 /* WSCCommon.m */,
 				83C723791A4C1AA60084221A /* WaxSealCore-Info.plist */,
 				83C7237A1A4C1AA60084221A /* InfoPlist.strings */,
 				83C7237D1A4C1AA60084221A /* WaxSealCore-Prefix.pch */,
