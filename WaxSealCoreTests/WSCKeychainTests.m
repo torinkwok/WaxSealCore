@@ -45,20 +45,14 @@
 @interface WSCKeychainTests : XCTestCase
     {
 @private
-    WSCKeychain*    _publicKeychain;
-
     NSFileManager*  _defaultFileManager;
     NSString*       _passwordForTest;
 
     WSCKeychainManager* _keychainManager;
     }
 
-@property ( nonatomic, retain ) WSCKeychain* publicKeychain;
-
 @property ( nonatomic, unsafe_unretained ) NSFileManager* defaultFileManager;
 @property ( nonatomic, copy ) NSString* passwordForTest;
-
-@property ( nonatomic, retain ) NSMutableSet* randomURLsAutodeletePool;
 
 @property ( nonatomic, retain ) WSCKeychainManager* keychainManager;
 
@@ -69,40 +63,13 @@
 // --------------------------------------------------------
 @implementation WSCKeychainTests
 
-@synthesize publicKeychain = _publicKeychain;
 @synthesize defaultFileManager = _defaultFileManager;
 @synthesize passwordForTest = _passwordForTest;
 
 - ( void ) setUp
     {
-    NSError* error = nil;
-
-    if ( error )
-        NSLog( @"%@", error );
-
     self.defaultFileManager = [ NSFileManager defaultManager ];
     self.passwordForTest = @"waxsealcore";
-
-    NSURL* URLForPublicKeychain = _WSCURLForTestCase( NSStringFromSelector( _cmd ), NO, NO );
-    /* If the the public keychain is not already exists, create one */
-    if ( ![ URLForPublicKeychain checkResourceIsReachableAndReturnError: &error ] )
-        {
-        self.publicKeychain = [ WSCKeychain p_keychainWithURL: URLForPublicKeychain
-                                                     password: self.passwordForTest
-                                               doesPromptUser: NO
-                                                initialAccess: nil
-                                               becomesDefault: NO
-                                                        error: &error ];
-        }
-    else  /* If it's already here, open it */
-        {
-        self.publicKeychain = [ WSCKeychain keychainWithContentsOfURL: URLForPublicKeychain
-                                                                error: &error ];
-        if ( error )
-            NSLog( @"%@", error );
-        }
-
-    self.randomURLsAutodeletePool = [ NSMutableSet set ];
 
     self.keychainManager = [ [ [ WSCKeychainManager alloc ] init ] autorelease ];
     }
@@ -110,14 +77,7 @@
 - ( void ) tearDown
     {
     [ self.keychainManager setDefaultKeychain: [ WSCKeychain login ] error: nil ];
-
-//    for ( NSURL* _URL in self.randomURLsAutodeletePool )
-//        if ( [ _URL checkResourceIsReachableAndReturnError: nil ] )
-//            [ [ NSFileManager defaultManager ] removeItemAtURL: _URL error: nil ];
-
-    [ self.publicKeychain release ];
     [ self.passwordForTest release ];
-    [ self.randomURLsAutodeletePool release ];
     }
 
 // -----------------------------------------------------------------
@@ -130,7 +90,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 1
     // ----------------------------------------------------------------------------------
-    [ self.keychainManager setDefaultKeychain: self.self.publicKeychain error: &error ];
+    [ self.keychainManager setDefaultKeychain: _WSCCommonValidKeychainForUnitTests error: &error ];
     SecKeychainRef defaultKeychain_testCase1 = NULL;
     SecKeychainCopyDefault( &defaultKeychain_testCase1 );
     NSString* pathOfDefaultKeychain_testCase1 = WSCKeychainGetPathOfKeychain( defaultKeychain_testCase1 );
@@ -546,9 +506,9 @@
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychain_test1 = [ self.publicKeychain URL ];
+    NSURL* URLForKeychain_test1 = [ _WSCCommonValidKeychainForUnitTests URL ];
 
-    NSLog( @"Path for self.publicKeychain: %@", URLForKeychain_test1 );
+    NSLog( @"Path for _WSCCommonValidKeychainForUnitTests: %@", URLForKeychain_test1 );
     XCTAssertNotNil( URLForKeychain_test1 );
 
     // ----------------------------------------------------------------------------------
@@ -896,7 +856,7 @@
     WSCKeychain* keychainForTestCase1 = [ WSCKeychain login ];
     WSCKeychain* keychainForTestCase2 = [ WSCKeychain login ];
     WSCKeychain* keychainForTestCase3 = [ WSCKeychain login ];
-    WSCKeychain* keychainForTestCase4 = self.publicKeychain;
+    WSCKeychain* keychainForTestCase4 = _WSCCommonValidKeychainForUnitTests;
 
     NSLog( @"Case 1: %p     %lu", keychainForTestCase1, keychainForTestCase1.hash );
     NSLog( @"Case 2: %p     %lu", keychainForTestCase2, keychainForTestCase2.hash );

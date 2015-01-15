@@ -52,8 +52,6 @@
 @interface WSCKeychainManagerTests : XCTestCase <NSFileManagerDelegate>
     {
 @private
-    WSCKeychain*    _publicKeychain;
-
     NSFileManager*  _defaultFileManager;
     NSString*       _passwordForTest;
 
@@ -66,8 +64,6 @@
 
     WSCKeychainSelectivelyUnlockKeychainBlock _selectivelyUnlockKeychain;
     }
-
-@property ( nonatomic, retain ) WSCKeychain* publicKeychain;
 
 @property ( nonatomic, unsafe_unretained ) NSFileManager* defaultFileManager;
 @property ( nonatomic, copy ) NSString* passwordForTest;
@@ -361,7 +357,6 @@
 
 @implementation WSCKeychainManagerTests
 
-@synthesize publicKeychain = _publicKeychain;
 @synthesize defaultFileManager = _defaultFileManager;
 @synthesize passwordForTest = _passwordForTest;
 
@@ -372,32 +367,8 @@
 
 - ( void ) setUp
     {
-    NSError* error = nil;
-
-    if ( error )
-        NSLog( @"%@", error );
-
     self.defaultFileManager = [ NSFileManager defaultManager ];
     self.passwordForTest = @"waxsealcore";
-
-    NSURL* URLForPublicKeychain = _WSCURLForTestCase( NSStringFromSelector( _cmd ), NO, NO );
-    /* If the the public keychain is not already exists, create one */
-    if ( ![ URLForPublicKeychain checkResourceIsReachableAndReturnError: &error ] )
-        {
-        self.publicKeychain = [ WSCKeychain p_keychainWithURL: URLForPublicKeychain
-                                                     password: self.passwordForTest
-                                               doesPromptUser: NO
-                                                initialAccess: nil
-                                               becomesDefault: NO
-                                                        error: &error ];
-        }
-    else  /* If it's already here, open it */
-        {
-        self.publicKeychain = [ WSCKeychain keychainWithContentsOfURL: URLForPublicKeychain
-                                                                error: &error ];
-        if ( error )
-            NSLog( @"%@", error );
-        }
 
     self.randomURLsAutodeletePool = [ NSMutableSet set ];
 
@@ -422,7 +393,6 @@
                             withPassword: @"Dontbeabitch77!."
                                    error: nil ];
 
-    [ self->_publicKeychain release ];
     [ self->_passwordForTest release ];
 
     [ self->_testManager1 release ];
@@ -975,9 +945,9 @@
     XCTAssertTrue( isSuccess );
 
     // ----------------------------------------------------------------------------------
-    // Test Case 3: Lock self.publicKeychains
+    // Test Case 3: Lock _WSCCommonValidKeychainForUnitTestss
     // ----------------------------------------------------------------------------------
-    isSuccess = [ self.testManager1 lockKeychain: self.publicKeychain
+    isSuccess = [ self.testManager1 lockKeychain: _WSCCommonValidKeychainForUnitTests
                                            error: &error ];
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
@@ -1116,7 +1086,7 @@
     [ self.testManager3 lockKeychain: [ WSCKeychain system ]
                                error: nil ];
 
-    [ self.testManager3 lockKeychain: self.publicKeychain
+    [ self.testManager3 lockKeychain: _WSCCommonValidKeychainForUnitTests
                                error: nil ];
 
     // ----------------------------------------------------------------------------------
@@ -1151,19 +1121,19 @@
 //                               error: nil ];
 
     // ----------------------------------------------------------------------------------
-    // Test Case 2: Unlock self.publicKeychain
+    // Test Case 2: Unlock _WSCCommonValidKeychainForUnitTests
     // ----------------------------------------------------------------------------------
     /* We are using self.testManager2
      * so the delegate method keychainManager:shouldProceedAfterError:lockingKeychain: returns YES */
-    isSuccess = [ self.testManager2 unlockKeychain: self.publicKeychain
+    isSuccess = [ self.testManager2 unlockKeychain: _WSCCommonValidKeychainForUnitTests
                                       withPassword: self.passwordForTest
                                              error: &error ];
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
     XCTAssertTrue( isSuccess );
-    XCTAssertTrue( self.publicKeychain.isLocked );
+    XCTAssertTrue( _WSCCommonValidKeychainForUnitTests.isLocked );
 
-    isSuccess = [ self.testManager1 unlockKeychain: self.publicKeychain
+    isSuccess = [ self.testManager1 unlockKeychain: _WSCCommonValidKeychainForUnitTests
                                       withPassword: @"123456"
                                              error: &error ];
     XCTAssertNil( error );
@@ -1172,15 +1142,15 @@
     /* We are using self.testManager1
      * so the delegate method keychainManager:shouldProceedAfterError:lockingKeychain: returns YES */
     XCTAssertTrue( isSuccess );
-    XCTAssertTrue( self.publicKeychain.isLocked );
+    XCTAssertTrue( _WSCCommonValidKeychainForUnitTests.isLocked );
 
-    isSuccess = [ self.testManager3 unlockKeychain: self.publicKeychain
+    isSuccess = [ self.testManager3 unlockKeychain: _WSCCommonValidKeychainForUnitTests
                                       withPassword: self.passwordForTest
                                              error: &error ];
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
     XCTAssertTrue( isSuccess );
-    XCTAssertFalse( self.publicKeychain.isLocked );
+    XCTAssertFalse( _WSCCommonValidKeychainForUnitTests.isLocked );
 
     // ----------------------------------------------------------------------------------
     // Negative Test Case 0: Unlock login.keychain with an incorrect password
@@ -1366,9 +1336,9 @@
     [ [ NSFileManager defaultManager ] removeItemAtURL: fuckingURL error: &error ];
 #endif
     // -------------------------------------------------------------------------------------------------------
-    // Test Case 0: Set a new keychain search list which contains only one keychain: self.publicKeychain
+    // Test Case 0: Set a new keychain search list which contains only one keychain: _WSCCommonValidKeychainForUnitTests
     // -------------------------------------------------------------------------------------------------------
-    NSArray* olderSearchList = [ [ WSCKeychainManager defaultManager ] setKeychainSearchList: @[ self.publicKeychain ]
+    NSArray* olderSearchList = [ [ WSCKeychainManager defaultManager ] setKeychainSearchList: @[ _WSCCommonValidKeychainForUnitTests ]
                                                                                        error: &error ];
     commonOriginalSearchList = [ NSArray arrayWithArray: olderSearchList ];
 
@@ -1385,7 +1355,7 @@
     WSCPrintNSErrorForUnitTest( error );
     XCTAssertNotNil( olderSearchList );
 
-    // System.keychain and self.publicKeychain
+    // System.keychain and _WSCCommonValidKeychainForUnitTests
     XCTAssertEqual( olderSearchList.count, 2 );
 
     // -------------------------------------------------------------------------------------------------------
@@ -1431,7 +1401,7 @@
     WSCPrintNSErrorForUnitTest( error );
     XCTAssertNil( olderSearchList );
 
-    olderSearchList = [ self.testManager1 setKeychainSearchList: ( NSArray* )[ NSSet setWithObject: self.publicKeychain ]
+    olderSearchList = [ self.testManager1 setKeychainSearchList: ( NSArray* )[ NSSet setWithObject: _WSCCommonValidKeychainForUnitTests ]
                                                                               error: &error ];
     XCTAssertNil( error );
     WSCPrintNSErrorForUnitTest( error );
@@ -1440,7 +1410,7 @@
     // -------------------------------------------------------------------------------------------------------
     // Negative Test Case 1: invoke secKeychainSearchList:error: with an keychains array which contains some invalid keychain object
     // -------------------------------------------------------------------------------------------------------
-    olderSearchList = [ [ WSCKeychainManager defaultManager ] setKeychainSearchList: @[ self.publicKeychain ]
+    olderSearchList = [ [ WSCKeychainManager defaultManager ] setKeychainSearchList: @[ _WSCCommonValidKeychainForUnitTests ]
                                                                               error: &error ];
     XCTAssertNotNil( olderSearchList );
 
