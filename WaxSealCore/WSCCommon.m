@@ -34,7 +34,7 @@
 #import "WSCCommon.h"
 #import <Foundation/Foundation.h>
 
-inline void WSCFillErrorParamWithSecErrorCode( OSStatus _ResultCode, NSError** _ErrorParam )
+inline void _WSCFillErrorParamWithSecErrorCode( OSStatus _ResultCode, NSError** _ErrorParam )
     {
     CFStringRef cfErrorDesc = SecCopyErrorMessageString( _ResultCode, NULL );
     *_ErrorParam = [ [ NSError errorWithDomain: NSOSStatusErrorDomain
@@ -42,6 +42,12 @@ inline void WSCFillErrorParamWithSecErrorCode( OSStatus _ResultCode, NSError** _
                                       userInfo: @{ NSLocalizedDescriptionKey : [ ( __bridge NSString* )cfErrorDesc copy ]
                                                  } ] copy ];
     CFRelease( cfErrorDesc );
+    }
+
+__attribute__( ( constructor ) )
+static void s_preparingForUnitTests()
+    {
+
     }
 
 //////////////////////////////////////////////////////////////////////////////

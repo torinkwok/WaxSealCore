@@ -238,7 +238,7 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
             else
                 {
                 WSCPrintSecErrorCode( resultCode );
-                WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+                _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
                 }
             }
         else
@@ -494,7 +494,7 @@ WSCKeychain static* s_system = nil;
 
     if ( resultCode != errSecSuccess )
         {
-        WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+        _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
 
         return 0U;
         }

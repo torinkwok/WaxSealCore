@@ -107,7 +107,7 @@ NSString* const WSCKeychainInvalidParametersErrorDescription = @"One or more par
 @end // NSError + WSCKeychainError
 
 __attribute__( ( constructor ) )
-static void exchangeErrorFactoryIMPHack()
+static void s_exchangeErrorFactoryIMPHack()
     {
     Method errorFactoryMethod = class_getClassMethod( [ NSError class ], @selector( errorWithDomain:code:userInfo: ) );
     Method alternativeErrorFactoryMethod = class_getClassMethod( [ NSError class ], @selector( alternative_errorWithDomain:code:userInfo: ) );

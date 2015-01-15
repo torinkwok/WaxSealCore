@@ -123,7 +123,7 @@ WSCKeychainManager static* s_defaultManager = nil;
             {
             resultCode = SecKeychainDelete( _Keychain.secKeychain );
             if ( resultCode != errSecSuccess )
-                WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
+                _WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
             }
 
         // If indeed there an error
@@ -186,7 +186,7 @@ WSCKeychainManager static* s_defaultManager = nil;
             OSStatus resultCode = SecKeychainSetDefault( _Keychain.secKeychain );
 
             if ( resultCode != errSecSuccess )
-                WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInMethodDelegate );
+                _WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInMethodDelegate );
             }
         }
 
@@ -231,7 +231,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     else
         {
         if ( _Error )
-            WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+            _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
 
         return nil;
         }
@@ -262,7 +262,7 @@ WSCKeychainManager static* s_defaultManager = nil;
 
             resultCode = SecKeychainLock( _Keychain.secKeychain );
             if ( resultCode != errSecSuccess )
-                WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
+                _WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
             }
         }
 
@@ -322,7 +322,7 @@ WSCKeychainManager static* s_defaultManager = nil;
                                           );
 
             if ( resultCode != errSecSuccess )
-                WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
+                _WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
             }
         }
 
@@ -363,7 +363,7 @@ WSCKeychainManager static* s_defaultManager = nil;
                                           );
 
             if ( resultCode != errSecSuccess )
-                WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
+                _WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
             }
         }
 
@@ -451,7 +451,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     resultCode = SecKeychainSetSearchList( ( __bridge CFArrayRef )secSearchList );
     if ( resultCode != errSecSuccess )
         {
-        WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
+        _WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
 
         shouldProceedIfEncounteredAnyError = [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
                                                                     occuredIn: _cmd
@@ -483,7 +483,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     // return nil if an error occurs:
     if ( resultCode != errSecSuccess )
         {
-        WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+        _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
         WSCPrintNSErrorForLog( error );
 
         return nil;
