@@ -945,60 +945,6 @@
     XCTAssertTrue( [ keychainForTestCase4 isEqual: keychainForTestCase4 ] );
     }
 
-- ( void ) testRandomURLForKeychain
-    {
-    NSURL* randomURL_testCase0 = _WSCRandomURL();
-    NSURL* randomURL_testCase1 = _WSCRandomURL();
-    NSURL* randomURL_testCase2 = _WSCRandomURL();
-    NSURL* randomURL_testCase3 = _WSCRandomURL();
-    NSURL* randomURL_testCase4 = _WSCRandomURL();
-
-    NSLog( @"randomURL_testCase0: %@", randomURL_testCase0 );
-    NSLog( @"randomURL_testCase1: %@", randomURL_testCase1 );
-    NSLog( @"randomURL_testCase2: %@", randomURL_testCase2 );
-    NSLog( @"randomURL_testCase3: %@", randomURL_testCase3 );
-    NSLog( @"randomURL_testCase4: %@", randomURL_testCase4 );
-
-    XCTAssertNotEqualObjects( randomURL_testCase0, randomURL_testCase1 );
-    XCTAssertNotEqualObjects( randomURL_testCase1, randomURL_testCase2 );
-    XCTAssertNotEqualObjects( randomURL_testCase2, randomURL_testCase3 );
-    XCTAssertNotEqualObjects( randomURL_testCase3, randomURL_testCase4 );
-    XCTAssertNotEqualObjects( randomURL_testCase4, randomURL_testCase0 );
-    }
-
-- ( void ) testRandomKeychain
-    {
-    WSCKeychain* randomKeychain_testCase0 = _WSCRandomKeychain();
-    WSCKeychain* randomKeychain_testCase1 = _WSCRandomKeychain();
-    WSCKeychain* randomKeychain_testCase2 = _WSCRandomKeychain();
-    WSCKeychain* randomKeychain_testCase3 = _WSCRandomKeychain();
-    WSCKeychain* randomKeychain_testCase4 = _WSCRandomKeychain();
-
-    XCTAssertNotNil( randomKeychain_testCase0 );
-    XCTAssertNotNil( randomKeychain_testCase1 );
-    XCTAssertNotNil( randomKeychain_testCase2 );
-    XCTAssertNotNil( randomKeychain_testCase3 );
-    XCTAssertNotNil( randomKeychain_testCase4 );
-
-    XCTAssertNotEqualObjects( randomKeychain_testCase0, randomKeychain_testCase1 );
-    XCTAssertNotEqualObjects( randomKeychain_testCase1, randomKeychain_testCase2 );
-    XCTAssertNotEqualObjects( randomKeychain_testCase2, randomKeychain_testCase3 );
-    XCTAssertNotEqualObjects( randomKeychain_testCase3, randomKeychain_testCase4 );
-    XCTAssertNotEqualObjects( randomKeychain_testCase4, randomKeychain_testCase0 );
-
-    XCTAssertNotEqual( randomKeychain_testCase0.hash, randomKeychain_testCase1.hash );
-    XCTAssertNotEqual( randomKeychain_testCase1.hash, randomKeychain_testCase2.hash );
-    XCTAssertNotEqual( randomKeychain_testCase2.hash, randomKeychain_testCase3.hash );
-    XCTAssertNotEqual( randomKeychain_testCase3.hash, randomKeychain_testCase4.hash );
-    XCTAssertNotEqual( randomKeychain_testCase4.hash, randomKeychain_testCase0.hash );
-
-    NSLog( @"%@", randomKeychain_testCase0.URL );
-    NSLog( @"%@", randomKeychain_testCase1.URL );
-    NSLog( @"%@", randomKeychain_testCase2.URL );
-    NSLog( @"%@", randomKeychain_testCase3.URL );
-    NSLog( @"%@", randomKeychain_testCase4.URL );
-    }
-
 @end // WSCKeychainTests case
 
 // --------------------------------------------------------
