@@ -52,8 +52,6 @@
 @interface WSCKeychainManagerTests : XCTestCase <NSFileManagerDelegate>
     {
 @private
-    NSFileManager*  _defaultFileManager;
-
     WSCKeychainManager* _testManager1;
     WSCKeychainManager* _testManager2;
     WSCKeychainManager* _testManager3;
@@ -63,8 +61,6 @@
 
     WSCKeychainSelectivelyUnlockKeychainBlock _selectivelyUnlockKeychain;
     }
-
-@property ( nonatomic, unsafe_unretained ) NSFileManager* defaultFileManager;
 
 @property ( nonatomic, retain ) NSMutableSet* randomURLsAutodeletePool;
 
@@ -355,8 +351,6 @@
 
 @implementation WSCKeychainManagerTests
 
-@synthesize defaultFileManager = _defaultFileManager;
-
 @synthesize testManager1 = _testManager1;
 @synthesize testManager2 = _testManager2;
 @synthesize testManager3 = _testManager3;
@@ -364,8 +358,6 @@
 
 - ( void ) setUp
     {
-    self.defaultFileManager = [ NSFileManager defaultManager ];
-
     self.randomURLsAutodeletePool = [ NSMutableSet set ];
 
     self.testManager1 = [ [ [ WSCKeychainManager alloc ] init ] autorelease ];

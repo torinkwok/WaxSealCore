@@ -45,12 +45,9 @@
 @interface WSCKeychainTests : XCTestCase
     {
 @private
-    NSFileManager*  _defaultFileManager;
-
     WSCKeychainManager* _keychainManager;
     }
 
-@property ( nonatomic, unsafe_unretained ) NSFileManager* defaultFileManager;
 @property ( nonatomic, retain ) WSCKeychainManager* keychainManager;
 
 @end
@@ -60,11 +57,8 @@
 // --------------------------------------------------------
 @implementation WSCKeychainTests
 
-@synthesize defaultFileManager = _defaultFileManager;
-
 - ( void ) setUp
     {
-    self.defaultFileManager = [ NSFileManager defaultManager ];
     self.keychainManager = [ [ [ WSCKeychainManager alloc ] init ] autorelease ];
     }
 
