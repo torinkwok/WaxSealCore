@@ -544,6 +544,12 @@
     // ----------------------------------------------------------------------------------
     for ( WSCKeychain* _Keychain in currentDefaultSearchList )
         XCTAssertTrue( _Keychain.isLocked );
+
+    _WSCSelectivelyUnlockKeychainsBasedOnPassword();
+
+    for ( WSCKeychain* _Keychain in currentDefaultSearchList )
+        if ( ![ _Keychain isEqualToKeychain: [ WSCKeychain system ] ] )
+            XCTAssertTrue( !_Keychain.isLocked );
     }
 
 - ( void ) testsIsReadableProperty

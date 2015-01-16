@@ -31,6 +31,7 @@
  **                                                                         **
  ****************************************************************************/
 
+#if DEBUG
 #import "WSCKeychain.h"
 
 @class NSMutableSet;
@@ -53,6 +54,7 @@ NSURL*          _WSCURLForTestCase( NSString* _TestCase, BOOL _DoesPrompt, BOOL 
 - ( instancetype ) autodelete;
 
 @end // WSCKeychain + WSCKeychainEaseOfUnitTests
+#endif
 
 //////////////////////////////////////////////////////////////////////////////
 

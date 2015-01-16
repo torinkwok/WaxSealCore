@@ -31,6 +31,7 @@
  **                                                                         **
  ****************************************************************************/
 
+#if DEBUG
 #import "WSCKeychain.h"
 #import "WSCKeychainManager.h"
 
@@ -46,6 +47,8 @@ NSString* _WSCTestPassword = @"waxsealcore";
 WSCKeychainSelectivelyUnlockKeychainBlock _WSCSelectivelyUnlockKeychainsBasedOnPassword =
     ^( void )
         {
+        NSError* error = nil;
+
         CFArrayRef secSearchList = NULL;
         SecKeychainCopySearchList( &secSearchList );
         NSArray* searchList = [ [ WSCKeychainManager defaultManager ] keychainSearchList ];
@@ -57,16 +60,19 @@ WSCKeychainSelectivelyUnlockKeychainBlock _WSCSelectivelyUnlockKeychainsBasedOnP
             {
             if ( [ _Keychain isEqualToKeychain: [ WSCKeychain login ] ] )
                 {
-                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"Dontbeabitch77!." error: nil ];
+                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"Dontbeabitch77!." error: &error ];
+                _WSCPrintNSErrorForLog( error );
                 continue;
                 }
 
             if ( [ _Keychain.URL.path contains: @"withPrompt" ]
                     || [ _Keychain.URL.path contains: @"WithInteractionPrompt" ] )
-                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"isgtforever" error: nil ];
+                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"isgtforever" error: &error ];
 
             else if ( [ [ _Keychain.URL path ] contains: @"nonPrompt" ] )
-                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"waxsealcore" error: nil ];
+                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"waxsealcore" error: &error ];
+
+            _WSCPrintNSErrorForLog( error );
             }
         };
 
@@ -201,6 +207,7 @@ NSURL* _WSCURLForTestCase( NSString* _TestCase, BOOL _DoesPrompt, BOOL _DeleteEx
     }
 
 @end // WSCKeychain + WSCKeychainEaseOfUnitTests
+#endif
 
 //////////////////////////////////////////////////////////////////////////////
 
