@@ -39,9 +39,10 @@
 
 #pragma mark WSCKeychainManager Protocol
 /** The `WSCKeychainManager` class enables you to perform many generic keychain operations and insulates an app from the underlying *Keychain Services*.
-    Although most keychain operations can be performed using the shared keychain manager object,
-    you can also create a unique instance of `WSCKeychainManager` in cases where you want to use a delegate object
-    in conjunction with the keychain manager.
+ 
+  Although most keychain operations can be performed using the shared keychain manager object,
+  you can also create a unique instance of `WSCKeychainManager` in cases where you want to use a delegate object
+  in conjunction with the keychain manager.
   */
 @interface WSCKeychainManager : NSObject
     {
@@ -317,7 +318,7 @@
 
   @param _SearchList An array of keychain objects (of class WSCKeychain) specifying the list of keychains to use in the new default keychain search list.
                      Passing an empty array clears the search list.
-                     This parameter must **NOT** be nil.
+                     This parameter must **NOT** be `nil`.
 
   @param _Error On input, a pointer to an error object.
                 If an error occurs, this pointer is set to an actual error object containing the error information.

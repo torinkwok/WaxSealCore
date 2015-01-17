@@ -90,7 +90,7 @@
 /** The reference of the `SecKeychain` opaque object, which wrapped by `WSCKeychain` object.
   
   If you are familiar with the underlying *Keychain Services* APIs,
-  you can move freely back and forth between *WaxSealCore* framework and *Keychaian Services* APIs with this property.
+  you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this property.
   */
 @property ( unsafe_unretained, readonly ) SecKeychainRef secKeychain;
 
@@ -112,10 +112,10 @@
 
   @param _URL Specify the URL in which the new keychain should be sotred.
               The URL in this parameter must not be a file reference URL or an URL other than file scheme
-              This parameter must not be nil.
+              This parameter must not be `nil`.
 
   @param _Password A NSString object containing the password which is used to protect the new keychain.
-                   This parameter must not be nil.
+                   This parameter must not be `nil`.
 
   @param _InitalAccess An WSCAccessPermission object indicating the initial access rights for the new keychain,
                        A keychain's access rights determine which application have permission to user the keychain.
@@ -155,7 +155,7 @@
 
   @param _URL Specify the URL in which the new keychain should be sotred.
               The URL in this parameter must not be a file reference URL or an URL other than file scheme
-              This parameter must not be nil.
+              This parameter must not be `nil`.
 
   @param _InitalAccess An WSCAccessPermission object indicating the initial access rights for the new keychain,
                        A keychain's access rights determine which application have permission to user the keychain.
@@ -179,12 +179,12 @@
                                                        becomesDefault: ( BOOL )_WillBecomeDefault
                                                                 error: ( NSError** )_Error;
 
-/** Creates and returns a `WSCKeychain` object using the given reference to the instance of *SecKeychain* opaque type.
+/** Creates and returns a `WSCKeychain` object using the given reference to the instance of `SecKeychain` opaque type.
 
-  @param _SecKeychainRef A reference to the instance of *SecKeychain* opaque type.
+  @param _SecKeychainRef A reference to the instance of `SecKeychain` opaque type.
   
-  @return A `WSCKeychain` object initialized with the givent reference to the instance of *SecKeychain* opaque type.
-          Return `nil` if *_SecKeychainRef* is nil.
+  @return A `WSCKeychain` object initialized with the givent reference to the instance of `SecKeychain` opaque type.
+          Return `nil` if *_SecKeychainRef* is `nil`.
           
   @sa +keychainWithURL:password:initialAccess:becomesDefault:error:
   @sa +keychainWhosePasswordWillBeObtainedFromUserWithURL:initialAccess:becomesDefault:error:
@@ -196,7 +196,7 @@
 
   @param _URLOfKeychain The file URL that identifies the keychain file you want to open. 
                          The URL in this parameter must not be a file reference URL. 
-                         This parameter must not be nil.
+                         This parameter must not be `nil`.
   
   @param _Error On input, a pointer to an error object.
                 If an error occurs, this pointer is set to an actual error object containing the error information.

@@ -31,45 +31,68 @@
  **                                                                         **
  ****************************************************************************/
 
-#import "WSCAccessPermission.h"
+#import "WSCTrustedApplication.h"
 
-#import "_WSCAccessPermissionPrivate.h"
+#import "_WSCTrustedApplicationPrivate.h"
 
-@implementation WSCAccessPermission
+@implementation WSCTrustedApplication
 
-@synthesize secAccess = _secAccess;
+#pragma mark Public Programmatic Interfaces for Creating Trusted Application
 
-#pragma mark Public Programmatic Interfaces for Creating Access Permission
-
-/* Creates and returns a `WSCAccessPermission` object using the given reference to the instance of `SecAccess` opaque type. */
-+ ( instancetype ) accessPermissionWithSecAccessRef: ( SecAccessRef )_SecAccessRef
+/* Creates a trusted application object based on the application specified by an URL. */
++ ( instancetype ) trustedApplicationWithContentsOfURL: ( NSURL* )_ApplicationURL
+                                                 error: ( NSError** )_Error
     {
-    return [ [ [ [ self class ] alloc ] p_initWithSecAccessRef: _SecAccessRef ] autorelease ];
+    return [ [ [ [ self class ] alloc ] p_initWithContentsOfURL: _ApplicationURL error: _Error ] autorelease ];
     }
 
-- ( void ) dealloc
+/* Creates and returns a `WSCTrustedApplication` object using the 
+ * given reference to the instance of `SecTrustedApplication` opaque type. 
+ */
++ ( instancetype ) trustedApplicationWithSecTrustedApplicationRef: ( SecTrustedApplicationRef )_SecTrustedAppRef
     {
-    if ( self->_secAccess )
-        CFRelease( self->_secAccess );
-
-    [ super dealloc ];
+    return [ [ [ [ self class ] alloc ] p_initWithSecTrustedApplicationRef: _SecTrustedAppRef ] autorelease ];
     }
 
-@end // WSCAccessPermission class
+@end // WSCTrustedApplication class
 
-#pragma mark Private Programmatic Interfaces for Creating Access Permission
-@implementation WSCAccessPermission ( _WSCAccessPermissionPrivateInitialization )
+#pragma mark Private Programmatic Interfaces for Creating Trusted Application
+@implementation WSCTrustedApplication ( _WSCTrustedApplicationPrivateInitialization )
 
-- ( instancetype ) p_initWithSecAccessRef: ( SecAccessRef )_SecAccessRef
+- ( instancetype ) p_initWithContentsOfURL: ( NSURL* )_URL error: ( NSError** )_Error
     {
     if ( self = [ super init ] )
-        if ( _SecAccessRef )
-            self->_secAccess = ( SecAccessRef )CFRetain( _SecAccessRef );
+        {
+        OSStatus resultCode = errSecSuccess;
+
+        SecTrustedApplicationRef secTrustedApplication = NULL;
+        resultCode = SecTrustedApplicationCreateFromPath( [ _URL.path UTF8String ], &secTrustedApplication );
+
+        if ( resultCode == errSecSuccess )
+            {
+            self = [ self p_initWithSecTrustedApplicationRef: secTrustedApplication ];
+            CFRelease( secTrustedApplication );
+            }
+        else
+            {
+            if ( _Error )
+                _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+            }
+        }
 
     return self;
     }
 
-@end // WSCAccessPermission + _WSCAccessPermissionPrivateInitialization
+- ( instancetype ) p_initWithSecTrustedApplicationRef: ( SecTrustedApplicationRef )_SecTrustedAppRef
+    {
+    if ( self = [ super init ] )
+        if ( _SecTrustedAppRef )
+            self->_secTrustedApplication = ( SecTrustedApplicationRef )CFRetain( _SecTrustedAppRef );
+
+    return self;
+    }
+
+@end // WSCTrustedApplication + WSCTrustedApplicationPrivateInitialization
 
 //////////////////////////////////////////////////////////////////////////////
 
