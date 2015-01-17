@@ -180,11 +180,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0"
-                                                           , NO
-                                                           , YES
-                                                           );
-
+    NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0", NO, YES );
     XCTAssertFalse( [ URLForNewKeychain_testCase0 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainNonPrompt_testCase0 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase0
                                                                        password: _WSCTestPassword
@@ -201,10 +197,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 1: Set the new keychain as default after creating
     // ----------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_testCase1 = _WSCURLForTestCase( _cmd, @"testCase1"
-                                                           , NO
-                                                           , YES
-                                                           );
+    NSURL* URLForNewKeychain_testCase1 = _WSCURLForTestCase( _cmd, @"testCase1", NO, YES );
 
     XCTAssertFalse( [ URLForNewKeychain_testCase1 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainNonPrompt_testCase1 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase1
@@ -222,10 +215,7 @@
     // ----------------------------------------------------------------------------------
     // Negative Test Case 0
     // ----------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_negativeTestCase0 = _WSCURLForTestCase( _cmd, @"negativeTestCase0"
-                                                                   , NO
-                                                                   , YES
-                                                                   );
+    NSURL* URLForNewKeychain_negativeTestCase0 = _WSCURLForTestCase( _cmd, @"negativeTestCase0", NO, YES );
 
     XCTAssertFalse( [ URLForNewKeychain_negativeTestCase0 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainNonPrompt_negativeTestCase0 = [ WSCKeychain keychainWithURL: URLForNewKeychain_negativeTestCase0
@@ -281,10 +271,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0"
-                                                           , YES
-                                                           , YES
-                                                           );
+    NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0", YES, YES );
 
     XCTAssertFalse( [ URLForNewKeychain_testCase0 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainNonPrompt_testCase0 =
@@ -302,10 +289,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 1: Set the new keychain as default after creating
     // ----------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_testCase1 = _WSCURLForTestCase( _cmd, @"testCase1"
-                                                           , YES
-                                                           , YES
-                                                           );
+    NSURL* URLForNewKeychain_testCase1 = _WSCURLForTestCase( _cmd, @"testCase1", YES, YES );
 
     XCTAssertFalse( [ URLForNewKeychain_testCase1 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainNonPrompt_testCase1 =
@@ -361,10 +345,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0"
-                                                           , NO
-                                                           , YES
-                                                           );
+    NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0", NO, YES );
 
     XCTAssertFalse( [ URLForNewKeychain_testCase0 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainNonPrompt_testCase0 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_testCase0
@@ -383,10 +364,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 1: Set the new keychain as default after creating
     // ----------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_testCase1 = _WSCURLForTestCase( _cmd, @"testCase1"
-                                                           , YES
-                                                           , YES
-                                                           );
+    NSURL* URLForNewKeychain_testCase1 = _WSCURLForTestCase( _cmd, @"testCase1", YES, YES );
 
     XCTAssertFalse( [ URLForNewKeychain_testCase1 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainWithPrompt_testCase1 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_testCase1
@@ -461,10 +439,7 @@
     // ----------------------------------------------------------------------------------
     // Negative Test Case 3: With a nil for URL parameter
     // ----------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_negativeTestCase3 = _WSCURLForTestCase( _cmd, @"negativeTestCase3"
-                                                                   , YES
-                                                                   , YES
-                                                                   );
+    NSURL* URLForNewKeychain_negativeTestCase3 = _WSCURLForTestCase( _cmd, @"negativeTestCase3", YES, YES );
 
     WSCKeychain* newKeychainWithPrompt_negativeCase3 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_negativeTestCase3
                                                                               password: nil /* Will be ignored */
@@ -765,17 +740,11 @@
     /* URL of keychain for test case 1
      * Destination location: /var/folders/fv/k_p7_fbj4fzbvflh4905fn1m0000gn/T/NSTongG_nonPrompt....keychain
      */
-    NSURL* URLForNewKeychain_nonPrompt = _WSCURLForTestCase( _cmd, @"testCase0"
-                                                           , NO
-                                                           , YES
-                                                           );
+    NSURL* URLForNewKeychain_nonPrompt = _WSCURLForTestCase( _cmd, @"testCase0", NO, YES );
     /* URL of keychain for test case 2
      * Destination location: /var/folders/fv/k_p7_fbj4fzbvflh4905fn1m0000gn/T/NSTongG_withPrompt....keychain
      */
-    NSURL* URLForNewKeychain_withPrompt = _WSCURLForTestCase( _cmd, @"testCase1"
-                                                            , YES
-                                                            , YES
-                                                            );
+    NSURL* URLForNewKeychain_withPrompt = _WSCURLForTestCase( _cmd, @"testCase1", YES, YES );
     // Create sec keychain for test case 1
     SecKeychainRef secKeychain_nonPrompt = NULL;
     resultCode = SecKeychainCreate( [ URLForNewKeychain_nonPrompt.path UTF8String ]

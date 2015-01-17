@@ -421,11 +421,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychan_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0"
-                                                       , NO
-                                                       , YES
-                                                       );
-
+    NSURL* URLForKeychan_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0", NO, YES );
     WSCKeychain* keychain_testCase0 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase0
                                                            password: _WSCTestPassword
                                                       initialAccess: nil
@@ -449,10 +445,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 1
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychan_testCase1 = _WSCURLForTestCase( _cmd, @"testCase1"
-                                                       , NO
-                                                       , YES
-                                                       );
+    NSURL* URLForKeychan_testCase1 = _WSCURLForTestCase( _cmd, @"testCase1", NO, YES );
 
     WSCKeychain* keychain_testCase1 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase1
                                                            password: _WSCTestPassword
@@ -477,10 +470,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 2
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychan_testCase2 = _WSCURLForTestCase( _cmd, @"testCase2"
-                                                       , NO
-                                                       , YES
-                                                       );
+    NSURL* URLForKeychan_testCase2 = _WSCURLForTestCase( _cmd, @"testCase2", NO, YES );
 
     WSCKeychain* keychain_testCase2 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase2
                                                            password: _WSCTestPassword
@@ -502,10 +492,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 3
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychan_testCase3 = _WSCURLForTestCase( _cmd, @"testCase3"
-                                                       , NO
-                                                       , YES
-                                                       );
+    NSURL* URLForKeychan_testCase3 = _WSCURLForTestCase( _cmd, @"testCase3", NO, YES );
 
     WSCKeychain* keychain_testCase3 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase3
                                                            password: _WSCTestPassword
@@ -530,11 +517,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 4
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychan_testCase4 = _WSCURLForTestCase( _cmd, @"testCase4"
-                                                       , NO
-                                                       , YES
-                                                       );
-
+    NSURL* URLForKeychan_testCase4 = _WSCURLForTestCase( _cmd, @"testCase4", NO, YES );
     WSCKeychain* keychain_testCase4 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase4
                                                            password: _WSCTestPassword
                                                       initialAccess: nil
@@ -561,10 +544,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 5
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychan_testCase5 = _WSCURLForTestCase( _cmd, @"testCase5"
-                                                       , NO
-                                                       , YES
-                                                       );
+    NSURL* URLForKeychan_testCase5 = _WSCURLForTestCase( _cmd, @"testCase5", NO, YES );
 
     WSCKeychain* keychain_testCase5 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase5
                                                            password: _WSCTestPassword
@@ -588,10 +568,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 6
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychan_testCase6 = _WSCURLForTestCase( _cmd, @"testCase6"
-                                                       , NO
-                                                       , YES
-                                                       );
+    NSURL* URLForKeychan_testCase6 = _WSCURLForTestCase( _cmd, @"testCase6", NO, YES );
 
     WSCKeychain* keychain_testCase6 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase6
                                                            password: _WSCTestPassword
@@ -619,11 +596,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 7
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychan_testCase7 = _WSCURLForTestCase( _cmd, @"testCase7"
-                                                       , NO
-                                                       , YES
-                                                       );
-
+    NSURL* URLForKeychan_testCase7 = _WSCURLForTestCase( _cmd, @"testCase7", NO, YES );
     WSCKeychain* keychain_testCase7 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase7
                                                            password: _WSCTestPassword
                                                       initialAccess: nil
@@ -963,11 +936,7 @@
     // ----------------------------------------------------------------------------------
     // Negative Test Case 2: Lock keychain with invalid keychain
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychain_negativeTestCase2 = _WSCURLForTestCase( _cmd, @"negativeCase2"
-                                                                , NO
-                                                                , YES
-                                                                );
-
+    NSURL* URLForKeychain_negativeTestCase2 = _WSCURLForTestCase( _cmd, @"negativeCase2", NO, YES );
     WSCKeychain* keychain_negativeTestCase2 = [ WSCKeychain keychainWithURL: URLForKeychain_negativeTestCase2
                                                                    password: _WSCTestPassword
                                                               initialAccess: nil
@@ -1165,10 +1134,7 @@
     // ----------------------------------------------------------------------------------
     // Negative Test Case 3: Unloc an invalid keychain and incorrect type of password parameter
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychain_negativeTestCase3 = _WSCURLForTestCase( _cmd, @"negativeCase2"
-                                                                , NO
-                                                                , YES
-                                                                );
+    NSURL* URLForKeychain_negativeTestCase3 = _WSCURLForTestCase( _cmd, @"negativeCase2", NO, YES );
 
     WSCKeychain* keychain_negativeTestCase3 = [ WSCKeychain keychainWithURL: URLForKeychain_negativeTestCase3
                                                                    password: _WSCTestPassword
@@ -1338,10 +1304,7 @@
     // -------------------------------------------------------------------------------------------------------
     // Negative Test Case 0: invoke secKeychainSearchList:error: with an incorrect parameter
     // -------------------------------------------------------------------------------------------------------
-    NSURL* URLForKeychain_negativeTestCase1 = _WSCURLForTestCase( _cmd, @"negativeCase1"
-                                                                , NO
-                                                                , YES
-                                                                );
+    NSURL* URLForKeychain_negativeTestCase1 = _WSCURLForTestCase( _cmd, @"negativeCase1", NO, YES );
 
     WSCKeychain* keychain_negativeTestCase1 = [ WSCKeychain keychainWithURL: URLForKeychain_negativeTestCase1
                                                                    password: _WSCTestPassword
@@ -1571,10 +1534,7 @@
     // -------------------------------------------------------------------------------------------------------
     // Negative Test Case 1: add keychain with invalid keychain (it has been deleted)
     // -------------------------------------------------------------------------------------------------------
-    NSURL* URLForKeychain_negativeTestCase1 = _WSCURLForTestCase( _cmd, @"negativeCase1"
-                                                                , NO
-                                                                , YES
-                                                                );
+    NSURL* URLForKeychain_negativeTestCase1 = _WSCURLForTestCase( _cmd, @"negativeCase1", NO, YES );
 
     WSCKeychain* keychain_negativeTestCase1 = [ WSCKeychain keychainWithURL: URLForKeychain_negativeTestCase1
                                                                    password: _WSCTestPassword
@@ -1763,11 +1723,7 @@
     // -------------------------------------------------------------------------------------------------------
     // Negative Test Case 1: remove keychain with invalid keychain (it has been deleted)
     // -------------------------------------------------------------------------------------------------------
-    NSURL* URLForKeychain_negativeTestCase1 = _WSCURLForTestCase( _cmd, @"negativeCase1"
-                                                                , NO
-                                                                , YES
-                                                                );
-
+    NSURL* URLForKeychain_negativeTestCase1 = _WSCURLForTestCase( _cmd, @"negativeCase1", NO, YES );
     WSCKeychain* keychain_negativeTestCase1 = [ WSCKeychain keychainWithURL: URLForKeychain_negativeTestCase1
                                                                    password: _WSCTestPassword
                                                               initialAccess: nil

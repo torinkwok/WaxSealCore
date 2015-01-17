@@ -121,11 +121,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-    NSURL* URLForTestCase0 = _WSCURLForTestCase( _cmd, @"testCase0"
-                                               , NO
-                                               , YES
-                                               );
-
+    NSURL* URLForTestCase0 = _WSCURLForTestCase( _cmd, @"testCase0", NO, YES );
     XCTAssertNotNil( URLForTestCase0 );
     XCTAssertNil( error );
 
@@ -141,20 +137,14 @@
     // ----------------------------------------------------------------------------------
     // Negative Test Case 0
     // ----------------------------------------------------------------------------------
-    NSURL* URLForNegativeTestCase0 = _WSCURLForTestCase( _cmd, @"testCase0"
-                                                       , NO
-                                                       , NO
-                                                       );
+    NSURL* URLForNegativeTestCase0 = _WSCURLForTestCase( _cmd, @"testCase0", NO, NO );
     XCTAssertTrue( keychain_testCase0.isValid );
     XCTAssertTrue( [ URLForNegativeTestCase0 checkResourceIsReachableAndReturnError: &error ] );
 
     // ----------------------------------------------------------------------------------
     // Test Case 1
     // ----------------------------------------------------------------------------------
-    NSURL* URLForTestCase1 = _WSCURLForTestCase( _cmd, @"testCase0"
-                                               , NO
-                                               , YES
-                                               );
+    NSURL* URLForTestCase1 = _WSCURLForTestCase( _cmd, @"testCase0", NO, YES );
     XCTAssertNotNil( URLForTestCase1 );
     XCTAssertNil( error );
     XCTAssertFalse( keychain_testCase0.isValid );
