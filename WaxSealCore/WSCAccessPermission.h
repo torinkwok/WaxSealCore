@@ -1,13 +1,13 @@
 //
-//  WSCAccess.m
+//  WSCAccessPermission.h
 //  WaxSealCore
 //
 //  Created by Tong G. on 12/25/14.
 //  Copyright (c) 2014 Tong Guo. All rights reserved.
 //
 
-#import "WSCAccess.h"
+#import <Foundation/Foundation.h>
 
-@implementation WSCAccess
+@interface WSCAccessPermission : NSObject
 
 @end

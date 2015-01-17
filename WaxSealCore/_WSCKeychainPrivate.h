@@ -42,7 +42,7 @@
 + ( instancetype ) p_keychainWithURL: ( NSURL* )_URL
                             password: ( NSString* )_Password
                       doesPromptUser: ( BOOL )_DoesPromptUser
-                       initialAccess: ( WSCAccess* )_InitalAccess
+                       initialAccess: ( WSCAccessPermission* )_InitalAccess
                       becomesDefault: ( BOOL )_WillBecomeDefault
                                error: ( NSError** )_Error;
 

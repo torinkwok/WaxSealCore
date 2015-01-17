@@ -32,7 +32,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class WSCAccess;
+@class WSCAccessPermission;
 
 /** The `WSCKeychain` class is an object-oriented wrapper for `SecKeychain` opaque type object.
  */
@@ -106,7 +106,7 @@
   @param _Password A NSString object containing the password which is used to protect the new keychain.
                    This parameter must not be nil.
 
-  @param _InitalAccess An WSCAccess object indicating the initial access rights for the new keychain,
+  @param _InitalAccess An WSCAccessPermission object indicating the initial access rights for the new keychain,
                        A keychain's access rights determine which application have permission to user the keychain.
                        You may pass `nil` for the standard access rights
 
@@ -124,7 +124,7 @@
   */
 + ( instancetype ) keychainWithURL: ( NSURL* )_URL
                           password: ( NSString* )_Password
-                     initialAccess: ( WSCAccess* )_InitalAccess
+                     initialAccess: ( WSCAccessPermission* )_InitalAccess
                     becomesDefault: ( BOOL )_WillBecomeDefault
                              error: ( NSError** )_Error;
 
@@ -146,7 +146,7 @@
               The URL in this parameter must not be a file reference URL or an URL other than file scheme
               This parameter must not be nil.
 
-  @param _InitalAccess An WSCAccess object indicating the initial access rights for the new keychain,
+  @param _InitalAccess An WSCAccessPermission object indicating the initial access rights for the new keychain,
                        A keychain's access rights determine which application have permission to user the keychain.
                        You may pass `nil` for the standard access rights
                        
@@ -164,7 +164,7 @@
   @sa +keychainWithContentsOfURL:error:
   */
 + ( instancetype ) keychainWhosePasswordWillBeObtainedFromUserWithURL: ( NSURL* )_URL
-                                                        initialAccess: ( WSCAccess* )_InitalAccess
+                                                        initialAccess: ( WSCAccessPermission* )_InitalAccess
                                                        becomesDefault: ( BOOL )_WillBecomeDefault
                                                                 error: ( NSError** )_Error;
 
