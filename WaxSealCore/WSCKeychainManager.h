@@ -38,7 +38,7 @@
 @protocol WSCKeychainManagerDelegate;
 
 #pragma mark WSCKeychainManager Protocol
-/** The `WSCKeychainManager` class enables you to perform many generic keychain operations and insulates an app from the underlying keychain services.
+/** The `WSCKeychainManager` class enables you to perform many generic keychain operations and insulates an app from the underlying *Keychain Services*.
     Although most keychain operations can be performed using the shared keychain manager object,
     you can also create a unique instance of `WSCKeychainManager` in cases where you want to use a delegate object
     in conjunction with the keychain manager.
@@ -234,7 +234,7 @@
   [keychainManager:shouldProceedAfterError:unlockingKeychain:withPassword:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:unlockingKeychain:withPassword:]) method to determine how to proceed.
 
   In most cases, your application does not need to invoke this method directly, 
-  since most WaxSealCore APIs and the underlying Keychain Services functions that require an unlocked keychain do so for you.
+  since most *WaxSealCore* APIs and the underlying *Keychain Services* functions that require an unlocked keychain do so for you.
   If your application needs to verify that a keychain is unlocked, inspect the [isLocked]([WSCKeychain isLocked]) property.
 
   @param _Keychain The keychain you wish to unlock.
@@ -266,7 +266,7 @@
   [keychainManager:shouldUnlockKeychainWithUserInteraction:](-[WSCKeychainManagerDelegate keychainManager:shouldUnlockKeychainWithUserInteraction:]) method to determine how to proceed.
 
   In most cases, your application does not need to invoke this method directly, 
-  since most WaxSealCore APIs and underlying Keychain Services functions that require an unlocked keychain do so for you.
+  since most *WaxSealCore* APIs and underlying *Keychain Services* functions that require an unlocked keychain do so for you.
   If your application needs to verify that a keychain is unlocked, inspect the [isLocked]([WSCKeychain isLocked]) property.
 
   @param _Keychain The keychain you wish to unlock.
@@ -289,7 +289,7 @@
   This method will only retrieve the valid keychains in the current keychain search list,
   if a certain keychain in the current search list is already invalid 
   (perhaps it has been deleted, moved or renamed), it won't be counted in the search list.
-  Which is different from the `SecKeychainCopySearchList()` function in the Keychain Services,
+  Which is different from the `SecKeychainCopySearchList()` function in the *Keychain Services*,
   this function will count the invalid keychain.
   
   @return The keychain search list for current user. 

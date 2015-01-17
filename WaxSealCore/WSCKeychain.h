@@ -39,16 +39,14 @@
   Keychains are secure storage containers, which means that when the keychain is locked, no one can access its protected contents. 
   In OS X, users can unlock a keychain—thus providing trusted applications access to the contents—by entering a single master password.
   
-  The above encrypted container which is called "keychain" is represented by `WSCKeychain` object in *WaxSealCore framework*
-  and `SecKeychainRef` in *Keychain Services APIs*.
+  The above encrypted container which is called "keychain" is represented by `WSCKeychain` object in *WaxSealCore* framework
+  and `SecKeychainRef` in *Keychain Services* APIs.
   */
 @interface WSCKeychain : NSObject
     {
 @private
     SecKeychainRef  _secKeychain;
     }
-
-@property ( unsafe_unretained, readonly ) SecKeychainRef secKeychain;
 
 /** The URL for the receiver. (read-only)
   
@@ -88,6 +86,13 @@
   `YES` if the receiver is writable, otherwise, `NO`.
   */
 @property ( assign, readonly ) BOOL isWritable;
+
+/** The reference of the `SecKeychain` opaque object, which wrapped by `WSCKeychain` object.
+  
+  If you are familiar with the underlying *Keychain Services* APIs,
+  you can move freely back and forth between *WaxSealCore* framework and *Keychaian Services* APIs with this property.
+  */
+@property ( unsafe_unretained, readonly ) SecKeychainRef secKeychain;
 
 #pragma mark Public Programmatic Interfaces for Creating Keychains
 /** @name Creating Keychains */

@@ -60,7 +60,19 @@
 
 - ( void ) testCreatingWSCAccessPermissionObject
     {
-//    WSCKeychain* keychain = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase0" ]
+    NSError* error = nil;
+
+    NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0", NO, YES );
+    WSCKeychain* newKeychain_testCase0 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase0
+                                                              password: _WSCTestPassword
+                                                         initialAccess: nil
+                                                        becomesDefault: NO
+                                                                 error: &error ];
+    XCTAssertNotNil( newKeychain_testCase0 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    
     }
 
 @end // WSCAccessPermissionTests test case

@@ -35,7 +35,7 @@
 
 @implementation WSCAccessPermission
 
-
+@synthesize secAccess = _secAccess;
 
 @end // WSCAccessPermission class
 
