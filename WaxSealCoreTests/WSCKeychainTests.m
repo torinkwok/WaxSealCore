@@ -180,7 +180,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase0" ]
+    NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0"
                                                            , NO
                                                            , YES
                                                            );
@@ -201,7 +201,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 1: Set the new keychain as default after creating
     // ----------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_testCase1 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase1" ]
+    NSURL* URLForNewKeychain_testCase1 = _WSCURLForTestCase( _cmd, @"testCase1"
                                                            , NO
                                                            , YES
                                                            );
@@ -222,7 +222,7 @@
     // ----------------------------------------------------------------------------------
     // Negative Test Case 0
     // ----------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_negativeTestCase0 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"negativeTestCase0" ]
+    NSURL* URLForNewKeychain_negativeTestCase0 = _WSCURLForTestCase( _cmd, @"negativeTestCase0"
                                                                    , NO
                                                                    , YES
                                                                    );
@@ -281,7 +281,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase0" ]
+    NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0"
                                                            , YES
                                                            , YES
                                                            );
@@ -302,7 +302,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 1: Set the new keychain as default after creating
     // ----------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_testCase1 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase1" ]
+    NSURL* URLForNewKeychain_testCase1 = _WSCURLForTestCase( _cmd, @"testCase1"
                                                            , YES
                                                            , YES
                                                            );
@@ -361,7 +361,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase0" ]
+    NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0"
                                                            , NO
                                                            , YES
                                                            );
@@ -383,7 +383,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 1: Set the new keychain as default after creating
     // ----------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_testCase1 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase1" ]
+    NSURL* URLForNewKeychain_testCase1 = _WSCURLForTestCase( _cmd, @"testCase1"
                                                            , YES
                                                            , YES
                                                            );
@@ -461,7 +461,7 @@
     // ----------------------------------------------------------------------------------
     // Negative Test Case 3: With a nil for URL parameter
     // ----------------------------------------------------------------------------------
-    NSURL* URLForNewKeychain_negativeTestCase3 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"negativeTestCase3" ]
+    NSURL* URLForNewKeychain_negativeTestCase3 = _WSCURLForTestCase( _cmd, @"negativeTestCase3"
                                                                    , YES
                                                                    , YES
                                                                    );
@@ -765,14 +765,14 @@
     /* URL of keychain for test case 1
      * Destination location: /var/folders/fv/k_p7_fbj4fzbvflh4905fn1m0000gn/T/NSTongG_nonPrompt....keychain
      */
-    NSURL* URLForNewKeychain_nonPrompt = _WSCURLForTestCase( NSStringFromSelector( _cmd )
+    NSURL* URLForNewKeychain_nonPrompt = _WSCURLForTestCase( _cmd, @"testCase0"
                                                            , NO
                                                            , YES
                                                            );
     /* URL of keychain for test case 2
      * Destination location: /var/folders/fv/k_p7_fbj4fzbvflh4905fn1m0000gn/T/NSTongG_withPrompt....keychain
      */
-    NSURL* URLForNewKeychain_withPrompt = _WSCURLForTestCase( NSStringFromSelector( _cmd )
+    NSURL* URLForNewKeychain_withPrompt = _WSCURLForTestCase( _cmd, @"testCase1"
                                                             , YES
                                                             , YES
                                                             );

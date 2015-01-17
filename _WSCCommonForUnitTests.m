@@ -169,12 +169,12 @@ WSCKeychain* _WSCRandomKeychain()
     return randomKeychain;
     }
 
-NSURL* _WSCURLForTestCase( NSString* _TestCase, BOOL _DoesPrompt, BOOL _DeleteExits )
+NSURL* _WSCURLForTestCase( SEL _TestCase, NSString* _TestCaseDesc, BOOL _DoesPrompt, BOOL _DeleteExits )
     {
     NSError* error = nil;
     NSString* keychainName = [ NSString stringWithFormat: @"WSC_%@_%@.keychain"
                                                         , _DoesPrompt ? @"withPrompt" : @"nonPrompt"
-                                                        , _TestCase ];
+                                                        , [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _TestCase ), _TestCaseDesc ] ];
 
     NSURL* newURL = [ [ NSURL URLForTemporaryDirectory ] URLByAppendingPathComponent: keychainName ];
 

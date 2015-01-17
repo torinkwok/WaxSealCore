@@ -421,7 +421,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychan_testCase0 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase0" ]
+    NSURL* URLForKeychan_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0"
                                                        , NO
                                                        , YES
                                                        );
@@ -449,7 +449,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 1
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychan_testCase1 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase1" ]
+    NSURL* URLForKeychan_testCase1 = _WSCURLForTestCase( _cmd, @"testCase1"
                                                        , NO
                                                        , YES
                                                        );
@@ -477,7 +477,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 2
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychan_testCase2 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase2" ]
+    NSURL* URLForKeychan_testCase2 = _WSCURLForTestCase( _cmd, @"testCase2"
                                                        , NO
                                                        , YES
                                                        );
@@ -502,7 +502,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 3
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychan_testCase3 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase3" ]
+    NSURL* URLForKeychan_testCase3 = _WSCURLForTestCase( _cmd, @"testCase3"
                                                        , NO
                                                        , YES
                                                        );
@@ -530,7 +530,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 4
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychan_testCase4 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase4" ]
+    NSURL* URLForKeychan_testCase4 = _WSCURLForTestCase( _cmd, @"testCase4"
                                                        , NO
                                                        , YES
                                                        );
@@ -561,7 +561,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 5
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychan_testCase5 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase5" ]
+    NSURL* URLForKeychan_testCase5 = _WSCURLForTestCase( _cmd, @"testCase5"
                                                        , NO
                                                        , YES
                                                        );
@@ -588,7 +588,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 6
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychan_testCase6 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase6" ]
+    NSURL* URLForKeychan_testCase6 = _WSCURLForTestCase( _cmd, @"testCase6"
                                                        , NO
                                                        , YES
                                                        );
@@ -619,7 +619,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 7
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychan_testCase7 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase7" ]
+    NSURL* URLForKeychan_testCase7 = _WSCURLForTestCase( _cmd, @"testCase7"
                                                        , NO
                                                        , YES
                                                        );
@@ -963,7 +963,7 @@
     // ----------------------------------------------------------------------------------
     // Negative Test Case 2: Lock keychain with invalid keychain
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychain_negativeTestCase2 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"negativeCase2" ]
+    NSURL* URLForKeychain_negativeTestCase2 = _WSCURLForTestCase( _cmd, @"negativeCase2"
                                                                 , NO
                                                                 , YES
                                                                 );
@@ -1165,7 +1165,7 @@
     // ----------------------------------------------------------------------------------
     // Negative Test Case 3: Unloc an invalid keychain and incorrect type of password parameter
     // ----------------------------------------------------------------------------------
-    NSURL* URLForKeychain_negativeTestCase3 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"negativeCase2" ]
+    NSURL* URLForKeychain_negativeTestCase3 = _WSCURLForTestCase( _cmd, @"negativeCase2"
                                                                 , NO
                                                                 , YES
                                                                 );
@@ -1338,7 +1338,7 @@
     // -------------------------------------------------------------------------------------------------------
     // Negative Test Case 0: invoke secKeychainSearchList:error: with an incorrect parameter
     // -------------------------------------------------------------------------------------------------------
-    NSURL* URLForKeychain_negativeTestCase1 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"negativeCase1" ]
+    NSURL* URLForKeychain_negativeTestCase1 = _WSCURLForTestCase( _cmd, @"negativeCase1"
                                                                 , NO
                                                                 , YES
                                                                 );
@@ -1571,7 +1571,7 @@
     // -------------------------------------------------------------------------------------------------------
     // Negative Test Case 1: add keychain with invalid keychain (it has been deleted)
     // -------------------------------------------------------------------------------------------------------
-    NSURL* URLForKeychain_negativeTestCase1 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"negativeCase1" ]
+    NSURL* URLForKeychain_negativeTestCase1 = _WSCURLForTestCase( _cmd, @"negativeCase1"
                                                                 , NO
                                                                 , YES
                                                                 );
@@ -1763,7 +1763,7 @@
     // -------------------------------------------------------------------------------------------------------
     // Negative Test Case 1: remove keychain with invalid keychain (it has been deleted)
     // -------------------------------------------------------------------------------------------------------
-    NSURL* URLForKeychain_negativeTestCase1 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"negativeCase1" ]
+    NSURL* URLForKeychain_negativeTestCase1 = _WSCURLForTestCase( _cmd, @"negativeCase1"
                                                                 , NO
                                                                 , YES
                                                                 );

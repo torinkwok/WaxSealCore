@@ -1,34 +1,84 @@
-//
-//  WSCAccessPermissionPermissionTests.m
-//  WaxSealCore
-//
-//  Created by Tong G. on 1/17/15.
-//  Copyright (c) 2015 Tong Guo. All rights reserved.
-//
+///:
+/*****************************************************************************
+ **                                                                         **
+ **                               .======.                                  **
+ **                               | INRI |                                  **
+ **                               |      |                                  **
+ **                               |      |                                  **
+ **                      .========'      '========.                         **
+ **                      |   _      xxxx      _   |                         **
+ **                      |  /_;-.__ / _\  _.-;_\  |                         **
+ **                      |     `-._`'`_/'`.-'     |                         **
+ **                      '========.`\   /`========'                         **
+ **                               | |  / |                                  **
+ **                               |/-.(  |                                  **
+ **                               |\_._\ |                                  **
+ **                               | \ \`;|                                  **
+ **                               |  > |/|                                  **
+ **                               | / // |                                  **
+ **                               | |//  |                                  **
+ **                               | \(\  |                                  **
+ **                               |  ``  |                                  **
+ **                               |      |                                  **
+ **                               |      |                                  **
+ **                               |      |                                  **
+ **                               |      |                                  **
+ **                   \\    _  _\\| \//  |//_   _ \// _                     **
+ **                  ^ `^`^ ^`` `^ ^` ``^^`  `^^` `^ `^                     **
+ **                                                                         **
+ **                       Copyright (c) 2015 Tong G.                        **
+ **                          ALL RIGHTS RESERVED.                           **
+ **                                                                         **
+ ****************************************************************************/
 
 #import <XCTest/XCTest.h>
 
-@interface WSCAccessPermissionPermissionTests : XCTestCase
+#import "WSCAccessPermission.h"
+#import "WSCKeychain.h"
+
+// --------------------------------------------------------
+#pragma mark Interface of WSCAccessPermissionTests case
+// --------------------------------------------------------
+@interface WSCAccessPermissionTests : XCTestCase
 
 @end
 
-@implementation WSCAccessPermissionPermissionTests
+// --------------------------------------------------------
+#pragma mark Implementation of WSCAccessPermissionTests case
+// --------------------------------------------------------
+@implementation WSCAccessPermissionTests
 
-- (void)setUp
-{
-    [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
-}
+- ( void ) setUp
+    {
+    // TODO: Put setup code here. This method is called before the invocation of each test method in the class.
+    }
 
-- (void)tearDown
-{
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [super tearDown];
-}
+- ( void ) tearDown
+    {
+    // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
+    }
 
-- (void)testExample
-{
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
-}
+- ( void ) testCreatingWSCAccessPermissionObject
+    {
+//    WSCKeychain* keychain = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase0" ]
+    }
 
-@end
+@end // WSCAccessPermissionTests test case
+
+//////////////////////////////////////////////////////////////////////////////
+
+/*****************************************************************************
+ **                                                                         **
+ **                                                                         **
+ **      █████▒█    ██  ▄████▄   ██ ▄█▀       ██████╗ ██╗   ██╗ ██████╗     **
+ **    ▓██   ▒ ██  ▓██▒▒██▀ ▀█   ██▄█▒        ██╔══██╗██║   ██║██╔════╝     **
+ **    ▒████ ░▓██  ▒██░▒▓█    ▄ ▓███▄░        ██████╔╝██║   ██║██║  ███╗    **
+ **    ░▓█▒  ░▓▓█  ░██░▒▓▓▄ ▄██▒▓██ █▄        ██╔══██╗██║   ██║██║   ██║    **
+ **    ░▒█░   ▒▒█████▓ ▒ ▓███▀ ░▒██▒ █▄       ██████╔╝╚██████╔╝╚██████╔╝    **
+ **     ▒ ░   ░▒▓▒ ▒ ▒ ░ ░▒ ▒  ░▒ ▒▒ ▓▒       ╚═════╝  ╚═════╝  ╚═════╝     **
+ **     ░     ░░▒░ ░ ░   ░  ▒   ░ ░▒ ▒░                                     **
+ **     ░ ░    ░░░ ░ ░ ░        ░ ░░ ░                                      **
+ **              ░     ░ ░      ░  ░                                        **
+ **                    ░                                                    **
+ **                                                                         **
+ ****************************************************************************/

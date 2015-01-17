@@ -37,6 +37,7 @@
 #import "WSCKeychainManager.h"
 
 #import "_WSCKeychainPrivate.h"
+#import "_WSCCommonForUnitTests.h"
 
 // ---------------------------------------------------------------------------
 #pragma mark Interface of WSCPrivateUtilitiesForEaseOfUnitTestTests case
@@ -120,7 +121,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-    NSURL* URLForTestCase0 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase0" ]
+    NSURL* URLForTestCase0 = _WSCURLForTestCase( _cmd, @"testCase0"
                                                , NO
                                                , YES
                                                );
@@ -140,7 +141,7 @@
     // ----------------------------------------------------------------------------------
     // Negative Test Case 0
     // ----------------------------------------------------------------------------------
-    NSURL* URLForNegativeTestCase0 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase0" ]
+    NSURL* URLForNegativeTestCase0 = _WSCURLForTestCase( _cmd, @"testCase0"
                                                        , NO
                                                        , NO
                                                        );
@@ -150,7 +151,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 1
     // ----------------------------------------------------------------------------------
-    NSURL* URLForTestCase1 = _WSCURLForTestCase( [ NSString stringWithFormat: @"%@_%@", NSStringFromSelector( _cmd ), @"testCase0" ]
+    NSURL* URLForTestCase1 = _WSCURLForTestCase( _cmd, @"testCase0"
                                                , NO
                                                , YES
                                                );
