@@ -66,7 +66,7 @@
                          
   @param _Error On input, a pointer to an error object.
                 If an error occurs, this pointer is set to an actual error object containing the error information.
-                You may specify *nil* for this parameter if you don't want the error information.
+                You may specify `nil` for this parameter if you don't want the error information.
                 
   @return Newly created trusted application object. Returns `nil` if an error occurs.
   */
