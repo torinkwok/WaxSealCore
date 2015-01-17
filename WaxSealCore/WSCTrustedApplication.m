@@ -54,6 +54,14 @@
     return [ [ [ [ self class ] alloc ] p_initWithSecTrustedApplicationRef: _SecTrustedAppRef ] autorelease ];
     }
 
+- ( void ) dealloc
+    {
+    if ( self->_secTrustedApplication)
+        CFRelease( self->_secTrustedApplication );
+
+    [ super dealloc ];
+    }
+
 @end // WSCTrustedApplication class
 
 #pragma mark Private Programmatic Interfaces for Creating Trusted Application
@@ -77,6 +85,8 @@
             {
             if ( _Error )
                 _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+
+            return nil;
             }
         }
 
@@ -86,8 +96,12 @@
 - ( instancetype ) p_initWithSecTrustedApplicationRef: ( SecTrustedApplicationRef )_SecTrustedAppRef
     {
     if ( self = [ super init ] )
+        {
         if ( _SecTrustedAppRef )
             self->_secTrustedApplication = ( SecTrustedApplicationRef )CFRetain( _SecTrustedAppRef );
+        else
+            return nil;
+        }
 
     return self;
     }

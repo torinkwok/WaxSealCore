@@ -33,7 +33,6 @@
 
 #import <XCTest/XCTest.h>
 
-#import "WSCAccessPermission.h"
 #import "WSCKeychain.h"
 #import "WSCAccessPermission.h"
 

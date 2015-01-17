@@ -61,20 +61,21 @@
     if ( _Object )              \
         CFRelease( _Object )    \
 
-#define _WSCPrintSecErrorCode( _ResultCode )                                    \
-    {                                                                           \
-    CFStringRef cfErrorDesc = SecCopyErrorMessageString( _ResultCode, NULL );   \
-                                                                                \
-    NSLog( @"Error Occured: %d (LINE%d FUNCTION/METHOD: %s in %s): `%@' "       \
-         , _ResultCode                                                          \
-         , __LINE__                                                             \
-         , __PRETTY_FUNCTION__                                                  \
-         , __FILE__                                                             \
-         , ( __bridge NSString* )cfErrorDesc                                    \
-         );                                                                     \
-                                                                                \
-    CFRelease( cfErrorDesc );                                                   \
-    }
+#define _WSCPrintSecErrorCode( _ResultCode )                                        \
+    if ( _ResultCode != errSecSuccess )                                             \
+        {                                                                           \
+        CFStringRef cfErrorDesc = SecCopyErrorMessageString( _ResultCode, NULL );   \
+                                                                                    \
+        NSLog( @"Error Occured: %d (LINE%d FUNCTION/METHOD: %s in %s): `%@' "       \
+             , _ResultCode                                                          \
+             , __LINE__                                                             \
+             , __PRETTY_FUNCTION__                                                  \
+             , __FILE__                                                             \
+             , ( __bridge NSString* )cfErrorDesc                                    \
+             );                                                                     \
+                                                                                    \
+        CFRelease( cfErrorDesc );                                                   \
+        }
 
 #define _WSCPrintNSErrorForLog( _ErrorObject )              \
     if ( _ErrorObject )                                     \
