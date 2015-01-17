@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		830A4F201A5830E900F4EAA7 /* WSCKeychainManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 830A4F1E1A5830E900F4EAA7 /* WSCKeychainManager.h */; };
 		830A4F211A5830E900F4EAA7 /* WSCKeychainManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 830A4F1F1A5830E900F4EAA7 /* WSCKeychainManager.m */; };
+		831ED44B1A6B21D300E71F7A /* _WSCCommonForUnitTests.h in Headers */ = {isa = PBXBuildFile; fileRef = 831ED4471A6B21D300E71F7A /* _WSCCommonForUnitTests.h */; };
+		831ED44C1A6B21D300E71F7A /* _WSCCommonForUnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 831ED4481A6B21D300E71F7A /* _WSCCommonForUnitTests.m */; };
+		831ED44D1A6B21D300E71F7A /* NSString+_OMCString.h in Headers */ = {isa = PBXBuildFile; fileRef = 831ED4491A6B21D300E71F7A /* NSString+_OMCString.h */; };
+		831ED44E1A6B21D300E71F7A /* NSString+_OMCString.m in Sources */ = {isa = PBXBuildFile; fileRef = 831ED44A1A6B21D300E71F7A /* NSString+_OMCString.m */; };
 		8339FA541A542D2C00240AD0 /* _WSCKeychainErrorPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 8339FA521A542D2C00240AD0 /* _WSCKeychainErrorPrivate.h */; };
 		8339FA551A542D2C00240AD0 /* _WSCKeychainErrorPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8339FA531A542D2C00240AD0 /* _WSCKeychainErrorPrivate.m */; };
 		8339FA581A54457000240AD0 /* WSCKeychainErrorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8339FA571A54457000240AD0 /* WSCKeychainErrorTests.m */; };
@@ -20,13 +24,9 @@
 		8368A0011A58FE90000CF7ED /* WSCKeychainManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8368A0001A58FE90000CF7ED /* WSCKeychainManagerTests.m */; };
 		8368A0071A596F70000CF7ED /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723861A4C1AA60084221A /* XCTest.framework */; };
 		837C31871A6736F500BE5E07 /* _WSCKeychainPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C31851A6736F500BE5E07 /* _WSCKeychainPrivate.h */; };
-		837C318D1A67406300BE5E07 /* _WSCCommonForUnitTests.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C318B1A67406300BE5E07 /* _WSCCommonForUnitTests.h */; };
-		837C318E1A67406300BE5E07 /* _WSCCommonForUnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C318C1A67406300BE5E07 /* _WSCCommonForUnitTests.m */; };
 		838221111A4C214A00EF9945 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 838221101A4C214A00EF9945 /* README.md */; };
 		838221141A4C229B00EF9945 /* WSCAccessPermission.h in Headers */ = {isa = PBXBuildFile; fileRef = 838221121A4C229B00EF9945 /* WSCAccessPermission.h */; };
 		838221151A4C229B00EF9945 /* WSCAccessPermission.m in Sources */ = {isa = PBXBuildFile; fileRef = 838221131A4C229B00EF9945 /* WSCAccessPermission.m */; };
-		839FE2F61A5E18FA00DCED3C /* NSString+_OMCString.h in Headers */ = {isa = PBXBuildFile; fileRef = 839FE2F41A5E18FA00DCED3C /* NSString+_OMCString.h */; };
-		839FE2F71A5E18FA00DCED3C /* NSString+_OMCString.m in Sources */ = {isa = PBXBuildFile; fileRef = 839FE2F51A5E18FA00DCED3C /* NSString+_OMCString.m */; };
 		83C7237C1A4C1AA60084221A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 83C7237A1A4C1AA60084221A /* InfoPlist.strings */; };
 		83C723801A4C1AA60084221A /* WSCKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 83C7237F1A4C1AA60084221A /* WSCKeychain.m */; };
 		83C723871A4C1AA60084221A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723861A4C1AA60084221A /* XCTest.framework */; };
@@ -68,6 +68,10 @@
 /* Begin PBXFileReference section */
 		830A4F1E1A5830E900F4EAA7 /* WSCKeychainManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSCKeychainManager.h; sourceTree = "<group>"; };
 		830A4F1F1A5830E900F4EAA7 /* WSCKeychainManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCKeychainManager.m; sourceTree = "<group>"; };
+		831ED4471A6B21D300E71F7A /* _WSCCommonForUnitTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _WSCCommonForUnitTests.h; path = WaxSealCore/_WSCCommonForUnitTests.h; sourceTree = "<group>"; };
+		831ED4481A6B21D300E71F7A /* _WSCCommonForUnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _WSCCommonForUnitTests.m; path = WaxSealCore/_WSCCommonForUnitTests.m; sourceTree = "<group>"; };
+		831ED4491A6B21D300E71F7A /* NSString+_OMCString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+_OMCString.h"; path = "WaxSealCore/NSString+_OMCString.h"; sourceTree = "<group>"; };
+		831ED44A1A6B21D300E71F7A /* NSString+_OMCString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+_OMCString.m"; path = "WaxSealCore/NSString+_OMCString.m"; sourceTree = "<group>"; };
 		8339FA521A542D2C00240AD0 /* _WSCKeychainErrorPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _WSCKeychainErrorPrivate.h; sourceTree = "<group>"; };
 		8339FA531A542D2C00240AD0 /* _WSCKeychainErrorPrivate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _WSCKeychainErrorPrivate.m; sourceTree = "<group>"; };
 		8339FA571A54457000240AD0 /* WSCKeychainErrorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCKeychainErrorTests.m; sourceTree = "<group>"; };
@@ -78,14 +82,10 @@
 		834D20ED1A4EEF7900539F49 /* NSURL+WSCKeychainURLTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+WSCKeychainURLTests.m"; sourceTree = "<group>"; };
 		8368A0001A58FE90000CF7ED /* WSCKeychainManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCKeychainManagerTests.m; sourceTree = "<group>"; };
 		837C31851A6736F500BE5E07 /* _WSCKeychainPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _WSCKeychainPrivate.h; sourceTree = "<group>"; };
-		837C318B1A67406300BE5E07 /* _WSCCommonForUnitTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _WSCCommonForUnitTests.h; sourceTree = "<group>"; };
-		837C318C1A67406300BE5E07 /* _WSCCommonForUnitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _WSCCommonForUnitTests.m; sourceTree = "<group>"; };
 		838221091A4C1DC400EF9945 /* DocumentationHelper.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DocumentationHelper.xcodeproj; path = DocumentationHelper/DocumentationHelper.xcodeproj; sourceTree = "<group>"; };
 		838221101A4C214A00EF9945 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
 		838221121A4C229B00EF9945 /* WSCAccessPermission.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSCAccessPermission.h; sourceTree = "<group>"; };
 		838221131A4C229B00EF9945 /* WSCAccessPermission.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCAccessPermission.m; sourceTree = "<group>"; };
-		839FE2F41A5E18FA00DCED3C /* NSString+_OMCString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+_OMCString.h"; sourceTree = "<group>"; };
-		839FE2F51A5E18FA00DCED3C /* NSString+_OMCString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+_OMCString.m"; sourceTree = "<group>"; };
 		83C7236E1A4C1AA60084221A /* WaxSealCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WaxSealCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		83C723741A4C1AA60084221A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		83C723791A4C1AA60084221A /* WaxSealCore-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WaxSealCore-Info.plist"; sourceTree = "<group>"; };
@@ -166,12 +166,12 @@
 		837C318A1A673C4500BE5E07 /* In Common Use */ = {
 			isa = PBXGroup;
 			children = (
-				839FE2F41A5E18FA00DCED3C /* NSString+_OMCString.h */,
-				839FE2F51A5E18FA00DCED3C /* NSString+_OMCString.m */,
+				831ED4491A6B21D300E71F7A /* NSString+_OMCString.h */,
+				831ED44A1A6B21D300E71F7A /* NSString+_OMCString.m */,
 				83E966331A4D8135008FDEE8 /* _WSCCommon.h */,
 				83E966361A4D82B0008FDEE8 /* _WSCCommon.m */,
-				837C318B1A67406300BE5E07 /* _WSCCommonForUnitTests.h */,
-				837C318C1A67406300BE5E07 /* _WSCCommonForUnitTests.m */,
+				831ED4471A6B21D300E71F7A /* _WSCCommonForUnitTests.h */,
+				831ED4481A6B21D300E71F7A /* _WSCCommonForUnitTests.m */,
 			);
 			name = "In Common Use";
 			sourceTree = "<group>";
@@ -354,9 +354,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				837C318D1A67406300BE5E07 /* _WSCCommonForUnitTests.h in Headers */,
 				83F8E1131A6A2DF400201BF6 /* _WSCAccessPermissionPrivate.h in Headers */,
 				837C31871A6736F500BE5E07 /* _WSCKeychainPrivate.h in Headers */,
+				831ED44B1A6B21D300E71F7A /* _WSCCommonForUnitTests.h in Headers */,
 				83F8E11E1A6A54F900201BF6 /* _WSCTrustedApplicationPrivate.h in Headers */,
 				83F8E1181A6A3E0C00201BF6 /* WSCTrustedApplication.h in Headers */,
 				830A4F201A5830E900F4EAA7 /* WSCKeychainManager.h in Headers */,
@@ -364,8 +364,8 @@
 				83E966341A4D8135008FDEE8 /* _WSCCommon.h in Headers */,
 				834D20E41A4EDD6900539F49 /* WSCKeychainError.h in Headers */,
 				8339FA541A542D2C00240AD0 /* _WSCKeychainErrorPrivate.h in Headers */,
-				839FE2F61A5E18FA00DCED3C /* NSString+_OMCString.h in Headers */,
 				834D20EB1A4EEA4400539F49 /* NSURL+WSCKeychainURL.h in Headers */,
+				831ED44D1A6B21D300E71F7A /* NSString+_OMCString.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -481,11 +481,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				839FE2F71A5E18FA00DCED3C /* NSString+_OMCString.m in Sources */,
+				831ED44E1A6B21D300E71F7A /* NSString+_OMCString.m in Sources */,
 				83E966371A4D82B0008FDEE8 /* _WSCCommon.m in Sources */,
+				831ED44C1A6B21D300E71F7A /* _WSCCommonForUnitTests.m in Sources */,
 				83F8E1191A6A3E0C00201BF6 /* WSCTrustedApplication.m in Sources */,
 				83C723801A4C1AA60084221A /* WSCKeychain.m in Sources */,
-				837C318E1A67406300BE5E07 /* _WSCCommonForUnitTests.m in Sources */,
 				838221151A4C229B00EF9945 /* WSCAccessPermission.m in Sources */,
 				8339FA551A542D2C00240AD0 /* _WSCKeychainErrorPrivate.m in Sources */,
 				830A4F211A5830E900F4EAA7 /* WSCKeychainManager.m in Sources */,
