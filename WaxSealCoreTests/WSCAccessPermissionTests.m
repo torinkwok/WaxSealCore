@@ -96,21 +96,22 @@
                                    };
 
     SecKeychainAttributeList attrsList = { sizeof( attrs ) / sizeof( attrs[ 0 ] ), attrs };
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 0
+    // ----------------------------------------------------------------------------------
     SecAccessRef secAccess_testCase0 = _createAccess( @"SecAccess for Test Case 0" );
+    WSCAccessPermission* accessPermission_testCase0 = [ WSCAccessPermission accessPermissionWithSecAccessRef: secAccess_testCase0 ];
+    XCTAssertNotNil( accessPermission_testCase0 );
+    XCTAssertEqual( accessPermission_testCase0.secAccess, secAccess_testCase0 );
 
     SecKeychainItemRef passwordItem_testCase0 = [ self _addKeychainItemOfClass: kSecInternetPasswordItemClass
                                                                     toKeychain: newKeychain_testCase0.secKeychain
                                                                   withPassword: @"waxsealcore"
                                                                 attributesList: &attrsList
-                                                      initialAccessControlList: secAccess_testCase0
+                                                      initialAccessControlList: accessPermission_testCase0.secAccess
                                                                         status: &resultCode ];
 
-    // ----------------------------------------------------------------------------------
-    // Test Case 0
-    // ----------------------------------------------------------------------------------
-    WSCAccessPermission* accessPermission_testCase0 = [ WSCAccessPermission accessPermissionWithSecAccessRef: secAccess_testCase0 ];
-    XCTAssertNotNil( accessPermission_testCase0 );
-    XCTAssertEqual( accessPermission_testCase0.secAccess, secAccess_testCase0 );
 
     // ----------------------------------------------------------------------------------
     if( secAccess_testCase0 )
