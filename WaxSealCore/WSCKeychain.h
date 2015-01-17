@@ -34,8 +34,14 @@
 
 @class WSCAccessPermission;
 
-/** The `WSCKeychain` class is an object-oriented wrapper for `SecKeychain` opaque type object.
- */
+/** A keychain is an encrypted container that holds passwords for multiple applications and secure services. 
+
+  Keychains are secure storage containers, which means that when the keychain is locked, no one can access its protected contents. 
+  In OS X, users can unlock a keychain—thus providing trusted applications access to the contents—by entering a single master password.
+  
+  The above encrypted container which is called "keychain" is represented by `WSCKeychain` object in *WaxSealCore framework*
+  and `SecKeychainRef` in *Keychain Services APIs*.
+  */
 @interface WSCKeychain : NSObject
     {
 @private
