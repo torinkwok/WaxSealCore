@@ -36,7 +36,29 @@
 // _WSCAccess class
 @implementation _WSCAccess
 
+@synthesize secAccess = _secAccess;
 
++ ( instancetype ) accessWithSecAccessRef: ( SecAccessRef )_SecAccessRef;
+    {
+    return [ [ [ [ self class ] alloc ] initWithSecAccessRef: _SecAccessRef ] autorelease ];
+    }
+
+- ( instancetype ) initWithSecAccessRef: ( SecAccessRef )_SecAccessRef
+    {
+    if ( self = [ super init ] )
+        if ( _SecAccessRef )
+            self->_secAccess = ( SecAccessRef )CFRetain( _SecAccessRef );
+
+    return self;
+    }
+
+- ( void ) dealloc
+    {
+    if ( self->_secAccess )
+        CFRelease( self->_secAccess );
+
+    [ super dealloc ];
+    }
 
 @end // _WSCAccess class
 

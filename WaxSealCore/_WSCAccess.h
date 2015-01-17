@@ -34,7 +34,14 @@
 #import <Foundation/Foundation.h>
 
 @interface _WSCAccess : NSObject
+    {
+@private
+    SecAccessRef _secAccess;
+    }
 
+@property ( unsafe_unretained, readonly ) SecAccessRef secAccess;
+
++ ( instancetype ) accessWithSecAccessRef: ( SecAccessRef )_SecAccessRef;
 
 @end // _WSCAccess class
 

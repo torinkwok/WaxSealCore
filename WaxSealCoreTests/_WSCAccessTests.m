@@ -34,21 +34,21 @@
 #import <XCTest/XCTest.h>
 
 #import "WSCKeychain.h"
-#import "WSCAccessPermission.h"
 
+#import "_WSCAccess.h"
 #import "_WSCAccessPermissionPrivate.h"
 
 // --------------------------------------------------------
 #pragma mark Interface of WSCAccessPermissionTests case
 // --------------------------------------------------------
-@interface WSCAccessPermissionTests : XCTestCase
+@interface _WSCAccessTests : XCTestCase
 
 @end
 
 // --------------------------------------------------------
 #pragma mark Implementation of WSCAccessPermissionTests case
 // --------------------------------------------------------
-@implementation WSCAccessPermissionTests
+@implementation _WSCAccessTests
 
 - ( void ) setUp
     {
@@ -101,7 +101,7 @@
     // Test Case 0
     // ----------------------------------------------------------------------------------
     SecAccessRef secAccess_testCase0 = _createAccess( @"SecAccess for Test Case 0" );
-    WSCAccessPermission* accessPermission_testCase0 = [ WSCAccessPermission accessPermissionWithSecAccessRef: secAccess_testCase0 ];
+    _WSCAccess* accessPermission_testCase0 = [ _WSCAccess accessWithSecAccessRef: secAccess_testCase0 ];
     XCTAssertNotNil( accessPermission_testCase0 );
     XCTAssertEqual( accessPermission_testCase0.secAccess, secAccess_testCase0 );
 
