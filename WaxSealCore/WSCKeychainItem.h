@@ -94,6 +94,10 @@ typedef NS_ENUM( NSUInteger, WSCKeychainItemAccessibilityType )
   * WSCIdentity
   */
 @interface WSCKeychainItem : NSObject
+    {
+@private
+    SecKeychainItemRef _secKeychainItem;
+    }
 
 /** The value that indicates when your app needs access to the data in a keychain item.
 
@@ -102,7 +106,14 @@ typedef NS_ENUM( NSUInteger, WSCKeychainItemAccessibilityType )
 
   For a list of possible values, see ["Keychain Item Accessibility Constants."](WSCKeychainItemAccessibilityType)
   */
-@property ( nonatomic, assign, readwrite ) WSCKeychainItemAccessibilityType accessibility;
+@property ( assign, readwrite ) WSCKeychainItemAccessibilityType accessibility;
+
+/** The reference of the `SecKeychainItem` opaque object, which wrapped by `WSCKeychainItem` object.
+  
+  If you are familiar with the underlying *Keychain Services* APIs,
+  you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this property.
+  */
+@property ( unsafe_unretained, readonly ) SecKeychainItemRef secKeychainItem;
 
 @end // WSCKeychainItem class
 
