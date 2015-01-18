@@ -58,6 +58,8 @@
 #pragma mark Private Programmatic Interfaces for Creating Keychain Items
 @implementation WSCKeychainItem ( WSCKeychainItemPrivateInitialization )
 
+// Users will create an keychain item and add it to keychain using the methods in WSCKeychain
+// instead of creating it directly.
 - ( instancetype ) p_initWithSecKeychainItemRef: ( SecKeychainItemRef )_SecKeychainItemRef
     {
     if ( self = [ super init ] )
