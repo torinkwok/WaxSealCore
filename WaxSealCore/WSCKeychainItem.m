@@ -31,30 +31,11 @@
  **                                                                         **
  ****************************************************************************/
 
-#import <Foundation/Foundation.h>
+#import "WSCKeychainItem.h"
 
-@class WSCTrustedApplication;
+@implementation WSCKeychainItem
 
-@interface _WSCAccess : NSObject
-    {
-@private
-    SecAccessRef _secAccess;
-    }
-
-@property ( unsafe_unretained, readonly ) SecAccessRef secAccess;
-
-+ ( instancetype ) accessWithSecAccessRef: ( SecAccessRef )_SecAccessRef;
-- ( instancetype ) initWithSecAccessRef: ( SecAccessRef )_SecAccessRef;
-
-+ ( instancetype ) accessWithDescriptor: ( NSString* )_Descriptor
-                    trustedApplications: ( NSArray* )_TrustedApplications
-                                  error: ( NSError** )_Error;
-
-- ( instancetype ) initWithDescriptor: ( NSString* )_Descriptor
-                  trustedApplications: ( NSArray* )_TrustedApplications
-                                error: ( NSError** )_Error;
-
-@end // _WSCAccess class
+@end // WSCKeychainItem class
 
 //////////////////////////////////////////////////////////////////////////////
 

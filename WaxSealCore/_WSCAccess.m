@@ -32,6 +32,7 @@
  ****************************************************************************/
 
 #import "_WSCAccess.h"
+#import "WSCTrustedApplication.h"
 
 // _WSCAccess class
 @implementation _WSCAccess
@@ -48,6 +49,47 @@
     if ( self = [ super init ] )
         if ( _SecAccessRef )
             self->_secAccess = ( SecAccessRef )CFRetain( _SecAccessRef );
+
+    return self;
+    }
+
++ ( instancetype ) accessWithDescriptor: ( NSString* )_Descriptor
+                    trustedApplications: ( NSArray* )_TrustedApplications
+                                  error: ( NSError** )_Error;
+    {
+    return [ [ [ [ self class ] alloc ] initWithDescriptor: _Descriptor
+                                       trustedApplications: _TrustedApplications
+                                                     error: _Error ] autorelease ];
+    }
+
+- ( instancetype ) initWithDescriptor: ( NSString* )_Descriptor
+                  trustedApplications: ( NSArray* )_TrustedApplications
+                                error: ( NSError** )_Error;
+    {
+    if ( self = [ super init ] )
+        {
+        OSStatus resultCode= errSecSuccess;
+
+        NSMutableArray* secTrustedApplications = [ NSMutableArray array ];
+        [ _TrustedApplications enumerateObjectsUsingBlock:
+            ^( WSCTrustedApplication* _TrustedApp, NSUInteger _Index, BOOL* _Stop )
+                {
+                [ secTrustedApplications addObject: ( __bridge id )( _TrustedApp.secTrustedApplication ) ];
+                } ];
+
+        resultCode = SecAccessCreate( ( __bridge CFStringRef )_Descriptor
+                                    , ( __bridge CFArrayRef )secTrustedApplications
+                                    , &self->_secAccess
+                                    );
+
+        if ( resultCode != errSecSuccess )
+            {
+            if ( _Error )
+                _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+
+            return nil;
+            }
+        }
 
     return self;
     }

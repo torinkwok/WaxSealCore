@@ -34,6 +34,7 @@
 #import <XCTest/XCTest.h>
 
 #import "WSCKeychain.h"
+#import "WSCTrustedApplication.h"
 
 #import "_WSCAccess.h"
 #import "_WSCAccessPermissionPrivate.h"
@@ -60,7 +61,72 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-- ( void ) testCreatingWSCAccessPermissionObjectWithSecAccessRef
+- ( void ) testCreatingAccessWithSimpleContent
+    {
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
+
+    // ========================================================================================================= //
+
+    NSURL* URLForiMessage = [ NSURL URLWithString: @"/Applications/Messages.app" ];
+    WSCTrustedApplication* iMessage = [ WSCTrustedApplication trustedApplicationWithContentsOfURL: URLForiMessage
+                                                                                            error: &error ];
+
+    NSURL* URLForAppleMail = [ NSURL URLWithString: @"/Applications/Mail.app" ];
+    WSCTrustedApplication* AppleMail = [ WSCTrustedApplication trustedApplicationWithContentsOfURL: URLForAppleMail
+                                                                                             error: &error ];
+
+    NSURL* URLForiPhoto = [ NSURL URLWithString: @"/Applications/iPhoto.app" ];
+    WSCTrustedApplication* iPhoto = [ WSCTrustedApplication trustedApplicationWithContentsOfURL: URLForiPhoto
+                                                                                          error: &error ];
+
+    // ========================================================================================================= //
+
+    NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0", NO, YES );
+    WSCKeychain* newKeychain_testCase0 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase0
+                                                              password: _WSCTestPassword
+                                                         initialAccess: nil
+                                                        becomesDefault: NO
+                                                                 error: &error ];
+    XCTAssertNotNil( newKeychain_testCase0 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    void* label = "Vnet Link (sosueme)";
+    void* server = "node-cnx.vnet.link";
+    void* account = "sosueme";
+    void* comment = "Big Brother Is WATCHING You!";
+    void* description = "Proxy Password";
+    BOOL isInvisible = NO;
+    UInt32 creator = 'Tong';
+    SecProtocolType protocol = kSecProtocolTypeHTTPSProxy;
+    short port = 110;
+    SecKeychainAttribute attrs[] = { { kSecLabelItemAttr, ( UInt32 )strlen( label ), label }
+                                   , { kSecServerItemAttr, ( UInt32 )strlen( server ), server }
+                                   , { kSecAccountItemAttr, ( UInt32 )strlen( account ), account }
+                                   , { kSecProtocolItemAttr, sizeof( SecProtocolType ), ( SecProtocolType* )&protocol }
+                                   , { kSecPortItemAttr, sizeof( short ), ( short* )&port }
+                                   , { kSecCommentItemAttr, ( UInt32 )strlen( comment ), comment }
+                                   , { kSecDescriptionItemAttr, ( UInt32 )strlen( description ), description }
+                                   , { kSecCreatorItemAttr, sizeof( UInt32 ), &creator }
+                                   , { kSecInvisibleItemAttr, sizeof( BOOL ), ( void* )&isInvisible }
+                                   };
+
+    SecKeychainAttributeList attrsList = { sizeof( attrs ) / sizeof( attrs[ 0 ] ), attrs };
+
+    _WSCAccess* access_testCase0 = [ _WSCAccess accessWithDescriptor: @"_WSAccess Test Case 0"
+                                                 trustedApplications: @[ iMessage, AppleMail, iPhoto ]
+                                                               error: &error ];
+
+    SecKeychainItemRef passwordItem_testCase0 = [ self _addKeychainItemOfClass: kSecInternetPasswordItemClass
+                                                                    toKeychain: newKeychain_testCase0.secKeychain
+                                                                  withPassword: @"waxsealcore"
+                                                                attributesList: &attrsList
+                                                      initialAccessControlList: access_testCase0.secAccess
+                                                                        status: &resultCode ];
+    }
+
+- ( void ) testCreatingAccessWithSecAccessRef
     {
     NSError* error = nil;
     OSStatus resultCode = errSecSuccess;

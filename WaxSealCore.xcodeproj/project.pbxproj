@@ -15,6 +15,8 @@
 		831ED44E1A6B21D300E71F7A /* NSString+_OMCString.m in Sources */ = {isa = PBXBuildFile; fileRef = 831ED44A1A6B21D300E71F7A /* NSString+_OMCString.m */; };
 		831ED4521A6B287F00E71F7A /* _WSCAccess.h in Headers */ = {isa = PBXBuildFile; fileRef = 831ED4501A6B287F00E71F7A /* _WSCAccess.h */; };
 		831ED4531A6B287F00E71F7A /* _WSCAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = 831ED4511A6B287F00E71F7A /* _WSCAccess.m */; };
+		831ED4571A6B42A500E71F7A /* WSCKeychainItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 831ED4551A6B42A500E71F7A /* WSCKeychainItem.h */; };
+		831ED4581A6B42A500E71F7A /* WSCKeychainItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 831ED4561A6B42A500E71F7A /* WSCKeychainItem.m */; };
 		8339FA541A542D2C00240AD0 /* _WSCKeychainErrorPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 8339FA521A542D2C00240AD0 /* _WSCKeychainErrorPrivate.h */; };
 		8339FA551A542D2C00240AD0 /* _WSCKeychainErrorPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8339FA531A542D2C00240AD0 /* _WSCKeychainErrorPrivate.m */; };
 		8339FA581A54457000240AD0 /* WSCKeychainErrorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8339FA571A54457000240AD0 /* WSCKeychainErrorTests.m */; };
@@ -76,6 +78,8 @@
 		831ED44A1A6B21D300E71F7A /* NSString+_OMCString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+_OMCString.m"; path = "WaxSealCore/NSString+_OMCString.m"; sourceTree = "<group>"; };
 		831ED4501A6B287F00E71F7A /* _WSCAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _WSCAccess.h; sourceTree = "<group>"; };
 		831ED4511A6B287F00E71F7A /* _WSCAccess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _WSCAccess.m; sourceTree = "<group>"; };
+		831ED4551A6B42A500E71F7A /* WSCKeychainItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSCKeychainItem.h; sourceTree = "<group>"; };
+		831ED4561A6B42A500E71F7A /* WSCKeychainItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCKeychainItem.m; sourceTree = "<group>"; };
 		8339FA521A542D2C00240AD0 /* _WSCKeychainErrorPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _WSCKeychainErrorPrivate.h; sourceTree = "<group>"; };
 		8339FA531A542D2C00240AD0 /* _WSCKeychainErrorPrivate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _WSCKeychainErrorPrivate.m; sourceTree = "<group>"; };
 		8339FA571A54457000240AD0 /* WSCKeychainErrorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCKeychainErrorTests.m; sourceTree = "<group>"; };
@@ -203,6 +207,8 @@
 			children = (
 				83C7237E1A4C1AA60084221A /* WSCKeychain.h */,
 				83C7237F1A4C1AA60084221A /* WSCKeychain.m */,
+				831ED4551A6B42A500E71F7A /* WSCKeychainItem.h */,
+				831ED4561A6B42A500E71F7A /* WSCKeychainItem.m */,
 				834D20E21A4EDD6900539F49 /* WSCKeychainError.h */,
 				834D20E31A4EDD6900539F49 /* WSCKeychainError.m */,
 				834D20E91A4EEA4400539F49 /* NSURL+WSCKeychainURL.h */,
@@ -337,6 +343,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				83F8E1131A6A2DF400201BF6 /* _WSCAccessPermissionPrivate.h in Headers */,
+				831ED4571A6B42A500E71F7A /* WSCKeychainItem.h in Headers */,
 				837C31871A6736F500BE5E07 /* _WSCKeychainPrivate.h in Headers */,
 				831ED44B1A6B21D300E71F7A /* _WSCCommonForUnitTests.h in Headers */,
 				83F8E11E1A6A54F900201BF6 /* _WSCTrustedApplicationPrivate.h in Headers */,
@@ -468,6 +475,7 @@
 				83E966371A4D82B0008FDEE8 /* _WSCCommon.m in Sources */,
 				831ED44C1A6B21D300E71F7A /* _WSCCommonForUnitTests.m in Sources */,
 				83F8E1191A6A3E0C00201BF6 /* WSCTrustedApplication.m in Sources */,
+				831ED4581A6B42A500E71F7A /* WSCKeychainItem.m in Sources */,
 				83C723801A4C1AA60084221A /* WSCKeychain.m in Sources */,
 				838221151A4C229B00EF9945 /* WSCAccessPermission.m in Sources */,
 				8339FA551A542D2C00240AD0 /* _WSCKeychainErrorPrivate.m in Sources */,
