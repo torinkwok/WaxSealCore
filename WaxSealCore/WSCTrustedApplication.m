@@ -83,8 +83,7 @@
             }
         else
             {
-            if ( _Error )
-                _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+            _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
 
             return nil;
             }

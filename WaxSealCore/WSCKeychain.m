@@ -353,8 +353,7 @@ WSCKeychain static* s_system = nil;
             if ( resultCode == errSecSuccess )
                 return [ [ [ WSCKeychainItem alloc ] p_initWithSecKeychainItemRef: secKeychainItem ] autorelease ];
             else
-                if ( _Error )
-                    _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+                _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
             }
         }
 

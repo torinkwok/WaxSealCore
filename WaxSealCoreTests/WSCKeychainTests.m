@@ -34,6 +34,7 @@
 #import <XCTest/XCTest.h>
 
 #import "WSCKeychain.h"
+#import "WSCKeychainItem.h"
 #import "NSURL+WSCKeychainURL.h"
 #import "WSCKeychainError.h"
 #import "WSCKeychainManager.h"
@@ -869,6 +870,7 @@
     XCTAssertNotNil( newKeychainItem_testCase0 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
+    SecKeychainItemDelete( newKeychainItem_testCase0.secKeychainItem );
 
     [ [ WSCKeychainManager defaultManager ] lockKeychain: [ [ WSCKeychainManager defaultManager ]currentDefaultKeychain: nil ]
                                                    error: nil ];
@@ -886,6 +888,7 @@
     XCTAssertNotNil( newKeychainItem_testCase1 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
+    SecKeychainItemDelete( newKeychainItem_testCase1.secKeychainItem );
 
     [ [ WSCKeychainManager defaultManager ] lockKeychain: [ [ WSCKeychainManager defaultManager ]currentDefaultKeychain: nil ]
                                                    error: nil ];
@@ -910,6 +913,7 @@
     XCTAssertNotNil( newKeychainItem_testCase2 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
+    SecKeychainItemDelete( newKeychainItem_testCase2.secKeychainItem );
 
     // ----------------------------------------------------------------------------------
     // Negative Test Case 0
