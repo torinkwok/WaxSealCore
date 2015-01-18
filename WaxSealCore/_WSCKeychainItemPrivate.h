@@ -31,45 +31,12 @@
  **                                                                         **
  ****************************************************************************/
 
-#import "WSCKeychainItem.h"
-
-@implementation WSCKeychainItem
-
-@dynamic accessibility;
-
-@synthesize secKeychainItem = _secKeychainItem;
-
-#pragma mark Accessor
-//- ( WSCKeychainItemAccessibilityType ) accessibility
-//    {
-//
-//    }
-
-- ( void ) dealloc
-    {
-    if ( self->_secKeychainItem )
-        CFRelease( self->_secKeychainItem );
-
-    [ super dealloc ];
-    }
-
-@end // WSCKeychainItem class
+#import <Foundation/Foundation.h>
 
 #pragma mark Private Programmatic Interfaces for Creating Keychain Items
-@implementation WSCKeychainItem ( WSCKeychainItemPrivateInitialization )
+@interface WSCKeychainItem ( WSCKeychainItemPrivateInitialization )
 
-- ( instancetype ) p_initWithSecKeychainItemRef: ( SecKeychainItemRef )_SecKeychainItemRef
-    {
-    if ( self = [ super init ] )
-        {
-        if ( _SecKeychainItemRef )
-            self->_secKeychainItem = ( SecKeychainItemRef )CFRetain( _SecKeychainItemRef );
-        else
-            return nil;
-        }
-
-    return self;
-    }
+- ( instancetype ) p_initWithSecKeychainItemRef: ( SecKeychainItemRef )_SecKeychainItemRef;
 
 @end // WSCKeychainItem + WSCKeychainItemPrivateInitialization
 

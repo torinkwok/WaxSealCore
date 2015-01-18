@@ -35,9 +35,11 @@
 
 #import "WSCKeychain.h"
 #import "WSCTrustedApplication.h"
+#import "WSCKeychainItem.h"
 
 #import "_WSCAccess.h"
 #import "_WSCAccessPermissionPrivate.h"
+#import "_WSCKeychainItemPrivate.h"
 
 // --------------------------------------------------------
 #pragma mark Interface of WSCAccessPermissionTests case
@@ -124,6 +126,10 @@
                                                                 attributesList: &attrsList
                                                       initialAccessControlList: access_testCase0.secAccess
                                                                         status: &resultCode ];
+
+    WSCKeychainItem* keychainItem_testCase0 = [ [ [ WSCKeychainItem alloc ] p_initWithSecKeychainItemRef: passwordItem_testCase0 ] autorelease ];
+    XCTAssertNotNil( keychainItem_testCase0 );
+    XCTAssertEqual( keychainItem_testCase0.secKeychainItem, passwordItem_testCase0 );
     }
 
 - ( void ) testCreatingAccessWithSecAccessRef

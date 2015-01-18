@@ -32,6 +32,7 @@
 
 #import <Foundation/Foundation.h>
 
+@class WSCKeychainItem;
 @class WSCAccessPermission;
 
 /** A keychain is an encrypted container that holds passwords for multiple applications and secure services. 
@@ -246,6 +247,35 @@
            this method is a faster way to check equality than method `-[NSObject isEqual:]`.
   */
 - ( BOOL ) isEqualToKeychain: ( WSCKeychain* )_AnotherKeychain;
+
+#pragma mark Public Programmatic Interfaces for Creating and Managing Keychain Items
+/** @name Creating and Managing Keychain Items */
+
+/** Adds a new generic password to the default keychain.
+
+  This method adds a new generic password to the default keychain. 
+  Required parameters to identify the password are *_ServiceName* and *_AccountName*, which are application-defined strings. 
+  This method returns a newly added item represented by a `WSCKeychainItem` object.
+
+  You can use this method to add passwords for accounts other than the Internet. 
+  For example, you might add Evernote or IRC Client passwords, or passwords for your database or scheduling programs.
+
+  This method sets the initial access rights for the new keychain item so that the application creating the item is given trusted access.
+  This method automatically calls the [lockKeychain:error:](+[WSCKeychainManager lockKeychain:error:]) method to display the Unlock Keychain dialog box if the keychain is currently locked.
+
+  @param _ServiceName An `NSString` object representing the service name.
+
+  @param _AccountName An `NSString` object representing the account name.
+
+  @param _Password An `NSString` object representing the password.
+  
+  @return A `WSCKeychainItem` object representing the new keychain item.
+          Returns `nil` if an error occurs.
+  */
++ ( WSCKeychainItem* ) createAndAddGenericPasswordWithServiceName: ( NSString* )_ServiceName
+                                                      accountName: ( NSString* )_AccountName
+                                                         password: ( NSString* )_Password;
+                                                            error: ( NSError** )_Error;
 
 @end // WSCKeychain class
 
