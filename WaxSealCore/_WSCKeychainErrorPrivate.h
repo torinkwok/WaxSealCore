@@ -38,6 +38,9 @@ NSString extern* const WSCKeychainKeychainIsInvalidErrorDescription;
 NSString extern* const WSCKeychainKeychainFileExistsErrorDescription;
 NSString extern* const WSCKeychainKeychainURLIsInvalidErrorDescription;
 
+id extern const s_guard;
+void _WSCDontBeABitch( NSError** _Error, ... );
+
 @interface NSError ( WSCKeychainError )
 + ( NSError* ) alternative_errorWithDomain: ( NSString* )_ErrorDomain
                                       code: ( NSInteger )_ErrorCode

@@ -274,7 +274,7 @@
   */
 + ( WSCKeychainItem* ) createAndAddGenericPasswordWithServiceName: ( NSString* )_ServiceName
                                                       accountName: ( NSString* )_AccountName
-                                                         password: ( NSString* )_Password;
+                                                         password: ( NSString* )_Password
                                                             error: ( NSError** )_Error;
 
 @end // WSCKeychain class

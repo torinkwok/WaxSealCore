@@ -41,7 +41,6 @@
 #import "_WSCKeychainErrorPrivate.h"
 
 #pragma mark WSCKeychainManager + WSCKeychainManagerPrivate
-id static s_guard = ( id )'sgrd';
 @interface WSCKeychainManager ( WSCKeychainManagerPrivate )
 
 - ( void ) p_dontBeABitch: ( NSError** )_Error, ...;
@@ -118,7 +117,7 @@ WSCKeychainManager static* s_defaultManager = nil;
             // so we have no necessary to assign NO to isSuccess variable.
             continue;
 
-        [ self p_dontBeABitch: &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard ];
+        _WSCDontBeABitch( &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard );
 
         if ( !errorPassedInDelegateMethod )
             {
@@ -178,7 +177,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     NSError* errorPassedInMethodDelegate = nil;
     BOOL shouldProceedIfEncounteredAnyError = NO;
 
-    [ self p_dontBeABitch: &errorPassedInMethodDelegate, _Keychain, [ WSCKeychain class ], s_guard ];
+    _WSCDontBeABitch( &errorPassedInMethodDelegate, _Keychain, [ WSCKeychain class ], s_guard );
 
     if ( !errorPassedInMethodDelegate )
         {
@@ -253,7 +252,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     // Parameters Detection
 
     NSError* errorPassedInDelegateMethod = nil;
-    [ self p_dontBeABitch: &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard ];
+    _WSCDontBeABitch( &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard );
 
     if ( !errorPassedInDelegateMethod )
         {
@@ -306,10 +305,11 @@ WSCKeychainManager static* s_defaultManager = nil;
         return YES;
 
     NSError* errorPassedInDelegateMethod = nil;
-    [ self p_dontBeABitch: &errorPassedInDelegateMethod
-                         , _Keychain, [ WSCKeychain class ]
-                         , _Password, [ NSString class ]
-                         , s_guard ];
+    _WSCDontBeABitch( &errorPassedInDelegateMethod
+                    , _Keychain, [ WSCKeychain class ]
+                    , _Password, [ NSString class ]
+                    , s_guard
+                    );
 
     if ( !errorPassedInDelegateMethod )
         {
@@ -350,7 +350,7 @@ WSCKeychainManager static* s_defaultManager = nil;
         return YES;
 
     NSError* errorPassedInDelegateMethod = nil;
-    [ self p_dontBeABitch: &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard ];
+    _WSCDontBeABitch( &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard );
 
     if ( !errorPassedInDelegateMethod )
         {
@@ -399,7 +399,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     NSError* errorPassedInDelegateMethod = nil;
     BOOL shouldProceedIfEncounteredAnyError = NO;
 
-    [ self p_dontBeABitch: &errorPassedInDelegateMethod, _SearchList, [ NSArray class ], s_guard ];
+    _WSCDontBeABitch( &errorPassedInDelegateMethod, _SearchList, [ NSArray class ], s_guard );
 
     if ( errorPassedInDelegateMethod )
         {
@@ -427,7 +427,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     WSCKeychain* _SecKeychain = nil;
     while ( _SecKeychain = [ searchListEnumerator nextObject ] )
         {
-        [ self p_dontBeABitch: &errorPassedInDelegateMethod, _SecKeychain, [ WSCKeychain class ], s_guard ];
+        _WSCDontBeABitch( &errorPassedInDelegateMethod, _SecKeychain, [ WSCKeychain class ], s_guard );
 
         // Error occured
         if ( errorPassedInDelegateMethod )
@@ -520,7 +520,7 @@ WSCKeychainManager static* s_defaultManager = nil;
 
     NSError* errorPassedInDelegateMethod = nil;
     /* _Keychain parameter must be kind of WSCKeychain class, and it must not be invalid or nil */
-    [ self p_dontBeABitch: &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard ];
+    _WSCDontBeABitch( &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard );
 
     if ( !errorPassedInDelegateMethod )
         {
@@ -554,7 +554,7 @@ WSCKeychainManager static* s_defaultManager = nil;
         return YES;
 
     NSError* errorPassedInDelegateMethod = nil;
-    [ self p_dontBeABitch: &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard ];
+    _WSCDontBeABitch( &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard );
 
     if ( !errorPassedInDelegateMethod )
         {
