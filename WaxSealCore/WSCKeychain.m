@@ -312,6 +312,17 @@ WSCKeychain static* s_system = nil;
                 && [ self.URL isEqualTo: _AnotherKeychain.URL ];
     }
 
+#pragma mark Public Programmatic Interfaces for Creating and Managing Keychain Items
+/* Adds a new generic password to the default keychain.
+ */
++ ( WSCKeychainItem* ) createAndAddGenericPasswordWithServiceName: ( NSString* )_ServiceName
+                                                      accountName: ( NSString* )_AccountName
+                                                         password: ( NSString* )_Password;
+                                                            error: ( NSError** )_Error
+    {
+    
+    }
+
 #pragma mark Overrides
 - ( void ) dealloc
     {
