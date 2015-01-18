@@ -292,7 +292,7 @@ WSCKeychain static* s_system = nil;
                     NSError* error = nil;
 
                     s_system = [ WSCKeychain keychainWithContentsOfURL: [ NSURL sharedURLForSystemKeychain ]
-                                                                   error: &error ];
+                                                                 error: &error ];
                     if ( error )
                         /* Log for easy to debug */
                         NSLog( @"%@", error );
@@ -315,50 +315,46 @@ WSCKeychain static* s_system = nil;
     }
 
 #pragma mark Public Programmatic Interfaces for Creating and Managing Keychain Items
-/* Adds a new generic password to the default keychain.
+/* Adds a new generic password to the keychain represented by receiver.
  */
-+ ( WSCKeychainItem* ) createAndAddGenericPasswordWithServiceName: ( NSString* )_ServiceName
-                                                      accountName: ( NSString* )_AccountName
-                                                         password: ( NSString* )_Password
-                                                            error: ( NSError** )_Error
+- ( WSCKeychainItem* ) addApplicationPasswordWithServiceName: ( NSString* )_ServiceName
+                                                 accountName: ( NSString* )_AccountName
+                                                    password: ( NSString* )_Password
+                                                       error: ( NSError** )_Error
     {
-    // Little params, don't be a bitch!
+    // Little params, don't be a bitch 👿
     _WSCDontBeABitch( _Error
+                    // The receiver must be representing a valid keychain
+                    , self, [ WSCKeychain class ]
                     , _ServiceName, [ NSString class ]
                     , _AccountName, [ NSString class ]
                     , _Password, [ NSString class ]
                     , s_guard
                     );
+
     if ( !( *_Error ) )
         {
-        WSCKeychain* defaultKeychain = [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: _Error ];
-
-        if ( _Error )
-            return nil;
-
         // As described in documentation:
         // This method automatically calls the unlockKeychainWithUserInteraction:error: method
         // to display the Unlock Keychain dialog box if the keychain is currently locked.
-        if ( [ [ WSCKeychainManager defaultManager ] unlockKeychainWithUserInteraction: defaultKeychain
+        if ( [ [ WSCKeychainManager defaultManager ] unlockKeychainWithUserInteraction: self
                                                                                  error: _Error ] )
             {
             OSStatus resultCode = errSecSuccess;
             SecKeychainItemRef secKeychainItem = NULL;
 
             // Adding.... Beep Beep Beep...
-            resultCode = SecKeychainAddGenericPassword( defaultKeychain.secKeychain
+            resultCode = SecKeychainAddGenericPassword( self.secKeychain
                                                       , ( UInt32 )_ServiceName.length, _ServiceName.UTF8String
                                                       , ( UInt32 )_AccountName.length, _AccountName.UTF8String
                                                       , ( UInt32 )_Password.length, _Password.UTF8String
                                                       , &secKeychainItem
                                                       );
-            if ( resultCode != errSecSuccess )
-                {
+            if ( resultCode == errSecSuccess )
+                return [ [ [ WSCKeychainItem alloc ] p_initWithSecKeychainItemRef: secKeychainItem ] autorelease ];
+            else
                 if ( _Error )
                     _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
-                }
-            else
-                return [ [ [ WSCKeychainItem alloc ] p_initWithSecKeychainItemRef: secKeychainItem ] autorelease ];
             }
         }
 

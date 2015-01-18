@@ -854,6 +854,92 @@
     XCTAssertTrue( [ keychainForTestCase4 isEqual: keychainForTestCase4 ] );
     }
 
+- ( void ) testAddGenericPasswordToDefaultKeychain
+    {
+    NSError* error = nil;
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 0
+    // ----------------------------------------------------------------------------------
+    WSCKeychainItem* newKeychainItem_testCase0 =
+        [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: @"WaxSealCore Test Case 0"
+                                                          accountName: @"NSTongG"
+                                                             password: @"waxsealcore"
+                                                                error: &error ];
+    XCTAssertNotNil( newKeychainItem_testCase0 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    [ [ WSCKeychainManager defaultManager ] lockKeychain: [ [ WSCKeychainManager defaultManager ]currentDefaultKeychain: nil ]
+                                                   error: nil ];
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 1
+    // ----------------------------------------------------------------------------------
+    WSCKeychainItem* newKeychainItem_testCase1 =
+        [ [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: nil ]
+            addApplicationPasswordWithServiceName: @"WaxSealCore Test Case 1"
+                                      accountName: @"Tong Guo"
+                                         password: @"waxsealcore"
+                                            error: &error ];
+
+    XCTAssertNotNil( newKeychainItem_testCase1 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    [ [ WSCKeychainManager defaultManager ] lockKeychain: [ [ WSCKeychainManager defaultManager ]currentDefaultKeychain: nil ]
+                                                   error: nil ];
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 2
+    // ----------------------------------------------------------------------------------
+    NSURL* URLForKeychain_testCase2 = _WSCURLForTestCase( _cmd, @"testCase2", NO, YES );
+    WSCKeychain* keychain_testCase2 = [ WSCKeychain keychainWithURL: URLForKeychain_testCase2
+                                                           password: @"waxsealcore"
+                                                      initialAccess: nil
+                                                     becomesDefault: NO
+                                                              error: &error ];
+    XCTAssertNotNil( keychain_testCase2 );
+    XCTAssertNil( error );
+
+    WSCKeychainItem* newKeychainItem_testCase2 =
+        [ keychain_testCase2 addApplicationPasswordWithServiceName: @"WaxSealCore Test Case 2"
+                                                       accountName: @"Tong G."
+                                                          password: @"waxsealcore"
+                                                             error: &error ];
+    XCTAssertNotNil( newKeychainItem_testCase2 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 0
+    // ----------------------------------------------------------------------------------
+    WSCKeychainItem* newKeychainItem_negativeTestCase0 =
+        [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: nil
+                                                          accountName: ( NSString* )[ NSDate date ]
+                                                             password: ( NSString* )@342
+                                                                error: &error ];
+    XCTAssertNil( newKeychainItem_negativeTestCase0 );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 1
+    // ----------------------------------------------------------------------------------
+    WSCKeychainItem* newKeychainItem_negativeTestCase1 =
+        [ _WSCCommonInvalidKeychainForUnitTests addApplicationPasswordWithServiceName: @"WaxSealCore Negative Test Case 1"
+                                                                          accountName: @"NSTongG"
+                                                                             password: @"waxsealcore"
+                                                                                error: &error ];
+    XCTAssertNil( newKeychainItem_negativeTestCase1 );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
+    _WSCPrintNSErrorForUnitTest( error );
+    }
+
 @end // WSCKeychainTests case
 
 //////////////////////////////////////////////////////////////////////////////

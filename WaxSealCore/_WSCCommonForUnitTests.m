@@ -60,7 +60,7 @@ WSCKeychainSelectivelyUnlockKeychainBlock _WSCSelectivelyUnlockKeychainsBasedOnP
             {
             if ( [ _Keychain isEqualToKeychain: [ WSCKeychain login ] ] )
                 {
-                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"Dontbeabitch77!." error: &error ];
+                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"waxsealcore" error: &error ];
                 _WSCPrintNSErrorForLog( error );
                 continue;
                 }
@@ -140,7 +140,7 @@ static void s_commonTearDownForUnitTestModules()
     [ [ WSCKeychainManager defaultManager ] setDefaultKeychain: [ WSCKeychain login ] error: nil ];
 
     [ [ WSCKeychainManager defaultManager ] unlockKeychain: [ WSCKeychain login ]
-                                              withPassword: @"Dontbeabitch77!."
+                                              withPassword: @"waxsealcore"
                                                      error: nil ];
     }
 

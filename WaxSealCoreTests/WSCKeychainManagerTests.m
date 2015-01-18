@@ -1039,7 +1039,7 @@
     // Test Case 0: Unlock login.keychain with correct password
     // ----------------------------------------------------------------------------------
     isSuccess = [ self.testManager3 unlockKeychain: [ WSCKeychain login ]
-                                      withPassword: @"Dontbeabitch77!."
+                                      withPassword: @"waxsealcore"
                                              error: &error ];
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
