@@ -32,6 +32,117 @@
 
 #import <Foundation/Foundation.h>
 
+/** Defines the protocol type associated with an Internet password.
+  */
+typedef NS_ENUM( int, WSCInternetProtocolType )
+    {
+    /// Indicates FTP.
+      WSCInternetProtocolTypeFTP         = kSecProtocolTypeFTP
+
+    /// Indicates a client side FTP account. The usage of this constant is deprecated as of OS X v10.3.
+    , WSCInternetProtocolTypeFTPAccount  = kSecProtocolTypeFTPAccount
+
+    /// Indicates HTTP.
+    , WSCInternetProtocolTypeHTTP        = kSecProtocolTypeHTTP
+
+    /// Indicates IRC.
+    , WSCInternetProtocolTypeIRC         = kSecProtocolTypeIRC
+
+    /// Indicates NNTP.
+    , WSCInternetProtocolTypeNNTP        = kSecProtocolTypeNNTP
+
+    /// Indicates POP3.
+    , WSCInternetProtocolTypePOP3        = kSecProtocolTypePOP3
+
+    /// Indicates SMTP.
+    , WSCInternetProtocolTypeSMTP        = kSecProtocolTypeSMTP
+
+    /// Indicates SOCKS.
+    , WSCInternetProtocolTypeSOCKS       = kSecProtocolTypeSOCKS
+
+    /// Indicates IMAP.
+    , WSCInternetProtocolTypeIMAP        = kSecProtocolTypeIMAP
+
+    /// Indicates LDAP.
+    , WSCInternetProtocolTypeLDAP        = kSecProtocolTypeLDAP
+
+    /// Indicates AFP over AppleTalk.
+    , WSCInternetProtocolTypeAppleTalk   = kSecProtocolTypeAppleTalk
+
+    /// Indicates AFP over TCP.
+    , WSCInternetProtocolTypeAFP         = kSecProtocolTypeAFP
+
+    /// Indicates Telnet.
+    , WSCInternetProtocolTypeTelnet      = kSecProtocolTypeTelnet
+
+    /// Indicates SSH.
+    , WSCInternetProtocolTypeSSH         = kSecProtocolTypeSSH
+
+    /// Indicates FTP over TLS/SSL.
+    , WSCInternetProtocolTypeFTPS        = kSecProtocolTypeFTPS
+
+    /// Indicates HTTP over TLS/SSL.
+    , WSCInternetProtocolTypeHTTPS       = kSecProtocolTypeHTTPS
+
+    /// Indicates HTTP proxy.
+    , WSCInternetProtocolTypeHTTPProxy   = kSecProtocolTypeHTTPProxy
+
+    /// Indicates HTTPS proxy.
+    , WSCInternetProtocolTypeHTTPSProxy  = kSecProtocolTypeHTTPSProxy
+
+    /// Indicates FTP proxy.
+    , WSCInternetProtocolTypeFTPProxy    = kSecProtocolTypeFTPProxy
+
+    /// Indicates CIFS.
+    , WSCInternetProtocolTypeCIFS        = kSecProtocolTypeCIFS
+
+    /// Indicates SMB.
+    , WSCInternetProtocolTypeSMB         = kSecProtocolTypeSMB
+
+    /// Indicates RTSP.
+    , WSCInternetProtocolTypeRTSP        = kSecProtocolTypeRTSP
+
+    /// Indicates RTSP proxy.
+    , WSCInternetProtocolTypeRTSPProxy   = kSecProtocolTypeRTSPProxy
+
+    /// Indicates DAAP.
+    , WSCInternetProtocolTypeDAAP        = kSecProtocolTypeDAAP
+
+    /// Indicates Remote Apple Events.
+    , WSCInternetProtocolTypeEPPC        = kSecProtocolTypeEPPC
+
+    /// Indicates IPP.
+    , WSCInternetProtocolTypeIPP         = kSecProtocolTypeIPP
+
+    /// Indicates NNTP over TLS/SSL.
+    , WSCInternetProtocolTypeNNTPS       = kSecProtocolTypeNNTPS
+
+    /// Indicates LDAP over TLS/SSL.
+    , WSCInternetProtocolTypeLDAPS       = kSecProtocolTypeLDAPS
+
+    /// Indicates Telnet over TLS/SSL.
+    , WSCInternetProtocolTypeTelnetS     = kSecProtocolTypeTelnetS
+
+    /// Indicates IMAP4 over TLS/SSL.
+    , WSCInternetProtocolTypeIMAPS       = kSecProtocolTypeIMAPS
+
+    /// Indicates IRC over TLS/SSL.
+    , WSCInternetProtocolTypeIRCS        = kSecProtocolTypeIRCS
+
+    /// Indicates POP3 over TLS/SSL.
+    , WSCInternetProtocolTypePOP3S       = kSecProtocolTypePOP3S
+
+    /// Indicates CVS pserver.
+    , WSCInternetProtocolTypeCVSpserver  = kSecProtocolTypeCVSpserver
+
+    /// Indicates Subversion.
+    , WSCInternetProtocolTypeSVN         = kSecProtocolTypeSVN
+
+    /// Indicates that any protocol is acceptable.
+    /// When performing a search, use this constant to avoid constraining your search results to a particular protocol.
+    , WSCInternetProtocolTypeAny         = kSecProtocolTypeAny
+    };
+
 @class WSCKeychainItem;
 @class WSCAccessPermission;
 
@@ -281,6 +392,14 @@
                                                  accountName: ( NSString* )_AccountName
                                                     password: ( NSString* )_Password
                                                        error: ( NSError** )_Error;
+
+- ( WSCKeychainItem* ) addInternetPasswordWithServerName: ( NSString* )_ServerName
+                                          securityDomain: ( NSString* )_SecurityDomain
+                                             accountName: ( NSString* )_AccountName
+                                                    path: ( NSString* )_Path
+                                                    port: ( NSUInteger )_Port
+                                                protocol: ( WSCInternetProtocolType )_Protocol
+                                                password: ( NSString* )_Password;
 
 @end // WSCKeychain class
 
