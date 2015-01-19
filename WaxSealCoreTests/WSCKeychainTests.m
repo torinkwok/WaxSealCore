@@ -1022,20 +1022,20 @@
     // ----------------------------------------------------------------------------------
     // Negative Test Case 0
     // ----------------------------------------------------------------------------------
-    WSCInternetPassword* incorrectInternetPassword_testCase0 =
+    WSCInternetPassword* internetPassword_negativeTestCase0 =
         [ _WSCCommonValidKeychainForUnitTests addInternetPasswordWithServerName: nil
                                                                 URLRelativePath: ( NSString* )@24324
                                                                     accountName: nil
                                                                        protocol: WSCInternetProtocolTypeHTTP
                                                                        password: _WSCTestPassword
                                                                           error: &error ];
-    XCTAssertNil( incorrectInternetPassword_testCase0 );
+    XCTAssertNil( internetPassword_negativeTestCase0 );
     XCTAssertNotNil( error );
     XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
 
-    incorrectInternetPassword_testCase0 =
+    internetPassword_negativeTestCase0 =
         [ _WSCCommonValidKeychainForUnitTests addInternetPasswordWithServerName: nil
                                                                 URLRelativePath: ( NSString* )@24324
                                                                     accountName: nil
@@ -1043,6 +1043,22 @@
                                                                        password: _WSCTestPassword
                                                                           error: nil ];
     XCTAssertNil( error );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 1
+    // ----------------------------------------------------------------------------------
+    WSCInternetPassword* internetPassword_negativeTestCase1 =
+        [ _WSCCommonInvalidKeychainForUnitTests addInternetPasswordWithServerName: @"ftp.freebsd.org"
+                                                                  URLRelativePath: @"/pub/FreeBSD/releases/VM-IMAGES/10.1-RELEASE/i386/Latest"
+                                                                      accountName: @"NSTongG"
+                                                                         protocol: WSCInternetProtocolTypeFTP
+                                                                         password: _WSCTestPassword
+                                                                            error: &error ];
+    XCTAssertNil( internetPassword_negativeTestCase1 );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
+    _WSCPrintNSErrorForUnitTest( error );
     }
 
 @end // WSCKeychainTests case
