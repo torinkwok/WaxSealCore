@@ -855,7 +855,7 @@
     XCTAssertTrue( [ keychainForTestCase4 isEqual: keychainForTestCase4 ] );
     }
 
-- ( void ) testAddGenericPasswordToDefaultKeychain
+- ( void ) testAddGenericPassword
     {
     NSError* error = nil;
 
@@ -949,6 +949,96 @@
     XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     _WSCPrintNSErrorForUnitTest( error );
+    }
+
+- ( void ) testAddInternetPassword
+    {
+    NSError* error = nil;
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 0
+    // ----------------------------------------------------------------------------------
+    WSCKeychainItem* newInternetPassword_testCase0 =
+        [ [ WSCKeychain login ] addInternetPasswordWithServerName: @"twitter.com"
+                                                  URLRelativePath: @"/NSTongG"
+                                                      accountName: @"NSTongG"
+                                                         protocol: WSCInternetProtocolTypeHTTPS
+                                                         password: _WSCTestPassword
+                                                            error: &error ];
+    XCTAssertNil( error );
+    XCTAssertNotNil( newInternetPassword_testCase0 );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    WSCKeychainItem* duplicatedPassword =
+        [ [ WSCKeychain login ] addInternetPasswordWithServerName: @"twitter.com"
+                                                  URLRelativePath: @"/NSTongG"
+                                                      accountName: @"NSTongG"
+                                                         protocol: WSCInternetProtocolTypeHTTPS
+                                                         password: _WSCTestPassword
+                                                            error: &error ];
+    XCTAssertNil( duplicatedPassword );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, NSOSStatusErrorDomain );
+    XCTAssertEqual( error.code, errSecDuplicateItem );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    if ( newInternetPassword_testCase0 )
+        SecKeychainItemDelete( newInternetPassword_testCase0.secKeychainItem );
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 1
+    // ----------------------------------------------------------------------------------
+    WSCKeychainItem* newInternetPassword_testCase1 =
+        [ _WSCCommonValidKeychainForUnitTests addInternetPasswordWithServerName: @"nstongg.tumblr.com"
+                                                                URLRelativePath: @"/post/105125066964/os-x-s-mime#105125066964"
+                                                                    accountName: @"Tong G."
+                                                                       protocol: WSCInternetProtocolTypeHTTP
+                                                                       password: _WSCTestPassword
+                                                                          error: &error ];
+    XCTAssertNotNil( newInternetPassword_testCase1 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 2
+    // ----------------------------------------------------------------------------------
+    WSCKeychainItem* newInternetPassword_testCase2 =
+        [ _WSCCommonValidKeychainForUnitTests addInternetPasswordWithServerName: @"ftp.freebsd.org"
+                                                                URLRelativePath: @"/pub/FreeBSD/releases/VM-IMAGES/10.1-RELEASE/i386/Latest"
+                                                                    accountName: @"NSTongG"
+                                                                       protocol: WSCInternetProtocolTypeFTP
+                                                                       password: _WSCTestPassword
+                                                                          error: &error ];
+    XCTAssertNotNil( newInternetPassword_testCase2 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+    if ( newInternetPassword_testCase2 )
+        SecKeychainItemDelete( newInternetPassword_testCase2.secKeychainItem );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 0
+    // ----------------------------------------------------------------------------------
+    WSCKeychainItem* incorrectInternetPassword_testCase0 =
+        [ _WSCCommonValidKeychainForUnitTests addInternetPasswordWithServerName: nil
+                                                                URLRelativePath: ( NSString* )@24324
+                                                                    accountName: nil
+                                                                       protocol: WSCInternetProtocolTypeHTTP
+                                                                       password: _WSCTestPassword
+                                                                          error: &error ];
+    XCTAssertNil( incorrectInternetPassword_testCase0 );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    incorrectInternetPassword_testCase0 =
+        [ _WSCCommonValidKeychainForUnitTests addInternetPasswordWithServerName: nil
+                                                                URLRelativePath: ( NSString* )@24324
+                                                                    accountName: nil
+                                                                       protocol: WSCInternetProtocolTypeHTTP
+                                                                       password: _WSCTestPassword
+                                                                          error: nil ];
+    XCTAssertNil( error );
     }
 
 @end // WSCKeychainTests case

@@ -143,6 +143,39 @@ typedef NS_ENUM( int, WSCInternetProtocolType )
     , WSCInternetProtocolTypeAny         = kSecProtocolTypeAny
     };
 
+/** Defines constants you can use to identify the type of authentication to use for an Internet password.
+  */
+typedef NS_ENUM( int, WSCInternetAuthenticationType )
+    {
+    /// Specifies Windows NT LAN Manager authentication.
+      WSCInternetAuthenticationTypeNTLM             = kSecAuthenticationTypeNTLM
+
+    /// Specifies Microsoft Network default authentication.
+    , WSCInternetAuthenticationTypeMSN              = kSecAuthenticationTypeMSN
+
+    /// Specifies Distributed Password authentication.
+    , WSCInternetAuthenticationTypeDPA              = kSecAuthenticationTypeDPA
+
+    /// Specifies Remote Password authentication.
+    , WSCInternetAuthenticationTypeRPA              = kSecAuthenticationTypeRPA
+
+    /// Specifies HTTP Basic authentication.
+    , WSCInternetAuthenticationTypeHTTPBasic        = kSecAuthenticationTypeHTTPBasic
+
+    /// Specifies HTTP Digest Access authentication.
+    , WSCInternetAuthenticationTypeHTTPDigest       = kSecAuthenticationTypeHTTPDigest
+
+    /// Specifies HTML form based authentication.
+    , WSCInternetAuthenticationTypeHTMLForm         = kSecAuthenticationTypeHTMLForm
+
+    /// Specifies the default authentication type.
+    , WSCInternetAuthenticationTypeDefault          = kSecAuthenticationTypeDefault
+
+    /// Specifies that any authentication type is acceptable.
+    /// When performing a search, use this value to avoid constraining your search results to a particular authentication type.
+    , WSCInternetAuthenticationTypeAny              = kSecAuthenticationTypeAny
+    };
+
 @class WSCKeychainItem;
 @class WSCAccessPermission;
 
@@ -410,14 +443,9 @@ typedef NS_ENUM( int, WSCInternetProtocolType )
 
   @param _ServerName An `NSString` object representing the server name.
   
-  @param _SecurityDomain An `NSString` object representing the security domain. 
-                         This parameter is optional. Pass `nil` if the protocol does not require it.
+  @param _URLRelativePath An `NSString` object representing the the path.
                          
   @param _AccountName An `NSString` object representing the account name.
-  
-  @param _Path An `NSString` object representing the the path.
-  
-  @param _Port The TCP/IP port number. If no specific port number is associated with this password, pass `0`.
   
   @param _Protocol The protocol associated with this password. 
                    See ["WaxSealCore Internet Protocol Type Constants"](WSCInternetProtocolType) for a description of possible values.
@@ -432,10 +460,8 @@ typedef NS_ENUM( int, WSCInternetProtocolType )
           Returns `nil` if an error occurs.
   */
 - ( WSCKeychainItem* ) addInternetPasswordWithServerName: ( NSString* )_ServerName
-                                          securityDomain: ( NSString* )_SecurityDomain
+                                         URLRelativePath: ( NSString* )_URLRelativePath
                                              accountName: ( NSString* )_AccountName
-                                                    path: ( NSString* )_Path
-                                                    port: ( NSUInteger )_Port
                                                 protocol: ( WSCInternetProtocolType )_Protocol
                                                 password: ( NSString* )_Password
                                                    error: ( NSError** )_Error;

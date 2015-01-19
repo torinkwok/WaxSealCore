@@ -60,7 +60,6 @@ NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
             {
             NSString* pathOfKeychain = [ [ [ NSString alloc ] initWithCString: secPath
                                                                      encoding: NSUTF8StringEncoding ] autorelease ];
-
             BOOL doesExist = NO;
             BOOL isDir = NO;
             doesExist = [ [ NSFileManager defaultManager ] fileExistsAtPath: pathOfKeychain isDirectory: &isDir ];
@@ -365,25 +364,62 @@ WSCKeychain static* s_system = nil;
     }
 
 /* Adds a new Internet password to the keychain represented by receiver. */
-//- ( WSCKeychainItem* ) addInternetPasswordWithServerName: ( NSString* )_ServerName
-//                                          securityDomain: ( NSString* )_SecurityDomain
-//                                             accountName: ( NSString* )_AccountName
-//                                                    path: ( NSString* )_Path
-//                                                    port: ( NSUInteger )_Port
-//                                                protocol: ( WSCInternetProtocolType )_Protocol
-//                                                password: ( NSString* )_Password
-//                                                   error: ( NSError** )_Error
-//    {
-//    // Little params, don't be a bitch 👿
-//    _WSCDontBeABitch( _Error
-//                    , _ServerName,      [ NSString class ]
-//                    , _SecurityDomain,  [ NSString class ]
-//                    , _AccountName,     [ NSString class ]
-//                    , _Path,            [ NSString class ]
-//                    , _Password,        [ NSString class ]
-//                    , s_guard
-//                    );
-//    }
+- ( WSCKeychainItem* ) addInternetPasswordWithServerName: ( NSString* )_ServerName
+                                                 URLRelativePath: ( NSString* )_URLRelativePath
+                                             accountName: ( NSString* )_AccountName
+                                                protocol: ( WSCInternetProtocolType )_Protocol
+                                                password: ( NSString* )_Password
+                                                   error: ( NSError** )_Error;
+    {
+    NSError* error = nil;
+
+    // Little params, don't be a bitch 👿
+    _WSCDontBeABitch( &error
+                    , _ServerName,  [ NSString class ]
+                    , _URLRelativePath,     [ NSString class ]
+                    , _AccountName, [ NSString class ]
+                    , _Password,    [ NSString class ]
+                    , s_guard
+                    );
+    if ( !error )
+        {
+        // As described in documentation:
+        // This method automatically calls the unlockKeychainWithUserInteraction:error: method
+        // to display the Unlock Keychain dialog box if the keychain is currently locked.
+        if ( [ [ WSCKeychainManager defaultManager ] unlockKeychainWithUserInteraction: self
+                                                                                 error: _Error ] )
+            {
+            OSStatus resultCode = errSecSuccess;
+            SecKeychainItemRef secKeychainItem = NULL;
+
+            resultCode = SecKeychainAddInternetPassword( self.secKeychain
+                                                       // Server Name: e.g. "twitter.com"
+                                                       , ( UInt32 )_ServerName.length, _ServerName.UTF8String
+                                                       // Security Domain
+                                                       , ( UInt32 )0, NULL
+                                                       // Account Name: e.g. "NSTongG"
+                                                       , ( UInt32 )_AccountName.length, _AccountName.UTF8String
+                                                       // Path: e.g. "/NSTongG"
+                                                       , ( UInt32 )_URLRelativePath.length, _URLRelativePath.UTF8String
+                                                       , 0
+                                                       , ( SecProtocolType )_Protocol
+                                                       , kSecAuthenticationTypeDefault
+                                                       // Internet Password
+                                                       , ( UInt32 )_Password.length, _Password.UTF8String
+                                                       , &secKeychainItem
+                                                       );
+            if ( resultCode == errSecSuccess )
+                return [ [ [ WSCKeychainItem alloc ] p_initWithSecKeychainItemRef: secKeychainItem ] autorelease ];
+            else
+                _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+            }
+        }
+    else
+        if ( _Error )
+            *_Error = [ error copy ];
+
+    return nil;
+    }
 
 #pragma mark Overrides
 - ( void ) dealloc
