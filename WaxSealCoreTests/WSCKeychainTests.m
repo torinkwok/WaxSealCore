@@ -929,6 +929,13 @@
     XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
 
+    newKeychainItem_negativeTestCase0 =
+        [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: nil
+                                                          accountName: ( NSString* )[ NSDate date ]
+                                                             password: ( NSString* )@342
+                                                                error: nil ];
+    XCTAssertNil( newKeychainItem_negativeTestCase0 );
+
     // ----------------------------------------------------------------------------------
     // Negative Test Case 1
     // ----------------------------------------------------------------------------------

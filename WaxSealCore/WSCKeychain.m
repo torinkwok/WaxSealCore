@@ -322,8 +322,10 @@ WSCKeychain static* s_system = nil;
                                                     password: ( NSString* )_Password
                                                        error: ( NSError** )_Error
     {
+    NSError* error = nil;
+
     // Little params, don't be a bitch 👿
-    _WSCDontBeABitch( _Error
+    _WSCDontBeABitch( &error
                     // The receiver must be representing a valid keychain
                     , self, [ WSCKeychain class ]
                     , _ServiceName, [ NSString class ]
@@ -331,8 +333,7 @@ WSCKeychain static* s_system = nil;
                     , _Password, [ NSString class ]
                     , s_guard
                     );
-
-    if ( !( *_Error ) )
+    if ( !error )
         {
         // As described in documentation:
         // This method automatically calls the unlockKeychainWithUserInteraction:error: method
@@ -356,9 +357,33 @@ WSCKeychain static* s_system = nil;
                 _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
             }
         }
+    else
+        if ( _Error )
+            *_Error = [ error copy ];
 
     return nil;
     }
+
+/* Adds a new Internet password to the keychain represented by receiver. */
+//- ( WSCKeychainItem* ) addInternetPasswordWithServerName: ( NSString* )_ServerName
+//                                          securityDomain: ( NSString* )_SecurityDomain
+//                                             accountName: ( NSString* )_AccountName
+//                                                    path: ( NSString* )_Path
+//                                                    port: ( NSUInteger )_Port
+//                                                protocol: ( WSCInternetProtocolType )_Protocol
+//                                                password: ( NSString* )_Password
+//                                                   error: ( NSError** )_Error
+//    {
+//    // Little params, don't be a bitch 👿
+//    _WSCDontBeABitch( _Error
+//                    , _ServerName,      [ NSString class ]
+//                    , _SecurityDomain,  [ NSString class ]
+//                    , _AccountName,     [ NSString class ]
+//                    , _Path,            [ NSString class ]
+//                    , _Password,        [ NSString class ]
+//                    , s_guard
+//                    );
+//    }
 
 #pragma mark Overrides
 - ( void ) dealloc
