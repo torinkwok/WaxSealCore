@@ -31,6 +31,8 @@
 		8368A0011A58FE90000CF7ED /* WSCKeychainManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8368A0001A58FE90000CF7ED /* WSCKeychainManagerTests.m */; };
 		8368A0071A596F70000CF7ED /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723861A4C1AA60084221A /* XCTest.framework */; };
 		837C31871A6736F500BE5E07 /* _WSCKeychainPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C31851A6736F500BE5E07 /* _WSCKeychainPrivate.h */; };
+		837C8B4A1A6D45BF00FFE4FF /* WSCInternetPassword.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C8B481A6D45BF00FFE4FF /* WSCInternetPassword.h */; };
+		837C8B4B1A6D45BF00FFE4FF /* WSCInternetPassword.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C8B491A6D45BF00FFE4FF /* WSCInternetPassword.m */; };
 		838221111A4C214A00EF9945 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 838221101A4C214A00EF9945 /* README.md */; };
 		838221141A4C229B00EF9945 /* WSCAccessPermission.h in Headers */ = {isa = PBXBuildFile; fileRef = 838221121A4C229B00EF9945 /* WSCAccessPermission.h */; };
 		838221151A4C229B00EF9945 /* WSCAccessPermission.m in Sources */ = {isa = PBXBuildFile; fileRef = 838221131A4C229B00EF9945 /* WSCAccessPermission.m */; };
@@ -96,6 +98,8 @@
 		834D20ED1A4EEF7900539F49 /* NSURL+WSCKeychainURLTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+WSCKeychainURLTests.m"; sourceTree = "<group>"; };
 		8368A0001A58FE90000CF7ED /* WSCKeychainManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCKeychainManagerTests.m; sourceTree = "<group>"; };
 		837C31851A6736F500BE5E07 /* _WSCKeychainPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _WSCKeychainPrivate.h; sourceTree = "<group>"; };
+		837C8B481A6D45BF00FFE4FF /* WSCInternetPassword.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSCInternetPassword.h; sourceTree = "<group>"; };
+		837C8B491A6D45BF00FFE4FF /* WSCInternetPassword.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCInternetPassword.m; sourceTree = "<group>"; };
 		838221091A4C1DC400EF9945 /* DocumentationHelper.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DocumentationHelper.xcodeproj; path = DocumentationHelper/DocumentationHelper.xcodeproj; sourceTree = "<group>"; };
 		838221101A4C214A00EF9945 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
 		838221121A4C229B00EF9945 /* WSCAccessPermission.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSCAccessPermission.h; sourceTree = "<group>"; };
@@ -175,6 +179,8 @@
 				831ED4561A6B42A500E71F7A /* WSCKeychainItem.m */,
 				834C31D61A6CEADF00A27653 /* WSCApplicationPassword.h */,
 				834C31D71A6CEADF00A27653 /* WSCApplicationPassword.m */,
+				837C8B481A6D45BF00FFE4FF /* WSCInternetPassword.h */,
+				837C8B491A6D45BF00FFE4FF /* WSCInternetPassword.m */,
 			);
 			name = Public;
 			sourceTree = "<group>";
@@ -380,6 +386,7 @@
 				834C31D81A6CEADF00A27653 /* WSCApplicationPassword.h in Headers */,
 				837C31871A6736F500BE5E07 /* _WSCKeychainPrivate.h in Headers */,
 				831ED45B1A6B69B500E71F7A /* _WSCKeychainItemPrivate.h in Headers */,
+				837C8B4A1A6D45BF00FFE4FF /* WSCInternetPassword.h in Headers */,
 				831ED44B1A6B21D300E71F7A /* _WSCCommonForUnitTests.h in Headers */,
 				83F8E11E1A6A54F900201BF6 /* _WSCTrustedApplicationPrivate.h in Headers */,
 				83F8E1181A6A3E0C00201BF6 /* WSCTrustedApplication.h in Headers */,
@@ -517,6 +524,7 @@
 				831ED4531A6B287F00E71F7A /* _WSCAccess.m in Sources */,
 				830A4F211A5830E900F4EAA7 /* WSCKeychainManager.m in Sources */,
 				834D20E51A4EDD6900539F49 /* WSCKeychainError.m in Sources */,
+				837C8B4B1A6D45BF00FFE4FF /* WSCInternetPassword.m in Sources */,
 				834C31D91A6CEADF00A27653 /* WSCApplicationPassword.m in Sources */,
 				834D20EC1A4EEA4400539F49 /* NSURL+WSCKeychainURL.m in Sources */,
 			);

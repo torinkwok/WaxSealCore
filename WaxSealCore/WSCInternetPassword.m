@@ -31,9 +31,9 @@
  **                                                                         **
  ****************************************************************************/
 
-#import "WSCApplicationPassword.h"
+#import "WSCInternetPassword.h"
 
-@implementation WSCApplicationPassword
+@implementation WSCInternetPassword
 
 
 

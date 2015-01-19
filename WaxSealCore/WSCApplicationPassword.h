@@ -33,6 +33,14 @@
 
 #import <Foundation/Foundation.h>
 
+#import "WSCKeychainItem.h"
+
+@interface WSCApplicationPassword : WSCKeychainItem
+
+
+
+@end // WSCApplicationPassword class
+
 //////////////////////////////////////////////////////////////////////////////
 
 /*****************************************************************************

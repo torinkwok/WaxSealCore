@@ -31,9 +31,11 @@
  **                                                                         **
  ****************************************************************************/
 
-#import "WSCApplicationPassword.h"
+#import <Foundation/Foundation.h>
 
-@implementation WSCApplicationPassword
+#import "WSCKeychainItem.h"
+
+@interface WSCInternetPassword : WSCKeychainItem
 
 
 
