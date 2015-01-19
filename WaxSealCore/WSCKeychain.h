@@ -372,7 +372,9 @@ typedef NS_ENUM( int, WSCInternetProtocolType )
   For example, you might add Evernote or IRC Client passwords, or passwords for your database or scheduling programs.
 
   This method sets the initial access rights for the new keychain item so that the application creating the item is given trusted access.
-  This method automatically calls the [unlockKeychainWithUserInteraction:error:](+[WSCKeychainManager unlockKeychainWithUserInteraction:error:]) method to display the Unlock Keychain dialog box if the keychain is currently locked.
+  
+  This method automatically calls the [unlockKeychainWithUserInteraction:error:](+[WSCKeychainManager unlockKeychainWithUserInteraction:error:])
+   method to display the Unlock Keychain dialog box if the keychain is currently locked.
 
   @param _ServiceName An `NSString` object representing the service name.
 
@@ -393,13 +395,50 @@ typedef NS_ENUM( int, WSCInternetProtocolType )
                                                     password: ( NSString* )_Password
                                                        error: ( NSError** )_Error;
 
+/** Adds a new Internet password to the keychain represented by receiver.
+
+  This method adds a new Internet server password to the specified keychain. 
+  Required parameters to identify the password are *_ServerName* and *_AccountName* (you cannot pass `nil` for both parameters).
+  In addition, some protocols may require an optional *_SecurityDomain* when authentication is requested. 
+  This method returns a newly added item represented by a `WSCKeychainItem` object.
+
+  This method sets the initial access rights for the new keychain item
+  so that the application creating the item is given trusted access.
+
+  This method automatically calls the [unlockKeychainWithUserInteraction:error:](+[WSCKeychainManager unlockKeychainWithUserInteraction:error:])
+   method to display the Unlock Keychain dialog box if the keychain is currently locked.
+
+  @param _ServerName An `NSString` object representing the server name.
+  
+  @param _SecurityDomain An `NSString` object representing the security domain. 
+                         This parameter is optional. Pass `nil` if the protocol does not require it.
+                         
+  @param _AccountName An `NSString` object representing the account name.
+  
+  @param _Path An `NSString` object representing the the path.
+  
+  @param _Port The TCP/IP port number. If no specific port number is associated with this password, pass `0`.
+  
+  @param _Protocol The protocol associated with this password. 
+                   See ["WaxSealCore Internet Protocol Type Constants"](WSCInternetProtocolType) for a description of possible values.
+                   
+  @param _Password An `NSString` object containing the password.
+  
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+                You may specify `nil` for this parameter if you don't want the error information.
+
+  @return A `WSCKeychainItem` object representing the new keychain item.
+          Returns `nil` if an error occurs.
+  */
 - ( WSCKeychainItem* ) addInternetPasswordWithServerName: ( NSString* )_ServerName
                                           securityDomain: ( NSString* )_SecurityDomain
                                              accountName: ( NSString* )_AccountName
                                                     path: ( NSString* )_Path
                                                     port: ( NSUInteger )_Port
                                                 protocol: ( WSCInternetProtocolType )_Protocol
-                                                password: ( NSString* )_Password;
+                                                password: ( NSString* )_Password
+                                                   error: ( NSError** )_Error;
 
 @end // WSCKeychain class
 
