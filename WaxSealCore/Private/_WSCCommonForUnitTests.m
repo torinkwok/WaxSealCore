@@ -72,6 +72,9 @@ WSCKeychainSelectivelyUnlockKeychainBlock _WSCSelectivelyUnlockKeychainsBasedOnP
             else if ( [ [ _Keychain.URL path ] contains: @"nonPrompt" ] )
                 [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"waxsealcore" error: &error ];
 
+            else
+                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"isgtforever" error: &error ];
+
             _WSCPrintNSErrorForLog( error );
             }
         };
