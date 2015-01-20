@@ -61,6 +61,20 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+- ( void ) testCreationDate
+    {
+    NSError* error = nil;
+
+
+    WSCApplicationPassword* applicationPassword_testCase0 =
+        [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: @"WaxSealCore"
+                                                          accountName: @"Test Case 0"
+                                                             password: @"waxsealcore"
+                                                                error: &error ];
+    applicationPassword_testCase0.creationDate;
+    SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
+    }
+
 - ( void ) testItemClassProperty
     {
     NSError* error = nil;

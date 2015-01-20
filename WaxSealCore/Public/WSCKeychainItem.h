@@ -84,7 +84,7 @@ typedef NS_ENUM( NSUInteger, WSCKeychainItemAccessibilityType )
 
 /** Specifies a keychain item’s class code.
   */
-typedef NS_ENUM( int, WSCKeychainItemClass )
+typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
     {
     /// Indicates that the item is an Internet password.
       WSCKeychainItemClassInternetPasswordItem      = kSecInternetPasswordItemClass
@@ -128,6 +128,7 @@ typedef NS_ENUM( int, WSCKeychainItemClass )
     SecKeychainItemRef _secKeychainItem;
     }
 
+#if 0
 /** The value that indicates when your app needs access to the data in a keychain item.
 
   You should choose the most restrictive option that meets your app’s needs 
@@ -136,6 +137,11 @@ typedef NS_ENUM( int, WSCKeychainItemClass )
   For a list of possible values, see ["WaxSealCore Keychain Item Accessibility Constants."](WSCKeychainItemAccessibilityType)
   */
 @property ( assign, readwrite ) WSCKeychainItemAccessibilityType accessibility;
+#endif
+
+/** The `NSDate` object that identifies the creation date of the keychain item represented by receiver.
+  */
+@property ( assign, readwrite ) NSDate* creationDate;
 
 /** The value that indicates which type of keychain item the receiver is. (read-only)
 

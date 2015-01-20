@@ -31,16 +31,81 @@
  **                                                                         **
  ****************************************************************************/
 
+#import "WSCKeychain.h"
 #import "WSCKeychainItem.h"
 
 @implementation WSCKeychainItem
-
+#if 0
 @dynamic accessibility;
+#endif
+
+@dynamic creationDate;
 @dynamic itemClass;
 
 @synthesize secKeychainItem = _secKeychainItem;
 
 #pragma mark Accessor
+
+/* The `NSDate` object that identifies the creation date of the keychain item represented by receiver. */
+- ( NSDate* ) creationDate
+    {
+    OSStatus resultCode = errSecSuccess;
+//    NSError* error = nil;
+//
+//    CSSM_DB_RECORDTYPE itemID = CSSM_DL_DB_RECORD_ANY;
+//    switch ( self.itemClass )
+//        {
+//        case WSCKeychainItemClassInternetPasswordItem:
+//            {
+//            itemID = CSSM_DL_DB_RECORD_INTERNET_PASSWORD
+//            } break;
+//
+//        case WSCKeychainItemClassApplicationPasswordItem:
+//            {
+//            itemID = CSSM_DL_DB_RECORD_GENERIC_PASSWORD;
+//            } break;
+//
+//        case WSCKeychainItemClassAppleSharePasswordItem:
+//            {
+//            itemID = CSSM_DL_DB_RECORD_APPLESHARE_PASSWORD;
+//            } break;
+//
+//        case WSCKeychainItemClassCertificateItem:
+//            {
+//            itemID = CSSM_DL_DB_RECORD_X509_CERTIFICATE;
+//            } break;
+//
+//        case 
+//        }
+
+    SecKeychainAttributeInfo* attributeInfo = nil;
+    SecKeychainAttributeList* attrList = nil;
+    resultCode = SecKeychainAttributeInfoForItemID( [ WSCKeychain login ].secKeychain, CSSM_DL_DB_RECORD_GENERIC_PASSWORD, &attributeInfo );
+    resultCode = SecKeychainItemCopyAttributesAndData( self.secKeychainItem
+                                                     , attributeInfo
+                                                     , NULL
+                                                     , &attrList
+                                                     , 0
+                                                     , NULL
+                                                     );
+    SecKeychainAttribute* attrs = attrList->attr;
+
+    for ( int _Index = 0; _Index < attrList->count; _Index++ )
+        {
+        SecKeychainAttribute attr = attrs[ _Index ];
+
+        if ( attr.tag == kSecCreationDateItemAttr )
+            {
+            NSTimeZone* ZuluTimeZone = [ NSTimeZone timeZoneWithName: @"Zulu" ];
+            NSString* ZuluTimeString =  [ [ NSString alloc ] initWithData: [ NSData dataWithBytes: attr.data
+                                                                                           length: attr.length ]
+                                                                 encoding: NSUTF8StringEncoding ];
+            NSLog( @"Zulu Date: %@", ZuluTimeString );
+            }
+        }
+
+    return nil;
+    }
 
 /* The value that indicates which type of keychain item the receiver is.
  */
@@ -67,33 +132,51 @@
 
     return ( WSCKeychainItemClass )class;
     }
-
+#if 0
 - ( WSCKeychainItemAccessibilityType ) accessibility
     {
     OSStatus resultCode = errSecSuccess;
     NSError* error = nil;
 
-//    CSSM_DB_RECORDTYPE itemID = CSSM_DL_DB_RECORD_ANY;
-//    switch ( self.itemClass )
-//        {
-//        case WSCKeychainItemClassInternetPasswordItem:
-//            {
-//            itemID = CSSM_DL_DB_RECORD_INTERNET_PASSWORD
-//            } break;
-//
-//        case WSCKeychainItemClassApplicationPasswordItem:
-//            {
-//            itemID = CSSM_DL_DB_RECORD_GENERIC_PASSWORD;
-//            }
-//        }
+    CSSM_DB_RECORDTYPE itemID = CSSM_DL_DB_RECORD_ANY;
+    switch ( self.itemClass )
+        {
+        case WSCKeychainItemClassInternetPasswordItem:
+            {
+            itemID = CSSM_DL_DB_RECORD_INTERNET_PASSWORD
+            } break;
+
+        case WSCKeychainItemClassApplicationPasswordItem:
+            {
+            itemID = CSSM_DL_DB_RECORD_GENERIC_PASSWORD;
+            } break;
+
+        case WSCKeychainItemClassAppleSharePasswordItem:
+            {
+            itemID = CSSM_DL_DB_RECORD_APPLESHARE_PASSWORD;
+            } break;
+
+        case WSCKeychainItemClassCertificateItem:
+            {
+            itemID = CSSM_DL_DB_RECORD_X509_CERTIFICATE;
+            } break;
+
+        case 
+        }
 
     SecKeychainAttributeInfo* attributeInfo = nil;
-    resultCode = SecKeychainAttributeInfoForItemID( self.secKeychainItem
-                                                  , CSSM_DL_DB_RECORD_ANY
-                                                  , &attributeInfo
-                                                  );
-    }
+    SecKeychainAttributeList* attrList = nil;
+    resultCode = SecKeychainAttributeInfoForItemID( self.secKeychainItem, CSSM_DL_DB_RECORD_ANY, &attributeInfo );
 
+    resultCode = SecKeychainItemCopyAttributesAndData( self.secKeychainItem
+                                                     , attributeInfo
+                                                     , NULL
+                                                     , &attrList
+                                                     , 0
+                                                     , NULL
+                                                     );
+    }
+#endif
 - ( void ) dealloc
     {
     if ( self->_secKeychainItem )
