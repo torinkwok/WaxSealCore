@@ -55,6 +55,7 @@
 		83C723A21A4C1B2C0084221A /* SecurityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723A11A4C1B2C0084221A /* SecurityFoundation.framework */; };
 		83D8E7801A67696D00F77E28 /* WSCPrivateUtilitiesForEaseOfUnitTestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83D8E77F1A67696D00F77E28 /* WSCPrivateUtilitiesForEaseOfUnitTestTests.m */; };
 		83D9C8791A6A685700B31F25 /* WSCTrustedApplicationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83D9C8781A6A685700B31F25 /* WSCTrustedApplicationTests.m */; };
+		83DBD7E01A6E25E800D0D107 /* WSCKeychainItemTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83DBD7DF1A6E25E800D0D107 /* WSCKeychainItemTests.m */; };
 		83F8E10E1A69FE4A00201BF6 /* _WSCAccessTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F8E10D1A69FE4A00201BF6 /* _WSCAccessTests.m */; };
 /* End PBXBuildFile section */
 
@@ -128,6 +129,7 @@
 		83C723A11A4C1B2C0084221A /* SecurityFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityFoundation.framework; path = System/Library/Frameworks/SecurityFoundation.framework; sourceTree = SDKROOT; };
 		83D8E77F1A67696D00F77E28 /* WSCPrivateUtilitiesForEaseOfUnitTestTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCPrivateUtilitiesForEaseOfUnitTestTests.m; sourceTree = "<group>"; };
 		83D9C8781A6A685700B31F25 /* WSCTrustedApplicationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCTrustedApplicationTests.m; sourceTree = "<group>"; };
+		83DBD7DF1A6E25E800D0D107 /* WSCKeychainItemTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCKeychainItemTests.m; sourceTree = "<group>"; };
 		83F8E10D1A69FE4A00201BF6 /* _WSCAccessTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _WSCAccessTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -343,6 +345,7 @@
 		83C7238C1A4C1AA60084221A /* WaxSealCoreTests */ = {
 			isa = PBXGroup;
 			children = (
+				83DBD7DF1A6E25E800D0D107 /* WSCKeychainItemTests.m */,
 				83D9C8781A6A685700B31F25 /* WSCTrustedApplicationTests.m */,
 				83F8E10D1A69FE4A00201BF6 /* _WSCAccessTests.m */,
 				83D8E77F1A67696D00F77E28 /* WSCPrivateUtilitiesForEaseOfUnitTestTests.m */,
@@ -540,6 +543,7 @@
 				83D9C8791A6A685700B31F25 /* WSCTrustedApplicationTests.m in Sources */,
 				834D20EE1A4EEF7900539F49 /* NSURL+WSCKeychainURLTests.m in Sources */,
 				83F8E10E1A69FE4A00201BF6 /* _WSCAccessTests.m in Sources */,
+				83DBD7E01A6E25E800D0D107 /* WSCKeychainItemTests.m in Sources */,
 				83C723931A4C1AA60084221A /* WSCKeychainTests.m in Sources */,
 				8368A0011A58FE90000CF7ED /* WSCKeychainManagerTests.m in Sources */,
 				83D8E7801A67696D00F77E28 /* WSCPrivateUtilitiesForEaseOfUnitTestTests.m in Sources */,

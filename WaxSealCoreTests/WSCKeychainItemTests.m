@@ -31,98 +31,77 @@
  **                                                                         **
  ****************************************************************************/
 
+#import <XCTest/XCTest.h>
+
+#import "WSCApplicationPassword.h"
+#import "WSCInternetPassword.h"
 #import "WSCKeychainItem.h"
+#import "NSURL+WSCKeychainURL.h"
+#import "WSCKeychainError.h"
+#import "WSCKeychainManager.h"
 
-@implementation WSCKeychainItem
+// --------------------------------------------------------
+#pragma mark Interface of WSCKeychainItemTests case
+// --------------------------------------------------------
+@interface WSCKeychainItemTests : XCTestCase
+@end
 
-@dynamic accessibility;
-@dynamic itemClass;
+// --------------------------------------------------------
+#pragma mark Implementation of WSCKeychainItemTests case
+// --------------------------------------------------------
+@implementation WSCKeychainItemTests
 
-@synthesize secKeychainItem = _secKeychainItem;
-
-#pragma mark Accessor
-
-/* The value that indicates which type of keychain item the receiver is.
- */
-- ( WSCKeychainItemClass ) itemClass
+- ( void ) setUp
     {
-    OSStatus resultCode = errSecSuccess;
+    // TODO: Put setup code here. This method is called before the invocation of each test method in the class.
+    }
+
+- ( void ) tearDown
+    {
+    // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
+    }
+
+- ( void ) testItemClassProperty
+    {
     NSError* error = nil;
 
-    SecItemClass class = CSSM_DL_DB_RECORD_ALL_KEYS;
+    // ----------------------------------------------------------
+    // Test Case 0
+    // ----------------------------------------------------------
+    WSCApplicationPassword* applicationPassword_testCase0 =
+        [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: @"WaxSealCore"
+                                                          accountName: @"Test Case 0"
+                                                             password: @"waxsealcore"
+                                                                error: &error ];
+    XCTAssertNotNil( applicationPassword_testCase0 );
+    XCTAssertEqual( applicationPassword_testCase0.itemClass, WSCKeychainItemClassApplicationPasswordItem );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+    if ( applicationPassword_testCase0 )
+        SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
 
-    // We just need the class of receiver,
-    // so any other parameter will be ignored.
-    resultCode = SecKeychainItemCopyAttributesAndData( self.secKeychainItem
-                                                     , NULL
-                                                     , &class
-                                                     , NULL
-                                                     , 0, NULL
-                                                     );
-    if ( resultCode != errSecSuccess )
-        {
-        _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
-        _WSCPrintNSErrorForLog( error );
-        }
+    // ----------------------------------------------------------
+    // Test Case 1
+    // ----------------------------------------------------------
+    WSCInternetPassword* internetPassword_testCase1 =
+        [ [ WSCKeychain login ] addInternetPasswordWithServerName: @"www.waxsealcore.org"
+                                                  URLRelativePath: @"testCase1"
+                                                      accountName: @"Test Case 1"
+                                                         protocol: WSCInternetProtocolTypeHTTPS
+                                                         password: @"waxsealcore"
+                                                            error: &error ];
 
-    return ( WSCKeychainItemClass )class;
+    XCTAssertNotNil( internetPassword_testCase1 );
+    XCTAssertEqual( internetPassword_testCase1.itemClass, WSCKeychainItemClassInternetPasswordItem );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+    if ( internetPassword_testCase1 )
+        SecKeychainItemDelete( internetPassword_testCase1.secKeychainItem );
+
+    // TODO: Waiting for more positive and negative test case
     }
 
-- ( WSCKeychainItemAccessibilityType ) accessibility
-    {
-    OSStatus resultCode = errSecSuccess;
-    NSError* error = nil;
-
-//    CSSM_DB_RECORDTYPE itemID = CSSM_DL_DB_RECORD_ANY;
-//    switch ( self.itemClass )
-//        {
-//        case WSCKeychainItemClassInternetPasswordItem:
-//            {
-//            itemID = CSSM_DL_DB_RECORD_INTERNET_PASSWORD
-//            } break;
-//
-//        case WSCKeychainItemClassApplicationPasswordItem:
-//            {
-//            itemID = CSSM_DL_DB_RECORD_GENERIC_PASSWORD;
-//            }
-//        }
-
-    SecKeychainAttributeInfo* attributeInfo = nil;
-    resultCode = SecKeychainAttributeInfoForItemID( self.secKeychainItem
-                                                  , CSSM_DL_DB_RECORD_ANY
-                                                  , &attributeInfo
-                                                  );
-    }
-
-- ( void ) dealloc
-    {
-    if ( self->_secKeychainItem )
-        CFRelease( self->_secKeychainItem );
-
-    [ super dealloc ];
-    }
-
-@end // WSCKeychainItem class
-
-#pragma mark Private Programmatic Interfaces for Creating Keychain Items
-@implementation WSCKeychainItem ( WSCKeychainItemPrivateInitialization )
-
-// Users will create an keychain item and add it to keychain using the methods in WSCKeychain
-// instead of creating it directly.
-- ( instancetype ) p_initWithSecKeychainItemRef: ( SecKeychainItemRef )_SecKeychainItemRef
-    {
-    if ( self = [ super init ] )
-        {
-        if ( _SecKeychainItemRef )
-            self->_secKeychainItem = ( SecKeychainItemRef )CFRetain( _SecKeychainItemRef );
-        else
-            return nil;
-        }
-
-    return self;
-    }
-
-@end // WSCKeychainItem + WSCKeychainItemPrivateInitialization
+@end // WSCKeychainItemTests test case
 
 //////////////////////////////////////////////////////////////////////////////
 

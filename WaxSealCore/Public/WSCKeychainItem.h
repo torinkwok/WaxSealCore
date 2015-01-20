@@ -82,6 +82,35 @@ typedef NS_ENUM( NSUInteger, WSCKeychainItemAccessibilityType )
     , WSCKeychainItemAccessibleAlways = 5
     };
 
+/** Specifies a keychain item’s class code.
+  */
+typedef NS_ENUM( int, WSCKeychainItemClass )
+    {
+    /// Indicates that the item is an Internet password.
+      WSCKeychainItemClassInternetPasswordItem      = kSecInternetPasswordItemClass
+
+    /// Indicates that the item is an application password.
+    , WSCKeychainItemClassApplicationPasswordItem   = kSecGenericPasswordItemClass
+
+    /// Indicates that the item is an AppleShare password.
+    , WSCKeychainItemClassAppleSharePasswordItem    = kSecGenericPasswordItemClass
+
+    /// Indicates that the item is an X509 certificate.
+    , WSCKeychainItemClassCertificateItem           = kSecGenericPasswordItemClass
+
+    /// Indicates that the item is a public key of a public-private pair.
+    , WSCKeychainItemClassPublicKeyItem             = kSecGenericPasswordItemClass
+
+    /// Indicates that the item is a private key of a public-private pair.
+    , WSCKeychainItemClassPrivateKeyItem            = kSecGenericPasswordItemClass
+
+    /// Indicates that the item is a private key used for symmetric-key encryption.
+    , WSCKeychainItemClassSymmetricKeyItem          = kSecGenericPasswordItemClass
+
+    /// The item can be any type of key; used for searches only.
+    , WSCKeychainItemClassAllKeys                   = CSSM_DL_DB_RECORD_ALL_KEYS
+    };
+
 /** The `WSCKeychainItem` defines the basic property of an keychain item
 
   You typically do not use `WSCKeychainItem` object directly, you use objects whose
@@ -104,11 +133,17 @@ typedef NS_ENUM( NSUInteger, WSCKeychainItemAccessibilityType )
   You should choose the most restrictive option that meets your app’s needs 
   so that OS X can protect that item to the greatest extent possible.
 
-  For a list of possible values, see ["Keychain Item Accessibility Constants."](WSCKeychainItemAccessibilityType)
+  For a list of possible values, see ["WaxSealCore Keychain Item Accessibility Constants."](WSCKeychainItemAccessibilityType)
   */
 @property ( assign, readwrite ) WSCKeychainItemAccessibilityType accessibility;
 
-/** The reference of the `SecKeychainItem` opaque object, which wrapped by `WSCKeychainItem` object.
+/** The value that indicates which type of keychain item the receiver is. (read-only)
+
+  For a list of possible class values, see ["WaxSealCore Keychain Item Class Constants."](WSCKeychainItemClass)
+  */
+@property ( assign, readonly ) WSCKeychainItemClass itemClass;
+
+/** The reference of the `SecKeychainItem` opaque object, which wrapped by `WSCKeychainItem` object. (read-only)
   
   If you are familiar with the underlying *Keychain Services* APIs,
   you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this property.
