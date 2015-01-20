@@ -33,7 +33,9 @@
 
 #import "WSCKeychain.h"
 #import "WSCKeychainItem.h"
+#import "WSCKeychainError.h"
 
+#import "_WSCKeychainErrorPrivate.h"
 #import "_WSCKeychainPrivate.h"
 
 @implementation WSCKeychainItem
@@ -52,6 +54,16 @@
 /* The `NSDate` object that identifies the creation date of the keychain item represented by receiver. */
 - ( NSDate* ) creationDate
     {
+    NSError* error = nil;
+    _WSCDontBeABitch( &error, self, [ WSCKeychainItem class ], s_guard );
+
+    if ( error )
+        {
+        _WSCPrintNSErrorForLog( error );
+
+        return nil;
+        }
+
     OSStatus resultCode = errSecSuccess;
     CSSM_DB_RECORDTYPE itemID = 0;
     switch ( self.itemClass )
@@ -137,6 +149,8 @@
     resultCode = SecKeychainItemCopyKeychain( self.secKeychainItem, &secResideKeychain );
 
     if ( resultCode == errSecSuccess )
+        // If the reside keychain is already invalid (may be deleted, renamed or moved)
+        // the receiver is invalid.
         return _WSCKeychainIsSecKeychainValid( secResideKeychain );
     else
         {

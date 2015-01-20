@@ -33,6 +33,7 @@
 
 #import <XCTest/XCTest.h>
 
+#import "WSCKeychain.h"
 #import "WSCApplicationPassword.h"
 #import "WSCInternetPassword.h"
 #import "WSCKeychainItem.h"
@@ -126,7 +127,7 @@
 
 - ( void ) testIsValidProperty
     {
-
+    // Test in testCreationDate test case.
     }
 
 - ( void ) testItemClassProperty

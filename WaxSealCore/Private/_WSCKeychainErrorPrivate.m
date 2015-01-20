@@ -33,6 +33,8 @@
 
 #import <objc/runtime.h>
 
+#import "WSCKeychain.h"
+#import "WSCKeychainItem.h"
 #import "WSCKeychainError.h"
 #import "_WSCKeychainErrorPrivate.h"
 
@@ -79,8 +81,8 @@ void _WSCDontBeABitch( NSError** _Error, ... )
             }
 
         // If argToBeChecked is a keychain, it must not be invalid
-        if ( [ argToBeChecked isKindOfClass: [ WSCKeychain class ] ]
-                && !( ( WSCKeychain* )argToBeChecked ).isValid )
+        if ( ( [ argToBeChecked isKindOfClass: [ WSCKeychain class ] ] &&  !( ( WSCKeychain* )argToBeChecked ).isValid )
+                || ( [ argToBeChecked isKindOfClass: [ WSCKeychainItem class ] ] && !( ( WSCKeychainItem* )argToBeChecked ).isValid ) )
             {
             *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                            code: WSCKeychainKeychainIsInvalidError
