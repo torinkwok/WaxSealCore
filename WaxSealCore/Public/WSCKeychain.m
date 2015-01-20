@@ -42,7 +42,7 @@
 #import "_WSCKeychainErrorPrivate.h"
 #import "_WSCKeychainItemPrivate.h"
 
-NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
+NSString* _WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
     {
     if ( _Keychain )
         {
@@ -77,9 +77,9 @@ NSString* WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
     }
 
 /* Determine whether a specified keychain is valid, based on the path */
-BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
+BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     {
-    return WSCKeychainGetPathOfKeychain( _Keychain ) ? YES : NO;
+    return _WSCKeychainGetPathOfKeychain( _Keychain ) ? YES : NO;
     }
 
 @implementation WSCKeychain
@@ -106,7 +106,7 @@ BOOL WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
 /* The URL for the receiver. (read-only) */
 - ( NSURL* ) URL
     {
-    NSString* pathOfKeychain = WSCKeychainGetPathOfKeychain( self.secKeychain );
+    NSString* pathOfKeychain = _WSCKeychainGetPathOfKeychain( self.secKeychain );
 
     if ( pathOfKeychain )
         {
@@ -499,7 +499,7 @@ WSCKeychain static* s_system = nil;
     if ( self = [ super init ] )
         {
         /* Ensure that the _SecKeychainRef does reference an exist keychain file */
-        if ( _SecKeychainRef && WSCKeychainIsSecKeychainValid( _SecKeychainRef ) )
+        if ( _SecKeychainRef && _WSCKeychainIsSecKeychainValid( _SecKeychainRef ) )
             self->_secKeychain = ( SecKeychainRef )CFRetain( _SecKeychainRef );
         else
             return nil;

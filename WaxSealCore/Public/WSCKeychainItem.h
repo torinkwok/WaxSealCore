@@ -139,15 +139,21 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 @property ( assign, readwrite ) WSCKeychainItemAccessibilityType accessibility;
 #endif
 
-/** The `NSDate` object that identifies the creation date of the keychain item represented by receiver.
+/** The `NSDate` object that identifies the creation date of the keychain item represented by receiver. (read-only)
   */
-@property ( assign, readwrite ) NSDate* creationDate;
+@property ( assign, readonly ) NSDate* creationDate;
 
 /** The value that indicates which type of keychain item the receiver is. (read-only)
 
   For a list of possible class values, see ["WaxSealCore Keychain Item Class Constants."](WSCKeychainItemClass)
   */
 @property ( assign, readonly ) WSCKeychainItemClass itemClass;
+
+/** Boolean value that indicates whether the receiver is currently valid. (read-only)
+
+  `YES` if the receiver is still capable of referring to a valid keychain item; otherwise, *NO*.
+  */
+@property ( assign, readonly ) BOOL isValid;
 
 /** The reference of the `SecKeychainItem` opaque object, which wrapped by `WSCKeychainItem` object. (read-only)
   

@@ -34,6 +34,8 @@
 #import "WSCKeychain.h"
 #import "WSCKeychainItem.h"
 
+#import "_WSCKeychainPrivate.h"
+
 @implementation WSCKeychainItem
 #if 0
 @dynamic accessibility;
@@ -41,6 +43,7 @@
 
 @dynamic creationDate;
 @dynamic itemClass;
+@dynamic isValid;
 
 @synthesize secKeychainItem = _secKeychainItem;
 
@@ -94,7 +97,6 @@
                                                      , NULL
                                                      );
     SecKeychainAttribute* attrs = attrList->attr;
-
     for ( int _Index = 0; _Index < attrList->count; _Index++ )
         {
         SecKeychainAttribute attr = attrs[ _Index ];
@@ -105,10 +107,10 @@
                                                                                            length: attr.length ]
                                                                  encoding: NSUTF8StringEncoding ];
 
-            NSString* year   = [ ZuluTimeString substringWithRange: NSMakeRange( 0, 4  ) ];
-            NSString* month  = [ ZuluTimeString substringWithRange: NSMakeRange( 4, 2  ) ];
-            NSString* day    = [ ZuluTimeString substringWithRange: NSMakeRange( 6, 2  ) ];
-            NSString* hour   = [ ZuluTimeString substringWithRange: NSMakeRange( 8, 2  ) ];
+            NSString* year   = [ ZuluTimeString substringWithRange: NSMakeRange( 0,  4 ) ];
+            NSString* month  = [ ZuluTimeString substringWithRange: NSMakeRange( 4,  2 ) ];
+            NSString* day    = [ ZuluTimeString substringWithRange: NSMakeRange( 6,  2 ) ];
+            NSString* hour   = [ ZuluTimeString substringWithRange: NSMakeRange( 8,  2 ) ];
             NSString* min    = [ ZuluTimeString substringWithRange: NSMakeRange( 10, 2 ) ];
             NSString* second = [ ZuluTimeString substringWithRange: NSMakeRange( 12, 2 ) ];
 
@@ -123,6 +125,26 @@
         }
 
     return nil;
+    }
+
+/* Boolean value that indicates whether the receiver is currently valid. (read-only)
+ */
+- ( BOOL ) isValid
+    {
+    OSStatus resultCode = errSecSuccess;
+
+    SecKeychainRef secResideKeychain = nil;
+    resultCode = SecKeychainItemCopyKeychain( self.secKeychainItem, &secResideKeychain );
+
+    if ( resultCode == errSecSuccess )
+        return _WSCKeychainIsSecKeychainValid( secResideKeychain );
+    else
+        {
+        NSError* error = nil;
+        _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+
+        return NO;
+        }
     }
 
 /* The value that indicates which type of keychain item the receiver is.

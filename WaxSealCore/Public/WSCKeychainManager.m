@@ -496,7 +496,7 @@ WSCKeychainManager static* s_defaultManager = nil;
          , BOOL* _Stop )
         {
         // If the keychain is already invlaid, it shouldn't be counted in the search list
-        if ( WSCKeychainIsSecKeychainValid( ( __bridge SecKeychainRef )_SecKeychain ) )
+        if ( _WSCKeychainIsSecKeychainValid( ( __bridge SecKeychainRef )_SecKeychain ) )
             [ newSearchList addObject:
                 [ WSCKeychain keychainWithSecKeychainRef: ( __bridge SecKeychainRef )_SecKeychain ] ];
         } ];

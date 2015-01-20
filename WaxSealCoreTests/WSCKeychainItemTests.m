@@ -78,7 +78,7 @@
     NSLog( @"Creation Date: %@", applicationPassword_testCase0.creationDate );
     SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
 
-    sleep( 5 );
+    sleep( 2 );
 
     // ----------------------------------------------------------
     // Test Case 1
@@ -94,6 +94,39 @@
     XCTAssertNotNil( internetPassword_testCase1.creationDate);
     NSLog( @"Creation Date: %@", internetPassword_testCase1.creationDate );
     SecKeychainItemDelete( internetPassword_testCase1.secKeychainItem );
+
+    // ----------------------------------------------------------
+    // Negative Test Case 0
+    // ----------------------------------------------------------
+    WSCKeychain* randomKeychain_negativeTestCase0 = _WSCRandomKeychain();
+    XCTAssertNotNil( randomKeychain_negativeTestCase0 );
+    XCTAssertTrue( randomKeychain_negativeTestCase0.isValid );
+
+    WSCKeychainItem* keychainItem_negativeTest0 =
+        [ randomKeychain_negativeTestCase0 addInternetPasswordWithServerName: @"www.waxsealcore.org"
+                                                             URLRelativePath: @"NSTongG"
+                                                                 accountName: @"Tong Guo"
+                                                                    protocol: WSCInternetProtocolTypeHTTPS
+                                                                    password: @"waxsealcore"
+                                                                       error: &error ];
+
+    XCTAssertNotNil( keychainItem_negativeTest0.creationDate );
+    XCTAssertTrue( keychainItem_negativeTest0.isValid );
+
+    [ [ WSCKeychainManager defaultManager ] deleteKeychain: randomKeychain_negativeTestCase0
+                                                     error: &error ];
+
+    XCTAssertFalse( keychainItem_negativeTest0.isValid );
+    XCTAssertFalse( randomKeychain_negativeTestCase0.isValid );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    XCTAssertNil( keychainItem_negativeTest0.creationDate );
+    }
+
+- ( void ) testIsValidProperty
+    {
+
     }
 
 - ( void ) testItemClassProperty
