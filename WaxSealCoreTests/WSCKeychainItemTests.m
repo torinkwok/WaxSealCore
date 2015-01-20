@@ -65,14 +65,35 @@
     {
     NSError* error = nil;
 
-
+    // ----------------------------------------------------------
+    // Test Case 0
+    // ----------------------------------------------------------
     WSCApplicationPassword* applicationPassword_testCase0 =
         [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: @"WaxSealCore"
                                                           accountName: @"Test Case 0"
                                                              password: @"waxsealcore"
                                                                 error: &error ];
-    applicationPassword_testCase0.creationDate;
+
+    XCTAssertNotNil( applicationPassword_testCase0.creationDate);
+    NSLog( @"Creation Date: %@", applicationPassword_testCase0.creationDate );
     SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
+
+    sleep( 5 );
+
+    // ----------------------------------------------------------
+    // Test Case 1
+    // ----------------------------------------------------------
+    WSCInternetPassword* internetPassword_testCase1 =
+        [ [ WSCKeychain login ] addInternetPasswordWithServerName: @"www.waxsealcore.org"
+                                                  URLRelativePath: @"NSTongG"
+                                                      accountName: @"Tong Guo"
+                                                         protocol: WSCInternetProtocolTypeHTTPS
+                                                         password: @"waxsealcore"
+                                                            error: &error ];
+
+    XCTAssertNotNil( internetPassword_testCase1.creationDate);
+    NSLog( @"Creation Date: %@", internetPassword_testCase1.creationDate );
+    SecKeychainItemDelete( internetPassword_testCase1.secKeychainItem );
     }
 
 - ( void ) testItemClassProperty

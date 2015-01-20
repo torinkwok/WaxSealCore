@@ -93,19 +93,19 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
     , WSCKeychainItemClassApplicationPasswordItem   = kSecGenericPasswordItemClass
 
     /// Indicates that the item is an AppleShare password.
-    , WSCKeychainItemClassAppleSharePasswordItem    = kSecGenericPasswordItemClass
+    , WSCKeychainItemClassAppleSharePasswordItem    = kSecAppleSharePasswordItemClass
 
     /// Indicates that the item is an X509 certificate.
-    , WSCKeychainItemClassCertificateItem           = kSecGenericPasswordItemClass
+    , WSCKeychainItemClassCertificateItem           = kSecCertificateItemClass
 
     /// Indicates that the item is a public key of a public-private pair.
-    , WSCKeychainItemClassPublicKeyItem             = kSecGenericPasswordItemClass
+    , WSCKeychainItemClassPublicKeyItem             = kSecPublicKeyItemClass
 
     /// Indicates that the item is a private key of a public-private pair.
-    , WSCKeychainItemClassPrivateKeyItem            = kSecGenericPasswordItemClass
+    , WSCKeychainItemClassPrivateKeyItem            = kSecPrivateKeyItemClass
 
     /// Indicates that the item is a private key used for symmetric-key encryption.
-    , WSCKeychainItemClassSymmetricKeyItem          = kSecGenericPasswordItemClass
+    , WSCKeychainItemClassSymmetricKeyItem          = kSecSymmetricKeyItemClass
 
     /// The item can be any type of key; used for searches only.
     , WSCKeychainItemClassAllKeys                   = CSSM_DL_DB_RECORD_ALL_KEYS
