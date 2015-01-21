@@ -139,9 +139,9 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 @property ( assign, readwrite ) WSCKeychainItemAccessibilityType accessibility;
 #endif
 
-/** The `NSDate` object that identifies the creation date of the keychain item represented by receiver. (read-only)
+/** The `NSDate` object that identifies the creation date of the keychain item represented by receiver.
   */
-@property ( assign, readonly ) NSDate* creationDate;
+@property ( assign, readwrite ) NSDate* creationDate;
 
 /** The value that indicates which type of keychain item the receiver is. (read-only)
 

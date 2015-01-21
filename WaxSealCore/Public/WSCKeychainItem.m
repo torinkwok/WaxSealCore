@@ -51,6 +51,19 @@
 
 #pragma mark Accessor
 
+- ( void ) setCreationDate: ( NSDate* )_Date
+    {
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
+
+    _WSCDontBeABitch( &error, _Date, [ NSDate class ], s_guard );
+
+    if ( !error )
+        {
+
+        }
+    }
+
 /* The `NSDate` object that identifies the creation date of the keychain item represented by receiver. */
 - ( NSDate* ) creationDate
     {
@@ -98,43 +111,53 @@
         default: break;
         }
 
+    NSDate* dateWithCorrectTimeZone = nil;
     SecKeychainAttributeInfo* attributeInfo = nil;
     SecKeychainAttributeList* attrList = nil;
-    resultCode = SecKeychainAttributeInfoForItemID( [ WSCKeychain login ].secKeychain, itemID, &attributeInfo );
-    resultCode = SecKeychainItemCopyAttributesAndData( self.secKeychainItem
-                                                     , attributeInfo
-                                                     , NULL
-                                                     , &attrList
-                                                     , 0
-                                                     , NULL
-                                                     );
-    SecKeychainAttribute* attrs = attrList->attr;
-    for ( int _Index = 0; _Index < attrList->count; _Index++ )
+
+    if ( ( resultCode = SecKeychainAttributeInfoForItemID( [ WSCKeychain login ].secKeychain, itemID, &attributeInfo ) )
+            == errSecSuccess )
         {
-        SecKeychainAttribute attr = attrs[ _Index ];
-
-        if ( attr.tag == kSecCreationDateItemAttr )
+        if ( ( resultCode = SecKeychainItemCopyAttributesAndData( self.secKeychainItem
+                                                                , attributeInfo
+                                                                , NULL
+                                                                , &attrList
+                                                                , 0
+                                                                , NULL
+                                                                ) ) == errSecSuccess )
             {
-            NSString* ZuluTimeString =  [ [ NSString alloc ] initWithData: [ NSData dataWithBytes: attr.data
-                                                                                           length: attr.length ]
-                                                                 encoding: NSUTF8StringEncoding ];
+            SecKeychainAttribute* attrs = attrList->attr;
+            for ( int _Index = 0; _Index < attrList->count; _Index++ )
+                {
+                SecKeychainAttribute attr = attrs[ _Index ];
 
-            NSString* year   = [ ZuluTimeString substringWithRange: NSMakeRange( 0,  4 ) ];
-            NSString* month  = [ ZuluTimeString substringWithRange: NSMakeRange( 4,  2 ) ];
-            NSString* day    = [ ZuluTimeString substringWithRange: NSMakeRange( 6,  2 ) ];
-            NSString* hour   = [ ZuluTimeString substringWithRange: NSMakeRange( 8,  2 ) ];
-            NSString* min    = [ ZuluTimeString substringWithRange: NSMakeRange( 10, 2 ) ];
-            NSString* second = [ ZuluTimeString substringWithRange: NSMakeRange( 12, 2 ) ];
+                if ( attr.tag == kSecCreationDateItemAttr )
+                    {
+                    NSString* ZuluTimeString =  [ [ NSString alloc ] initWithData: [ NSData dataWithBytes: attr.data
+                                                                                                   length: attr.length ]
+                                                                         encoding: NSUTF8StringEncoding ];
 
-            NSDate* rawDate = [ NSDate dateWithNaturalLanguageString:
-                    [ NSString stringWithFormat: @"%@-%@-%@ %@:%@:%@", year, month, day, hour, min, second ] ];
+                    NSString* year   = [ ZuluTimeString substringWithRange: NSMakeRange( 0,  4 ) ];
+                    NSString* month  = [ ZuluTimeString substringWithRange: NSMakeRange( 4,  2 ) ];
+                    NSString* day    = [ ZuluTimeString substringWithRange: NSMakeRange( 6,  2 ) ];
+                    NSString* hour   = [ ZuluTimeString substringWithRange: NSMakeRange( 8,  2 ) ];
+                    NSString* min    = [ ZuluTimeString substringWithRange: NSMakeRange( 10, 2 ) ];
+                    NSString* second = [ ZuluTimeString substringWithRange: NSMakeRange( 12, 2 ) ];
 
-            NSDate* dateWithCorrectTimeZone = [ rawDate dateWithCalendarFormat: nil
+                    NSDate* rawDate = [ NSDate dateWithNaturalLanguageString:
+                            [ NSString stringWithFormat: @"%@-%@-%@ %@:%@:%@", year, month, day, hour, min, second ] ];
+
+                    dateWithCorrectTimeZone = [ rawDate dateWithCalendarFormat: nil
                                                                       timeZone: [ NSTimeZone defaultTimeZone ] ];
-
-            return dateWithCorrectTimeZone;
+                    return dateWithCorrectTimeZone;
+                    }
+                }
             }
+        else
+            _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
         }
+    else
+        _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
 
     return nil;
     }
