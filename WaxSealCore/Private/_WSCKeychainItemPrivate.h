@@ -35,16 +35,19 @@
 
 #pragma mark Private Programmatic Interfaces for Creating Keychain Items
 @interface WSCKeychainItem ( WSCKeychainItemPrivateInitialization )
-
 - ( instancetype ) p_initWithSecKeychainItemRef: ( SecKeychainItemRef )_SecKeychainItemRef;
+@end // WSCKeychainItem + WSCKeychainItemPrivateInitialization
 
-- ( id ) p_extractAttribute: ( SecItemAttr )_Attrbute
+#pragma mark Private Programmatic Interfaces for Accessing Attributes
+@interface WSCKeychainItem ( WSCKeychainItemPrivateAccessingAttributes )
+
+- ( id ) p_extractAttribute: ( SecItemAttr )_AttrbuteTag
                       error: ( NSError** )_Error;
 
-- ( NSDate* ) p_extractCreationDate: ( SecKeychainAttribute )_SecKeychainAttr
+- ( NSDate* ) p_extractCreationDate: ( SecKeychainAttribute )_SecKeychainAttrStruct
                               error: ( NSError** )_Error;
 
-@end // WSCKeychainItem + WSCKeychainItemPrivateInitialization
+@end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes
 
 //////////////////////////////////////////////////////////////////////////////
 

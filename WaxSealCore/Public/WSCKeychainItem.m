@@ -151,7 +151,12 @@
     return self;
     }
 
-- ( id ) p_extractAttribute: ( SecItemAttr )_Attrbute
+@end // WSCKeychainItem + WSCKeychainItemPrivateInitialization
+
+#pragma mark Private Programmatic Interfaces for Accessing Attributes
+@implementation WSCKeychainItem ( WSCKeychainItemPrivateAccessingAttributes )
+
+- ( id ) p_extractAttribute: ( SecItemAttr )_AttrbuteTag
                       error: ( NSError** )_Error;
     {
     OSStatus resultCode = errSecSuccess;
@@ -161,6 +166,8 @@
     if ( !( *_Error ) )
         {
         CSSM_DB_RECORDTYPE itemID = 0;
+
+        // Mapping for creating the SecKeychainAttributeInfo struct.
         switch ( self.itemClass )
             {
             case WSCKeychainItemClassInternetPasswordItem:      itemID = CSSM_DL_DB_RECORD_INTERNET_PASSWORD;   break;
@@ -177,9 +184,11 @@
         SecKeychainAttributeInfo* attributeInfo = nil;
         SecKeychainAttributeList* attrList = nil;
 
+        // Obtains tags for all possible attributes of a given item class.
         if ( ( resultCode = SecKeychainAttributeInfoForItemID( [ WSCKeychain login ].secKeychain, itemID, &attributeInfo ) )
                 == errSecSuccess )
             {
+            // Retrieves the attributes stored in the given keychain item.
             if ( ( resultCode = SecKeychainItemCopyAttributesAndData( self.secKeychainItem
                                                                     , attributeInfo
                                                                     , NULL
@@ -188,41 +197,50 @@
                                                                     , NULL
                                                                     ) ) == errSecSuccess )
                 {
+                // We have succeeded in retrieving the attributes stored in the given keychain item.
+                // Now we can obtain the attributes array.
                 SecKeychainAttribute* attrs = attrList->attr;
+
+                // Iterate the attribtues array, find out the matching attribute
                 for ( int _Index = 0; _Index < attrList->count; _Index++ )
                     {
                     SecKeychainAttribute attr = attrs[ _Index ];
 
-                    if ( attr.tag == kSecCreationDateItemAttr )
+                    if ( attr.tag == _AttrbuteTag )
                         {
-                        attribute = [ self p_extractCreationDate: attr error: _Error ];
-                        break;
+                        if ( _AttrbuteTag == kSecCreationDateItemAttr )
+                            {
+                            attribute = [ self p_extractCreationDate: attr error: _Error ];
+
+                            // Okay, got it! We no longer need these guys, kill them 😲🔫
+                            SecKeychainFreeAttributeInfo( attributeInfo );
+                            SecKeychainItemFreeAttributesAndData( attrList, NULL );
+                            
+                            break;
+                            }
                         }
                     }
                 }
             else
+                // If we failed to retrieves the attributes.
                 _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
             }
         else
+            // If we failed to obtain tags
             _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
-
-        if ( attributeInfo )
-            SecKeychainFreeAttributeInfo( attributeInfo );
-
-        SecKeychainItemFreeAttributesAndData( attrList, NULL );
         }
 
     return attribute;
     }
 
-- ( NSDate* ) p_extractCreationDate: ( SecKeychainAttribute )_SecKeychainAttr
+- ( NSDate* ) p_extractCreationDate: ( SecKeychainAttribute )_SecKeychainAttrStruct
                               error: ( NSError** )_Error
     {
     // The _SecKeychainAttr must be a creation date attribute.
-    if ( _SecKeychainAttr.tag == kSecCreationDateItemAttr )
+    if ( _SecKeychainAttrStruct.tag == kSecCreationDateItemAttr )
         {
-        NSString* ZuluTimeString =  [ [ NSString alloc ] initWithData: [ NSData dataWithBytes: _SecKeychainAttr.data
-                                                                                       length: _SecKeychainAttr.length ]
+        NSString* ZuluTimeString =  [ [ NSString alloc ] initWithData: [ NSData dataWithBytes: _SecKeychainAttrStruct.data
+                                                                                       length: _SecKeychainAttrStruct.length ]
                                                              encoding: NSUTF8StringEncoding ];
 
         // Decompose the zulu time string which have the format likes "20150122085245Z"
@@ -258,7 +276,7 @@
     return nil;
     }
 
-@end // WSCKeychainItem + WSCKeychainItemPrivateInitialization
+@end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes
 
 //////////////////////////////////////////////////////////////////////////////
 
