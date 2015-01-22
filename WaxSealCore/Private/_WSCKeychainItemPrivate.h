@@ -38,8 +38,11 @@
 
 - ( instancetype ) p_initWithSecKeychainItemRef: ( SecKeychainItemRef )_SecKeychainItemRef;
 
-- ( id ) p_extractAttribute: ( SecItemAttr )_Attrbute;
-- ( NSDate* ) p_extractCreationDate: ( SecKeychainAttribute )_SecKeychainAttr;
+- ( id ) p_extractAttribute: ( SecItemAttr )_Attrbute
+                      error: ( NSError** )_Error;
+
+- ( NSDate* ) p_extractCreationDate: ( SecKeychainAttribute )_SecKeychainAttr
+                              error: ( NSError** )_Error;
 
 @end // WSCKeychainItem + WSCKeychainItemPrivateInitialization
 

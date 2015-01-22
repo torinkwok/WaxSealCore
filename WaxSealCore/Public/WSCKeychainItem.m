@@ -66,7 +66,13 @@
 /* The `NSDate` object that identifies the creation date of the keychain item represented by receiver. */
 - ( NSDate* ) creationDate
     {
-    return [ self p_extractAttribute: kSecCreationDateItemAttr ];
+    NSError* error = nil;
+    NSDate* theDate = [ self p_extractAttribute: kSecCreationDateItemAttr error: &error ];
+
+    if ( error )
+        _WSCPrintNSErrorForLog( error );
+
+    return theDate;
     }
 
 /* Boolean value that indicates whether the receiver is currently valid. (read-only)
@@ -146,67 +152,71 @@
     }
 
 - ( id ) p_extractAttribute: ( SecItemAttr )_Attrbute
+                      error: ( NSError** )_Error;
     {
+    OSStatus resultCode = errSecSuccess;
     id attribute = nil;
 
-    CSSM_DB_RECORDTYPE itemID = 0;
-    switch ( self.itemClass )
+    _WSCDontBeABitch( _Error, self, [ WSCKeychainItem class ], s_guard );
+    if ( !( *_Error ) )
         {
-        case WSCKeychainItemClassInternetPasswordItem:      itemID = CSSM_DL_DB_RECORD_INTERNET_PASSWORD;   break;
-        case WSCKeychainItemClassApplicationPasswordItem:   itemID = CSSM_DL_DB_RECORD_GENERIC_PASSWORD;    break;
-        case WSCKeychainItemClassAppleSharePasswordItem:    itemID = CSSM_DL_DB_RECORD_APPLESHARE_PASSWORD; break;
-        case WSCKeychainItemClassCertificateItem:           itemID = CSSM_DL_DB_RECORD_X509_CERTIFICATE;    break;
-        case WSCKeychainItemClassPublicKeyItem:
-        case WSCKeychainItemClassPrivateKeyItem:
-        case WSCKeychainItemClassSymmetricKeyItem:          itemID = CSSM_DL_DB_RECORD_USER_TRUST;          break;
-
-        default: break;
-        }
-
-    NSError* error = nil;
-    OSStatus resultCode = errSecSuccess;
-
-    SecKeychainAttributeInfo* attributeInfo = nil;
-    SecKeychainAttributeList* attrList = nil;
-
-    if ( ( resultCode = SecKeychainAttributeInfoForItemID( [ WSCKeychain login ].secKeychain, itemID, &attributeInfo ) )
-            == errSecSuccess )
-        {
-        if ( ( resultCode = SecKeychainItemCopyAttributesAndData( self.secKeychainItem
-                                                                , attributeInfo
-                                                                , NULL
-                                                                , &attrList
-                                                                , 0
-                                                                , NULL
-                                                                ) ) == errSecSuccess )
+        CSSM_DB_RECORDTYPE itemID = 0;
+        switch ( self.itemClass )
             {
-            SecKeychainAttribute* attrs = attrList->attr;
-            for ( int _Index = 0; _Index < attrList->count; _Index++ )
-                {
-                SecKeychainAttribute attr = attrs[ _Index ];
+            case WSCKeychainItemClassInternetPasswordItem:      itemID = CSSM_DL_DB_RECORD_INTERNET_PASSWORD;   break;
+            case WSCKeychainItemClassApplicationPasswordItem:   itemID = CSSM_DL_DB_RECORD_GENERIC_PASSWORD;    break;
+            case WSCKeychainItemClassAppleSharePasswordItem:    itemID = CSSM_DL_DB_RECORD_APPLESHARE_PASSWORD; break;
+            case WSCKeychainItemClassCertificateItem:           itemID = CSSM_DL_DB_RECORD_X509_CERTIFICATE;    break;
+            case WSCKeychainItemClassPublicKeyItem:
+            case WSCKeychainItemClassPrivateKeyItem:
+            case WSCKeychainItemClassSymmetricKeyItem:          itemID = CSSM_DL_DB_RECORD_USER_TRUST;          break;
 
-                if ( attr.tag == kSecCreationDateItemAttr )
+            default: break;
+            }
+
+        SecKeychainAttributeInfo* attributeInfo = nil;
+        SecKeychainAttributeList* attrList = nil;
+
+        if ( ( resultCode = SecKeychainAttributeInfoForItemID( [ WSCKeychain login ].secKeychain, itemID, &attributeInfo ) )
+                == errSecSuccess )
+            {
+            if ( ( resultCode = SecKeychainItemCopyAttributesAndData( self.secKeychainItem
+                                                                    , attributeInfo
+                                                                    , NULL
+                                                                    , &attrList
+                                                                    , 0
+                                                                    , NULL
+                                                                    ) ) == errSecSuccess )
+                {
+                SecKeychainAttribute* attrs = attrList->attr;
+                for ( int _Index = 0; _Index < attrList->count; _Index++ )
                     {
-                    attribute = [ self p_extractCreationDate: attr ];
-                    break;
+                    SecKeychainAttribute attr = attrs[ _Index ];
+
+                    if ( attr.tag == kSecCreationDateItemAttr )
+                        {
+                        attribute = [ self p_extractCreationDate: attr error: _Error ];
+                        break;
+                        }
                     }
                 }
+            else
+                _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
             }
         else
-            _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+            _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+
+        if ( attributeInfo )
+            SecKeychainFreeAttributeInfo( attributeInfo );
+
+        SecKeychainItemFreeAttributesAndData( attrList, NULL );
         }
-    else
-        _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
-
-    if ( attributeInfo )
-        SecKeychainFreeAttributeInfo( attributeInfo );
-
-    SecKeychainItemFreeAttributesAndData( attrList, NULL );
 
     return attribute;
     }
 
 - ( NSDate* ) p_extractCreationDate: ( SecKeychainAttribute )_SecKeychainAttr
+                              error: ( NSError** )_Error
     {
     // The _SecKeychainAttr must be a creation date attribute.
     if ( _SecKeychainAttr.tag == kSecCreationDateItemAttr )
@@ -239,6 +249,11 @@
                                                                   timeZone: [ NSTimeZone defaultTimeZone ] ];
         return dateWithCorrectTimeZone;
         }
+    else
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                           code: WSCKeychainInvalidParametersError
+                                       userInfo: nil ];
 
     return nil;
     }
