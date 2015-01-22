@@ -66,7 +66,7 @@
         // We are going to create an zulu time string which has the zulu format ("YYYYMMDDhhmmssZ")
         NSMutableString* descOfNewDate = [ [ _Date descriptionWithCalendarFormat: @"%Y-%m-%d %H:%M:%S %z"
                                                                         timeZone: [ NSTimeZone defaultTimeZone ]
-                                                                          locale: nil ] mutableCopy ];
+                                                                          locale: [ [ NSUserDefaults standardUserDefaults ] dictionaryRepresentation] ] mutableCopy ];
         // Drop all the spaces
         [ descOfNewDate replaceOccurrencesOfString: @" " withString: @"" options: 0 range: NSMakeRange( 0, descOfNewDate.length ) ];
         // Drop the "+0800"
@@ -78,7 +78,7 @@
         // Because we are creating a zulu time string, which ends with an uppercase 'Z', append it
         [ descOfNewDate appendString: @"Z" ];
 
-        while ( [ descOfNewDate length ] < 15 )
+        while ( [ descOfNewDate length ] < @"YYYYMMDDhhmmssZ".length )
             [ descOfNewDate insertString: @"0" atIndex: 0 ];
 
         void* newZuluTimeData = ( void* )[ descOfNewDate cStringUsingEncoding: NSUTF8StringEncoding ];
