@@ -79,6 +79,10 @@
     sleep( 5 );
     [ applicationPassword_testCase0 setCreationDate: [ NSDate date ] ];
     NSLog( @"After modifing: %@", [ applicationPassword_testCase0 creationDate ] );
+    [ applicationPassword_testCase0 setCreationDate: [ NSDate distantFuture ] ];
+    NSLog( @"Modified again: %@", [ applicationPassword_testCase0 creationDate ] );
+    [ applicationPassword_testCase0 setCreationDate: [ NSDate distantPast ] ];
+    NSLog( @"Modified again: %@", [ applicationPassword_testCase0 creationDate ] );
 
     if ( applicationPassword_testCase0 )
         SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );

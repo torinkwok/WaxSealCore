@@ -41,7 +41,7 @@
 
 @implementation WSCKeychainItem
 
-@synthesize creationDate = _creationDate;
+@dynamic creationDate;
 
 @dynamic itemClass;
 @dynamic isValid;
@@ -55,20 +55,31 @@
     NSError* error = nil;
     OSStatus resultCode = errSecSuccess;
 
-    _WSCDontBeABitch( &error, _Date, [ NSDate class ], s_guard );
+    _WSCDontBeABitch( &error
+                    , _Date, [ NSDate class ]
+                    , self, [ WSCKeychainItem class ]
+                    , s_guard );
 
     if ( !error )
         {
-        NSMutableString* descOfNewDate = [ [ _Date descriptionWithCalendarFormat: nil timeZone: [ NSTimeZone defaultTimeZone ] locale: nil ] mutableCopy ];
-
+        // It's an string likes "2015-01-23 00:11:17 +0800"
+        // We are going to create an zulu time string which has the zulu format ("YYYYMMDDhhmmssZ")
+        NSMutableString* descOfNewDate = [ [ _Date descriptionWithCalendarFormat: @"%Y-%m-%d %H:%M:%S %z"
+                                                                        timeZone: [ NSTimeZone defaultTimeZone ]
+                                                                          locale: nil ] mutableCopy ];
+        // Drop all the spaces
         [ descOfNewDate replaceOccurrencesOfString: @" " withString: @"" options: 0 range: NSMakeRange( 0, descOfNewDate.length ) ];
-
         // Drop the "+0800"
         [ descOfNewDate deleteCharactersInRange: NSMakeRange( descOfNewDate.length - 5, 5 ) ];
-
+        // Drop all the dashes
         [ descOfNewDate replaceOccurrencesOfString: @"-" withString: @"" options: 0 range: NSMakeRange( 0, descOfNewDate.length ) ];
+        // Drop all the colons
         [ descOfNewDate replaceOccurrencesOfString: @":" withString: @"" options: 0 range: NSMakeRange( 0, descOfNewDate.length ) ];
+        // Because we are creating a zulu time string, which ends with an uppercase 'Z', append it
         [ descOfNewDate appendString: @"Z" ];
+
+        while ( [ descOfNewDate length ] < 15 )
+            [ descOfNewDate insertString: @"0" atIndex: 0 ];
 
         void* newZuluTimeData = ( void* )[ descOfNewDate cStringUsingEncoding: NSUTF8StringEncoding ];
         SecKeychainAttribute newAttr[] = { { kSecCreationDateItemAttr, ( UInt32 )strlen( newZuluTimeData ) + 1, newZuluTimeData } };
@@ -79,11 +90,11 @@
                                                            , 0, NULL
                                                            );
         if ( resultCode != errSecSuccess )
-            {
             _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
-            _WSCPrintNSErrorForLog( error );
-            }
         }
+
+    if ( error )
+        _WSCPrintNSErrorForLog( error );
     }
 
 /* The `NSDate` object that identifies the creation date of the keychain item represented by receiver. */
@@ -283,8 +294,15 @@
 
         // We discarded the last one: "Z"
 
-        NSDate* rawDate = [ NSDate dateWithNaturalLanguageString:
-                [ NSString stringWithFormat: @"%@-%@-%@ %@:%@:%@", year, mounth, day, hour, min, second ] ];
+        NSDateComponents* rawDateComponents = [ [ [ NSDateComponents alloc ] init ] autorelease ];
+        [ rawDateComponents setYear:    year.integerValue ];
+        [ rawDateComponents setMonth:   mounth.integerValue ];
+        [ rawDateComponents setDay:     day.integerValue ];
+        [ rawDateComponents setHour:    hour.integerValue ];
+        [ rawDateComponents setMinute:  min.integerValue ];
+        [ rawDateComponents setSecond:  second.integerValue ];
+
+        NSDate* rawDate = [ [ NSCalendar calendarWithIdentifier: NSGregorianCalendar ] dateFromComponents: rawDateComponents ];
 
         NSDate* dateWithCorrectTimeZone = [ rawDate dateWithCalendarFormat: nil
                                                                   timeZone: [ NSTimeZone defaultTimeZone ] ];
