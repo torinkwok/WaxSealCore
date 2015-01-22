@@ -59,7 +59,30 @@
 
     if ( !error )
         {
+        NSMutableString* descOfNewDate = [ [ _Date descriptionWithCalendarFormat: nil timeZone: [ NSTimeZone defaultTimeZone ] locale: nil ] mutableCopy ];
 
+        [ descOfNewDate replaceOccurrencesOfString: @" " withString: @"" options: 0 range: NSMakeRange( 0, descOfNewDate.length ) ];
+
+        // Drop the "+0800"
+        [ descOfNewDate deleteCharactersInRange: NSMakeRange( descOfNewDate.length - 5, 5 ) ];
+
+        [ descOfNewDate replaceOccurrencesOfString: @"-" withString: @"" options: 0 range: NSMakeRange( 0, descOfNewDate.length ) ];
+        [ descOfNewDate replaceOccurrencesOfString: @":" withString: @"" options: 0 range: NSMakeRange( 0, descOfNewDate.length ) ];
+        [ descOfNewDate appendString: @"Z" ];
+
+        void* newZuluTimeData = ( void* )[ descOfNewDate cStringUsingEncoding: NSUTF8StringEncoding ];
+        SecKeychainAttribute newAttr[] = { { kSecCreationDateItemAttr, ( UInt32 )strlen( newZuluTimeData ) + 1, newZuluTimeData } };
+        SecKeychainAttributeList newAttributeList = { sizeof( newAttr ) / sizeof( newAttr[ 0 ] ), newAttr };
+
+        resultCode = SecKeychainItemModifyAttributesAndData( self.secKeychainItem
+                                                           , &newAttributeList
+                                                           , 0, NULL
+                                                           );
+        if ( resultCode != errSecSuccess )
+            {
+            _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+            _WSCPrintNSErrorForLog( error );
+            }
         }
     }
 
