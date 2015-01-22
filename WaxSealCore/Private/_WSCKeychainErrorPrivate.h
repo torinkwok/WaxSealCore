@@ -37,6 +37,7 @@ NSString extern* const WSCKeychainCannotBeDirectoryErrorDescription;
 NSString extern* const WSCKeychainKeychainIsInvalidErrorDescription;
 NSString extern* const WSCKeychainKeychainFileExistsErrorDescription;
 NSString extern* const WSCKeychainKeychainURLIsInvalidErrorDescription;
+NSString extern* const WSCKeychainKeychainItemIsInvalidErrorDescription;
 
 id extern const s_guard;
 void _WSCDontBeABitch( NSError** _Error, ... );

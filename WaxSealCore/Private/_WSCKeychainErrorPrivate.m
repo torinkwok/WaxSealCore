@@ -43,6 +43,7 @@ NSString* const WSCKeychainKeychainIsInvalidErrorDescription =      @"Current ke
 NSString* const WSCKeychainKeychainFileExistsErrorDescription =     @"The keychain couldn't be created because a file with the same name already exists.";
 NSString* const WSCKeychainKeychainURLIsInvalidErrorDescription =   @"The keychain couldn’t be created because the URL is invalid.";
 NSString* const WSCKeychainInvalidParametersErrorDescription =      @"One or more parameters passed to the method were not valid.";
+NSString* const WSCKeychainKeychainItemIsInvalidErrorDescription =  @"Current keychain item is no longer valid, its resided keychain may has been deleted, moved or renamed.";
 
 id const s_guard = ( id )'sgrd';
 void _WSCDontBeABitch( NSError** _Error, ... )
@@ -81,11 +82,18 @@ void _WSCDontBeABitch( NSError** _Error, ... )
             }
 
         // If argToBeChecked is a keychain, it must not be invalid
-        if ( ( [ argToBeChecked isKindOfClass: [ WSCKeychain class ] ] &&  !( ( WSCKeychain* )argToBeChecked ).isValid )
-                || ( [ argToBeChecked isKindOfClass: [ WSCKeychainItem class ] ] && !( ( WSCKeychainItem* )argToBeChecked ).isValid ) )
+        if ( [ argToBeChecked isKindOfClass: [ WSCKeychain class ] ] &&  !( ( WSCKeychain* )argToBeChecked ).isValid )
             {
             *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                            code: WSCKeychainKeychainIsInvalidError
+                                       userInfo: nil ];
+            break;
+            }
+
+        if ( [ argToBeChecked isKindOfClass: [ WSCKeychainItem class ] ] && !( ( WSCKeychainItem* )argToBeChecked ).isValid )
+            {
+            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                           code: WSCKeychainKeychainItemIsInvalidError
                                        userInfo: nil ];
             break;
             }
@@ -143,7 +151,12 @@ void _WSCDontBeABitch( NSError** _Error, ... )
             case WSCKeychainInvalidParametersError:
                 {
                 newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainInvalidParametersErrorDescription;
-                }
+                } break;
+
+            case WSCKeychainKeychainItemIsInvalidError:
+                {
+                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainKeychainItemIsInvalidErrorDescription;
+                } break;
             }
         }
 
