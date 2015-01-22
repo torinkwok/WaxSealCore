@@ -74,7 +74,6 @@
                                                           accountName: @"Test Case 0"
                                                              password: @"waxsealcore"
                                                                 error: &error ];
-
     XCTAssertNotNil( applicationPassword_testCase0.creationDate);
     NSLog( @"Creation Date: %@", applicationPassword_testCase0.creationDate );
     SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
@@ -91,7 +90,6 @@
                                                          protocol: WSCInternetProtocolTypeHTTPS
                                                          password: @"waxsealcore"
                                                             error: &error ];
-
     XCTAssertNotNil( internetPassword_testCase1.creationDate);
     NSLog( @"Creation Date: %@", internetPassword_testCase1.creationDate );
     SecKeychainItemDelete( internetPassword_testCase1.secKeychainItem );

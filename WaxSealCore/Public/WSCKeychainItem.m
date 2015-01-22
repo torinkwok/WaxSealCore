@@ -37,13 +37,12 @@
 
 #import "_WSCKeychainErrorPrivate.h"
 #import "_WSCKeychainPrivate.h"
+#import "_WSCKeychainItemPrivate.h"
 
 @implementation WSCKeychainItem
-#if 0
-@dynamic accessibility;
-#endif
 
-@dynamic creationDate;
+@synthesize creationDate = _creationDate;
+
 @dynamic itemClass;
 @dynamic isValid;
 
@@ -67,103 +66,7 @@
 /* The `NSDate` object that identifies the creation date of the keychain item represented by receiver. */
 - ( NSDate* ) creationDate
     {
-    NSError* error = nil;
-    _WSCDontBeABitch( &error, self, [ WSCKeychainItem class ], s_guard );
-
-    if ( error )
-        {
-        _WSCPrintNSErrorForLog( error );
-
-        return nil;
-        }
-
-    OSStatus resultCode = errSecSuccess;
-    CSSM_DB_RECORDTYPE itemID = 0;
-    switch ( self.itemClass )
-        {
-        case WSCKeychainItemClassInternetPasswordItem:
-            {
-            itemID = CSSM_DL_DB_RECORD_INTERNET_PASSWORD;
-            } break;
-
-        case WSCKeychainItemClassApplicationPasswordItem:
-            {
-            itemID = CSSM_DL_DB_RECORD_GENERIC_PASSWORD;
-            } break;
-
-        case WSCKeychainItemClassAppleSharePasswordItem:
-            {
-            itemID = CSSM_DL_DB_RECORD_APPLESHARE_PASSWORD;
-            } break;
-
-        case WSCKeychainItemClassCertificateItem:
-            {
-            itemID = CSSM_DL_DB_RECORD_X509_CERTIFICATE;
-            } break;
-
-        case WSCKeychainItemClassPublicKeyItem:
-        case WSCKeychainItemClassPrivateKeyItem:
-        case WSCKeychainItemClassSymmetricKeyItem:
-            {
-            itemID = CSSM_DL_DB_RECORD_USER_TRUST;
-            } break;
-
-        default: break;
-        }
-
-    NSDate* dateWithCorrectTimeZone = nil;
-    SecKeychainAttributeInfo* attributeInfo = nil;
-    SecKeychainAttributeList* attrList = nil;
-
-    if ( ( resultCode = SecKeychainAttributeInfoForItemID( [ WSCKeychain login ].secKeychain, itemID, &attributeInfo ) )
-            == errSecSuccess )
-        {
-        if ( ( resultCode = SecKeychainItemCopyAttributesAndData( self.secKeychainItem
-                                                                , attributeInfo
-                                                                , NULL
-                                                                , &attrList
-                                                                , 0
-                                                                , NULL
-                                                                ) ) == errSecSuccess )
-            {
-            SecKeychainAttribute* attrs = attrList->attr;
-            for ( int _Index = 0; _Index < attrList->count; _Index++ )
-                {
-                SecKeychainAttribute attr = attrs[ _Index ];
-
-                if ( attr.tag == kSecCreationDateItemAttr )
-                    {
-                    NSString* ZuluTimeString =  [ [ NSString alloc ] initWithData: [ NSData dataWithBytes: attr.data
-                                                                                                   length: attr.length ]
-                                                                         encoding: NSUTF8StringEncoding ];
-
-                    NSString* year   = [ ZuluTimeString substringWithRange: NSMakeRange( 0,  4 ) ];
-                    NSString* month  = [ ZuluTimeString substringWithRange: NSMakeRange( 4,  2 ) ];
-                    NSString* day    = [ ZuluTimeString substringWithRange: NSMakeRange( 6,  2 ) ];
-                    NSString* hour   = [ ZuluTimeString substringWithRange: NSMakeRange( 8,  2 ) ];
-                    NSString* min    = [ ZuluTimeString substringWithRange: NSMakeRange( 10, 2 ) ];
-                    NSString* second = [ ZuluTimeString substringWithRange: NSMakeRange( 12, 2 ) ];
-
-                    NSDate* rawDate = [ NSDate dateWithNaturalLanguageString:
-                            [ NSString stringWithFormat: @"%@-%@-%@ %@:%@:%@", year, month, day, hour, min, second ] ];
-
-                    dateWithCorrectTimeZone = [ rawDate dateWithCalendarFormat: nil timeZone: [ NSTimeZone defaultTimeZone ] ];
-                    break;
-                    }
-                }
-            }
-        else
-            _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
-        }
-    else
-        _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
-
-    if ( attributeInfo )
-        SecKeychainFreeAttributeInfo( attributeInfo );
-
-    SecKeychainItemFreeAttributesAndData( attrList, NULL );
-
-    return dateWithCorrectTimeZone;
+    return [ self p_extractAttribute: kSecCreationDateItemAttr ];
     }
 
 /* Boolean value that indicates whether the receiver is currently valid. (read-only)
@@ -213,51 +116,7 @@
 
     return ( WSCKeychainItemClass )class;
     }
-#if 0
-- ( WSCKeychainItemAccessibilityType ) accessibility
-    {
-    OSStatus resultCode = errSecSuccess;
-    NSError* error = nil;
 
-    CSSM_DB_RECORDTYPE itemID = CSSM_DL_DB_RECORD_ANY;
-    switch ( self.itemClass )
-        {
-        case WSCKeychainItemClassInternetPasswordItem:
-            {
-            itemID = CSSM_DL_DB_RECORD_INTERNET_PASSWORD
-            } break;
-
-        case WSCKeychainItemClassApplicationPasswordItem:
-            {
-            itemID = CSSM_DL_DB_RECORD_GENERIC_PASSWORD;
-            } break;
-
-        case WSCKeychainItemClassAppleSharePasswordItem:
-            {
-            itemID = CSSM_DL_DB_RECORD_APPLESHARE_PASSWORD;
-            } break;
-
-        case WSCKeychainItemClassCertificateItem:
-            {
-            itemID = CSSM_DL_DB_RECORD_X509_CERTIFICATE;
-            } break;
-
-        case 
-        }
-
-    SecKeychainAttributeInfo* attributeInfo = nil;
-    SecKeychainAttributeList* attrList = nil;
-    resultCode = SecKeychainAttributeInfoForItemID( self.secKeychainItem, CSSM_DL_DB_RECORD_ANY, &attributeInfo );
-
-    resultCode = SecKeychainItemCopyAttributesAndData( self.secKeychainItem
-                                                     , attributeInfo
-                                                     , NULL
-                                                     , &attrList
-                                                     , 0
-                                                     , NULL
-                                                     );
-    }
-#endif
 - ( void ) dealloc
     {
     if ( self->_secKeychainItem )
@@ -284,6 +143,104 @@
         }
 
     return self;
+    }
+
+- ( id ) p_extractAttribute: ( SecItemAttr )_Attrbute
+    {
+    id attribute = nil;
+
+    CSSM_DB_RECORDTYPE itemID = 0;
+    switch ( self.itemClass )
+        {
+        case WSCKeychainItemClassInternetPasswordItem:      itemID = CSSM_DL_DB_RECORD_INTERNET_PASSWORD;   break;
+        case WSCKeychainItemClassApplicationPasswordItem:   itemID = CSSM_DL_DB_RECORD_GENERIC_PASSWORD;    break;
+        case WSCKeychainItemClassAppleSharePasswordItem:    itemID = CSSM_DL_DB_RECORD_APPLESHARE_PASSWORD; break;
+        case WSCKeychainItemClassCertificateItem:           itemID = CSSM_DL_DB_RECORD_X509_CERTIFICATE;    break;
+        case WSCKeychainItemClassPublicKeyItem:
+        case WSCKeychainItemClassPrivateKeyItem:
+        case WSCKeychainItemClassSymmetricKeyItem:          itemID = CSSM_DL_DB_RECORD_USER_TRUST;          break;
+
+        default: break;
+        }
+
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
+
+    SecKeychainAttributeInfo* attributeInfo = nil;
+    SecKeychainAttributeList* attrList = nil;
+
+    if ( ( resultCode = SecKeychainAttributeInfoForItemID( [ WSCKeychain login ].secKeychain, itemID, &attributeInfo ) )
+            == errSecSuccess )
+        {
+        if ( ( resultCode = SecKeychainItemCopyAttributesAndData( self.secKeychainItem
+                                                                , attributeInfo
+                                                                , NULL
+                                                                , &attrList
+                                                                , 0
+                                                                , NULL
+                                                                ) ) == errSecSuccess )
+            {
+            SecKeychainAttribute* attrs = attrList->attr;
+            for ( int _Index = 0; _Index < attrList->count; _Index++ )
+                {
+                SecKeychainAttribute attr = attrs[ _Index ];
+
+                if ( attr.tag == kSecCreationDateItemAttr )
+                    {
+                    attribute = [ self p_extractCreationDate: attr ];
+                    break;
+                    }
+                }
+            }
+        else
+            _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+        }
+    else
+        _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+
+    if ( attributeInfo )
+        SecKeychainFreeAttributeInfo( attributeInfo );
+
+    SecKeychainItemFreeAttributesAndData( attrList, NULL );
+
+    return attribute;
+    }
+
+- ( NSDate* ) p_extractCreationDate: ( SecKeychainAttribute )_SecKeychainAttr
+    {
+    // The _SecKeychainAttr must be a creation date attribute.
+    if ( _SecKeychainAttr.tag == kSecCreationDateItemAttr )
+        {
+        NSString* ZuluTimeString =  [ [ NSString alloc ] initWithData: [ NSData dataWithBytes: _SecKeychainAttr.data
+                                                                                       length: _SecKeychainAttr.length ]
+                                                             encoding: NSUTF8StringEncoding ];
+
+        // Decompose the zulu time string which have the format likes "20150122085245Z"
+
+        // 0-3 is the year string: "2015"
+        NSString* year   = [ ZuluTimeString substringWithRange: NSMakeRange( 0,  4 ) ];
+        // 4-5 is the mounth string: "01", which means January
+        NSString* mounth = [ ZuluTimeString substringWithRange: NSMakeRange( 4,  2 ) ];
+        // 6-7 is the day string: "22", which means 22nd
+        NSString* day    = [ ZuluTimeString substringWithRange: NSMakeRange( 6,  2 ) ];
+        // 8-9 is the hour string: "08", which means eight o'clock
+        NSString* hour   = [ ZuluTimeString substringWithRange: NSMakeRange( 8,  2 ) ];
+        // 10-11 is the min string: "52", which means fifty-two minutes
+        NSString* min    = [ ZuluTimeString substringWithRange: NSMakeRange( 10, 2 ) ];
+        // 12-13 is the second string: "45", which means forty-five seconds
+        NSString* second = [ ZuluTimeString substringWithRange: NSMakeRange( 12, 2 ) ];
+
+        // We discarded the last one: "Z"
+
+        NSDate* rawDate = [ NSDate dateWithNaturalLanguageString:
+                [ NSString stringWithFormat: @"%@-%@-%@ %@:%@:%@", year, mounth, day, hour, min, second ] ];
+
+        NSDate* dateWithCorrectTimeZone = [ rawDate dateWithCalendarFormat: nil
+                                                                  timeZone: [ NSTimeZone defaultTimeZone ] ];
+        return dateWithCorrectTimeZone;
+        }
+
+    return nil;
     }
 
 @end // WSCKeychainItem + WSCKeychainItemPrivateInitialization
