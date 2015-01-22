@@ -147,9 +147,8 @@
                     NSDate* rawDate = [ NSDate dateWithNaturalLanguageString:
                             [ NSString stringWithFormat: @"%@-%@-%@ %@:%@:%@", year, month, day, hour, min, second ] ];
 
-                    dateWithCorrectTimeZone = [ rawDate dateWithCalendarFormat: nil
-                                                                      timeZone: [ NSTimeZone defaultTimeZone ] ];
-                    return dateWithCorrectTimeZone;
+                    dateWithCorrectTimeZone = [ rawDate dateWithCalendarFormat: nil timeZone: [ NSTimeZone defaultTimeZone ] ];
+                    break;
                     }
                 }
             }
@@ -159,7 +158,12 @@
     else
         _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
 
-    return nil;
+    if ( attributeInfo )
+        SecKeychainFreeAttributeInfo( attributeInfo );
+
+    SecKeychainItemFreeAttributesAndData( attrList, NULL );
+
+    return dateWithCorrectTimeZone;
     }
 
 /* Boolean value that indicates whether the receiver is currently valid. (read-only)
