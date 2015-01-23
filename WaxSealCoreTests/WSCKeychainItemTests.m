@@ -78,11 +78,29 @@
                                                                error: &error ];
 
     NSLog( @"Before modifying applicationPassword_testCase0: %@", [ applicationPassword_testCase0 creationDate ] );
-    [ applicationPassword_testCase0 setCreationDate: [ NSDate dateWithString: @"2018-12-20 10:45:32 +0800" ] ];
+    NSDate* newDate0_testCase0 = [ NSDate dateWithString: @"2018-12-20 10:45:32 +0800" ];
+    [ applicationPassword_testCase0 setCreationDate: newDate0_testCase0 ];
+//    XCTAssertEqualObjects( newDate0_testCase0, applicationPassword_testCase0.creationDate );
+//    XCTAssertEqualObjects( [ newDate0_testCase0 descriptionWithCalendarFormat: nil timeZone: [ NSTimeZone localTimeZone ] locale: nil ]
+//                         , applicationPassword_testCase0.creationDate.description
+//                         );
+
     NSLog( @"After modifying applicationPassword_testCase0: %@", [ applicationPassword_testCase0 creationDate ] );
-    [ applicationPassword_testCase0 setCreationDate: [ NSDate distantFuture ] ];
+    NSDate* newDate1_testCase0 = [ NSDate distantFuture ];
+    [ applicationPassword_testCase0 setCreationDate: newDate1_testCase0 ];
+//    XCTAssertEqualObjects( newDate1_testCase0, applicationPassword_testCase0.creationDate );
+//    XCTAssertEqualObjects( [ newDate1_testCase0 descriptionWithCalendarFormat: nil timeZone: [ NSTimeZone localTimeZone ] locale: nil ]
+//                         , applicationPassword_testCase0.creationDate.description
+//                         );
+
     NSLog( @"Modified again applicationPassword_testCase0: %@", [ applicationPassword_testCase0 creationDate ] );
-    [ applicationPassword_testCase0 setCreationDate: [ NSDate distantPast ] ];
+    NSDate* newDate2_testCase0 = [ NSDate distantPast ];
+    [ applicationPassword_testCase0 setCreationDate: newDate2_testCase0 ];
+//    XCTAssertEqualObjects( newDate2_testCase0, applicationPassword_testCase0.creationDate );
+//    XCTAssertEqualObjects( [ newDate2_testCase0 descriptionWithCalendarFormat: nil timeZone: [ NSTimeZone localTimeZone ] locale: nil ]
+//                         , applicationPassword_testCase0.creationDate.description
+//                         );
+
     NSLog( @"Modified again applicationPassword_testCase0: %@", [ applicationPassword_testCase0 creationDate ] );
 
     if ( applicationPassword_testCase0 )
