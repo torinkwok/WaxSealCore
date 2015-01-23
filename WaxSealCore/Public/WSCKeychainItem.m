@@ -146,10 +146,7 @@
     if ( self = [ super init ] )
         {
         if ( _SecKeychainItemRef )
-            {
             self->_secKeychainItem = ( SecKeychainItemRef )CFRetain( _SecKeychainItemRef );
-//            self.creationDate = [ NSDate date ];
-            }
         else
             return nil;
         }
@@ -270,7 +267,10 @@
         // We discarded the last one: "Z"
 
         NSDateComponents* rawDateComponents = [ [ [ NSDateComponents alloc ] init ] autorelease ];
+
+        // GMT (GMT) offset 0, the standard Greenwich Mean Time, that's pretty important!
         [ rawDateComponents setTimeZone: [ NSTimeZone timeZoneForSecondsFromGMT: 0 ] ];
+
         [ rawDateComponents setYear:    year.integerValue   ];
         [ rawDateComponents setMonth:   mounth.integerValue ];
         [ rawDateComponents setDay:     day.integerValue    ];
@@ -278,20 +278,7 @@
         [ rawDateComponents setMinute:  min.integerValue    ];
         [ rawDateComponents setSecond:  second.integerValue ];
 
-        NSDateComponents* fuckingRawDateComponents = [ [ [ NSDateComponents alloc ] init ] autorelease ];
-        [ fuckingRawDateComponents setYear:    year.integerValue   ];
-        [ fuckingRawDateComponents setMonth:   mounth.integerValue ];
-        [ fuckingRawDateComponents setDay:     day.integerValue    ];
-        [ fuckingRawDateComponents setHour:    hour.integerValue   ];
-        [ fuckingRawDateComponents setMinute:  min.integerValue    ];
-        [ fuckingRawDateComponents setSecond:  second.integerValue ];
-
         NSDate* rawDate = [ [ NSCalendar autoupdatingCurrentCalendar ] dateFromComponents: rawDateComponents ];
-        NSDate* fuckingRawDate = [ [ NSCalendar autoupdatingCurrentCalendar ] dateFromComponents: fuckingRawDateComponents ];
-
-//        NSDate* rawDate = [ NSDate dateWithNaturalLanguageString:
-//                [ NSString stringWithFormat: @"%@-%@-%@ %@:%@:%@", year, mounth, day, hour, min, second ] ];
-
         NSDate* dateWithCorrectTimeZone = [ rawDate dateWithCalendarFormat: nil
                                                                   timeZone: [ NSTimeZone localTimeZone ] ];
         return dateWithCorrectTimeZone;
@@ -339,10 +326,8 @@
     {
     // It's an string likes "2015-01-23 00:11:17 +0800"
     // We are going to create an zulu time string which has the zulu format ("YYYYMMDDhhmmssZ")
-    NSMutableString* descOfNewDate = [ [ _Date description ] mutableCopy ];
-//    NSMutableString* descOfNewDate = [ [ _Date descriptionWithCalendarFormat: @"%Y-%m-%d %H:%M:%S %z"
-//                                                                    timeZone: [ NSTimeZone defaultTimeZone ]
-//                                                                      locale: [ [ NSUserDefaults standardUserDefaults ] dictionaryRepresentation] ] mutableCopy ];
+    NSMutableString* descOfNewDate = [ [ _Date descriptionWithLocale: nil ] mutableCopy ];
+
     // Drop all the spaces
     [ descOfNewDate replaceOccurrencesOfString: @" " withString: @"" options: 0 range: NSMakeRange( 0, descOfNewDate.length ) ];
     // Drop the "+0800"

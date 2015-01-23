@@ -62,15 +62,24 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+#define COMPARE_DATE( _LhsDate, _RhsDate )              \
+    XCTAssertEqual( _LhsDate.year, _RhsDate.year );     \
+    XCTAssertEqual( _LhsDate.month, _RhsDate.month );   \
+    XCTAssertEqual( _LhsDate.day, _RhsDate.day );       \
+    XCTAssertEqual( _LhsDate.hour, _RhsDate.hour );     \
+    XCTAssertEqual( _LhsDate.minute, _RhsDate.minute ); \
+    XCTAssertEqual( _LhsDate.hour, _RhsDate.hour );     \
+    XCTAssertEqual( _LhsDate.second, _RhsDate.second )
+
 - ( void ) testSetCreationDate
     {
     NSError* error = nil;
-
     WSCKeychain* commonRandomKeychain = _WSCRandomKeychain();
+    NSDateComponents* components_currentCreationDate = nil;
 
-    // ----------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------------------//
     // Test Case 0
-    // ----------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------------------//
     WSCApplicationPassword* applicationPassword_testCase0 =
         [ commonRandomKeychain addApplicationPasswordWithServiceName: @"WaxSealCore: testSetCreationDate"
                                                          accountName: @"testSetCreationDate Test Case 0"
@@ -78,37 +87,63 @@
                                                                error: &error ];
 
     NSLog( @"Before modifying applicationPassword_testCase0: %@", [ applicationPassword_testCase0 creationDate ] );
+
+    // --------------------------------------------------------------------------------------------------------------------//
+
     NSDate* newDate0_testCase0 = [ NSDate dateWithString: @"2018-12-20 10:45:32 +0800" ];
     [ applicationPassword_testCase0 setCreationDate: newDate0_testCase0 ];
-//    XCTAssertEqualObjects( newDate0_testCase0, applicationPassword_testCase0.creationDate );
-//    XCTAssertEqualObjects( [ newDate0_testCase0 descriptionWithCalendarFormat: nil timeZone: [ NSTimeZone localTimeZone ] locale: nil ]
-//                         , applicationPassword_testCase0.creationDate.description
-//                         );
 
-    NSLog( @"After modifying applicationPassword_testCase0: %@", [ applicationPassword_testCase0 creationDate ] );
+    NSDateComponents* components_newDate0_testCase0 =
+        [ [ NSCalendar currentCalendar ] components: NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit
+                                           fromDate: newDate0_testCase0 ];
+    components_currentCreationDate =
+        [ [ NSCalendar currentCalendar ] components: NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit
+                                           fromDate: applicationPassword_testCase0.creationDate ];
+
+    COMPARE_DATE( components_newDate0_testCase0, components_currentCreationDate );
+
+    NSLog( @"Modification (Test Case 0) #0: %@", [ applicationPassword_testCase0 creationDate ] );
+
+    // --------------------------------------------------------------------------------------------------------------------//
+
     NSDate* newDate1_testCase0 = [ NSDate distantFuture ];
     [ applicationPassword_testCase0 setCreationDate: newDate1_testCase0 ];
-//    XCTAssertEqualObjects( newDate1_testCase0, applicationPassword_testCase0.creationDate );
-//    XCTAssertEqualObjects( [ newDate1_testCase0 descriptionWithCalendarFormat: nil timeZone: [ NSTimeZone localTimeZone ] locale: nil ]
-//                         , applicationPassword_testCase0.creationDate.description
-//                         );
 
-    NSLog( @"Modified again applicationPassword_testCase0: %@", [ applicationPassword_testCase0 creationDate ] );
+    NSDateComponents* components_newDate1_testCase0 =
+        [ [ NSCalendar currentCalendar ] components: NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit
+                                           fromDate: newDate1_testCase0 ];
+    components_currentCreationDate =
+        [ [ NSCalendar currentCalendar ] components: NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit
+                                           fromDate: applicationPassword_testCase0.creationDate ];
+
+    COMPARE_DATE( components_newDate1_testCase0, components_currentCreationDate );
+
+    NSLog( @"Modification (Test Case 0) #1: %@", [ applicationPassword_testCase0 creationDate ] );
+
+    // --------------------------------------------------------------------------------------------------------------------//
+
     NSDate* newDate2_testCase0 = [ NSDate distantPast ];
     [ applicationPassword_testCase0 setCreationDate: newDate2_testCase0 ];
-//    XCTAssertEqualObjects( newDate2_testCase0, applicationPassword_testCase0.creationDate );
-//    XCTAssertEqualObjects( [ newDate2_testCase0 descriptionWithCalendarFormat: nil timeZone: [ NSTimeZone localTimeZone ] locale: nil ]
-//                         , applicationPassword_testCase0.creationDate.description
-//                         );
 
-    NSLog( @"Modified again applicationPassword_testCase0: %@", [ applicationPassword_testCase0 creationDate ] );
+    NSDateComponents* components_newDate2_testCase0 =
+        [ [ NSCalendar currentCalendar ] components: NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit
+                                           fromDate: newDate2_testCase0 ];
+    components_currentCreationDate =
+        [ [ NSCalendar currentCalendar ] components: NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit
+                                           fromDate: applicationPassword_testCase0.creationDate ];
+
+    COMPARE_DATE( components_newDate2_testCase0, components_currentCreationDate );
+
+    NSLog( @"Modification (Test Case 0) #2: %@", [ applicationPassword_testCase0 creationDate ] );
+
+    // --------------------------------------------------------------------------------------------------------------------//
 
     if ( applicationPassword_testCase0 )
         SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
 
-    // ----------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------------------//
     // Test Case 1
-    // ----------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------------------//
     WSCInternetPassword* internetPassword_testCase1 =
         [ commonRandomKeychain addInternetPasswordWithServerName: @"www.waxsealcore.org"
                                                  URLRelativePath: @"testSetCreationDate/test/case/0"
@@ -118,8 +153,22 @@
                                                            error: &error ];
 
     NSLog( @"Before modifying internetPassword_testCase1: %@", [ internetPassword_testCase1 creationDate ] );
-    [ internetPassword_testCase1 setCreationDate: [ NSDate date ] ];
-    NSLog( @"After modifying internetPassword_testCase1: %@", [ internetPassword_testCase1 creationDate ] );
+
+    // --------------------------------------------------------------------------------------------------------------------//
+
+    NSDate* newDate0_testCase1 = [ NSDate date ];
+    [ internetPassword_testCase1 setCreationDate: newDate0_testCase1 ];
+
+    NSDateComponents* components_newDate0_testCase1 =
+        [ [ NSCalendar currentCalendar ] components: NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit
+                                           fromDate: newDate0_testCase1 ];
+    components_currentCreationDate =
+        [ [ NSCalendar currentCalendar ] components: NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit
+                                           fromDate: internetPassword_testCase1.creationDate ];
+
+    COMPARE_DATE( components_newDate0_testCase1, components_currentCreationDate );
+
+    NSLog( @"Modification (Test Case 1) #0: %@", [ internetPassword_testCase1 creationDate ] );
 
     // -----------------------------------------------------------------------------------------------
     // Negative Test Case 0: The keychain item: internetPassword_testCase1 has been already deleted
@@ -127,9 +176,9 @@
     if ( internetPassword_testCase1 )
         SecKeychainItemDelete( internetPassword_testCase1.secKeychainItem );
 
-    NSLog( @"Before modifying internetPassword_testCase1: %@", [ internetPassword_testCase1 creationDate ] );
+    NSLog( @"Modification (Negative Test Case 0) #0: %@", [ internetPassword_testCase1 creationDate ] );
     [ internetPassword_testCase1 setCreationDate: [ NSDate dateWithNaturalLanguageString: @"1998-2-8 21:23:19 +0300" ] ];
-    NSLog( @"Before modifying internetPassword_testCase1: %@", [ internetPassword_testCase1 creationDate ] );
+    NSLog( @"Modification (Negative Test Case 0) #1: %@", [ internetPassword_testCase1 creationDate ] );
 
     // -----------------------------------------------------------------------------------------------
     // Negative Test Case 1: The keychain: randomKeychain has been already deleted
@@ -137,9 +186,9 @@
     [ [ WSCKeychainManager defaultManager ] deleteKeychain: commonRandomKeychain
                                                      error: nil ];
 
-    NSLog( @"Before modifying internetPassword_testCase1: %@", [ internetPassword_testCase1 creationDate ] );
+    NSLog( @"Modification (Negative Test Case 1) #0: %@", [ internetPassword_testCase1 creationDate ] );
     [ internetPassword_testCase1 setCreationDate: [ NSDate dateWithNaturalLanguageString: @"1998-2-8 21:23:19 +0300" ] ];
-    NSLog( @"Before modifying internetPassword_testCase1: %@", [ internetPassword_testCase1 creationDate ] );
+    NSLog( @"Modification (Negative Test Case 1) #1: %@", [ internetPassword_testCase1 creationDate ] );
     }
 
 - ( void ) testCreationDate
