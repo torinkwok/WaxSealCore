@@ -76,8 +76,7 @@
                                                                 error: &error ];
 
     NSLog( @"Before modifing: %@", [ applicationPassword_testCase0 creationDate ] );
-//    sleep( 5 );
-    [ applicationPassword_testCase0 setCreationDate: [ NSDate dateWithString: @"0001-12-20 10:45:32 +0800" ] ];
+    [ applicationPassword_testCase0 setCreationDate: [ NSDate dateWithString: @"2018-12-20 10:45:32 +0800" ] ];
     NSLog( @"After modifing: %@", [ applicationPassword_testCase0 creationDate ] );
     [ applicationPassword_testCase0 setCreationDate: [ NSDate distantFuture ] ];
     NSLog( @"Modified again: %@", [ applicationPassword_testCase0 creationDate ] );

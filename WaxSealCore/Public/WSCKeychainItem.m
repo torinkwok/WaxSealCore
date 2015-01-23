@@ -295,11 +295,11 @@
         // We discarded the last one: "Z"
 
         NSDateComponents* rawDateComponents = [ [ [ NSDateComponents alloc ] init ] autorelease ];
-        [ rawDateComponents setYear:    year.integerValue ];
+        [ rawDateComponents setYear:    year.integerValue   ];
         [ rawDateComponents setMonth:   mounth.integerValue ];
-        [ rawDateComponents setDay:     day.integerValue ];
-        [ rawDateComponents setHour:    hour.integerValue ];
-        [ rawDateComponents setMinute:  min.integerValue ];
+        [ rawDateComponents setDay:     day.integerValue    ];
+        [ rawDateComponents setHour:    hour.integerValue   ];
+        [ rawDateComponents setMinute:  min.integerValue    ];
         [ rawDateComponents setSecond:  second.integerValue ];
 
         NSDate* rawDate = [ [ NSCalendar calendarWithIdentifier: NSGregorianCalendar ] dateFromComponents: rawDateComponents ];
