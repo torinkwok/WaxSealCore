@@ -49,55 +49,24 @@
 @synthesize secKeychainItem = _secKeychainItem;
 
 #pragma mark Accessor
-
+/* Set creation date of receiver. */
 - ( void ) setCreationDate: ( NSDate* )_Date
     {
     NSError* error = nil;
-    OSStatus resultCode = errSecSuccess;
 
     _WSCDontBeABitch( &error
                     , _Date, [ NSDate class ]
                     , self, [ WSCKeychainItem class ]
-                    , s_guard );
+                    , s_guard
+                    );
+
+    [ self p_modifyAttribute: kSecCreationDateItemAttr withNewValue: _Date error: nil ];
 
     if ( !error )
-        {
-        // It's an string likes "2015-01-23 00:11:17 +0800"
-        // We are going to create an zulu time string which has the zulu format ("YYYYMMDDhhmmssZ")
-        NSMutableString* descOfNewDate = [ [ _Date descriptionWithCalendarFormat: @"%Y-%m-%d %H:%M:%S %z"
-                                                                        timeZone: [ NSTimeZone defaultTimeZone ]
-                                                                          locale: [ [ NSUserDefaults standardUserDefaults ] dictionaryRepresentation] ] mutableCopy ];
-        // Drop all the spaces
-        [ descOfNewDate replaceOccurrencesOfString: @" " withString: @"" options: 0 range: NSMakeRange( 0, descOfNewDate.length ) ];
-        // Drop the "+0800"
-        [ descOfNewDate deleteCharactersInRange: NSMakeRange( descOfNewDate.length - 5, 5 ) ];
-        // Drop all the dashes
-        [ descOfNewDate replaceOccurrencesOfString: @"-" withString: @"" options: 0 range: NSMakeRange( 0, descOfNewDate.length ) ];
-        // Drop all the colons
-        [ descOfNewDate replaceOccurrencesOfString: @":" withString: @"" options: 0 range: NSMakeRange( 0, descOfNewDate.length ) ];
-        // Because we are creating a zulu time string, which ends with an uppercase 'Z', append it
-        [ descOfNewDate appendString: @"Z" ];
-
-        while ( [ descOfNewDate length ] < @"YYYYMMDDhhmmssZ".length )
-            [ descOfNewDate insertString: @"0" atIndex: 0 ];
-
-        void* newZuluTimeData = ( void* )[ descOfNewDate cStringUsingEncoding: NSUTF8StringEncoding ];
-        SecKeychainAttribute newAttr[] = { { kSecCreationDateItemAttr, ( UInt32 )strlen( newZuluTimeData ) + 1, newZuluTimeData } };
-        SecKeychainAttributeList newAttributeList = { sizeof( newAttr ) / sizeof( newAttr[ 0 ] ), newAttr };
-
-        resultCode = SecKeychainItemModifyAttributesAndData( self.secKeychainItem
-                                                           , &newAttributeList
-                                                           , 0, NULL
-                                                           );
-        if ( resultCode != errSecSuccess )
-            _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
-        }
-
-    if ( error )
         _WSCPrintNSErrorForLog( error );
     }
 
-/* The `NSDate` object that identifies the creation date of the keychain item represented by receiver. */
+/* Get the `NSDate` object that identifies the creation date of the keychain item represented by receiver. */
 - ( NSDate* ) creationDate
     {
     NSError* error = nil;
@@ -190,6 +159,7 @@
 #pragma mark Private Programmatic Interfaces for Accessing Attributes
 @implementation WSCKeychainItem ( WSCKeychainItemPrivateAccessingAttributes )
 
+#pragma mark Extracting
 - ( id ) p_extractAttribute: ( SecItemAttr )_AttrbuteTag
                       error: ( NSError** )_Error;
     {
@@ -197,7 +167,7 @@
     id attribute = nil;
 
     _WSCDontBeABitch( _Error, self, [ WSCKeychainItem class ], s_guard );
-    if ( !( *_Error ) )
+    if ( !_Error || !( *_Error ) )
         {
         CSSM_DB_RECORDTYPE itemID = 0;
 
@@ -267,6 +237,8 @@
     return attribute;
     }
 
+/* Extract NSDate object from the SecKeychainAttribute struct represeting an creation date attribute
+ */
 - ( NSDate* ) p_extractCreationDate: ( SecKeychainAttribute )_SecKeychainAttrStruct
                               error: ( NSError** )_Error
     {
@@ -315,6 +287,63 @@
                                        userInfo: nil ];
 
     return nil;
+    }
+
+#pragma mark Modifying
+- ( void ) p_modifyAttribute: ( SecItemAttr )_AttributeTag
+                withNewValue: ( id )_NewValue
+                       error: ( NSError** )_Error
+    {
+    OSStatus resultCode = errSecSuccess;
+
+    _WSCDontBeABitch( _Error, self, [ WSCKeychainItem class ], s_guard );
+    if ( !_Error || !( *_Error ) )
+        {
+        SecKeychainAttribute newAttr;
+
+        switch ( _AttributeTag )
+            {
+            case kSecCreationDateItemAttr: newAttr = [ self p_attrOfCreationDate: ( NSDate* )_NewValue ];
+            break;
+            }
+
+        SecKeychainAttributeList newAttributeList = { 1 /* Only one attr */, &newAttr };
+        resultCode = SecKeychainItemModifyAttributesAndData( self.secKeychainItem
+                                                           , &newAttributeList
+                                                           , 0, NULL
+                                                           );
+        if ( resultCode != errSecSuccess )
+            _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+        }
+    }
+
+/* Convert the NSDate to the Zulu Time Format string
+ */
+- ( SecKeychainAttribute ) p_attrOfCreationDate: ( NSDate* )_Date
+    {
+    // It's an string likes "2015-01-23 00:11:17 +0800"
+    // We are going to create an zulu time string which has the zulu format ("YYYYMMDDhhmmssZ")
+    NSMutableString* descOfNewDate = [ [ _Date descriptionWithCalendarFormat: @"%Y-%m-%d %H:%M:%S %z"
+                                                                    timeZone: [ NSTimeZone defaultTimeZone ]
+                                                                      locale: [ [ NSUserDefaults standardUserDefaults ] dictionaryRepresentation] ] mutableCopy ];
+    // Drop all the spaces
+    [ descOfNewDate replaceOccurrencesOfString: @" " withString: @"" options: 0 range: NSMakeRange( 0, descOfNewDate.length ) ];
+    // Drop the "+0800"
+    [ descOfNewDate deleteCharactersInRange: NSMakeRange( descOfNewDate.length - 5, 5 ) ];
+    // Drop all the dashes
+    [ descOfNewDate replaceOccurrencesOfString: @"-" withString: @"" options: 0 range: NSMakeRange( 0, descOfNewDate.length ) ];
+    // Drop all the colons
+    [ descOfNewDate replaceOccurrencesOfString: @":" withString: @"" options: 0 range: NSMakeRange( 0, descOfNewDate.length ) ];
+    // Because we are creating a zulu time string, which ends with an uppercase 'Z', append it
+    [ descOfNewDate appendString: @"Z" ];
+
+    while ( [ descOfNewDate length ] < @"YYYYMMDDhhmmssZ".length )
+        [ descOfNewDate insertString: @"0" atIndex: 0 ];
+
+    void* newZuluTimeData = ( void* )[ descOfNewDate cStringUsingEncoding: NSUTF8StringEncoding ];
+    SecKeychainAttribute creationDateAttr = { kSecCreationDateItemAttr, ( UInt32 )strlen( newZuluTimeData ) + 1, newZuluTimeData };
+
+    return creationDateAttr;
     }
 
 @end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes
