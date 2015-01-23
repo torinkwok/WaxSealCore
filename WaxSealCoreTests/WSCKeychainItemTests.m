@@ -66,25 +66,62 @@
     {
     NSError* error = nil;
 
+    WSCKeychain* commonRandomKeychain = _WSCRandomKeychain();
+
     // ----------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------
     WSCApplicationPassword* applicationPassword_testCase0 =
-        [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: @"WaxSealCore: testSetCreationDate"
-                                                          accountName: @"testSetCreationDate Test Case 0"
-                                                             password: @"waxsealcore"
-                                                                error: &error ];
+        [ commonRandomKeychain addApplicationPasswordWithServiceName: @"WaxSealCore: testSetCreationDate"
+                                                         accountName: @"testSetCreationDate Test Case 0"
+                                                            password: @"waxsealcore"
+                                                               error: &error ];
 
-    NSLog( @"Before modifying: %@", [ applicationPassword_testCase0 creationDate ] );
+    NSLog( @"Before modifying applicationPassword_testCase0: %@", [ applicationPassword_testCase0 creationDate ] );
     [ applicationPassword_testCase0 setCreationDate: [ NSDate dateWithString: @"2018-12-20 10:45:32 +0800" ] ];
-    NSLog( @"After modifying: %@", [ applicationPassword_testCase0 creationDate ] );
+    NSLog( @"After modifying applicationPassword_testCase0: %@", [ applicationPassword_testCase0 creationDate ] );
     [ applicationPassword_testCase0 setCreationDate: [ NSDate distantFuture ] ];
-    NSLog( @"Modified again: %@", [ applicationPassword_testCase0 creationDate ] );
+    NSLog( @"Modified again applicationPassword_testCase0: %@", [ applicationPassword_testCase0 creationDate ] );
     [ applicationPassword_testCase0 setCreationDate: [ NSDate distantPast ] ];
-    NSLog( @"Modified again: %@", [ applicationPassword_testCase0 creationDate ] );
+    NSLog( @"Modified again applicationPassword_testCase0: %@", [ applicationPassword_testCase0 creationDate ] );
 
     if ( applicationPassword_testCase0 )
         SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
+
+    // ----------------------------------------------------------
+    // Test Case 1
+    // ----------------------------------------------------------
+    WSCInternetPassword* internetPassword_testCase1 =
+        [ commonRandomKeychain addInternetPasswordWithServerName: @"www.waxsealcore.org"
+                                                 URLRelativePath: @"testSetCreationDate/test/case/0"
+                                                     accountName: @"waxsealcore"
+                                                        protocol: WSCInternetProtocolTypeHTTPS
+                                                        password: @"waxsealcore"
+                                                           error: &error ];
+
+    NSLog( @"Before modifying internetPassword_testCase1: %@", [ internetPassword_testCase1 creationDate ] );
+    [ internetPassword_testCase1 setCreationDate: [ NSDate date ] ];
+    NSLog( @"After modifying internetPassword_testCase1: %@", [ internetPassword_testCase1 creationDate ] );
+
+    // -----------------------------------------------------------------------------------------------
+    // Negative Test Case 0: The keychain item: internetPassword_testCase1 has been already deleted
+    // -----------------------------------------------------------------------------------------------
+    if ( internetPassword_testCase1 )
+        SecKeychainItemDelete( internetPassword_testCase1.secKeychainItem );
+
+    NSLog( @"Before modifying internetPassword_testCase1: %@", [ internetPassword_testCase1 creationDate ] );
+    [ internetPassword_testCase1 setCreationDate: [ NSDate dateWithNaturalLanguageString: @"1998-2-8 21:23:19 +0300" ] ];
+    NSLog( @"Before modifying internetPassword_testCase1: %@", [ internetPassword_testCase1 creationDate ] );
+
+    // -----------------------------------------------------------------------------------------------
+    // Negative Test Case 1: The keychain: randomKeychain has been already deleted
+    // -----------------------------------------------------------------------------------------------
+    [ [ WSCKeychainManager defaultManager ] deleteKeychain: commonRandomKeychain
+                                                     error: nil ];
+
+    NSLog( @"Before modifying internetPassword_testCase1: %@", [ internetPassword_testCase1 creationDate ] );
+    [ internetPassword_testCase1 setCreationDate: [ NSDate dateWithNaturalLanguageString: @"1998-2-8 21:23:19 +0300" ] ];
+    NSLog( @"Before modifying internetPassword_testCase1: %@", [ internetPassword_testCase1 creationDate ] );
     }
 
 - ( void ) testCreationDate

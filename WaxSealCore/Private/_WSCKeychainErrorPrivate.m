@@ -48,6 +48,9 @@ NSString* const WSCKeychainKeychainItemIsInvalidErrorDescription =  @"Current ke
 id const s_guard = ( id )'sgrd';
 void _WSCDontBeABitch( NSError** _Error, ... )
     {
+    if ( !_Error )
+        return;
+
     /* The form of variable arguments list:
        &_Error, argToBeChecked_0(id), typeOfArg_0([ argToBeChecked_0 class ])
               , argToBeChecked_1(id), typeOfArg_1([ argToBeChecked_1 class ])

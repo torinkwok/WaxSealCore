@@ -60,9 +60,9 @@
                     , s_guard
                     );
 
-    [ self p_modifyAttribute: kSecCreationDateItemAttr withNewValue: _Date error: nil ];
-
     if ( !error )
+        [ self p_modifyAttribute: kSecCreationDateItemAttr withNewValue: _Date error: &error ];
+    else
         _WSCPrintNSErrorForLog( error );
     }
 
@@ -146,7 +146,10 @@
     if ( self = [ super init ] )
         {
         if ( _SecKeychainItemRef )
+            {
             self->_secKeychainItem = ( SecKeychainItemRef )CFRetain( _SecKeychainItemRef );
+            self.creationDate = [ NSDate date ];
+            }
         else
             return nil;
         }
@@ -267,6 +270,7 @@
         // We discarded the last one: "Z"
 
         NSDateComponents* rawDateComponents = [ [ [ NSDateComponents alloc ] init ] autorelease ];
+        [ rawDateComponents setTimeZone: [ NSTimeZone localTimeZone ] ];
         [ rawDateComponents setYear:    year.integerValue   ];
         [ rawDateComponents setMonth:   mounth.integerValue ];
         [ rawDateComponents setDay:     day.integerValue    ];
@@ -274,10 +278,9 @@
         [ rawDateComponents setMinute:  min.integerValue    ];
         [ rawDateComponents setSecond:  second.integerValue ];
 
-        NSDate* rawDate = [ [ NSCalendar calendarWithIdentifier: NSGregorianCalendar ] dateFromComponents: rawDateComponents ];
-
+        NSDate* rawDate = [ [ NSCalendar autoupdatingCurrentCalendar ] dateFromComponents: rawDateComponents ];
         NSDate* dateWithCorrectTimeZone = [ rawDate dateWithCalendarFormat: nil
-                                                                  timeZone: [ NSTimeZone defaultTimeZone ] ];
+                                                                  timeZone: [ NSTimeZone localTimeZone ] ];
         return dateWithCorrectTimeZone;
         }
     else
