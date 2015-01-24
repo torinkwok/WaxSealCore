@@ -63,10 +63,15 @@
     [ self p_modifyAttribute: kSecLabelItemAttr withNewValue: _Label ];
     }
 
-//- ( NSString* ) comment
-//    {
-//
-//    }
+- ( NSString* ) account
+    {
+    return [ self p_extractAttribute: kSecAccountItemAttr ];
+    }
+
+- ( void ) setAccount: ( NSString* )_Account
+    {
+    [ self p_modifyAttribute: kSecAccountItemAttr withNewValue: _Account ];
+    }
 
 - ( NSString* ) comment
     {
@@ -81,16 +86,7 @@
 /* Set creation date of receiver. */
 - ( void ) setCreationDate: ( NSDate* )_Date
     {
-    NSInteger theMaxYear = 9999;
-    NSDateComponents* dateComponents = [ [ NSCalendar currentCalendar ] components: NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond
-                                                                          fromDate: _Date ];
-    [ dateComponents setYear: MIN( dateComponents.year, theMaxYear ) ];
-
-    // We are going to get a date with the standard Greenwich Mean Time (GMT offset 0)
-    [ [ NSCalendar currentCalendar ] setTimeZone: [ NSTimeZone timeZoneForSecondsFromGMT: 0 ] ];
-    NSDate* processedDate = [ [ NSCalendar currentCalendar ] dateFromComponents: dateComponents ];
-
-    [ self p_modifyAttribute: kSecCreationDateItemAttr withNewValue: processedDate ];
+    [ self p_modifyAttribute: kSecCreationDateItemAttr withNewValue: _Date ];
     }
 
 /* Get the `NSDate` object that identifies the creation date of the keychain item represented by receiver. */
@@ -244,7 +240,10 @@
                             attribute = [ self p_extractDateFromSecAttrStruct: attrStruct error: &error ];
                             break;
                             }
-                        else if ( _AttrbuteTag == kSecLabelItemAttr || _AttrbuteTag == kSecCommentItemAttr )
+                        // TODO: NEW ATTR
+                        else if ( _AttrbuteTag == kSecLabelItemAttr
+                                    || _AttrbuteTag == kSecCommentItemAttr
+                                    || _AttrbuteTag == kSecAccountItemAttr )
                             {
                             attribute = [ self p_extractStringFromSecAttrStruct: attrStruct error: &error ];
                             break;
@@ -279,7 +278,8 @@
     NSString* stringValue = nil;
 
     if ( _SecKeychainAttrStruct.tag == kSecLabelItemAttr
-            || _SecKeychainAttrStruct.tag == kSecCommentItemAttr ) // TODO:
+            || _SecKeychainAttrStruct.tag == kSecCommentItemAttr
+            || _SecKeychainAttrStruct.tag == kSecAccountItemAttr ) // TODO: NEW ATTR
         stringValue = [ NSString stringWithCString: _SecKeychainAttrStruct.data encoding: NSUTF8StringEncoding ];
     else
         if ( _Error )
@@ -364,11 +364,13 @@
             case kSecCreationDateItemAttr: newAttr = [ self p_attrForDateValue: ( NSDate* )_NewValue ];
             break;
 
-            case kSecLabelItemAttr: newAttr = [ self p_attrForStringValue: ( NSString* )_NewValue forAttr: kSecLabelItemAttr ];
+            case kSecLabelItemAttr:
+            case kSecCommentItemAttr:
+            case kSecAccountItemAttr: newAttr = [ self p_attrForStringValue: ( NSString* )_NewValue
+                                                                    forAttr: _AttributeTag ];
             break;
 
-            case kSecCommentItemAttr: newAttr = [ self p_attrForStringValue: ( NSString* )_NewValue forAttr: kSecCommentItemAttr ];
-            break;
+            // TODO: NEW ATTR
             }
 
         SecKeychainAttributeList newAttributeList = { 1 /* Only one attr */, &newAttr };
@@ -388,9 +390,18 @@
  */
 - ( SecKeychainAttribute ) p_attrForDateValue: ( NSDate* )_Date
     {
+    NSInteger theMaxYear = 9999;
+    NSDateComponents* dateComponents = [ [ NSCalendar currentCalendar ] components: NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond
+                                                                          fromDate: _Date ];
+    [ dateComponents setYear: MIN( dateComponents.year, theMaxYear ) ];
+
+    // We are going to get a date with the standard Greenwich Mean Time (GMT offset 0)
+    [ [ NSCalendar currentCalendar ] setTimeZone: [ NSTimeZone timeZoneForSecondsFromGMT: 0 ] ];
+    NSDate* processedDate = [ [ NSCalendar currentCalendar ] dateFromComponents: dateComponents ];
+
     // It's an string likes "2015-01-23 00:11:17 +0800"
     // We are going to create an zulu time string which has the zulu format ("YYYYMMDDhhmmssZ")
-    NSMutableString* descOfNewDate = [ [ _Date descriptionWithLocale: nil ] mutableCopy ];
+    NSMutableString* descOfNewDate = [ [ processedDate descriptionWithLocale: nil ] mutableCopy ];
 
     // Drop all the spaces
     [ descOfNewDate replaceOccurrencesOfString: @" " withString: @"" options: 0 range: NSMakeRange( 0, descOfNewDate.length ) ];

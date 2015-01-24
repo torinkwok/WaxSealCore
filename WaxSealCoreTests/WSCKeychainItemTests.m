@@ -87,6 +87,11 @@
     XCTAssertEqualObjects( applicationPassword_testCase0.comment, commentTwo );
     NSLog( @"Comment: %@", applicationPassword_testCase0.comment );
 
+    NSLog( @"Account: %@", applicationPassword_testCase0.account );
+    [ applicationPassword_testCase0 setAccount: @"NSTongG" ];
+    XCTAssertNotNil( applicationPassword_testCase0.account );
+    NSLog( @"Account: %@", applicationPassword_testCase0.account );
+
     if ( applicationPassword_testCase0 )
         SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
 
