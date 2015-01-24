@@ -128,6 +128,14 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
     SecKeychainItemRef _secKeychainItem;
     }
 
+/** The `NSString` object that identifies the label of keychain item represented by receiver.
+  */
+@property ( retain, readwrite ) NSString* label;
+
+/** The `NSString` object that identifies the comment of keychain item represented by receiver.
+  */
+@property ( retain, readwrite ) NSString* comment;
+
 /** The `NSDate` object that identifies the creation date of the keychain item represented by receiver.
 
   @warning The `year` component of creationDate must not be greater than `9999`.

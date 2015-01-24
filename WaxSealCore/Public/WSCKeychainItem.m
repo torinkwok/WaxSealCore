@@ -41,6 +41,8 @@
 
 @implementation WSCKeychainItem
 
+@dynamic label;
+@dynamic comment;
 @dynamic creationDate;
 @dynamic modificationDate;
 
@@ -50,6 +52,56 @@
 @synthesize secKeychainItem = _secKeychainItem;
 
 #pragma mark Accessor
+- ( NSString* ) label
+    {
+    NSError* error = nil;
+    NSString* label = [ self p_extractAttribute: kSecLabelItemAttr error: &error ];
+
+    if ( error )
+        _WSCPrintNSErrorForLog( error );
+
+    return label;
+    }
+
+- ( void ) setLabel: ( NSString* )_Label
+    {
+    NSError* error = nil;
+
+    _WSCDontBeABitch( &error
+                    , _Label, [ NSString class ]
+                    , s_guard
+                    );
+    if ( !error )
+        [ self p_modifyAttribute: kSecLabelItemAttr withNewValue: _Label error: &error ];
+    else
+        _WSCPrintNSErrorForLog( error );
+    }
+
+- ( NSString* ) comment
+    {
+    NSError* error = nil;
+    NSString* comment = [ self p_extractAttribute: kSecCommentItemAttr error: &error ];
+
+    if ( error )
+        _WSCPrintNSErrorForLog( error );
+
+    return comment;
+    }
+
+- ( void ) setComment: ( NSString* )_Comment
+    {
+    NSError* error = nil;
+
+    _WSCDontBeABitch( &error
+                    , _Comment, [ NSString class ]
+                    , s_guard
+                    );
+    if ( !error )
+        [ self p_modifyAttribute: kSecCommentItemAttr withNewValue: _Comment error: &error ];
+    else
+        _WSCPrintNSErrorForLog( error );
+    }
+
 /* Set creation date of receiver. */
 - ( void ) setCreationDate: ( NSDate* )_Date
     {
@@ -240,6 +292,11 @@
                             attribute = [ self p_extractDateFromSecAttrStruct: attrStruct error: _Error ];
                             break;
                             }
+                        else if ( _AttrbuteTag == kSecLabelItemAttr || _AttrbuteTag == kSecCommentItemAttr )
+                            {
+                            attribute = [ self p_extractStringFromSecAttrStruct: attrStruct error: _Error ];
+                            break;
+                            }
                         }
                     }
 
@@ -257,6 +314,25 @@
         }
 
     return attribute;
+    }
+
+/* Extract NSString object from the SecKeychainAttribute struct.
+ */
+- ( NSString* ) p_extractStringFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
+                                           error: ( NSError** )_Error
+    {
+    NSString* stringValue = nil;
+
+    if ( _SecKeychainAttrStruct.tag == kSecLabelItemAttr
+            || _SecKeychainAttrStruct.tag == kSecCommentItemAttr ) // TODO:
+        stringValue = [ NSString stringWithCString: _SecKeychainAttrStruct.data encoding: NSUTF8StringEncoding ];
+    else
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                           code: WSCKeychainInvalidParametersError
+                                       userInfo: nil ];
+
+    return stringValue;
     }
 
 /* Extract NSDate object from the SecKeychainAttribute struct represeting an date attribute
@@ -330,7 +406,13 @@
 
         switch ( _AttributeTag )
             {
-            case kSecCreationDateItemAttr: newAttr = [ self p_attrOfCreationDate: ( NSDate* )_NewValue ];
+            case kSecCreationDateItemAttr: newAttr = [ self p_attrForDateValue: ( NSDate* )_NewValue ];
+            break;
+
+            case kSecLabelItemAttr: newAttr = [ self p_attrForStringValue: ( NSString* )_NewValue forAttr: kSecLabelItemAttr ];
+            break;
+
+            case kSecCommentItemAttr: newAttr = [ self p_attrForStringValue: ( NSString* )_NewValue forAttr: kSecCommentItemAttr ];
             break;
             }
 
@@ -346,7 +428,7 @@
 
 /* Convert the NSDate to the Zulu Time Format string
  */
-- ( SecKeychainAttribute ) p_attrOfCreationDate: ( NSDate* )_Date
+- ( SecKeychainAttribute ) p_attrForDateValue: ( NSDate* )_Date
     {
     // It's an string likes "2015-01-23 00:11:17 +0800"
     // We are going to create an zulu time string which has the zulu format ("YYYYMMDDhhmmssZ")
@@ -367,6 +449,15 @@
     SecKeychainAttribute creationDateAttr = { kSecCreationDateItemAttr, ( UInt32 )strlen( newZuluTimeData ) + 1, newZuluTimeData };
 
     return creationDateAttr;
+    }
+
+- ( SecKeychainAttribute ) p_attrForStringValue: ( NSString* )_StringValue
+                                       forAttr: ( SecItemAttr )_Attr
+    {
+    void* value = ( void* )[ _StringValue cStringUsingEncoding: NSUTF8StringEncoding ];
+    SecKeychainAttribute attrStruct = { _Attr, ( UInt32 )strlen( value ) + 1, value };
+
+    return attrStruct;
     }
 
 @end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes

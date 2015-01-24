@@ -62,6 +62,31 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+- ( void ) testCommentProperty
+    {
+    NSError* error = nil;
+    WSCKeychain* commonRandomKeychain = _WSCRandomKeychain();
+
+    // -------------------------------------------------------------------------------------------------------------------- //
+    // Test Case 0
+    // -------------------------------------------------------------------------------------------------------------------- //
+    WSCApplicationPassword* applicationPassword_testCase0 =
+        [ commonRandomKeychain addApplicationPasswordWithServiceName: @"WaxSealCore: testSetCreationDate"
+                                                         accountName: @"testSetCreationDate Test Case 0"
+                                                            password: @"waxsealcore"
+                                                               error: &error ];
+    NSString* comment = @"Hello, WaxSealCore!";
+    [ applicationPassword_testCase0 setComment: comment ];
+    XCTAssertNotNil( applicationPassword_testCase0.comment );
+    XCTAssertEqualObjects( applicationPassword_testCase0.comment, comment );
+    NSLog( @"Comment: %@", applicationPassword_testCase0.comment );
+
+    applicationPassword_testCase0.comment = @"FuCKfUCKgo";
+
+    if ( applicationPassword_testCase0 )
+        SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
+    }
+
 #define WSCAssertDateEqual( _LhsDate, _RhsDate )\
     {\
     NSDateComponents* _LhsDateComponents =\

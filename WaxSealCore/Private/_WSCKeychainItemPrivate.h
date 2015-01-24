@@ -55,7 +55,7 @@
                        error: ( NSError** )_Error;
 
 // Convert the NSDate to the Zulu Time Format string
-- ( SecKeychainAttribute ) p_attrOfCreationDate: ( NSDate* )_Date;
+- ( SecKeychainAttribute ) p_attrForDateValue: ( NSDate* )_Date;
 
 @end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes
 
