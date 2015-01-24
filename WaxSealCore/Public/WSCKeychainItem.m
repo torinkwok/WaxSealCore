@@ -335,7 +335,7 @@
     return stringValue;
     }
 
-/* Extract NSDate object from the SecKeychainAttribute struct represeting an date attribute
+/* Extract NSDate object from the SecKeychainAttribute struct.
  */
 - ( NSDate* ) p_extractDateFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
                                        error: ( NSError** )_Error
@@ -452,7 +452,7 @@
     }
 
 - ( SecKeychainAttribute ) p_attrForStringValue: ( NSString* )_StringValue
-                                       forAttr: ( SecItemAttr )_Attr
+                                        forAttr: ( SecItemAttr )_Attr
     {
     void* value = ( void* )[ _StringValue cStringUsingEncoding: NSUTF8StringEncoding ];
     SecKeychainAttribute attrStruct = { _Attr, ( UInt32 )strlen( value ) + 1, value };

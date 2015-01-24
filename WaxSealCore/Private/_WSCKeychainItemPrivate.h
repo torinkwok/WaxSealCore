@@ -45,7 +45,11 @@
 - ( id ) p_extractAttribute: ( SecItemAttr )_AttrbuteTag
                       error: ( NSError** )_Error;
 
-// Extract NSDate object from the SecKeychainAttribute struct represeting an date attribute
+// Extract NSString object from the SecKeychainAttribute struct.
+- ( NSString* ) p_extractStringFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
+                                           error: ( NSError** )_Error;
+
+// Extract NSDate object from the SecKeychainAttribute struct.
 - ( NSDate* ) p_extractDateFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
                                        error: ( NSError** )_Error;
 
@@ -53,6 +57,10 @@
 - ( void ) p_modifyAttribute: ( SecItemAttr )_AttributeTag
                 withNewValue: ( id )_NewValue
                        error: ( NSError** )_Error;
+
+// Convert the NSString to the C-Style string.
+- ( SecKeychainAttribute ) p_attrForStringValue: ( NSString* )_StringValue
+                                        forAttr: ( SecItemAttr )_Attr;
 
 // Convert the NSDate to the Zulu Time Format string
 - ( SecKeychainAttribute ) p_attrForDateValue: ( NSDate* )_Date;
