@@ -129,6 +129,8 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
     }
 
 /** The `NSDate` object that identifies the creation date of the keychain item represented by receiver.
+
+  @warning The `year` component of creationDate must not be greater than `9999`.
   */
 @property ( retain, readwrite ) NSDate* creationDate;
 
