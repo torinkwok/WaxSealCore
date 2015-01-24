@@ -59,9 +59,19 @@
                     , self, [ WSCKeychainItem class ]
                     , s_guard
                     );
-
     if ( !error )
-        [ self p_modifyAttribute: kSecCreationDateItemAttr withNewValue: _Date error: &error ];
+        {
+        NSInteger theMaxYear = 9999;
+        NSDateComponents* dateComponents = [ [ NSCalendar currentCalendar ] components: NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond
+                                                                              fromDate: _Date ];
+        [ dateComponents setYear: MIN( dateComponents.year, theMaxYear ) ];
+
+        // We are going to get a date with the standard Greenwich Mean Time (GMT offset 0)
+        [ [ NSCalendar currentCalendar ] setTimeZone: [ NSTimeZone timeZoneForSecondsFromGMT: 0 ] ];
+        NSDate* processedDate = [ [ NSCalendar currentCalendar ] dateFromComponents: dateComponents ];
+
+        [ self p_modifyAttribute: kSecCreationDateItemAttr withNewValue: processedDate error: &error ];
+        }
     else
         _WSCPrintNSErrorForLog( error );
     }
@@ -338,9 +348,6 @@
     [ descOfNewDate replaceOccurrencesOfString: @":" withString: @"" options: 0 range: NSMakeRange( 0, descOfNewDate.length ) ];
     // Because we are creating a zulu time string, which ends with an uppercase 'Z', append it
     [ descOfNewDate appendString: @"Z" ];
-
-    while ( [ descOfNewDate length ] < @"YYYYMMDDhhmmssZ".length )
-        [ descOfNewDate insertString: @"0" atIndex: 0 ];
 
     void* newZuluTimeData = ( void* )[ descOfNewDate cStringUsingEncoding: NSUTF8StringEncoding ];
     SecKeychainAttribute creationDateAttr = { kSecCreationDateItemAttr, ( UInt32 )strlen( newZuluTimeData ) + 1, newZuluTimeData };
