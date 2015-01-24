@@ -43,6 +43,7 @@
 
 @dynamic label;
 @dynamic account;
+@dynamic creator;
 @dynamic comment;
 @dynamic creationDate;
 @dynamic modificationDate;
@@ -71,6 +72,16 @@
 - ( void ) setAccount: ( NSString* )_Account
     {
     [ self p_modifyAttribute: kSecAccountItemAttr withNewValue: _Account ];
+    }
+
+- ( NSString* ) creator
+    {
+    return [ self p_extractAttribute: kSecCreatorItemAttr ];
+    }
+
+- ( void ) setCreator: ( NSString* )_Creator
+    {
+    [ self p_modifyAttribute: kSecCreatorItemAttr withNewValue: _Creator ];
     }
 
 - ( NSString* ) comment
@@ -243,7 +254,8 @@
                         // TODO: NEW ATTR
                         else if ( _AttrbuteTag == kSecLabelItemAttr
                                     || _AttrbuteTag == kSecCommentItemAttr
-                                    || _AttrbuteTag == kSecAccountItemAttr )
+                                    || _AttrbuteTag == kSecAccountItemAttr
+                                    || _AttrbuteTag == kSecCreatorItemAttr )
                             {
                             attribute = [ self p_extractStringFromSecAttrStruct: attrStruct error: &error ];
                             break;
@@ -279,7 +291,8 @@
 
     if ( _SecKeychainAttrStruct.tag == kSecLabelItemAttr
             || _SecKeychainAttrStruct.tag == kSecCommentItemAttr
-            || _SecKeychainAttrStruct.tag == kSecAccountItemAttr ) // TODO: NEW ATTR
+            || _SecKeychainAttrStruct.tag == kSecAccountItemAttr
+            || _SecKeychainAttrStruct.tag == kSecCreatorItemAttr ) // TODO: NEW ATTR
         stringValue = [ NSString stringWithCString: _SecKeychainAttrStruct.data encoding: NSUTF8StringEncoding ];
     else
         if ( _Error )
@@ -361,14 +374,17 @@
 
         switch ( _AttributeTag )
             {
-            case kSecCreationDateItemAttr: newAttr = [ self p_attrForDateValue: ( NSDate* )_NewValue ];
-            break;
+            case kSecCreationDateItemAttr:
+                newAttr = [ self p_attrForDateValue: ( NSDate* )_NewValue ];
+                break;
 
             case kSecLabelItemAttr:
             case kSecCommentItemAttr:
-            case kSecAccountItemAttr: newAttr = [ self p_attrForStringValue: ( NSString* )_NewValue
-                                                                    forAttr: _AttributeTag ];
-            break;
+            case kSecAccountItemAttr:
+            case kSecCreatorItemAttr:
+                 newAttr = [ self p_attrForStringValue: ( NSString* )_NewValue
+                                               forAttr: _AttributeTag ];
+                break;
 
             // TODO: NEW ATTR
             }

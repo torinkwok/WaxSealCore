@@ -66,8 +66,21 @@
     {
     NSError* error = nil;
     WSCKeychain* commonRandomKeychain = _WSCRandomKeychain();
-    NSString* commentOne = @"Hello, WaxSealCore!";
+
+    NSString* commentOne = @"A keychain is an encrypted container that holds passwords for multiple applications and secure services."
+                            "Keychains are secure storage containers, which means that when the keychain is locked, no one can access "
+                            "its protected contents. In OS X, users can unlock a keychain—thus providing trusted applications access to "
+                            "the contents—by entering a single master password."
+                            "The above encrypted container which is called “keychain” is represented by WSCKeychain object in WaxSealCore "
+                            "framework and SecKeychainRef in Keychain Services APIs.";
+
     NSString* commentTwo = @"Goodbye, WaxSealCore!";
+
+    NSString* accountOne = @"NSTongG";
+    NSString* accountTwo = @"Tong G.";
+
+    NSString* creatorOne = @"Tong Guo";
+    NSString* creatorTwo = @"Author of WaxSealCore";
 
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 0
@@ -77,20 +90,38 @@
                                                          accountName: @"testSetCreationDate Test Case 0"
                                                             password: @"waxsealcore"
                                                                error: &error ];
+    #pragma mark Comment
     [ applicationPassword_testCase0 setComment: commentOne ];
     XCTAssertNotNil( applicationPassword_testCase0.comment );
     XCTAssertEqualObjects( applicationPassword_testCase0.comment, commentOne );
-    NSLog( @"Comment: %@", applicationPassword_testCase0.comment );
+
+     /*******/ NSLog( @"Comment #0 (Test Case 0): %@", applicationPassword_testCase0.comment ); /*******/
 
     [ applicationPassword_testCase0 setComment: commentTwo ];
     XCTAssertNotNil( applicationPassword_testCase0.comment );
     XCTAssertEqualObjects( applicationPassword_testCase0.comment, commentTwo );
-    NSLog( @"Comment: %@", applicationPassword_testCase0.comment );
 
-    NSLog( @"Account: %@", applicationPassword_testCase0.account );
-    [ applicationPassword_testCase0 setAccount: @"NSTongG" ];
+    /*******/ NSLog( @"Comment #1 (Test Case 0): %@", applicationPassword_testCase0.comment ); /*******/
+
+    #pragma mark Account
+    [ applicationPassword_testCase0 setAccount: accountOne ];
     XCTAssertNotNil( applicationPassword_testCase0.account );
-    NSLog( @"Account: %@", applicationPassword_testCase0.account );
+    XCTAssertEqualObjects( applicationPassword_testCase0.account, accountOne );
+
+    /*******/ NSLog( @"Account #0 (Test Case 0): %@", applicationPassword_testCase0.account ); /*******/
+
+    [ applicationPassword_testCase0 setAccount: accountTwo ];
+    XCTAssertNotNil( applicationPassword_testCase0.account );
+    XCTAssertEqualObjects( applicationPassword_testCase0.account, accountTwo );
+
+    /*******/ NSLog( @"Account #1 (Test Case 0): %@", applicationPassword_testCase0.account ); /*******/
+
+    #pragma mark Creator
+    [ applicationPassword_testCase0 setCreator: creatorOne ];
+    XCTAssertNotNil( applicationPassword_testCase0.creator );
+    XCTAssertEqualObjects( applicationPassword_testCase0.creator, creatorOne );
+
+    /*******/ NSLog( @"Creator #0 (Test Case 0): %@", applicationPassword_testCase0.creator ); /*******/
 
     if ( applicationPassword_testCase0 )
         SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
@@ -108,12 +139,26 @@
     [ internetPassword_testCase1 setComment: commentOne ];
     XCTAssertNotNil( internetPassword_testCase1.comment );
     XCTAssertEqualObjects( internetPassword_testCase1.comment, commentOne );
-    NSLog( @"Comment: %@", internetPassword_testCase1.comment );
+
+    /*******/ NSLog( @"Comment #0 (Test Case 1): %@", internetPassword_testCase1.comment ); /*******/
 
     [ internetPassword_testCase1 setComment: commentTwo ];
     XCTAssertNotNil( internetPassword_testCase1.comment );
     XCTAssertEqualObjects( internetPassword_testCase1.comment, commentTwo );
-    NSLog( @"Comment: %@", internetPassword_testCase1.comment );
+
+    /*******/ NSLog( @"Comment #1 (Test Case 1): %@", internetPassword_testCase1.comment ); /*******/
+
+    [ internetPassword_testCase1 setAccount: accountOne ];
+    XCTAssertNotNil( internetPassword_testCase1.account );
+    XCTAssertEqualObjects( internetPassword_testCase1.account, accountOne );
+
+    /*******/ NSLog( @"Account #0 (Test Case 1): %@", internetPassword_testCase1.account ); /*******/
+
+    [ internetPassword_testCase1 setAccount: accountTwo ];
+    XCTAssertNotNil( internetPassword_testCase1.account );
+    XCTAssertEqualObjects( internetPassword_testCase1.account, accountTwo );
+
+    /*******/ NSLog( @"Account #1 (Test Case 1): %@", internetPassword_testCase1.account ); /*******/
 
     if ( applicationPassword_testCase0 )
         SecKeychainItemDelete( internetPassword_testCase1.secKeychainItem );

@@ -136,6 +136,10 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   */
 @property ( retain, readwrite ) NSString* account;
 
+/** The `NSString` object that identifies the creator of keychain item represented by receiver.
+  */
+@property ( retain, readwrite ) NSString* creator;
+
 /** The `NSString` object that identifies the comment of keychain item represented by receiver.
   */
 @property ( retain, readwrite ) NSString* comment;
