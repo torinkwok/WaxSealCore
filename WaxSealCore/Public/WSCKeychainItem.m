@@ -43,8 +43,8 @@
 
 @dynamic label;
 @dynamic account;
-@dynamic creator;
 @dynamic comment;
+@dynamic kindDescription;
 @dynamic creationDate;
 @dynamic modificationDate;
 
@@ -54,6 +54,7 @@
 @synthesize secKeychainItem = _secKeychainItem;
 
 #pragma mark Accessor
+/* The `NSString` object that identifies the label of keychain item represented by receiver. */
 - ( NSString* ) label
     {
     return [ self p_extractAttribute: kSecLabelItemAttr ];
@@ -64,6 +65,7 @@
     [ self p_modifyAttribute: kSecLabelItemAttr withNewValue: _Label ];
     }
 
+/* The `NSString` object that identifies the account of keychain item represented by receiver. */
 - ( NSString* ) account
     {
     return [ self p_extractAttribute: kSecAccountItemAttr ];
@@ -74,16 +76,7 @@
     [ self p_modifyAttribute: kSecAccountItemAttr withNewValue: _Account ];
     }
 
-- ( NSString* ) creator
-    {
-    return [ self p_extractAttribute: kSecCreatorItemAttr ];
-    }
-
-- ( void ) setCreator: ( NSString* )_Creator
-    {
-    [ self p_modifyAttribute: kSecCreatorItemAttr withNewValue: _Creator ];
-    }
-
+/* The `NSString` object that identifies the comment of keychain item represented by receiver. */
 - ( NSString* ) comment
     {
     return [ self p_extractAttribute: kSecCommentItemAttr ];
@@ -94,13 +87,23 @@
     [ self p_modifyAttribute: kSecCommentItemAttr withNewValue: _Comment ];
     }
 
-/* Set creation date of receiver. */
+/* The `NSString` object that identifies the kind description of keychain item represented by receiver. */
+- ( NSString* ) kindDescription
+    {
+    return [ self p_extractAttribute: kSecDescriptionItemAttr ];
+    }
+
+- ( void ) setKindDescription:( NSString* )_KindDescription
+    {
+    [ self p_modifyAttribute: kSecDescriptionItemAttr withNewValue: _KindDescription ];
+    }
+
+/* The `NSDate` object that identifies the creation date of the keychain item represented by receiver. */
 - ( void ) setCreationDate: ( NSDate* )_Date
     {
     [ self p_modifyAttribute: kSecCreationDateItemAttr withNewValue: _Date ];
     }
 
-/* Get the `NSDate` object that identifies the creation date of the keychain item represented by receiver. */
 - ( NSDate* ) creationDate
     {
     return [ self p_extractAttribute: kSecCreationDateItemAttr ];
@@ -255,7 +258,7 @@
                         else if ( _AttrbuteTag == kSecLabelItemAttr
                                     || _AttrbuteTag == kSecCommentItemAttr
                                     || _AttrbuteTag == kSecAccountItemAttr
-                                    || _AttrbuteTag == kSecCreatorItemAttr )
+                                    || _AttrbuteTag == kSecDescriptionItemAttr )
                             {
                             attribute = [ self p_extractStringFromSecAttrStruct: attrStruct error: &error ];
                             break;
@@ -292,7 +295,7 @@
     if ( _SecKeychainAttrStruct.tag == kSecLabelItemAttr
             || _SecKeychainAttrStruct.tag == kSecCommentItemAttr
             || _SecKeychainAttrStruct.tag == kSecAccountItemAttr
-            || _SecKeychainAttrStruct.tag == kSecCreatorItemAttr ) // TODO: NEW ATTR
+            || _SecKeychainAttrStruct.tag == kSecDescriptionItemAttr ) // TODO: NEW ATTR
         stringValue = [ NSString stringWithCString: _SecKeychainAttrStruct.data encoding: NSUTF8StringEncoding ];
     else
         if ( _Error )
@@ -381,7 +384,7 @@
             case kSecLabelItemAttr:
             case kSecCommentItemAttr:
             case kSecAccountItemAttr:
-            case kSecCreatorItemAttr:
+            case kSecDescriptionItemAttr:
                  newAttr = [ self p_attrForStringValue: ( NSString* )_NewValue
                                                forAttr: _AttributeTag ];
                 break;

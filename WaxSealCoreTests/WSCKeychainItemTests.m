@@ -79,8 +79,8 @@
     NSString* accountOne = @"NSTongG";
     NSString* accountTwo = @"Tong G.";
 
-    NSString* creatorOne = @"Tong Guo";
-    NSString* creatorTwo = @"Author of WaxSealCore";
+    NSString* kindDescriptionOne = @"WaxSealCore Password";
+    NSString* kindDescriptionTwo = @"Passphrase for WaxSealCore";
 
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 0
@@ -116,12 +116,18 @@
 
     /*******/ NSLog( @"Account #1 (Test Case 0): %@", applicationPassword_testCase0.account ); /*******/
 
-    #pragma mark Creator
-    [ applicationPassword_testCase0 setCreator: creatorOne ];
-    XCTAssertNotNil( applicationPassword_testCase0.creator );
-    XCTAssertEqualObjects( applicationPassword_testCase0.creator, creatorOne );
+    #pragma mark Kind Description
+    [ applicationPassword_testCase0 setKindDescription: kindDescriptionOne ];
+    XCTAssertNotNil( applicationPassword_testCase0.kindDescription );
+    XCTAssertEqualObjects( applicationPassword_testCase0.kindDescription, kindDescriptionOne );
 
-    /*******/ NSLog( @"Creator #0 (Test Case 0): %@", applicationPassword_testCase0.creator ); /*******/
+    /*******/ NSLog( @"Kind Description #0 (Test Case 0): %@", applicationPassword_testCase0.kindDescription ); /*******/
+
+    [ applicationPassword_testCase0 setKindDescription: kindDescriptionTwo ];
+    XCTAssertNotNil( applicationPassword_testCase0.kindDescription );
+    XCTAssertEqualObjects( applicationPassword_testCase0.kindDescription, kindDescriptionTwo );
+
+    /*******/ NSLog( @"Kind Description #1 (Test Case 0): %@", applicationPassword_testCase0.kindDescription ); /*******/
 
     if ( applicationPassword_testCase0 )
         SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
@@ -136,6 +142,7 @@
                                                         protocol: WSCInternetProtocolTypeHTTPS
                                                         password: @"waxsealcore"
                                                            error: &error ];
+    #pragma mark Comment
     [ internetPassword_testCase1 setComment: commentOne ];
     XCTAssertNotNil( internetPassword_testCase1.comment );
     XCTAssertEqualObjects( internetPassword_testCase1.comment, commentOne );
@@ -148,6 +155,7 @@
 
     /*******/ NSLog( @"Comment #1 (Test Case 1): %@", internetPassword_testCase1.comment ); /*******/
 
+    #pragma mark Account
     [ internetPassword_testCase1 setAccount: accountOne ];
     XCTAssertNotNil( internetPassword_testCase1.account );
     XCTAssertEqualObjects( internetPassword_testCase1.account, accountOne );
@@ -159,6 +167,19 @@
     XCTAssertEqualObjects( internetPassword_testCase1.account, accountTwo );
 
     /*******/ NSLog( @"Account #1 (Test Case 1): %@", internetPassword_testCase1.account ); /*******/
+
+    #pragma mark Kind Description
+    [ internetPassword_testCase1 setKindDescription: kindDescriptionOne ];
+    XCTAssertNotNil( internetPassword_testCase1.kindDescription );
+    XCTAssertEqualObjects( internetPassword_testCase1.kindDescription, kindDescriptionOne );
+
+    /*******/ NSLog( @"Kind Description #0 (Test Case 1): %@", internetPassword_testCase1.kindDescription ); /*******/
+
+    [ internetPassword_testCase1 setKindDescription: kindDescriptionTwo ];
+    XCTAssertNotNil( internetPassword_testCase1.kindDescription );
+    XCTAssertEqualObjects( internetPassword_testCase1.kindDescription, kindDescriptionTwo );
+
+    /*******/ NSLog( @"Kind Description #1 (Test Case 1): %@", internetPassword_testCase1.kindDescription ); /*******/
 
     if ( applicationPassword_testCase0 )
         SecKeychainItemDelete( internetPassword_testCase1.secKeychainItem );
