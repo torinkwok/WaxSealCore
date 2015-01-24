@@ -134,6 +134,10 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   */
 @property ( retain, readwrite ) NSDate* creationDate;
 
+/** The `NSDate` object that identifies the modification date of the keychain item represented by receiver. (read-only)
+  */
+@property ( retain, readonly ) NSDate* modificationDate;
+
 /** The value that indicates which type of keychain item the receiver is. (read-only)
 
   For a list of possible class values, see ["WaxSealCore Keychain Item Class Constants."](WSCKeychainItemClass)

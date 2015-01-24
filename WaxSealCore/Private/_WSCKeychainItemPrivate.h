@@ -45,9 +45,9 @@
 - ( id ) p_extractAttribute: ( SecItemAttr )_AttrbuteTag
                       error: ( NSError** )_Error;
 
-// Extract NSDate object from the SecKeychainAttribute struct represeting an creation date attribute
-- ( NSDate* ) p_extractCreationDate: ( SecKeychainAttribute )_SecKeychainAttrStruct
-                              error: ( NSError** )_Error;
+// Extract NSDate object from the SecKeychainAttribute struct represeting an date attribute
+- ( NSDate* ) p_extractDateFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
+                                       error: ( NSError** )_Error;
 
 #pragma mark Modifying
 - ( void ) p_modifyAttribute: ( SecItemAttr )_AttributeTag

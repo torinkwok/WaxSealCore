@@ -42,6 +42,7 @@
 @implementation WSCKeychainItem
 
 @dynamic creationDate;
+@dynamic modificationDate;
 
 @dynamic itemClass;
 @dynamic isValid;
@@ -81,6 +82,18 @@
     {
     NSError* error = nil;
     NSDate* theDate = [ self p_extractAttribute: kSecCreationDateItemAttr error: &error ];
+
+    if ( error )
+        _WSCPrintNSErrorForLog( error );
+
+    return theDate;
+    }
+
+/* The `NSDate` object that identifies the modification date of the keychain item represented by receiver. (read-only) */
+- ( NSDate* ) modificationDate
+    {
+    NSError* error = nil;
+    NSDate* theDate = [ self p_extractAttribute: kSecModDateItemAttr error: &error ];
 
     if ( error )
         _WSCPrintNSErrorForLog( error );
@@ -218,22 +231,21 @@
                 // Iterate the attribtues array, find out the matching attribute
                 for ( int _Index = 0; _Index < attrList->count; _Index++ )
                     {
-                    SecKeychainAttribute attr = attrs[ _Index ];
+                    SecKeychainAttribute attrStruct = attrs[ _Index ];
 
-                    if ( attr.tag == _AttrbuteTag )
+                    if ( attrStruct.tag == _AttrbuteTag )
                         {
-                        if ( _AttrbuteTag == kSecCreationDateItemAttr )
+                        if ( _AttrbuteTag == kSecCreationDateItemAttr || _AttrbuteTag == kSecModDateItemAttr )
                             {
-                            attribute = [ self p_extractCreationDate: attr error: _Error ];
-
-                            // Okay, got it! We no longer need these guys, kill them 😲🔫
-                            SecKeychainFreeAttributeInfo( attributeInfo );
-                            SecKeychainItemFreeAttributesAndData( attrList, NULL );
-                            
+                            attribute = [ self p_extractDateFromSecAttrStruct: attrStruct error: _Error ];
                             break;
                             }
                         }
                     }
+
+                // Okay, got it! We no longer need these guys, kill them 😲🔫
+                SecKeychainFreeAttributeInfo( attributeInfo );
+                SecKeychainItemFreeAttributesAndData( attrList, NULL );
                 }
             else
                 // If we failed to retrieves the attributes.
@@ -247,14 +259,15 @@
     return attribute;
     }
 
-/* Extract NSDate object from the SecKeychainAttribute struct represeting an creation date attribute
+/* Extract NSDate object from the SecKeychainAttribute struct represeting an date attribute
  */
-- ( NSDate* ) p_extractCreationDate: ( SecKeychainAttribute )_SecKeychainAttrStruct
-                              error: ( NSError** )_Error
+- ( NSDate* ) p_extractDateFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
+                                       error: ( NSError** )_Error
     {
     // The _SecKeychainAttr must be a creation date attribute.
     if ( _SecKeychainAttrStruct.tag == kSecCreationDateItemAttr )
         {
+        // This is the native format for stored time values in the CDSA specification.
         NSString* ZuluTimeString =  [ [ NSString alloc ] initWithData: [ NSData dataWithBytes: _SecKeychainAttrStruct.data
                                                                                        length: _SecKeychainAttrStruct.length ]
                                                              encoding: NSUTF8StringEncoding ];
