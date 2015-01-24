@@ -149,6 +149,9 @@
     if ( internetPassword_testCase1 )
         SecKeychainItemDelete( internetPassword_testCase1.secKeychainItem );
 
+    // TODO: XCTAssertFalse( applicationPassword_testCase0.isValid );
+    XCTAssertNil( applicationPassword_testCase0.creationDate );
+
     NSLog( @"Modification (Negative Test Case 0) #0: %@", [ applicationPassword_testCase0 creationDate ] );
     [ applicationPassword_testCase0 setCreationDate: [ NSDate dateWithNaturalLanguageString: @"1998-2-8 21:23:19 +0300" ] ];
     NSLog( @"Modification (Negative Test Case 0) #1: %@", [ applicationPassword_testCase0 creationDate ] );
@@ -158,6 +161,9 @@
     // -------------------------------------------------------------------------------------------------------------------- //
     [ [ WSCKeychainManager defaultManager ] deleteKeychain: commonRandomKeychain
                                                      error: nil ];
+
+    XCTAssertFalse( internetPassword_testCase1.isValid );
+    XCTAssertNil( internetPassword_testCase1.creationDate );
 
     NSLog( @"Modification (Negative Test Case 1) #0: %@", [ internetPassword_testCase1 creationDate ] );
     [ internetPassword_testCase1 setCreationDate: [ NSDate dateWithNaturalLanguageString: @"1998-2-8 21:23:19 +0300" ] ];
@@ -223,6 +229,61 @@
     _WSCPrintNSErrorForUnitTest( error );
 
     XCTAssertNil( keychainItem_negativeTest0.creationDate );
+    }
+
+- ( void ) testModificationDate
+    {
+    NSError* error = nil;
+    WSCKeychain* commonRandomKeychain = _WSCRandomKeychain();
+
+    // -------------------------------------------------------------------------------------------------------------------- //
+    // Test Case 0
+    // -------------------------------------------------------------------------------------------------------------------- //
+    WSCApplicationPassword* applicationPassword_testCase0 =
+        [ commonRandomKeychain addApplicationPasswordWithServiceName: @"WaxSealCore: testModificationDate"
+                                                         accountName: @"testModificationDate Test Case 0"
+                                                            password: @"waxsealcore"
+                                                               error: &error ];
+
+    XCTAssertNotNil( applicationPassword_testCase0.modificationDate );
+    NSLog( @"Modification Date #0: %@", applicationPassword_testCase0.modificationDate );
+
+    sleep( 5 );
+
+    // -------------------------------------------------------------------------------------------------------------------- //
+    // Test Case 1
+    // -------------------------------------------------------------------------------------------------------------------- //
+    WSCInternetPassword* internetPassword_testCase1 =
+        [ commonRandomKeychain addInternetPasswordWithServerName: @"www.waxsealcore.org"
+                                                 URLRelativePath: @"testModificationDate/test/case/1"
+                                                     accountName: @"NSTongG"
+                                                        protocol: WSCInternetProtocolTypeFTPS
+                                                        password: @"waxsealcore"
+                                                           error: &error ];
+
+    XCTAssertNotNil( internetPassword_testCase1.creationDate );
+    NSLog( @"Modification Date #1: %@", internetPassword_testCase1.modificationDate );
+
+    // -------------------------------------------------------------------------------------------------------------------- //
+    // Negative Test Case 0: The keychain item: applicationPassword_testCase0 has been already deleted
+    // -------------------------------------------------------------------------------------------------------------------- //
+    if ( applicationPassword_testCase0 )
+        SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
+
+    // TODO: XCTAssertFalse( applicationPassword_testCase0.isValid );
+    XCTAssertNil( applicationPassword_testCase0.modificationDate );
+
+    // -------------------------------------------------------------------------------------------------------------------- //
+    // Negative Test Case 1: The keychain item: internetPassword_testCase1 has been already deleted
+    // -------------------------------------------------------------------------------------------------------------------- //
+    XCTAssertTrue( internetPassword_testCase1.isValid );
+    [ [ WSCKeychainManager defaultManager ] deleteKeychain: commonRandomKeychain
+                                                     error: nil ];
+    XCTAssertFalse( internetPassword_testCase1.isValid );
+    XCTAssertNil( internetPassword_testCase1.modificationDate );
+
+    if ( internetPassword_testCase1 )
+        SecKeychainItemDelete( internetPassword_testCase1.secKeychainItem );
     }
 
 - ( void ) testIsValidProperty

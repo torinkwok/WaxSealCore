@@ -264,8 +264,11 @@
 - ( NSDate* ) p_extractDateFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
                                        error: ( NSError** )_Error
     {
+    NSDate* dateWithCorrectTimeZone = nil;
+
     // The _SecKeychainAttr must be a creation date attribute.
-    if ( _SecKeychainAttrStruct.tag == kSecCreationDateItemAttr )
+    if ( _SecKeychainAttrStruct.tag == kSecCreationDateItemAttr
+            || _SecKeychainAttrStruct.tag == kSecModDateItemAttr )
         {
         // This is the native format for stored time values in the CDSA specification.
         NSString* ZuluTimeString =  [ [ NSString alloc ] initWithData: [ NSData dataWithBytes: _SecKeychainAttrStruct.data
@@ -302,17 +305,15 @@
         [ rawDateComponents setSecond:  second.integerValue ];
 
         NSDate* rawDate = [ [ NSCalendar autoupdatingCurrentCalendar ] dateFromComponents: rawDateComponents ];
-        NSDate* dateWithCorrectTimeZone = [ rawDate dateWithCalendarFormat: nil
-                                                                  timeZone: [ NSTimeZone localTimeZone ] ];
-        return dateWithCorrectTimeZone;
+        dateWithCorrectTimeZone = [ rawDate dateWithCalendarFormat: nil
+                                                          timeZone: [ NSTimeZone localTimeZone ] ];
         }
     else
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                            code: WSCKeychainInvalidParametersError
                                        userInfo: nil ];
-
-    return nil;
+    return dateWithCorrectTimeZone;
     }
 
 #pragma mark Modifying
