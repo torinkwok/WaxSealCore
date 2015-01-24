@@ -42,6 +42,7 @@
 @implementation WSCKeychainItem
 
 @dynamic label;
+@dynamic account;
 @dynamic comment;
 @dynamic creationDate;
 @dynamic modificationDate;
@@ -54,103 +55,54 @@
 #pragma mark Accessor
 - ( NSString* ) label
     {
-    NSError* error = nil;
-    NSString* label = [ self p_extractAttribute: kSecLabelItemAttr error: &error ];
-
-    if ( error )
-        _WSCPrintNSErrorForLog( error );
-
-    return label;
+    return [ self p_extractAttribute: kSecLabelItemAttr ];
     }
 
 - ( void ) setLabel: ( NSString* )_Label
     {
-    NSError* error = nil;
-
-    _WSCDontBeABitch( &error
-                    , _Label, [ NSString class ]
-                    , s_guard
-                    );
-    if ( !error )
-        [ self p_modifyAttribute: kSecLabelItemAttr withNewValue: _Label error: &error ];
-    else
-        _WSCPrintNSErrorForLog( error );
+    [ self p_modifyAttribute: kSecLabelItemAttr withNewValue: _Label ];
     }
+
+//- ( NSString* ) comment
+//    {
+//
+//    }
 
 - ( NSString* ) comment
     {
-    NSError* error = nil;
-    NSString* comment = [ self p_extractAttribute: kSecCommentItemAttr error: &error ];
-
-    if ( error )
-        _WSCPrintNSErrorForLog( error );
-
-    return comment;
+    return [ self p_extractAttribute: kSecCommentItemAttr ];
     }
 
 - ( void ) setComment: ( NSString* )_Comment
     {
-    NSError* error = nil;
-
-    _WSCDontBeABitch( &error
-                    , _Comment, [ NSString class ]
-                    , s_guard
-                    );
-    if ( !error )
-        [ self p_modifyAttribute: kSecCommentItemAttr withNewValue: _Comment error: &error ];
-    else
-        _WSCPrintNSErrorForLog( error );
+    [ self p_modifyAttribute: kSecCommentItemAttr withNewValue: _Comment ];
     }
 
 /* Set creation date of receiver. */
 - ( void ) setCreationDate: ( NSDate* )_Date
     {
-    NSError* error = nil;
+    NSInteger theMaxYear = 9999;
+    NSDateComponents* dateComponents = [ [ NSCalendar currentCalendar ] components: NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond
+                                                                          fromDate: _Date ];
+    [ dateComponents setYear: MIN( dateComponents.year, theMaxYear ) ];
 
-    _WSCDontBeABitch( &error
-                    , _Date, [ NSDate class ]
-                    , self, [ WSCKeychainItem class ]
-                    , s_guard
-                    );
-    if ( !error )
-        {
-        NSInteger theMaxYear = 9999;
-        NSDateComponents* dateComponents = [ [ NSCalendar currentCalendar ] components: NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond
-                                                                              fromDate: _Date ];
-        [ dateComponents setYear: MIN( dateComponents.year, theMaxYear ) ];
+    // We are going to get a date with the standard Greenwich Mean Time (GMT offset 0)
+    [ [ NSCalendar currentCalendar ] setTimeZone: [ NSTimeZone timeZoneForSecondsFromGMT: 0 ] ];
+    NSDate* processedDate = [ [ NSCalendar currentCalendar ] dateFromComponents: dateComponents ];
 
-        // We are going to get a date with the standard Greenwich Mean Time (GMT offset 0)
-        [ [ NSCalendar currentCalendar ] setTimeZone: [ NSTimeZone timeZoneForSecondsFromGMT: 0 ] ];
-        NSDate* processedDate = [ [ NSCalendar currentCalendar ] dateFromComponents: dateComponents ];
-
-        [ self p_modifyAttribute: kSecCreationDateItemAttr withNewValue: processedDate error: &error ];
-        }
-    else
-        _WSCPrintNSErrorForLog( error );
+    [ self p_modifyAttribute: kSecCreationDateItemAttr withNewValue: processedDate ];
     }
 
 /* Get the `NSDate` object that identifies the creation date of the keychain item represented by receiver. */
 - ( NSDate* ) creationDate
     {
-    NSError* error = nil;
-    NSDate* theDate = [ self p_extractAttribute: kSecCreationDateItemAttr error: &error ];
-
-    if ( error )
-        _WSCPrintNSErrorForLog( error );
-
-    return theDate;
+    return [ self p_extractAttribute: kSecCreationDateItemAttr ];
     }
 
 /* The `NSDate` object that identifies the modification date of the keychain item represented by receiver. (read-only) */
 - ( NSDate* ) modificationDate
     {
-    NSError* error = nil;
-    NSDate* theDate = [ self p_extractAttribute: kSecModDateItemAttr error: &error ];
-
-    if ( error )
-        _WSCPrintNSErrorForLog( error );
-
-    return theDate;
+    return [ self p_extractAttribute: kSecModDateItemAttr ];
     }
 
 /* Boolean value that indicates whether the receiver is currently valid. (read-only)
@@ -236,13 +188,13 @@
 
 #pragma mark Extracting
 - ( id ) p_extractAttribute: ( SecItemAttr )_AttrbuteTag
-                      error: ( NSError** )_Error;
     {
+    NSError* error = nil;
     OSStatus resultCode = errSecSuccess;
     id attribute = nil;
 
-    _WSCDontBeABitch( _Error, self, [ WSCKeychainItem class ], s_guard );
-    if ( !_Error || !( *_Error ) )
+    _WSCDontBeABitch( &error, self, [ WSCKeychainItem class ], s_guard );
+    if ( !error )
         {
         CSSM_DB_RECORDTYPE itemID = 0;
 
@@ -289,12 +241,12 @@
                         {
                         if ( _AttrbuteTag == kSecCreationDateItemAttr || _AttrbuteTag == kSecModDateItemAttr )
                             {
-                            attribute = [ self p_extractDateFromSecAttrStruct: attrStruct error: _Error ];
+                            attribute = [ self p_extractDateFromSecAttrStruct: attrStruct error: &error ];
                             break;
                             }
                         else if ( _AttrbuteTag == kSecLabelItemAttr || _AttrbuteTag == kSecCommentItemAttr )
                             {
-                            attribute = [ self p_extractStringFromSecAttrStruct: attrStruct error: _Error ];
+                            attribute = [ self p_extractStringFromSecAttrStruct: attrStruct error: &error ];
                             break;
                             }
                         }
@@ -306,12 +258,15 @@
                 }
             else
                 // If we failed to retrieves the attributes.
-                _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+                _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
             }
         else
             // If we failed to obtain tags
-            _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+            _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
         }
+
+    if ( error )
+        _WSCPrintNSErrorForLog( error );
 
     return attribute;
     }
@@ -395,12 +350,12 @@
 #pragma mark Modifying
 - ( void ) p_modifyAttribute: ( SecItemAttr )_AttributeTag
                 withNewValue: ( id )_NewValue
-                       error: ( NSError** )_Error
     {
+    NSError* error = nil;
     OSStatus resultCode = errSecSuccess;
 
-    _WSCDontBeABitch( _Error, self, [ WSCKeychainItem class ], s_guard );
-    if ( !_Error || !( *_Error ) )
+    _WSCDontBeABitch( &error, self, [ WSCKeychainItem class ], s_guard );
+    if ( !error )
         {
         SecKeychainAttribute newAttr;
 
@@ -422,8 +377,11 @@
                                                            , 0, NULL
                                                            );
         if ( resultCode != errSecSuccess )
-            _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+            _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
         }
+
+    if ( error )
+        _WSCPrintNSErrorForLog( error );
     }
 
 /* Convert the NSDate to the Zulu Time Format string

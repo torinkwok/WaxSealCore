@@ -42,8 +42,7 @@
 @interface WSCKeychainItem ( WSCKeychainItemPrivateAccessingAttributes )
 
 #pragma mark Extracting
-- ( id ) p_extractAttribute: ( SecItemAttr )_AttrbuteTag
-                      error: ( NSError** )_Error;
+- ( id ) p_extractAttribute: ( SecItemAttr )_AttrbuteTag;
 
 // Extract NSString object from the SecKeychainAttribute struct.
 - ( NSString* ) p_extractStringFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
@@ -55,8 +54,7 @@
 
 #pragma mark Modifying
 - ( void ) p_modifyAttribute: ( SecItemAttr )_AttributeTag
-                withNewValue: ( id )_NewValue
-                       error: ( NSError** )_Error;
+                withNewValue: ( id )_NewValue;
 
 // Convert the NSString to the C-Style string.
 - ( SecKeychainAttribute ) p_attrForStringValue: ( NSString* )_StringValue
