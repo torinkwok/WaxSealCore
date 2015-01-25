@@ -186,6 +186,10 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   */
 @property ( retain, readwrite ) NSString* serverName;
 
+/** The attribute value that identifies the authentication type of an internet password item represented by receiver.
+  */
+@property ( assign, readwrite ) WSCInternetAuthenticationType authenticationType;
+
 #pragma mark Application Password Attributes
 /** The `NSString` object that identifies the service name of an application password item represented by receiver.
   */

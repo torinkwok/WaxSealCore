@@ -34,7 +34,7 @@
 
 /** Defines the protocol type associated with an Internet password.
   */
-typedef NS_ENUM( int, WSCInternetProtocolType )
+typedef NS_ENUM( FourCharCode, WSCInternetProtocolType )
     {
     /// Indicates FTP.
       WSCInternetProtocolTypeFTP         = kSecProtocolTypeFTP
@@ -145,7 +145,7 @@ typedef NS_ENUM( int, WSCInternetProtocolType )
 
 /** Defines constants you can use to identify the type of authentication to use for an Internet password.
   */
-typedef NS_ENUM( int, WSCInternetAuthenticationType )
+typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
     {
     /// Specifies Windows NT LAN Manager authentication.
       WSCInternetAuthenticationTypeNTLM             = kSecAuthenticationTypeNTLM

@@ -43,6 +43,7 @@
 
 @dynamic label;
 @dynamic serverName;
+@dynamic authenticationType
 @dynamic serviceName;
 @dynamic account;
 @dynamic comment;
@@ -75,6 +76,11 @@
 - ( void ) setServerName: ( NSString* )_ServerName
     {
     [ self p_modifyAttribute: kSecServerItemAttr withNewValue: _ServerName ];
+    }
+
+- ( WSCInternetAuthenticationType ) authenticationType
+    {
+    
     }
 
 /* The `NSString` object that identifies the service name of an application password item represented by receiver. */
