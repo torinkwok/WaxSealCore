@@ -93,6 +93,7 @@
     _ErrorObject = nil;
 
 void _WSCFillErrorParamWithSecErrorCode( OSStatus _ResultCode, NSError** _ErrorParam );
+NSString* _WSCFourCharCode2NSString( FourCharCode _FourCharCodeValue );
 
 //////////////////////////////////////////////////////////////////////////////
 

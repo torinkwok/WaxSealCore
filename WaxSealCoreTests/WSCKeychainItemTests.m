@@ -88,6 +88,11 @@
     NSString* serverNameOne = @"www.waxsealcore.org";
     NSString* serverNameTwo = @"twitter.com/NSTongG";
 
+    WSCInternetAuthenticationType authTypeOne = WSCInternetAuthenticationTypeHTMLForm;
+    WSCInternetAuthenticationType authTypeTwo = WSCInternetAuthenticationTypeMSN;
+    NSLog( @"Auth Type One: %@", _WSCFourCharCode2NSString( authTypeOne ) );
+    NSLog( @"Auth Type Two: %@", _WSCFourCharCode2NSString( authTypeTwo ) );
+
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 0
     // -------------------------------------------------------------------------------------------------------------------- //
@@ -238,6 +243,19 @@
     XCTAssertEqualObjects( internetPassword_testCase1.serverName, serverNameTwo );
 
     /*******/ NSLog( @"Server Name #1 (Test Case 1): %@", internetPassword_testCase1.serverName ); /*******/
+
+    #pragma mark Auth Type
+    [ internetPassword_testCase1 setAuthenticationType: authTypeOne ];
+    XCTAssertNotEqual( internetPassword_testCase1.authenticationType, 0 );
+    XCTAssertEqual( internetPassword_testCase1.authenticationType, authTypeOne );
+
+//    /*******/ NSLog( @"Auth Type #0 (Test Case 1): %s", internetPassword_testCase1.authenticationType ); /*******/
+
+    [ internetPassword_testCase1 setAuthenticationType: authTypeTwo ];
+    XCTAssertNotEqual( internetPassword_testCase1.authenticationType, 0 );
+    XCTAssertEqual( internetPassword_testCase1.authenticationType, authTypeTwo );
+
+//    /*******/ NSLog( @"Auth Type #1 (Test Case 1): %s", internetPassword_testCase1.authenticationType ); /*******/
 
     if ( applicationPassword_testCase0 )
         SecKeychainItemDelete( internetPassword_testCase1.secKeychainItem );

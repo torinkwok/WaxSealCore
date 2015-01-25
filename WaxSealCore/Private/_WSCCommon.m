@@ -48,6 +48,26 @@ inline void _WSCFillErrorParamWithSecErrorCode( OSStatus _ResultCode, NSError** 
         }
     }
 
+inline NSString* _WSCFourCharCode2NSString( FourCharCode _FourCharCodeValue )
+    {
+#if TARGET_RT_LITTLE_ENDIAN
+    char string[] = { *( ( ( char* )&_FourCharCodeValue ) + 0 )
+                    , *( ( ( char* )&_FourCharCodeValue ) + 1 )
+                    , *( ( ( char* )&_FourCharCodeValue ) + 2 )
+                    , *( ( ( char* )&_FourCharCodeValue ) + 3 )
+                    , 0
+                    };
+#else
+    char string[] = { *( ( ( char* )&_FourCharCodeValue ) + 3 )
+                    , *( ( ( char* )&_FourCharCodeValue ) + 2 )
+                    , *( ( ( char* )&_FourCharCodeValue ) + 1 )
+                    , *( ( ( char* )&_FourCharCodeValue ) + 0 )
+                    , 0
+                    };
+#endif
+    return [ NSString stringWithCString: string encoding: NSUTF8StringEncoding ];
+    }
+
 //////////////////////////////////////////////////////////////////////////////
 
 /*****************************************************************************

@@ -43,7 +43,7 @@
 
 @dynamic label;
 @dynamic serverName;
-@dynamic authenticationType
+@dynamic authenticationType;
 @dynamic serviceName;
 @dynamic account;
 @dynamic comment;
@@ -80,7 +80,12 @@
 
 - ( WSCInternetAuthenticationType ) authenticationType
     {
-    
+    return ( WSCInternetAuthenticationType )( [ [ self p_extractAttribute: kSecAuthenticationTypeItemAttr ] unsignedIntValue ] );
+    }
+
+- ( void ) setAuthenticationType: ( WSCInternetAuthenticationType )_AuthType
+    {
+    [ self p_modifyAttribute: kSecAuthenticationTypeItemAttr withNewValue: @( _AuthType ) ];
     }
 
 /* The `NSString` object that identifies the service name of an application password item represented by receiver. */
@@ -295,6 +300,12 @@
                             attribute = [ self p_extractStringFromSecAttrStruct: attrStruct error: &error ];
                             break;
                             }
+
+                        else if ( _AttrbuteTag == kSecAuthenticationTypeItemAttr )
+                            {
+                            attribute = @( [ self p_extractFourCharCodeFromSecAttrStruct: attrStruct error: &error ] );
+                            break;
+                            }
                         }
                     }
 
@@ -338,6 +349,23 @@
                                        userInfo: nil ];
 
     return stringValue;
+    }
+
+/* Extract FourCharCode from the SecKeychainAttribute struct.
+ */
+- ( FourCharCode ) p_extractFourCharCodeFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
+                                                    error: ( NSError** )_Error
+    {
+    FourCharCode fourCharCodeValue = '\0\0\0\0';
+
+    if ( _SecKeychainAttrStruct.tag == kSecAuthenticationTypeItemAttr )
+        fourCharCodeValue = ( FourCharCode )_SecKeychainAttrStruct.data;
+    else
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                           code: WSCKeychainInvalidParametersError
+                                       userInfo: nil ];
+    return fourCharCodeValue;
     }
 
 /* Extract NSDate object from the SecKeychainAttribute struct.
@@ -421,9 +449,17 @@
             case kSecDescriptionItemAttr:
             case kSecServiceItemAttr:
             case kSecServerItemAttr:
-                 newAttr = [ self p_attrForStringValue: ( NSString* )_NewValue
+                newAttr = [ self p_attrForStringValue: ( NSString* )_NewValue
                                                forAttr: _AttributeTag ];
                 break;
+
+            case kSecAuthenticationTypeItemAttr:
+                {
+                UInt32 fuckingUInt32 = [ _NewValue unsignedIntValue ];
+                FourCharCode ex = ( FourCharCode )[ _NewValue unsignedIntValue ];
+                newAttr = [ self p_attrForFourCharCode: ( FourCharCode )[ _NewValue unsignedIntValue ]
+                                               forAttr: _AttributeTag ];
+                }
 
             // TODO: NEW ATTR
             }
@@ -480,6 +516,15 @@
     {
     void* value = ( void* )[ _StringValue cStringUsingEncoding: NSUTF8StringEncoding ];
     SecKeychainAttribute attrStruct = { _Attr, ( UInt32 )strlen( value ) + 1, value };
+
+    return attrStruct;
+    }
+
+- ( SecKeychainAttribute ) p_attrForFourCharCode: ( FourCharCode )_FourCharCode
+                                         forAttr: ( SecItemAttr )_Attr
+    {
+    FourCharCode theValue = _FourCharCode;
+    SecKeychainAttribute attrStruct = { _Attr, ( UInt32 )sizeof( FourCharCode ), ( void* )&theValue };
 
     return attrStruct;
     }
