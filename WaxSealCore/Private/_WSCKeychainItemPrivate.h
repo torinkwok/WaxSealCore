@@ -60,12 +60,16 @@
 - ( void ) p_modifyAttribute: ( SecItemAttr )_AttributeTag
                 withNewValue: ( id )_NewValue;
 
-// Convert the NSString to the C-Style string.
+// Construct SecKeychainAttribute struct with the NSDate object.
+- ( SecKeychainAttribute ) p_attrForDateValue: ( NSDate* )_Date;
+
+// Construct SecKeychainAttribute struct with the NSString object.
 - ( SecKeychainAttribute ) p_attrForStringValue: ( NSString* )_StringValue
                                         forAttr: ( SecItemAttr )_Attr;
 
-// Convert the NSDate to the Zulu Time Format string
-- ( SecKeychainAttribute ) p_attrForDateValue: ( NSDate* )_Date;
+// Construct SecKeychainAttribute struct with four char code.
+- ( SecKeychainAttribute ) p_attrForFourCharCode: ( FourCharCode )_FourCharCode
+                                         forAttr: ( SecItemAttr )_Attr;
 
 @end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes
 

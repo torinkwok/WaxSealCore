@@ -536,9 +536,13 @@
 - ( SecKeychainAttribute ) p_attrForFourCharCode: ( FourCharCode )_FourCharCode
                                          forAttr: ( SecItemAttr )_Attr
     {
-    FourCharCode* buffer = malloc( sizeof( _FourCharCode ) );
-    memcpy( buffer, &_FourCharCode, sizeof( _FourCharCode ) );
-    SecKeychainAttribute attrStruct = { _Attr, ( UInt32 )sizeof( FourCharCode ), ( void* )buffer };
+    FourCharCode* fourCharCodeBuffer = malloc( sizeof( _FourCharCode ) );
+
+    // We will free the memory occupied by the fourCharCodeBuffer
+    // using SecKeychainItemFreeAttributesAndData() function in later.
+    memcpy( fourCharCodeBuffer, &_FourCharCode, sizeof( _FourCharCode ) );
+
+    SecKeychainAttribute attrStruct = { _Attr, ( UInt32 )sizeof( FourCharCode ), ( void* )fourCharCodeBuffer };
 
     return attrStruct;
     }
