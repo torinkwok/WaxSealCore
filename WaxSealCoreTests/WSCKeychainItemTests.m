@@ -90,8 +90,18 @@
 
     WSCInternetAuthenticationType authTypeOne = WSCInternetAuthenticationTypeHTMLForm;
     WSCInternetAuthenticationType authTypeTwo = WSCInternetAuthenticationTypeMSN;
+
     NSLog( @"Auth Type One: %@", _WSCFourCharCode2NSString( authTypeOne ) );
     NSLog( @"Auth Type Two: %@", _WSCFourCharCode2NSString( authTypeTwo ) );
+
+    NSLog( @"Auth Type One: %@", NSFileTypeForHFSTypeCode( authTypeOne ) );
+    NSLog( @"Auth Type Two: %@", NSFileTypeForHFSTypeCode( authTypeTwo ) );
+
+    authTypeOne = NSHFSTypeCodeFromFileType( _WSCFourCharCode2NSString( authTypeOne ) );
+    authTypeTwo = NSHFSTypeCodeFromFileType( _WSCFourCharCode2NSString( authTypeTwo ) );
+
+    NSLog( @"Auth Type One: %@", NSFileTypeForHFSTypeCode( authTypeOne ) );
+    NSLog( @"Auth Type Two: %@", NSFileTypeForHFSTypeCode( authTypeTwo ) );
 
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 0

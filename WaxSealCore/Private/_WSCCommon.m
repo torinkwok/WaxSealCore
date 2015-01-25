@@ -65,7 +65,11 @@ inline NSString* _WSCFourCharCode2NSString( FourCharCode _FourCharCodeValue )
                     , 0
                     };
 #endif
-    return [ NSString stringWithCString: string encoding: NSUTF8StringEncoding ];
+    NSMutableString* stringValue = [ NSMutableString stringWithCString: string encoding: NSUTF8StringEncoding ];
+    [ stringValue insertString: @"'" atIndex: 0 ];
+    [ stringValue appendString: @"'" ];
+
+    return stringValue;
     }
 
 //////////////////////////////////////////////////////////////////////////////

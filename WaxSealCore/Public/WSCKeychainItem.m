@@ -80,12 +80,12 @@
 
 - ( WSCInternetAuthenticationType ) authenticationType
     {
-    return ( WSCInternetAuthenticationType )( [ [ self p_extractAttribute: kSecAuthenticationTypeItemAttr ] unsignedIntValue ] );
+    return ( WSCInternetAuthenticationType )( [ self p_extractAttribute: kSecAuthenticationTypeItemAttr ] );
     }
 
 - ( void ) setAuthenticationType: ( WSCInternetAuthenticationType )_AuthType
     {
-    [ self p_modifyAttribute: kSecAuthenticationTypeItemAttr withNewValue: @( _AuthType ) ];
+    [ self p_modifyAttribute: kSecAuthenticationTypeItemAttr withNewValue: ( id )_AuthType ];
     }
 
 /* The `NSString` object that identifies the service name of an application password item represented by receiver. */
@@ -303,7 +303,7 @@
 
                         else if ( _AttrbuteTag == kSecAuthenticationTypeItemAttr )
                             {
-                            attribute = @( [ self p_extractFourCharCodeFromSecAttrStruct: attrStruct error: &error ] );
+                            attribute = ( id )[ self p_extractFourCharCodeFromSecAttrStruct: attrStruct error: &error ];
                             break;
                             }
                         }
@@ -359,12 +359,23 @@
     FourCharCode fourCharCodeValue = '\0\0\0\0';
 
     if ( _SecKeychainAttrStruct.tag == kSecAuthenticationTypeItemAttr )
-        fourCharCodeValue = ( FourCharCode )_SecKeychainAttrStruct.data;
+        {
+        NSMutableString* stringedData = [ NSMutableString stringWithCString: _SecKeychainAttrStruct.data encoding: NSUTF8StringEncoding ];
+        [ stringedData insertString: @"'" atIndex: 0 ];
+        [ stringedData appendString: @"'" ];
+        NSLog( @"Data: %@", stringedData );
+        FourCharCode fuckingCharCode = ( FourCharCode )NSHFSTypeCodeFromFileType( stringedData );
+        fuckingCharCode = NSHFSTypeCodeFromFileType( _WSCFourCharCode2NSString( fuckingCharCode ) );
+        fourCharCodeValue = fuckingCharCode;
+        }
     else
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                            code: WSCKeychainInvalidParametersError
                                        userInfo: nil ];
+
+//    fourCharCodeValue = NSHFSTypeCodeFromFileType( _WSCFourCharCode2NSString( fourCharCodeValue ) );
+
     return fourCharCodeValue;
     }
 
@@ -454,12 +465,8 @@
                 break;
 
             case kSecAuthenticationTypeItemAttr:
-                {
-                UInt32 fuckingUInt32 = [ _NewValue unsignedIntValue ];
-                FourCharCode ex = ( FourCharCode )[ _NewValue unsignedIntValue ];
-                newAttr = [ self p_attrForFourCharCode: ( FourCharCode )[ _NewValue unsignedIntValue ]
+                newAttr = [ self p_attrForFourCharCode: ( FourCharCode )_NewValue
                                                forAttr: _AttributeTag ];
-                }
 
             // TODO: NEW ATTR
             }
@@ -523,8 +530,9 @@
 - ( SecKeychainAttribute ) p_attrForFourCharCode: ( FourCharCode )_FourCharCode
                                          forAttr: ( SecItemAttr )_Attr
     {
-    FourCharCode theValue = _FourCharCode;
-    SecKeychainAttribute attrStruct = { _Attr, ( UInt32 )sizeof( FourCharCode ), ( void* )&theValue };
+    FourCharCode* buffer = malloc( sizeof( _FourCharCode ) );
+    memcpy( buffer, &_FourCharCode, sizeof( _FourCharCode ) );
+    SecKeychainAttribute attrStruct = { _Attr, ( UInt32 )sizeof( FourCharCode ), ( void* )buffer };
 
     return attrStruct;
     }
