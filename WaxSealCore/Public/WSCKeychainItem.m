@@ -44,6 +44,7 @@
 @dynamic label;
 @dynamic serverName;
 @dynamic authenticationType;
+@dynamic protocol;
 @dynamic serviceName;
 @dynamic account;
 @dynamic comment;
@@ -86,6 +87,16 @@
 - ( void ) setAuthenticationType: ( WSCInternetAuthenticationType )_AuthType
     {
     [ self p_modifyAttribute: kSecAuthenticationTypeItemAttr withNewValue: ( id )_AuthType ];
+    }
+
+- ( WSCInternetProtocolType ) protocol
+    {
+    return ( WSCInternetProtocolType )[ self p_extractAttribute: kSecProtocolItemAttr ];
+    }
+
+- ( void ) setProtocol: ( WSCInternetProtocolType )_Protocol
+    {
+    [ self p_modifyAttribute: kSecProtocolItemAttr withNewValue: ( id )_Protocol ];
     }
 
 /* The `NSString` object that identifies the service name of an application password item represented by receiver. */
@@ -301,7 +312,8 @@
                             break;
                             }
 
-                        else if ( _AttrbuteTag == kSecAuthenticationTypeItemAttr )
+                        else if ( _AttrbuteTag == kSecAuthenticationTypeItemAttr
+                                    || _AttrbuteTag == kSecProtocolItemAttr )
                             {
                             attribute = ( id )[ self p_extractFourCharCodeFromSecAttrStruct: attrStruct error: &error ];
                             break;
@@ -358,7 +370,8 @@
     {
     FourCharCode fourCharCodeValue = '\0\0\0\0';
 
-    if ( _SecKeychainAttrStruct.tag == kSecAuthenticationTypeItemAttr )
+    if ( _SecKeychainAttrStruct.tag == kSecAuthenticationTypeItemAttr
+            || _SecKeychainAttrStruct.tag == kSecProtocolItemAttr )
         {
         FourCharCode* data = _SecKeychainAttrStruct.data;
         fourCharCodeValue = *data;
@@ -457,6 +470,7 @@
                 break;
 
             case kSecAuthenticationTypeItemAttr:
+            case kSecProtocolItemAttr:
                 newAttr = [ self p_attrForFourCharCode: ( FourCharCode )_NewValue
                                                forAttr: _AttributeTag ];
 

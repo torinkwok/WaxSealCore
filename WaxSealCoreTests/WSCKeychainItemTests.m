@@ -92,6 +92,10 @@
     WSCInternetAuthenticationType authTypeTwo = WSCInternetAuthenticationTypeMSN;
     WSCInternetAuthenticationType authTypeThree = WSCInternetAuthenticationTypeHTTPDigest;
 
+    WSCInternetProtocolType protocolTypeOne = WSCInternetProtocolTypeHTTPS;
+    WSCInternetProtocolType protocolTypeTwo = WSCInternetProtocolTypeHTTP;
+    WSCInternetProtocolType protocolTypeThree = WSCInternetProtocolTypeFTP;
+
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 0
     // -------------------------------------------------------------------------------------------------------------------- //
@@ -267,6 +271,31 @@
     XCTAssertEqual( internetPassword_testCase1.authenticationType, kSecAuthenticationTypeHTTPDigest );
 
     /*******/ NSLog( @"Auth Type #2 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassword_testCase1.authenticationType ) ); /*******/
+
+    #pragma mark Protocol Type
+    [ internetPassword_testCase1 setProtocol: protocolTypeOne ];
+    XCTAssertNotEqual( internetPassword_testCase1.protocol, 0 );
+    XCTAssertEqual( internetPassword_testCase1.protocol, protocolTypeOne );
+    XCTAssertEqual( internetPassword_testCase1.protocol, WSCInternetProtocolTypeHTTPS );
+    XCTAssertEqual( internetPassword_testCase1.protocol, kSecProtocolTypeHTTPS );
+
+    /*******/ NSLog( @"Protocol Type #0 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassword_testCase1.protocol ) ); /*******/
+
+    [ internetPassword_testCase1 setProtocol: protocolTypeTwo ];
+    XCTAssertNotEqual( internetPassword_testCase1.protocol, 0 );
+    XCTAssertEqual( internetPassword_testCase1.protocol, protocolTypeTwo );
+    XCTAssertEqual( internetPassword_testCase1.protocol, WSCInternetProtocolTypeHTTP );
+    XCTAssertEqual( internetPassword_testCase1.protocol, kSecProtocolTypeHTTP );
+
+    /*******/ NSLog( @"Protocol Type #1 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassword_testCase1.protocol ) ); /*******/
+
+    [ internetPassword_testCase1 setProtocol: protocolTypeThree ];
+    XCTAssertNotEqual( internetPassword_testCase1.protocol, 0 );
+    XCTAssertEqual( internetPassword_testCase1.protocol, protocolTypeThree );
+    XCTAssertEqual( internetPassword_testCase1.protocol, WSCInternetProtocolTypeFTP );
+    XCTAssertEqual( internetPassword_testCase1.protocol, kSecProtocolTypeFTP );
+
+    /*******/ NSLog( @"Protocol Type #2 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassword_testCase1.protocol ) ); /*******/
 
     if ( applicationPassword_testCase0 )
         SecKeychainItemDelete( internetPassword_testCase1.secKeychainItem );

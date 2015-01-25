@@ -33,6 +33,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "WSCKeychain.h"
+
 /** These constants are legal values used for determining when a keychain item should be readable.
 
   They will be used in [accessibility]([WSCKeychainItem accessibility]) property of [WSCKeychainItem.](WSCKeychainItem)
@@ -186,9 +188,13 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   */
 @property ( retain, readwrite ) NSString* serverName;
 
-/** The attribute value that identifies the authentication type of an internet password item represented by receiver.
+/** The value of type WSCInternetAuthenticationType that identifies the authentication type of an internet password item represented by receiver.
   */
 @property ( assign, readwrite ) WSCInternetAuthenticationType authenticationType;
+
+/** The value of type WSCInternetProtocolType that identifies the Internet protocol of an internet password item represented by receiver.
+  */
+@property ( assign, readwrite ) WSCInternetProtocolType protocol;
 
 #pragma mark Application Password Attributes
 /** The `NSString` object that identifies the service name of an application password item represented by receiver.
