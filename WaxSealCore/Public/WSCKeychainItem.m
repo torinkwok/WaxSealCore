@@ -360,22 +360,14 @@
 
     if ( _SecKeychainAttrStruct.tag == kSecAuthenticationTypeItemAttr )
         {
-        NSMutableString* stringedData = [ NSMutableString stringWithCString: _SecKeychainAttrStruct.data encoding: NSUTF8StringEncoding ];
-        [ stringedData insertString: @"'" atIndex: 0 ];
-        [ stringedData appendString: @"'" ];
-        NSLog( @"Data: %@", stringedData );
-        FourCharCode fuckingCharCode = ( FourCharCode )NSHFSTypeCodeFromFileType( stringedData );
-        fuckingCharCode = NSHFSTypeCodeFromFileType( _WSCFourCharCode2NSString( fuckingCharCode ) );
-        fourCharCodeValue = fuckingCharCode;
+        FourCharCode* data = _SecKeychainAttrStruct.data;
+        fourCharCodeValue = *data;
         }
     else
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                            code: WSCKeychainInvalidParametersError
                                        userInfo: nil ];
-
-//    fourCharCodeValue = NSHFSTypeCodeFromFileType( _WSCFourCharCode2NSString( fourCharCodeValue ) );
-
     return fourCharCodeValue;
     }
 

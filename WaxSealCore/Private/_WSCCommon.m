@@ -50,7 +50,7 @@ inline void _WSCFillErrorParamWithSecErrorCode( OSStatus _ResultCode, NSError** 
 
 inline NSString* _WSCFourCharCode2NSString( FourCharCode _FourCharCodeValue )
     {
-#if TARGET_RT_LITTLE_ENDIAN
+#if TARGET_RT_BIG_ENDIAN
     char string[] = { *( ( ( char* )&_FourCharCodeValue ) + 0 )
                     , *( ( ( char* )&_FourCharCodeValue ) + 1 )
                     , *( ( ( char* )&_FourCharCodeValue ) + 2 )

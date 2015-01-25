@@ -91,18 +91,6 @@
     WSCInternetAuthenticationType authTypeOne = WSCInternetAuthenticationTypeHTMLForm;
     WSCInternetAuthenticationType authTypeTwo = WSCInternetAuthenticationTypeMSN;
 
-    NSLog( @"Auth Type One: %@", _WSCFourCharCode2NSString( authTypeOne ) );
-    NSLog( @"Auth Type Two: %@", _WSCFourCharCode2NSString( authTypeTwo ) );
-
-    NSLog( @"Auth Type One: %@", NSFileTypeForHFSTypeCode( authTypeOne ) );
-    NSLog( @"Auth Type Two: %@", NSFileTypeForHFSTypeCode( authTypeTwo ) );
-
-    authTypeOne = NSHFSTypeCodeFromFileType( _WSCFourCharCode2NSString( authTypeOne ) );
-    authTypeTwo = NSHFSTypeCodeFromFileType( _WSCFourCharCode2NSString( authTypeTwo ) );
-
-    NSLog( @"Auth Type One: %@", NSFileTypeForHFSTypeCode( authTypeOne ) );
-    NSLog( @"Auth Type Two: %@", NSFileTypeForHFSTypeCode( authTypeTwo ) );
-
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 0
     // -------------------------------------------------------------------------------------------------------------------- //
@@ -259,13 +247,13 @@
     XCTAssertNotEqual( internetPassword_testCase1.authenticationType, 0 );
     XCTAssertEqual( internetPassword_testCase1.authenticationType, authTypeOne );
 
-//    /*******/ NSLog( @"Auth Type #0 (Test Case 1): %s", internetPassword_testCase1.authenticationType ); /*******/
+    /*******/ NSLog( @"Auth Type #0 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassword_testCase1.authenticationType ) ); /*******/
 
     [ internetPassword_testCase1 setAuthenticationType: authTypeTwo ];
     XCTAssertNotEqual( internetPassword_testCase1.authenticationType, 0 );
     XCTAssertEqual( internetPassword_testCase1.authenticationType, authTypeTwo );
 
-//    /*******/ NSLog( @"Auth Type #1 (Test Case 1): %s", internetPassword_testCase1.authenticationType ); /*******/
+    /*******/ NSLog( @"Auth Type #1 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassword_testCase1.authenticationType ) ); /*******/
 
     if ( applicationPassword_testCase0 )
         SecKeychainItemDelete( internetPassword_testCase1.secKeychainItem );
