@@ -490,8 +490,7 @@
         _WSCPrintNSErrorForLog( error );
     }
 
-/* Convert the NSDate to the Zulu Time Format string
- */
+// Construct SecKeychainAttribute struct with the NSDate object.
 - ( SecKeychainAttribute ) p_attrForDateValue: ( NSDate* )_Date
     {
     NSInteger theMaxYear = 9999;
@@ -524,6 +523,7 @@
     return creationDateAttr;
     }
 
+// Construct SecKeychainAttribute struct with the NSString object.
 - ( SecKeychainAttribute ) p_attrForStringValue: ( NSString* )_StringValue
                                         forAttr: ( SecItemAttr )_Attr
     {
@@ -533,6 +533,7 @@
     return attrStruct;
     }
 
+// Construct SecKeychainAttribute struct with four char code.
 - ( SecKeychainAttribute ) p_attrForFourCharCode: ( FourCharCode )_FourCharCode
                                          forAttr: ( SecItemAttr )_Attr
     {
