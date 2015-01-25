@@ -90,6 +90,7 @@
 
     WSCInternetAuthenticationType authTypeOne = WSCInternetAuthenticationTypeHTMLForm;
     WSCInternetAuthenticationType authTypeTwo = WSCInternetAuthenticationTypeMSN;
+    WSCInternetAuthenticationType authTypeThree = WSCInternetAuthenticationTypeHTTPDigest;
 
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 0
@@ -246,14 +247,26 @@
     [ internetPassword_testCase1 setAuthenticationType: authTypeOne ];
     XCTAssertNotEqual( internetPassword_testCase1.authenticationType, 0 );
     XCTAssertEqual( internetPassword_testCase1.authenticationType, authTypeOne );
+    XCTAssertEqual( internetPassword_testCase1.authenticationType, WSCInternetAuthenticationTypeHTMLForm );
+    XCTAssertEqual( internetPassword_testCase1.authenticationType, kSecAuthenticationTypeHTMLForm );
 
     /*******/ NSLog( @"Auth Type #0 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassword_testCase1.authenticationType ) ); /*******/
 
     [ internetPassword_testCase1 setAuthenticationType: authTypeTwo ];
     XCTAssertNotEqual( internetPassword_testCase1.authenticationType, 0 );
     XCTAssertEqual( internetPassword_testCase1.authenticationType, authTypeTwo );
+    XCTAssertEqual( internetPassword_testCase1.authenticationType, WSCInternetAuthenticationTypeMSN );
+    XCTAssertEqual( internetPassword_testCase1.authenticationType, kSecAuthenticationTypeMSN );
 
     /*******/ NSLog( @"Auth Type #1 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassword_testCase1.authenticationType ) ); /*******/
+
+    [ internetPassword_testCase1 setAuthenticationType: authTypeThree ];
+    XCTAssertNotEqual( internetPassword_testCase1.authenticationType, 0 );
+    XCTAssertEqual( internetPassword_testCase1.authenticationType, authTypeThree );
+    XCTAssertEqual( internetPassword_testCase1.authenticationType, WSCInternetAuthenticationTypeHTTPDigest );
+    XCTAssertEqual( internetPassword_testCase1.authenticationType, kSecAuthenticationTypeHTTPDigest );
+
+    /*******/ NSLog( @"Auth Type #2 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassword_testCase1.authenticationType ) ); /*******/
 
     if ( applicationPassword_testCase0 )
         SecKeychainItemDelete( internetPassword_testCase1.secKeychainItem );
