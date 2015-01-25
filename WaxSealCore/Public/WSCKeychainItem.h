@@ -154,7 +154,8 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
   This is a read-only property, you cannot modify the modification date of an keychain item 
   in *WaxSealCore* framework and *Keychain Services* APIs, as the value you specify will be overwritten with the current time.
-  If you want to change the modification date to something other than the current time, 
+
+  @warning If you want to change the modification date to something other than the current time,
   use a [CSSM](https://developer.apple.com/library/mac/documentation/Security/Conceptual/cryptoservices/CDSA/CDSA.html) function to do so.
   */
 @property ( retain, readonly ) NSDate* modificationDate;
