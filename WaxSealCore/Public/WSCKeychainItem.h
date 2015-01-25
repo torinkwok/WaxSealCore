@@ -128,10 +128,31 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
     SecKeychainItemRef _secKeychainItem;
     }
 
+#pragma mark Common Keychain Item Attributes
 /** The `NSString` object that identifies the label of keychain item represented by receiver.
   */
 @property ( retain, readwrite ) NSString* label;
 
+/** The value that indicates which type of keychain item the receiver is. (read-only)
+
+  For a list of possible class values, see ["WaxSealCore Keychain Item Class Constants."](WSCKeychainItemClass)
+  */
+@property ( assign, readonly ) WSCKeychainItemClass itemClass;
+
+/** Boolean value that indicates whether the receiver is currently valid. (read-only)
+
+  `YES` if the receiver is still capable of referring to a valid keychain item; otherwise, *NO*.
+  */
+@property ( assign, readonly ) BOOL isValid;
+
+/** The reference of the `SecKeychainItem` opaque object, which wrapped by `WSCKeychainItem` object. (read-only)
+  
+  If you are familiar with the underlying *Keychain Services* APIs,
+  you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this property.
+  */
+@property ( unsafe_unretained, readonly ) SecKeychainItemRef secKeychainItem;
+
+#pragma mark Common Password Attributes
 /** The `NSString` object that identifies the account of keychain item represented by receiver.
   */
 @property ( retain, readwrite ) NSString* account;
@@ -156,28 +177,19 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   in *WaxSealCore* framework and *Keychain Services* APIs, as the value you specify will be overwritten with the current time.
 
   @warning If you want to change the modification date to something other than the current time,
-  use a [CSSM](https://developer.apple.com/library/mac/documentation/Security/Conceptual/cryptoservices/CDSA/CDSA.html) function to do so.
+  use a [CSSM (Common Security Services Manager)](https://developer.apple.com/library/mac/documentation/Security/Conceptual/cryptoservices/CDSA/CDSA.html) function to do so.
   */
 @property ( retain, readonly ) NSDate* modificationDate;
 
-/** The value that indicates which type of keychain item the receiver is. (read-only)
-
-  For a list of possible class values, see ["WaxSealCore Keychain Item Class Constants."](WSCKeychainItemClass)
+#pragma mark Internet Password Attributes
+/** The `NSString` object that identifies the Internet server’s domain name or IP address of keychain item represented by receiver.
   */
-@property ( assign, readonly ) WSCKeychainItemClass itemClass;
+@property ( retain, readwrite ) NSString* serverName;
 
-/** Boolean value that indicates whether the receiver is currently valid. (read-only)
-
-  `YES` if the receiver is still capable of referring to a valid keychain item; otherwise, *NO*.
+#pragma mark Application Password Attributes
+/** The `NSString` object that identifies the service name of an application password item represented by receiver.
   */
-@property ( assign, readonly ) BOOL isValid;
-
-/** The reference of the `SecKeychainItem` opaque object, which wrapped by `WSCKeychainItem` object. (read-only)
-  
-  If you are familiar with the underlying *Keychain Services* APIs,
-  you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this property.
-  */
-@property ( unsafe_unretained, readonly ) SecKeychainItemRef secKeychainItem;
+@property ( retain, readwrite ) NSString* serviceName;
 
 @end // WSCKeychainItem class
 

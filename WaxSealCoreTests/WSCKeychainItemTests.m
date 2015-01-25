@@ -82,6 +82,12 @@
     NSString* kindDescriptionOne = @"WaxSealCore Password";
     NSString* kindDescriptionTwo = @"Passphrase for WaxSealCore";
 
+    NSString* serviceNameOne = @"My Precious Framework";
+    NSString* serviceNameTwo = @"😲";
+
+    NSString* serverNameOne = @"www.waxsealcore.org";
+    NSString* serverNameTwo = @"twitter.com/NSTongG";
+
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 0
     // -------------------------------------------------------------------------------------------------------------------- //
@@ -128,6 +134,32 @@
     XCTAssertEqualObjects( applicationPassword_testCase0.kindDescription, kindDescriptionTwo );
 
     /*******/ NSLog( @"Kind Description #1 (Test Case 0): %@", applicationPassword_testCase0.kindDescription ); /*******/
+
+    #pragma mark Service Name
+    [ applicationPassword_testCase0 setServiceName: serviceNameOne ];
+    XCTAssertNotNil( applicationPassword_testCase0.serviceName );
+    XCTAssertEqualObjects( applicationPassword_testCase0.serviceName, serviceNameOne );
+
+    /*******/ NSLog( @"Service Name #0 (Test Case 0): %@", applicationPassword_testCase0.serviceName ); /*******/
+
+    [ applicationPassword_testCase0 setServiceName: serviceNameTwo ];
+    XCTAssertNotNil( applicationPassword_testCase0.serviceName );
+    XCTAssertEqualObjects( applicationPassword_testCase0.serviceName, serviceNameTwo );
+
+    /*******/ NSLog( @"Service Name #1 (Test Case 0): %@", applicationPassword_testCase0.serviceName ); /*******/
+
+    #pragma mark Server Name
+    [ applicationPassword_testCase0 setServerName: serverNameOne ];
+    XCTAssertNil( applicationPassword_testCase0.serverName );
+    XCTAssertNotEqualObjects( applicationPassword_testCase0.serverName, serverNameOne );
+
+    /*******/ NSLog( @"Server Name #0 (Test Case 0): %@", applicationPassword_testCase0.serverName ); /*******/
+
+    [ applicationPassword_testCase0 setServerName: serverNameTwo ];
+    XCTAssertNil( applicationPassword_testCase0.serverName );
+    XCTAssertNotEqualObjects( applicationPassword_testCase0.serverName, serverNameTwo );
+
+    /*******/ NSLog( @"Server Name #1 (Test Case 0): %@", applicationPassword_testCase0.serverName ); /*******/
 
     if ( applicationPassword_testCase0 )
         SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
@@ -180,6 +212,32 @@
     XCTAssertEqualObjects( internetPassword_testCase1.kindDescription, kindDescriptionTwo );
 
     /*******/ NSLog( @"Kind Description #1 (Test Case 1): %@", internetPassword_testCase1.kindDescription ); /*******/
+
+    #pragma mark Service Name
+    [ internetPassword_testCase1 setServiceName: serviceNameOne ];
+    XCTAssertNil( internetPassword_testCase1.serviceName );
+    XCTAssertNotEqualObjects( internetPassword_testCase1.serviceName, serviceNameOne );
+
+    /*******/ NSLog( @"Service Name #0 (Test Case 1): %@", internetPassword_testCase1.serviceName ); /*******/
+
+    [ internetPassword_testCase1 setServiceName: serviceNameTwo ];
+    XCTAssertNil( internetPassword_testCase1.serviceName );
+    XCTAssertNotEqualObjects( internetPassword_testCase1.serviceName, serviceNameTwo );
+
+    /*******/ NSLog( @"Service Name #1 (Test Case 1): %@", internetPassword_testCase1.serviceName ); /*******/
+
+    #pragma mark Server Name
+    [ internetPassword_testCase1 setServerName: serverNameOne ];
+    XCTAssertNotNil( internetPassword_testCase1.serverName );
+    XCTAssertEqualObjects( internetPassword_testCase1.serverName, serverNameOne );
+
+    /*******/ NSLog( @"Server Name #0 (Test Case 1): %@", internetPassword_testCase1.serverName ); /*******/
+
+    [ internetPassword_testCase1 setServerName: serverNameTwo ];
+    XCTAssertNotNil( internetPassword_testCase1.serverName );
+    XCTAssertEqualObjects( internetPassword_testCase1.serverName, serverNameTwo );
+
+    /*******/ NSLog( @"Server Name #1 (Test Case 1): %@", internetPassword_testCase1.serverName ); /*******/
 
     if ( applicationPassword_testCase0 )
         SecKeychainItemDelete( internetPassword_testCase1.secKeychainItem );

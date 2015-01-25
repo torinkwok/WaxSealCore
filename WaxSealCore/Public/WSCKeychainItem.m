@@ -42,6 +42,8 @@
 @implementation WSCKeychainItem
 
 @dynamic label;
+@dynamic serverName;
+@dynamic serviceName;
 @dynamic account;
 @dynamic comment;
 @dynamic kindDescription;
@@ -63,6 +65,27 @@
 - ( void ) setLabel: ( NSString* )_Label
     {
     [ self p_modifyAttribute: kSecLabelItemAttr withNewValue: _Label ];
+    }
+
+- ( NSString* ) serverName
+    {
+    return [ self p_extractAttribute: kSecServerItemAttr ];
+    }
+
+- ( void ) setServerName: ( NSString* )_ServerName
+    {
+    [ self p_modifyAttribute: kSecServerItemAttr withNewValue: _ServerName ];
+    }
+
+/* The `NSString` object that identifies the service name of an application password item represented by receiver. */
+- ( NSString* ) serviceName
+    {
+    return [ self p_extractAttribute: kSecServiceItemAttr ];
+    }
+
+- ( void ) setServiceName: ( NSString* )_ServiceName
+    {
+    [ self p_modifyAttribute: kSecServiceItemAttr withNewValue: _ServiceName ];
     }
 
 /* The `NSString` object that identifies the account of keychain item represented by receiver. */
@@ -254,11 +277,14 @@
                             attribute = [ self p_extractDateFromSecAttrStruct: attrStruct error: &error ];
                             break;
                             }
+
                         // TODO: NEW ATTR
                         else if ( _AttrbuteTag == kSecLabelItemAttr
                                     || _AttrbuteTag == kSecCommentItemAttr
                                     || _AttrbuteTag == kSecAccountItemAttr
-                                    || _AttrbuteTag == kSecDescriptionItemAttr )
+                                    || _AttrbuteTag == kSecDescriptionItemAttr
+                                    || _AttrbuteTag == kSecServiceItemAttr
+                                    || _AttrbuteTag == kSecServerItemAttr )
                             {
                             attribute = [ self p_extractStringFromSecAttrStruct: attrStruct error: &error ];
                             break;
@@ -295,7 +321,9 @@
     if ( _SecKeychainAttrStruct.tag == kSecLabelItemAttr
             || _SecKeychainAttrStruct.tag == kSecCommentItemAttr
             || _SecKeychainAttrStruct.tag == kSecAccountItemAttr
-            || _SecKeychainAttrStruct.tag == kSecDescriptionItemAttr ) // TODO: NEW ATTR
+            || _SecKeychainAttrStruct.tag == kSecDescriptionItemAttr
+            || _SecKeychainAttrStruct.tag == kSecServiceItemAttr
+            || _SecKeychainAttrStruct.tag == kSecServerItemAttr ) // TODO: NEW ATTR
         stringValue = [ NSString stringWithCString: _SecKeychainAttrStruct.data encoding: NSUTF8StringEncoding ];
     else
         if ( _Error )
@@ -385,6 +413,8 @@
             case kSecCommentItemAttr:
             case kSecAccountItemAttr:
             case kSecDescriptionItemAttr:
+            case kSecServiceItemAttr:
+            case kSecServerItemAttr:
                  newAttr = [ self p_attrForStringValue: ( NSString* )_NewValue
                                                forAttr: _AttributeTag ];
                 break;
