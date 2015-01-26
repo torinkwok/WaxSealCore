@@ -85,8 +85,11 @@
     NSString* serviceNameOne = @"My Precious Framework";
     NSString* serviceNameTwo = @"😲";
 
-    NSString* serverNameOne = @"www.waxsealcore.org";
-    NSString* serverNameTwo = @"twitter.com/NSTongG";
+    NSString* hostNameOne = @"www.waxsealcore.org";
+    NSString* hostNameTwo = @"twitter.com/NSTongG";
+
+    NSString* relativeURLPathOne = @"/wsckeychainItemTests/m/1";
+    NSString* relativeURLPathTwo = @"wsckeychainItemTests/m/2";
 
     WSCInternetAuthenticationType authTypeOne = WSCInternetAuthenticationTypeHTMLForm;
     WSCInternetAuthenticationType authTypeTwo = WSCInternetAuthenticationTypeMSN;
@@ -161,17 +164,30 @@
     /*******/ NSLog( @"Service Name #1 (Test Case 0): %@", applicationPassword_testCase0.serviceName ); /*******/
 
     #pragma mark Server Name
-    [ applicationPassword_testCase0 setHostName: serverNameOne ];
+    [ applicationPassword_testCase0 setHostName: hostNameOne ];
     XCTAssertNil( applicationPassword_testCase0.hostName );
-    XCTAssertNotEqualObjects( applicationPassword_testCase0.hostName, serverNameOne );
+    XCTAssertNotEqualObjects( applicationPassword_testCase0.hostName, hostNameOne );
 
     /*******/ NSLog( @"Server Name #0 (Test Case 0): %@", applicationPassword_testCase0.hostName ); /*******/
 
-    [ applicationPassword_testCase0 setHostName: serverNameTwo ];
+    [ applicationPassword_testCase0 setHostName: hostNameTwo ];
     XCTAssertNil( applicationPassword_testCase0.hostName );
-    XCTAssertNotEqualObjects( applicationPassword_testCase0.hostName, serverNameTwo );
+    XCTAssertNotEqualObjects( applicationPassword_testCase0.hostName, hostNameTwo );
 
     /*******/ NSLog( @"Server Name #1 (Test Case 0): %@", applicationPassword_testCase0.hostName ); /*******/
+
+    #pragma mark Relative URL Path
+    [ applicationPassword_testCase0 setRelativeURLPath: relativeURLPathOne ];
+    XCTAssertNil( applicationPassword_testCase0.relativeURLPath );
+    XCTAssertNotEqualObjects( applicationPassword_testCase0.relativeURLPath, relativeURLPathOne );
+
+    /*******/ NSLog( @"Relative Path #0 (Test Case 0): %@", applicationPassword_testCase0.relativeURLPath ); /*******/
+
+    [ applicationPassword_testCase0 setRelativeURLPath: relativeURLPathTwo ];
+    XCTAssertNil( applicationPassword_testCase0.relativeURLPath );
+    XCTAssertNotEqualObjects( applicationPassword_testCase0.relativeURLPath, relativeURLPathTwo );
+
+    /*******/ NSLog( @"Relative Path #1 (Test Case 0): %@", applicationPassword_testCase0.relativeURLPath ); /*******/
 
     if ( applicationPassword_testCase0 )
         SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
@@ -239,17 +255,30 @@
     /*******/ NSLog( @"Service Name #1 (Test Case 1): %@", internetPassword_testCase1.serviceName ); /*******/
 
     #pragma mark Server Name
-    [ internetPassword_testCase1 setHostName: serverNameOne ];
+    [ internetPassword_testCase1 setHostName: hostNameOne ];
     XCTAssertNotNil( internetPassword_testCase1.hostName );
-    XCTAssertEqualObjects( internetPassword_testCase1.hostName, serverNameOne );
+    XCTAssertEqualObjects( internetPassword_testCase1.hostName, hostNameOne );
 
     /*******/ NSLog( @"Server Name #0 (Test Case 1): %@", internetPassword_testCase1.hostName ); /*******/
 
-    [ internetPassword_testCase1 setHostName: serverNameTwo ];
+    [ internetPassword_testCase1 setHostName: hostNameTwo ];
     XCTAssertNotNil( internetPassword_testCase1.hostName );
-    XCTAssertEqualObjects( internetPassword_testCase1.hostName, serverNameTwo );
+    XCTAssertEqualObjects( internetPassword_testCase1.hostName, hostNameTwo );
 
     /*******/ NSLog( @"Server Name #1 (Test Case 1): %@", internetPassword_testCase1.hostName ); /*******/
+
+    #pragma mark Relative URL Path
+    [ internetPassword_testCase1 setRelativeURLPath: relativeURLPathOne ];
+    XCTAssertNotNil( internetPassword_testCase1.relativeURLPath );
+    XCTAssertEqualObjects( internetPassword_testCase1.relativeURLPath, relativeURLPathOne );
+
+    /*******/ NSLog( @"Relative Path #0 (Test Case 1): %@", internetPassword_testCase1.relativeURLPath ); /*******/
+
+    [ internetPassword_testCase1 setRelativeURLPath: relativeURLPathTwo ];
+    XCTAssertNotNil( internetPassword_testCase1.relativeURLPath );
+    XCTAssertEqualObjects( internetPassword_testCase1.relativeURLPath, relativeURLPathTwo );
+
+    /*******/ NSLog( @"Relative Path #1 (Test Case 1): %@", internetPassword_testCase1.relativeURLPath ); /*******/
 
     #pragma mark Auth Type
     [ internetPassword_testCase1 setAuthenticationType: authTypeOne ];

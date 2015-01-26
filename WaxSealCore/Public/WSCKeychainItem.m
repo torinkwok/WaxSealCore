@@ -43,6 +43,7 @@
 
 @dynamic label;
 @dynamic hostName;
+@dynamic relativeURLPath;
 @dynamic authenticationType;
 @dynamic protocol;
 @dynamic port;
@@ -80,6 +81,16 @@
 - ( void ) setHostName: ( NSString* )_ServerName
     {
     [ self p_modifyAttribute: kSecServerItemAttr withNewValue: _ServerName ];
+    }
+
+- ( NSString* ) relativeURLPath
+    {
+    return [ self p_extractAttribute: kSecPathItemAttr ];
+    }
+
+- ( void ) setRelativeURLPath: ( NSString* )_RelativeURLPath
+    {
+    [ self p_modifyAttribute: kSecPathItemAttr withNewValue: _RelativeURLPath ];
     }
 
 /* The value of type WSCInternetAuthenticationType that identifies the authentication type of an internet password item represented by receiver.
@@ -325,7 +336,8 @@
                                     || _AttrbuteTag == kSecAccountItemAttr
                                     || _AttrbuteTag == kSecDescriptionItemAttr
                                     || _AttrbuteTag == kSecServiceItemAttr
-                                    || _AttrbuteTag == kSecServerItemAttr )
+                                    || _AttrbuteTag == kSecServerItemAttr
+                                    || _AttrbuteTag == kSecPathItemAttr )
                             {
                             attribute = [ self p_extractStringFromSecAttrStruct: attrStruct error: &error ];
                             break;
@@ -376,7 +388,8 @@
             || _SecKeychainAttrStruct.tag == kSecAccountItemAttr
             || _SecKeychainAttrStruct.tag == kSecDescriptionItemAttr
             || _SecKeychainAttrStruct.tag == kSecServiceItemAttr
-            || _SecKeychainAttrStruct.tag == kSecServerItemAttr ) // TODO: NEW ATTR
+            || _SecKeychainAttrStruct.tag == kSecServerItemAttr
+            || _SecKeychainAttrStruct.tag == kSecPathItemAttr ) // TODO: NEW ATTR
         stringValue = [ NSString stringWithCString: _SecKeychainAttrStruct.data encoding: NSUTF8StringEncoding ];
     else
         if ( _Error )
@@ -507,6 +520,7 @@
             case kSecDescriptionItemAttr:
             case kSecServiceItemAttr:
             case kSecServerItemAttr:
+            case kSecPathItemAttr:
                 newAttr = [ self p_attrForStringValue: ( NSString* )_NewValue
                                                forAttr: _AttributeTag ];
                 break;

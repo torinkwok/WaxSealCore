@@ -185,8 +185,16 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
 #pragma mark Internet Password Attributes
 /** The `NSString` object that identifies the Internet server’s domain name or IP address of keychain item represented by receiver.
+
+  For instance: for the URL "https://github.com/TongG/WaxSealCore", its host name is "https://github.com".
   */
 @property ( retain, readwrite ) NSString* hostName;
+
+/** The `NSString` object that identifies the relative URL path of keychain item represented by receiver.
+
+  For instance: for the URL "https://github.com/TongG/WaxSealCore", its relative URL path is "/TongG/WaxSealCore".
+  */
+@property ( retain, readwrite ) NSString* relativeURLPath;
 
 /** The value of type WSCInternetAuthenticationType that identifies the authentication type of an internet password item represented by receiver.
   */
