@@ -162,16 +162,16 @@
 
     #pragma mark Server Name
     [ applicationPassword_testCase0 setServerName: serverNameOne ];
-    XCTAssertNil( applicationPassword_testCase0.serverName );
-    XCTAssertNotEqualObjects( applicationPassword_testCase0.serverName, serverNameOne );
+    XCTAssertNil( applicationPassword_testCase0.hostName );
+    XCTAssertNotEqualObjects( applicationPassword_testCase0.hostName, serverNameOne );
 
-    /*******/ NSLog( @"Server Name #0 (Test Case 0): %@", applicationPassword_testCase0.serverName ); /*******/
+    /*******/ NSLog( @"Server Name #0 (Test Case 0): %@", applicationPassword_testCase0.hostName ); /*******/
 
     [ applicationPassword_testCase0 setServerName: serverNameTwo ];
-    XCTAssertNil( applicationPassword_testCase0.serverName );
-    XCTAssertNotEqualObjects( applicationPassword_testCase0.serverName, serverNameTwo );
+    XCTAssertNil( applicationPassword_testCase0.hostName );
+    XCTAssertNotEqualObjects( applicationPassword_testCase0.hostName, serverNameTwo );
 
-    /*******/ NSLog( @"Server Name #1 (Test Case 0): %@", applicationPassword_testCase0.serverName ); /*******/
+    /*******/ NSLog( @"Server Name #1 (Test Case 0): %@", applicationPassword_testCase0.hostName ); /*******/
 
     if ( applicationPassword_testCase0 )
         SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
@@ -240,16 +240,16 @@
 
     #pragma mark Server Name
     [ internetPassword_testCase1 setServerName: serverNameOne ];
-    XCTAssertNotNil( internetPassword_testCase1.serverName );
-    XCTAssertEqualObjects( internetPassword_testCase1.serverName, serverNameOne );
+    XCTAssertNotNil( internetPassword_testCase1.hostName );
+    XCTAssertEqualObjects( internetPassword_testCase1.hostName, serverNameOne );
 
-    /*******/ NSLog( @"Server Name #0 (Test Case 1): %@", internetPassword_testCase1.serverName ); /*******/
+    /*******/ NSLog( @"Server Name #0 (Test Case 1): %@", internetPassword_testCase1.hostName ); /*******/
 
     [ internetPassword_testCase1 setServerName: serverNameTwo ];
-    XCTAssertNotNil( internetPassword_testCase1.serverName );
-    XCTAssertEqualObjects( internetPassword_testCase1.serverName, serverNameTwo );
+    XCTAssertNotNil( internetPassword_testCase1.hostName );
+    XCTAssertEqualObjects( internetPassword_testCase1.hostName, serverNameTwo );
 
-    /*******/ NSLog( @"Server Name #1 (Test Case 1): %@", internetPassword_testCase1.serverName ); /*******/
+    /*******/ NSLog( @"Server Name #1 (Test Case 1): %@", internetPassword_testCase1.hostName ); /*******/
 
     #pragma mark Auth Type
     [ internetPassword_testCase1 setAuthenticationType: authTypeOne ];

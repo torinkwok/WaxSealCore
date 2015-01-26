@@ -186,7 +186,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 #pragma mark Internet Password Attributes
 /** The `NSString` object that identifies the Internet server’s domain name or IP address of keychain item represented by receiver.
   */
-@property ( retain, readwrite ) NSString* serverName;
+@property ( retain, readwrite ) NSString* hostName;
 
 /** The value of type WSCInternetAuthenticationType that identifies the authentication type of an internet password item represented by receiver.
   */

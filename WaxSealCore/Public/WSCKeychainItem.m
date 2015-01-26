@@ -42,7 +42,7 @@
 @implementation WSCKeychainItem
 
 @dynamic label;
-@dynamic serverName;
+@dynamic hostName;
 @dynamic authenticationType;
 @dynamic protocol;
 @dynamic port;
@@ -72,7 +72,7 @@
 
 /* The `NSString` object that identifies the Internet server’s domain name or IP address of keychain item represented by receiver.
  */
-- ( NSString* ) serverName
+- ( NSString* ) hostName
     {
     return [ self p_extractAttribute: kSecServerItemAttr ];
     }
