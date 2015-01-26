@@ -45,6 +45,7 @@
 @dynamic serverName;
 @dynamic authenticationType;
 @dynamic protocol;
+@dynamic port;
 @dynamic serviceName;
 @dynamic account;
 @dynamic comment;
@@ -69,6 +70,8 @@
     [ self p_modifyAttribute: kSecLabelItemAttr withNewValue: _Label ];
     }
 
+/* The `NSString` object that identifies the Internet server’s domain name or IP address of keychain item represented by receiver.
+ */
 - ( NSString* ) serverName
     {
     return [ self p_extractAttribute: kSecServerItemAttr ];
@@ -79,6 +82,8 @@
     [ self p_modifyAttribute: kSecServerItemAttr withNewValue: _ServerName ];
     }
 
+/* The value of type WSCInternetAuthenticationType that identifies the authentication type of an internet password item represented by receiver.
+ */
 - ( WSCInternetAuthenticationType ) authenticationType
     {
     return ( WSCInternetAuthenticationType )( [ self p_extractAttribute: kSecAuthenticationTypeItemAttr ] );
@@ -89,6 +94,8 @@
     [ self p_modifyAttribute: kSecAuthenticationTypeItemAttr withNewValue: ( id )_AuthType ];
     }
 
+/* The value of type WSCInternetProtocolType that identifies the Internet protocol of an internet password item represented by receiver.
+ */
 - ( WSCInternetProtocolType ) protocol
     {
     return ( WSCInternetProtocolType )[ self p_extractAttribute: kSecProtocolItemAttr ];
@@ -97,6 +104,18 @@
 - ( void ) setProtocol: ( WSCInternetProtocolType )_Protocol
     {
     [ self p_modifyAttribute: kSecProtocolItemAttr withNewValue: ( id )_Protocol ];
+    }
+
+/* The value that identifies the Internet port of an internet password item represented by receiver.
+ */
+- ( NSUInteger ) port
+    {
+    return ( NSUInteger )[ self p_extractAttribute: kSecPortItemAttr ];
+    }
+
+- ( void ) setPort: ( NSUInteger )_PortNumber
+    {
+    [ self p_modifyAttribute: kSecPortItemAttr withNewValue: ( id )_PortNumber ];
     }
 
 /* The `NSString` object that identifies the service name of an application password item represented by receiver. */
@@ -318,6 +337,11 @@
                             attribute = ( id )[ self p_extractFourCharCodeFromSecAttrStruct: attrStruct error: &error ];
                             break;
                             }
+                        else if ( _AttrbuteTag == kSecPortItemAttr )
+                            {
+                            attribute = ( id )[ self p_extractUInt32FromSecAttrStruct: attrStruct error: &error ];
+                            break;
+                            }
                         }
                     }
 
@@ -363,25 +387,43 @@
     return stringValue;
     }
 
-/* Extract FourCharCode from the SecKeychainAttribute struct.
- */
+// Extract FourCharCode from the SecKeychainAttribute struct.
 - ( FourCharCode ) p_extractFourCharCodeFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
                                                     error: ( NSError** )_Error
     {
-    FourCharCode fourCharCodeValue = '\0\0\0\0';
+    FourCharCode attributeValue = '\0\0\0\0';
 
     if ( _SecKeychainAttrStruct.tag == kSecAuthenticationTypeItemAttr
             || _SecKeychainAttrStruct.tag == kSecProtocolItemAttr )
         {
         FourCharCode* data = _SecKeychainAttrStruct.data;
-        fourCharCodeValue = *data;
+        attributeValue = *data;
         }
     else
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
                                            code: WSCKeychainInvalidParametersError
                                        userInfo: nil ];
-    return fourCharCodeValue;
+    return attributeValue;
+    }
+
+// Extract UInt32 value from the SecKeychainAttribute struct.
+- ( UInt32 ) p_extractUInt32FromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
+                                        error: ( NSError** )_Error
+    {
+    UInt32 attributeValue = 0U;
+
+    if ( _SecKeychainAttrStruct.tag == kSecPortItemAttr )
+        {
+        UInt32* data = _SecKeychainAttrStruct.data;
+        attributeValue = *data;
+        }
+    else
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                           code: WSCKeychainInvalidParametersError
+                                       userInfo: nil ];
+    return attributeValue;
     }
 
 /* Extract NSDate object from the SecKeychainAttribute struct.
@@ -473,6 +515,12 @@
             case kSecProtocolItemAttr:
                 newAttr = [ self p_attrForFourCharCode: ( FourCharCode )_NewValue
                                                forAttr: _AttributeTag ];
+                break;
+
+            case kSecPortItemAttr:
+                newAttr = [ self p_attrForUInt32: ( UInt32 )_NewValue
+                                         forAttr: _AttributeTag ];
+                break;
 
             // TODO: NEW ATTR
             }
@@ -544,6 +592,21 @@
     memcpy( fourCharCodeBuffer, &_FourCharCode, sizeof( _FourCharCode ) );
 
     SecKeychainAttribute attrStruct = { _Attr, ( UInt32 )sizeof( FourCharCode ), ( void* )fourCharCodeBuffer };
+
+    return attrStruct;
+    }
+
+// Construct SecKeychainAttribute struct with UInt32 code.
+- ( SecKeychainAttribute ) p_attrForUInt32: ( UInt32 )_UInt32Value
+                                   forAttr: ( SecItemAttr )_Attr
+    {
+    UInt32* UInt32ValueBuffer = malloc( sizeof( _UInt32Value ) );
+
+    // We will free the memory occupied by the UInt32ValueBuffer
+    // using SecKeychainItemFreeAttributesAndData() function in later.
+    memcpy( UInt32ValueBuffer, &_UInt32Value, sizeof( _UInt32Value ) );
+
+    SecKeychainAttribute attrStruct = { _Attr, ( UInt32 )sizeof( UInt32 ), ( void* )UInt32ValueBuffer };
 
     return attrStruct;
     }

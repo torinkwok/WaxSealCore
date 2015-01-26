@@ -196,6 +196,10 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   */
 @property ( assign, readwrite ) WSCInternetProtocolType protocol;
 
+/** The value that identifies the Internet port of an internet password item represented by receiver.
+  */
+@property ( assign, readwrite ) NSUInteger port;
+
 #pragma mark Application Password Attributes
 /** The `NSString` object that identifies the service name of an application password item represented by receiver.
   */

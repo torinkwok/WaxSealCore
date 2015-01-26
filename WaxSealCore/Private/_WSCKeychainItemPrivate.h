@@ -52,6 +52,10 @@
 - ( FourCharCode ) p_extractFourCharCodeFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
                                                     error: ( NSError** )_Error;
 
+// Extract UInt32 value from the SecKeychainAttribute struct.
+- ( UInt32 ) p_extractUInt32FromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
+                                        error: ( NSError** )_Error;
+
 // Extract NSDate object from the SecKeychainAttribute struct.
 - ( NSDate* ) p_extractDateFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
                                        error: ( NSError** )_Error;
@@ -70,6 +74,10 @@
 // Construct SecKeychainAttribute struct with four char code.
 - ( SecKeychainAttribute ) p_attrForFourCharCode: ( FourCharCode )_FourCharCode
                                          forAttr: ( SecItemAttr )_Attr;
+
+// Construct SecKeychainAttribute struct with UInt32 code.
+- ( SecKeychainAttribute ) p_attrForUInt32: ( UInt32 )_UInt32Value
+                                   forAttr: ( SecItemAttr )_Attr;
 
 @end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes
 

@@ -62,7 +62,7 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-- ( void ) testCommentReadWriteProperty
+- ( void ) testProperties
     {
     NSError* error = nil;
     WSCKeychain* commonRandomKeychain = _WSCRandomKeychain();
@@ -95,6 +95,10 @@
     WSCInternetProtocolType protocolTypeOne = WSCInternetProtocolTypeHTTPS;
     WSCInternetProtocolType protocolTypeTwo = WSCInternetProtocolTypeHTTP;
     WSCInternetProtocolType protocolTypeThree = WSCInternetProtocolTypeFTP;
+
+    NSUInteger portOne = 544;
+    NSUInteger portTwo = 321;
+    NSUInteger portThree = 0;
 
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 0
@@ -296,6 +300,25 @@
     XCTAssertEqual( internetPassword_testCase1.protocol, kSecProtocolTypeFTP );
 
     /*******/ NSLog( @"Protocol Type #2 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassword_testCase1.protocol ) ); /*******/
+
+    #pragma mark Port Number
+    [ internetPassword_testCase1 setPort: portOne ];
+    XCTAssertNotEqual( internetPassword_testCase1.port, 0 );
+    XCTAssertEqual( internetPassword_testCase1.port, portOne );
+
+    /*******/ NSLog( @"Port Number #0 (Test Case 1): %lu", internetPassword_testCase1.port ); /*******/
+
+    [ internetPassword_testCase1 setPort: portTwo ];
+    XCTAssertNotEqual( internetPassword_testCase1.port, 0 );
+    XCTAssertEqual( internetPassword_testCase1.port, portTwo );
+
+    /*******/ NSLog( @"Port Number #1 (Test Case 1): %lu", internetPassword_testCase1.port ); /*******/
+
+    [ internetPassword_testCase1 setPort: portThree ];
+    XCTAssertEqual( internetPassword_testCase1.port, 0 );
+    XCTAssertEqual( internetPassword_testCase1.port, portThree );
+
+    /*******/ NSLog( @"Port Number #2 (Test Case 1): %lu", internetPassword_testCase1.port ); /*******/
 
     if ( applicationPassword_testCase0 )
         SecKeychainItemDelete( internetPassword_testCase1.secKeychainItem );
