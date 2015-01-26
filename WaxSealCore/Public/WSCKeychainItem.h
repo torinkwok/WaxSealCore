@@ -133,7 +133,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 #pragma mark Common Keychain Item Attributes
 /** The `NSString` object that identifies the label of keychain item represented by receiver.
   */
-@property ( retain, readwrite ) NSString* label;
+@property ( copy, readwrite ) NSString* label;
 
 /** The value that indicates which type of keychain item the receiver is. (read-only)
 
@@ -157,15 +157,15 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 #pragma mark Common Password Attributes
 /** The `NSString` object that identifies the account of keychain item represented by receiver.
   */
-@property ( retain, readwrite ) NSString* account;
+@property ( copy, readwrite ) NSString* account;
 
 /** The `NSString` object that identifies the comment of keychain item represented by receiver.
   */
-@property ( retain, readwrite ) NSString* comment;
+@property ( copy, readwrite ) NSString* comment;
 
 /** The `NSString` object that identifies the kind description of keychain item represented by receiver.
   */
-@property ( retain, readwrite ) NSString* kindDescription;
+@property ( copy, readwrite ) NSString* kindDescription;
 
 /** The `NSDate` object that identifies the creation date of the keychain item represented by receiver.
 
@@ -188,13 +188,13 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
   For instance: for the URL "https://github.com/TongG/WaxSealCore", its host name is "https://github.com".
   */
-@property ( retain, readwrite ) NSString* hostName;
+@property ( copy, readwrite ) NSString* hostName;
 
 /** The `NSString` object that identifies the relative URL path of keychain item represented by receiver.
 
   For instance: for the URL "https://github.com/TongG/WaxSealCore", its relative URL path is "/TongG/WaxSealCore".
   */
-@property ( retain, readwrite ) NSString* relativeURLPath;
+@property ( copy, readwrite ) NSString* relativeURLPath;
 
 /** The value of type WSCInternetAuthenticationType that identifies the authentication type of an internet password item represented by receiver.
   */
@@ -211,7 +211,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 #pragma mark Application Password Attributes
 /** The `NSString` object that identifies the service name of an application password item represented by receiver.
   */
-@property ( retain, readwrite ) NSString* serviceName;
+@property ( copy, readwrite ) NSString* serviceName;
 
 @end // WSCKeychainItem class
 

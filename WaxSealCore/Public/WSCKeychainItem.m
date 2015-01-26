@@ -346,11 +346,13 @@
                         else if ( _AttrbuteTag == kSecAuthenticationTypeItemAttr
                                     || _AttrbuteTag == kSecProtocolItemAttr )
                             {
+                            // Ignore the warning, cast the FourCharCode to id explicitly.
                             attribute = ( id )[ self p_extractFourCharCodeFromSecAttrStruct: attrStruct error: &error ];
                             break;
                             }
                         else if ( _AttrbuteTag == kSecPortItemAttr )
                             {
+                            // Ignore the warning, cast the UInt32 to id explicitly.
                             attribute = ( id )[ self p_extractUInt32FromSecAttrStruct: attrStruct error: &error ];
                             break;
                             }
