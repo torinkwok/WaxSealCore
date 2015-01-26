@@ -161,13 +161,13 @@
     /*******/ NSLog( @"Service Name #1 (Test Case 0): %@", applicationPassword_testCase0.serviceName ); /*******/
 
     #pragma mark Server Name
-    [ applicationPassword_testCase0 setServerName: serverNameOne ];
+    [ applicationPassword_testCase0 setHostName: serverNameOne ];
     XCTAssertNil( applicationPassword_testCase0.hostName );
     XCTAssertNotEqualObjects( applicationPassword_testCase0.hostName, serverNameOne );
 
     /*******/ NSLog( @"Server Name #0 (Test Case 0): %@", applicationPassword_testCase0.hostName ); /*******/
 
-    [ applicationPassword_testCase0 setServerName: serverNameTwo ];
+    [ applicationPassword_testCase0 setHostName: serverNameTwo ];
     XCTAssertNil( applicationPassword_testCase0.hostName );
     XCTAssertNotEqualObjects( applicationPassword_testCase0.hostName, serverNameTwo );
 
@@ -239,13 +239,13 @@
     /*******/ NSLog( @"Service Name #1 (Test Case 1): %@", internetPassword_testCase1.serviceName ); /*******/
 
     #pragma mark Server Name
-    [ internetPassword_testCase1 setServerName: serverNameOne ];
+    [ internetPassword_testCase1 setHostName: serverNameOne ];
     XCTAssertNotNil( internetPassword_testCase1.hostName );
     XCTAssertEqualObjects( internetPassword_testCase1.hostName, serverNameOne );
 
     /*******/ NSLog( @"Server Name #0 (Test Case 1): %@", internetPassword_testCase1.hostName ); /*******/
 
-    [ internetPassword_testCase1 setServerName: serverNameTwo ];
+    [ internetPassword_testCase1 setHostName: serverNameTwo ];
     XCTAssertNotNil( internetPassword_testCase1.hostName );
     XCTAssertEqualObjects( internetPassword_testCase1.hostName, serverNameTwo );
 

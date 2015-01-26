@@ -77,7 +77,7 @@
     return [ self p_extractAttribute: kSecServerItemAttr ];
     }
 
-- ( void ) setServerName: ( NSString* )_ServerName
+- ( void ) setHostName: ( NSString* )_ServerName
     {
     [ self p_modifyAttribute: kSecServerItemAttr withNewValue: _ServerName ];
     }
