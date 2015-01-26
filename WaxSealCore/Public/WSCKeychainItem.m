@@ -34,6 +34,7 @@
 #import "WSCKeychain.h"
 #import "WSCKeychainItem.h"
 #import "WSCKeychainError.h"
+#import "NSString+_OMCString.h"
 
 #import "_WSCKeychainErrorPrivate.h"
 #import "_WSCKeychainPrivate.h"
@@ -42,6 +43,7 @@
 @implementation WSCKeychainItem
 
 @dynamic label;
+@dynamic URL;
 @dynamic hostName;
 @dynamic relativeURLPath;
 @dynamic authenticationType;
@@ -69,6 +71,82 @@
 - ( void ) setLabel: ( NSString* )_Label
     {
     [ self p_modifyAttribute: kSecLabelItemAttr withNewValue: _Label ];
+    }
+
+NSString* _WSCSchemeStringForProtocol( WSCInternetProtocolType _Protocol )
+    {
+    switch ( _Protocol )
+        {
+        case WSCInternetProtocolTypeFTP:
+        case WSCInternetProtocolTypeFTPProxy:
+        case WSCInternetProtocolTypeFTPAccount:         return @"ftp";
+
+        case WSCInternetProtocolTypeFTPS:               return @"ftps";
+
+        case WSCInternetProtocolTypeHTTP:
+        case WSCInternetProtocolTypeHTTPProxy:          return @"http";
+
+        case WSCInternetProtocolTypeHTTPS:
+        case WSCInternetProtocolTypeHTTPSProxy:         return @"https";
+        case WSCInternetProtocolTypeIRC:                return @"irc";
+        case WSCInternetProtocolTypeIRCS:               return @"ircs";
+        case WSCInternetProtocolTypeSOCKS:              return @"socks";
+        case WSCInternetProtocolTypePOP3:               return @"pop";
+        case WSCInternetProtocolTypePOP3S:              return @"popS";
+        case WSCInternetProtocolTypeIMAP:               return @"imap";
+        case WSCInternetProtocolTypeIMAPS:              return @"imps";
+        case WSCInternetProtocolTypeSMTP:               return @"smtp";
+        case WSCInternetProtocolTypeNNTP:               return @"nntp";
+        case WSCInternetProtocolTypeNNTPS:              return @"ntps";
+        case WSCInternetProtocolTypeLDAP:               return @"ldap";
+        case WSCInternetProtocolTypeLDAPS:              return @"ldps";
+
+        case WSCInternetProtocolTypeAFP:
+        case WSCInternetProtocolTypeAppleTalk:          return @"afp";
+
+        case WSCInternetProtocolTypeTelnet:             return @"telnet";
+        case WSCInternetProtocolTypeTelnetS:            return @"tels";
+        case WSCInternetProtocolTypeSSH:                return @"ssh";
+        case WSCInternetProtocolTypeCIFS:               return @"cifs";
+        case WSCInternetProtocolTypeSMB:                return @"smb";
+
+        case WSCInternetProtocolTypeRTSP:
+        case WSCInternetProtocolTypeRTSPProxy:          return @"rtsp";
+
+        case WSCInternetProtocolTypeSVN:                return @"svn";
+        case WSCInternetProtocolTypeDAAP:               return @"daap";
+        case WSCInternetProtocolTypeEPPC:               return @"eppc";
+        case WSCInternetProtocolTypeIPP:                return @"ipp";
+        case WSCInternetProtocolTypeCVSpserver:         return @"cvsp";
+
+        default:                                        return nil;
+        }
+    }
+
+/* The URL for the an Internet password represented by receiver. */
+- ( NSURL* ) URL
+    {
+    NSString* hostName = [ self p_extractAttribute: kSecServerItemAttr ];
+    NSUInteger port = ( NSUInteger )[ self p_extractAttribute: kSecPortItemAttr ];
+    WSCInternetProtocolType protocol = ( WSCInternetProtocolType )[ self p_extractAttribute: kSecProtocolItemAttr ];
+
+    NSMutableString* relativeURLPath = [ [ self p_extractAttribute: kSecPathItemAttr ] mutableCopy ];
+
+    if ( port != 0 )
+        [ hostName stringByAppendingString: [ NSString stringWithFormat: @"%lu", port ] ];
+
+    if ( ![ relativeURLPath hasPrefix: @"/" ] )
+        [ relativeURLPath insertString: @"/" atIndex: 0 ];
+
+    NSURL* absoluteURL = [ [ [ NSURL alloc ] initWithScheme: _WSCSchemeStringForProtocol( protocol )
+                                                       host: hostName
+                                                       path: relativeURLPath ] autorelease ];
+    return absoluteURL;
+    }
+
+- ( void ) setURL: ( NSURL* )_URL
+    {
+
     }
 
 /* The `NSString` object that identifies the Internet server’s domain name or IP address of keychain item represented by receiver.

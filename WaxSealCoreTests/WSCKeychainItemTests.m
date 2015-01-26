@@ -202,6 +202,7 @@
                                                         protocol: WSCInternetProtocolTypeHTTPS
                                                         password: @"waxsealcore"
                                                            error: &error ];
+    NSLog( @"Fucking URL: %@", internetPassword_testCase1.URL );
     #pragma mark Comment
     [ internetPassword_testCase1 setComment: commentOne ];
     XCTAssertNotNil( internetPassword_testCase1.comment );
