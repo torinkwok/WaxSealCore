@@ -52,7 +52,7 @@ typedef NS_ENUM( NSUInteger, WSCKeychainErrorCode )
 
     /** The keychain couldn't be created because a file with the same name already exists.
       */
-    , WSCKeychainKeychainFileExistsError = 3U
+    , WSCKeychainFileExistsError = 3U
 
     /** The keychain couldn’t be created because the URL is invalid.
       */

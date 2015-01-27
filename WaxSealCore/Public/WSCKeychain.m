@@ -538,7 +538,7 @@ WSCKeychain static* s_system = nil;
             /* Error Description: 
              * The keychain couldn't be created because a file with the same name already exists. */
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCKeychainKeychainFileExistsError
+                                           code: WSCKeychainFileExistsError
                                        userInfo: nil ];
         return nil;
         }

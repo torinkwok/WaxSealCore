@@ -85,7 +85,7 @@
     // Test Case 2: same as previous test case excepts error code
     // ----------------------------------------------------------
     NSError* error_testCase2 = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                                    code: WSCKeychainKeychainFileExistsError
+                                                    code: WSCKeychainFileExistsError
                                                 userInfo: nil ];
     XCTAssertNotNil( error_testCase2 );
     XCTAssertNotNil( error_testCase2.userInfo );
