@@ -68,11 +68,11 @@ typedef NS_ENUM( NSUInteger, WSCKeychainErrorCode )
 
     /** The attribute does not exist in an Internet password.
       */
-    , WSCKeychainItemNoSuchAttributeInInternetPasswordError = 7U
+    , WSCKeychainItemAttributeIsUniqueToInternetPasswordError = 7U
 
     /** The attribute does not exist in an application password.
       */
-    , WSCKeychainItemNoSuchAttributeInApplicationPasswordError = 8U
+    , WSCKeychainItemAttributeIsUniqueToApplicationPasswordError = 8U
     };
 
 //////////////////////////////////////////////////////////////////////////////

@@ -206,6 +206,7 @@
                 // Now we can obtain the attributes array.
                 SecKeychainAttribute* attrs = attrList->attr;
 
+                BOOL supportsAttr = NO;
                 // Iterate the attribtues array, find out the matching attribute
                 for ( int _Index = 0; _Index < attrList->count; _Index++ )
                     {
@@ -213,6 +214,8 @@
 
                     if ( attrStruct.tag == _AttrbuteTag )
                         {
+                        supportsAttr = YES;
+
                         if ( _AttrbuteTag == kSecCreationDateItemAttr || _AttrbuteTag == kSecModDateItemAttr )
                             {
                             attribute = [ self p_extractDateFromSecAttrStruct: attrStruct error: &error ];
@@ -246,6 +249,16 @@
                             break;
                             }
                         }
+                    }
+
+                if ( !supportsAttr )
+                    {
+                    WSCKeychainItemClass classOfReceiver = [ self itemClass ];
+                    error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                                                 code: ( classOfReceiver == WSCKeychainItemClassApplicationPasswordItem )
+                                                                                ? WSCKeychainItemAttributeIsUniqueToInternetPasswordError
+                                                                                : WSCKeychainItemAttributeIsUniqueToApplicationPasswordError
+                                             userInfo: nil ];
                     }
 
                 // Okay, got it! We no longer need these guys, kill them 😲🔫
@@ -443,7 +456,9 @@
                 {
                 WSCKeychainItemClass receiverClass = [ self itemClass ];
                 error = [ NSError errorWithDomain: WSCKeychainErrorDomain
-                                             code: ( receiverClass == WSCKeychainItemClassApplicationPasswordItem ) ? WSCKeychainItemNoSuchAttributeInInternetPasswordError : WSCKeychainItemNoSuchAttributeInApplicationPasswordError
+                                             code: ( receiverClass == WSCKeychainItemClassApplicationPasswordItem )
+                                                        ? WSCKeychainItemAttributeIsUniqueToInternetPasswordError
+                                                        : WSCKeychainItemAttributeIsUniqueToApplicationPasswordError
                                          userInfo: @{ NSUnderlyingErrorKey : error } ];
                 }
             }
@@ -457,8 +472,15 @@
 - ( SecKeychainAttribute ) p_attrForDateValue: ( NSDate* )_Date
     {
     NSInteger theMaxYear = 9999;
-    NSDateComponents* dateComponents = [ [ NSCalendar currentCalendar ] components: NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond
-                                                                          fromDate: _Date ];
+    NSDateComponents* dateComponents =
+        [ [ NSCalendar currentCalendar ] components: NSCalendarUnitYear
+                                                        | NSCalendarUnitMonth
+                                                        | NSCalendarUnitDay
+                                                        | NSCalendarUnitHour
+                                                        | NSCalendarUnitMinute
+                                                        | NSCalendarUnitSecond
+                                           fromDate: _Date ];
+
     [ dateComponents setYear: MIN( dateComponents.year, theMaxYear ) ];
 
     // We are going to get a date with the standard Greenwich Mean Time (GMT offset 0)
