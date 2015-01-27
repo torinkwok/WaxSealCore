@@ -82,6 +82,10 @@ WSCKeychainSelectivelyUnlockKeychainBlock _WSCSelectivelyUnlockKeychainsBasedOnP
 // Collection of random URLs,
 // we will clear it and delete all keychains in it in __attribute__( ( constructor ) )s_commonTearDownForUnitTestModules() static function.
 NSMutableSet static* s_keychainAutodeletePool;
+
+// Collection of the keychain item for unit tests.
+NSMutableSet static* s_keychainItemAutodeletePool;
+
 __attribute__( ( constructor ) )
 static void s_commonSetUpForUnitTestModules()
     {
@@ -90,6 +94,7 @@ static void s_commonSetUpForUnitTestModules()
                  , ( dispatch_block_t )^( void )
                     {
                     s_keychainAutodeletePool = [ [ NSMutableSet set ] retain ];
+                    s_keychainItemAutodeletePool = [ [ NSMutableSet set ] retain ];
                     } );
     }
 
@@ -139,6 +144,10 @@ static void s_commonTearDownForUnitTestModules()
     {
     for ( WSCKeychain* _Keychain in s_keychainAutodeletePool )
         [ [ WSCKeychainManager defaultManager ] deleteKeychain: _Keychain error: nil ];
+
+    // TODO: Waiting for me to reimplement it by making advantage of the deleting API of WSCKeychainItem class
+    for ( WSCKeychainItem* _KeychainItem in s_keychainItemAutodeletePool )
+        SecKeychainDelete( _KeychainItem.secKeychainItem );
 
     [ [ WSCKeychainManager defaultManager ] setDefaultKeychain: [ WSCKeychain login ] error: nil ];
 
@@ -197,6 +206,36 @@ NSURL* _WSCURLForTestCase( SEL _TestCase, NSString* _TestCaseDesc, BOOL _DoesPro
     return newURL;
     }
 
+WSCInternetPassword* _WSC_www_waxsealcore_org_InternetKeychainItem( NSError** _Error )
+    {
+    NSError* error = nil;
+    WSCInternetPassword* www_waxsealcore_org =
+        [ [ [ WSCKeychain login ] addInternetPasswordWithServerName: @"www.waxsealcore.org"
+                                                    URLRelativePath: @"common/test/internet/keychain/item"
+                                                        accountName: @"waxsealcore"
+                                                           protocol: WSCInternetProtocolTypeHTTPS
+                                                           password: @"waxsealcore"
+                                                              error: &error ] autodelete ];
+    if ( _Error )
+        *_Error = [ error copy ];
+
+    return www_waxsealcore_org;
+    }
+
+WSCApplicationPassword* _WSC_WaxSealCoreTests_ApplicationKeychainItem( NSError** _Error )
+    {
+    NSError* error = nil;
+    WSCApplicationPassword* applicationPassword_testCase0 =
+        [ [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: @"WaxSealCore: Common Test"
+                                                            accountName: @"NSTongG"
+                                                               password: @"waxsealcore"
+                                                                  error: &error ] autodelete ];
+    if ( _Error )
+        *_Error = [ error copy ];
+
+    return applicationPassword_testCase0;
+    }
+
 #pragma mark Private Programmatic Interfaces for Ease of Unit Tests
 @implementation WSCKeychain ( _WSCKeychainEaseOfUnitTests )
 
@@ -210,6 +249,20 @@ NSURL* _WSCURLForTestCase( SEL _TestCase, NSString* _TestCaseDesc, BOOL _DoesPro
     }
 
 @end // WSCKeychain + WSCKeychainEaseOfUnitTests
+
+@implementation WSCKeychainItem ( _WSCKeychainItemEaseOfUnitTests )
+
+// Add the keychain item into the auto delete pool
+- ( instancetype ) autodelete
+    {
+    if ( self.isValid )
+        [ s_keychainItemAutodeletePool addObject: self ];
+
+    return self;
+    }
+
+@end // WSCKeychain + WSCKeychainEaseOfUnitTests
+
 #endif
 
 //////////////////////////////////////////////////////////////////////////////

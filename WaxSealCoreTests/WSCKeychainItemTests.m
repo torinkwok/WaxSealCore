@@ -62,6 +62,19 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+- ( void ) testHostNameProperty
+    {
+    NSError* error = nil;
+
+    for ( int _Index = 0; _Index < 20; _Index )
+        {
+        @autoreleasepool
+            {
+//            WSCInternetPassword*  
+            }
+        }
+    }
+
 - ( void ) testProperties
     {
     NSError* error = nil;

@@ -33,6 +33,7 @@
 
 #if DEBUG
 #import "WSCKeychain.h"
+#import "WSCKeychainItem.h"
 
 @class NSMutableSet;
 
@@ -47,6 +48,9 @@ NSURL*          _WSCRandomURL();
 WSCKeychain*    _WSCRandomKeychain();
 NSURL* _WSCURLForTestCase( SEL _TestCase, NSString* _TestCaseDesc, BOOL _DoesPrompt, BOOL _DeleteExits );
 
+WSCInternetPassword* _WSC_www_waxsealcore_org_InternetKeychainItem( NSError** _Error );
+WSCApplicationPassword* _WSC_WaxSealCoreTests_ApplicationKeychainItem( NSError** _Error );
+
 #pragma mark Private Programmatic Interfaces for Ease of Unit Tests
 @interface WSCKeychain ( _WSCKeychainEaseOfUnitTests )
 
@@ -54,6 +58,14 @@ NSURL* _WSCURLForTestCase( SEL _TestCase, NSString* _TestCaseDesc, BOOL _DoesPro
 - ( instancetype ) autodelete;
 
 @end // WSCKeychain + WSCKeychainEaseOfUnitTests
+
+@interface WSCKeychainItem ( _WSCKeychainItemEaseOfUnitTests )
+
+// Add the keychain item into the auto delete pool
+- ( instancetype ) autodelete;
+
+@end // WSCKeychain + WSCKeychainEaseOfUnitTests
+
 #endif
 
 //////////////////////////////////////////////////////////////////////////////
