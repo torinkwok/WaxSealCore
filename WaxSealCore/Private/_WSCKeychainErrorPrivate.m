@@ -40,7 +40,7 @@
 
 NSString* const WSCKeychainCannotBeDirectoryErrorDescription        = @"The URL of a keychain file cannot be a directory.";
 NSString* const WSCKeychainIsInvalidErrorDescription                = @"Current keychain is no longer valid, it may has been deleted, moved or renamed.";
-NSString* const WSCKeychainKeychainFileExistsErrorDescription       = @"The keychain couldn't be created because a file with the same name already exists.";
+NSString* const WSCKeychainFileExistsErrorDescription       = @"The keychain couldn't be created because a file with the same name already exists.";
 NSString* const WSCKeychainKeychainURLIsInvalidErrorDescription     = @"The keychain couldn’t be created because the URL is invalid.";
 NSString* const WSCKeychainInvalidParametersErrorDescription        = @"One or more parameters passed to the method were not valid.";
 NSString* const WSCKeychainItemIsInvalidErrorDescription            = @"Current keychain item is no longer valid, its resided keychain may has been deleted, moved or renamed.";
@@ -143,7 +143,7 @@ void _WSCDontBeABitch( NSError** _Error, ... )
             /* The keychain couldn't be created because a file with the same name already exists. */
             case WSCKeychainKeychainFileExistsError:
                 {
-                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainKeychainFileExistsErrorDescription;
+                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainFileExistsErrorDescription;
                 } break;
 
             /* The keychain couldn’t be created because the URL is invalid. */

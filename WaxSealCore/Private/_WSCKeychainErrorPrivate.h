@@ -35,7 +35,7 @@
 
 NSString extern* const WSCKeychainCannotBeDirectoryErrorDescription;
 NSString extern* const WSCKeychainIsInvalidErrorDescription;
-NSString extern* const WSCKeychainKeychainFileExistsErrorDescription;
+NSString extern* const WSCKeychainFileExistsErrorDescription;
 NSString extern* const WSCKeychainKeychainURLIsInvalidErrorDescription;
 NSString extern* const WSCKeychainItemIsInvalidErrorDescription;
 NSString extern* const WSCKeychainItemAttributeIsUniqueToInternetPasswordErrorDescription;
