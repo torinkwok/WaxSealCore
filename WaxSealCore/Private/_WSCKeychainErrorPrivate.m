@@ -113,7 +113,7 @@ void _WSCDontBeABitch( NSError** _Error, ... )
                                       code: ( NSInteger )_ErrorCode
                                   userInfo: ( NSDictionary* )_UserInfo
     {
-    NSMutableDictionary* newUserInfo = [ _UserInfo mutableCopy ];
+    NSMutableDictionary* newUserInfo = [ [ _UserInfo mutableCopy ] autorelease ];
 
     /* We should only perform bellow operations for the errors which in WaxSealCoreErrorDomain */
     if ( [ _ErrorDomain isEqualToString: WaxSealCoreErrorDomain ]
