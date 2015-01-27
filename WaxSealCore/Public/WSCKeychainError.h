@@ -40,7 +40,7 @@ NSString extern* const WaxSealCoreErrorDomain;
 
 /** `NSError` code in `WaxSealCoreErrorDomain` error domain
   */
-typedef NS_ENUM( NSUInteger, WSCKeychainErrorCode )
+typedef NS_ENUM( NSUInteger, WaxSealCoreErrorCode )
     {
     /** The URL of a keychain file cannot be a directory.
       */

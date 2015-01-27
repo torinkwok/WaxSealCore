@@ -98,10 +98,10 @@
     NSString* serviceNameTwo = @"😲";
 
     NSString* hostNameOne = @"www.waxsealcore.org";
-    NSString* hostNameTwo = @"twitter.com/NSTongG";
+    NSString* hostNameTwo = @"twitter.com";
 
     NSString* relativeURLPathOne = @"/wsckeychainItemTests/m/1";
-    NSString* relativeURLPathTwo = @"wsckeychainItemTests/m/2";
+    NSString* relativeURLPathTwo = @"NSTongG";
 
     WSCInternetAuthenticationType authTypeOne = WSCInternetAuthenticationTypeHTMLForm;
     WSCInternetAuthenticationType authTypeTwo = WSCInternetAuthenticationTypeMSN;

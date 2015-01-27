@@ -256,8 +256,8 @@
                     WSCKeychainItemClass classOfReceiver = [ self itemClass ];
                     error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                                  code: ( classOfReceiver == WSCKeychainItemClassApplicationPasswordItem )
-                                                                                ? WSCKeychainItemAttributeIsUniqueToInternetPasswordError
-                                                                                : WSCKeychainItemAttributeIsUniqueToApplicationPasswordError
+                                                            ? WSCKeychainItemAttributeIsUniqueToInternetPasswordError
+                                                            : WSCKeychainItemAttributeIsUniqueToApplicationPasswordError
                                              userInfo: nil ];
                     }
 

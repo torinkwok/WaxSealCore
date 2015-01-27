@@ -147,7 +147,7 @@ static void s_commonTearDownForUnitTestModules()
 
     // TODO: Waiting for me to reimplement it by making advantage of the deleting API of WSCKeychainItem class
     for ( WSCKeychainItem* _KeychainItem in s_keychainItemAutodeletePool )
-        SecKeychainDelete( _KeychainItem.secKeychainItem );
+        SecKeychainItemDelete( _KeychainItem.secKeychainItem );
 
     [ [ WSCKeychainManager defaultManager ] setDefaultKeychain: [ WSCKeychain login ] error: nil ];
 
