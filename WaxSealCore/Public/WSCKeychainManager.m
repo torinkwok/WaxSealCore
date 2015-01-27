@@ -661,7 +661,7 @@ WSCKeychainManager static* s_defaultManager = nil;
                 && !( ( WSCKeychain* )argToBeChecked ).isValid )
             {
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCKeychainKeychainIsInvalidError
+                                           code: WSCKeychainIsInvalidError
                                        userInfo: nil ];
             break;
             }

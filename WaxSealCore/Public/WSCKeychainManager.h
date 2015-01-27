@@ -195,7 +195,7 @@
 
   @param _Keychain The keychain you wish to lock. 
                    Passing `nil` to this parameter returns an `NSError` object which encapsulated `WSCKeychainInvalidParametersError` error code.
-                   And passing an invalid keychain to this parameter returns an `NSError` object which encapsulated `WSCKeychainKeychainIsInvalidError` error code.
+                   And passing an invalid keychain to this parameter returns an `NSError` object which encapsulated `WSCKeychainIsInvalidError` error code.
     
   @param _Error On input, a pointer to an error object.
                 If an error occurs, this pointer is set to an actual error object containing the error information.
@@ -240,7 +240,7 @@
 
   @param _Keychain The keychain you wish to unlock.
                    Passing `nil` to this parameter returns an `NSError` object which encapsulated `WSCKeychainInvalidParametersError` error code.
-                   And passing an invalid keychain to this parameter returns an `NSError` object which encapsulated `WSCKeychainKeychainIsInvalidError` error code.
+                   And passing an invalid keychain to this parameter returns an `NSError` object which encapsulated `WSCKeychainIsInvalidError` error code.
 
   @param _Password A string containing the password for the specified keychain.
                    This parameter must **NOT** be `nil`.
@@ -272,7 +272,7 @@
 
   @param _Keychain The keychain you wish to unlock.
                    Passing `nil` to this parameter returns an `NSError` object which encapsulated `WSCKeychainInvalidParametersError` error code.
-                   And passing an invalid keychain to this parameter returns an `NSError` object which encapsulated `WSCKeychainKeychainIsInvalidError` error code.
+                   And passing an invalid keychain to this parameter returns an `NSError` object which encapsulated `WSCKeychainIsInvalidError` error code.
                    
   @param _Error On input, a pointer to an error object.
                 If an error occurs, this pointer is set to an actual error object containing the error information.
@@ -345,7 +345,7 @@
 
   @param _Keychain The keychain you wish to add to default search list.
                    Passing `nil` to this parameter returns an `NSError` object which encapsulated `WSCKeychainInvalidParametersError` error code.
-                   And passing an invalid keychain to this parameter returns an `NSError` object which encapsulated `WSCKeychainKeychainIsInvalidError` error code.
+                   And passing an invalid keychain to this parameter returns an `NSError` object which encapsulated `WSCKeychainIsInvalidError` error code.
                    
   @param _Error On input, a pointer to an error object.
                 If an error occurs, this pointer is set to an actual error object containing the error information.
@@ -369,7 +369,7 @@
 
   @param _Keychain The keychain you wish to remvoe from search list.
                    Passing `nil` to this parameter returns an `NSError` object which encapsulated `WSCKeychainInvalidParametersError` error code.
-                   And passing an invalid keychain to this parameter returns an `NSError` object which encapsulated `WSCKeychainKeychainIsInvalidError` error code.
+                   And passing an invalid keychain to this parameter returns an `NSError` object which encapsulated `WSCKeychainIsInvalidError` error code.
                    
   @param _Error On input, a pointer to an error object.
                 If an error occurs, this pointer is set to an actual error object containing the error information.

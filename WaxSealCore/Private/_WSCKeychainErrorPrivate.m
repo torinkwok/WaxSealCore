@@ -39,7 +39,7 @@
 #import "_WSCKeychainErrorPrivate.h"
 
 NSString* const WSCKeychainCannotBeDirectoryErrorDescription        = @"The URL of a keychain file cannot be a directory.";
-NSString* const WSCKeychainKeychainIsInvalidErrorDescription        = @"Current keychain is no longer valid, it may has been deleted, moved or renamed.";
+NSString* const WSCKeychainIsInvalidErrorDescription                = @"Current keychain is no longer valid, it may has been deleted, moved or renamed.";
 NSString* const WSCKeychainKeychainFileExistsErrorDescription       = @"The keychain couldn't be created because a file with the same name already exists.";
 NSString* const WSCKeychainKeychainURLIsInvalidErrorDescription     = @"The keychain couldn’t be created because the URL is invalid.";
 NSString* const WSCKeychainInvalidParametersErrorDescription        = @"One or more parameters passed to the method were not valid.";
@@ -90,7 +90,7 @@ void _WSCDontBeABitch( NSError** _Error, ... )
         if ( [ argToBeChecked isKindOfClass: [ WSCKeychain class ] ] &&  !( ( WSCKeychain* )argToBeChecked ).isValid )
             {
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCKeychainKeychainIsInvalidError
+                                           code: WSCKeychainIsInvalidError
                                        userInfo: nil ];
             break;
             }
@@ -135,9 +135,9 @@ void _WSCDontBeABitch( NSError** _Error, ... )
                 } break;
 
             /* Current keychain is no longer valid. */
-            case WSCKeychainKeychainIsInvalidError:
+            case WSCKeychainIsInvalidError:
                 {
-                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainKeychainIsInvalidErrorDescription;
+                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainIsInvalidErrorDescription;
                 } break;
 
             /* The keychain couldn't be created because a file with the same name already exists. */

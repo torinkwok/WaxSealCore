@@ -48,7 +48,7 @@ typedef NS_ENUM( NSUInteger, WSCKeychainErrorCode )
 
     /** Current keychain is no longer valid.
       */
-    , WSCKeychainKeychainIsInvalidError = 2U
+    , WSCKeychainIsInvalidError = 2U
 
     /** The keychain couldn't be created because a file with the same name already exists.
       */
