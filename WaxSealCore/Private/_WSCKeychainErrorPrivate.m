@@ -43,7 +43,7 @@ NSString* const WSCKeychainKeychainIsInvalidErrorDescription        = @"Current 
 NSString* const WSCKeychainKeychainFileExistsErrorDescription       = @"The keychain couldn't be created because a file with the same name already exists.";
 NSString* const WSCKeychainKeychainURLIsInvalidErrorDescription     = @"The keychain couldn’t be created because the URL is invalid.";
 NSString* const WSCKeychainInvalidParametersErrorDescription        = @"One or more parameters passed to the method were not valid.";
-NSString* const WSCKeychainKeychainItemIsInvalidErrorDescription    = @"Current keychain item is no longer valid, its resided keychain may has been deleted, moved or renamed.";
+NSString* const WSCKeychainItemIsInvalidErrorDescription            = @"Current keychain item is no longer valid, its resided keychain may has been deleted, moved or renamed.";
 NSString* const WSCKeychainItemAttributeIsUniqueToInternetPasswordErrorDescription    = @"The specified attribute was not be supported since this attribute is unique to the Internet password.";
 NSString* const WSCKeychainItemAttributeIsUniqueToApplicationPasswordErrorDescription = @"The specified attribute was not be supported since this attribute is unique to the application password.";
 
@@ -98,7 +98,7 @@ void _WSCDontBeABitch( NSError** _Error, ... )
         if ( [ argToBeChecked isKindOfClass: [ WSCKeychainItem class ] ] && !( ( WSCKeychainItem* )argToBeChecked ).isValid )
             {
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCKeychainKeychainItemIsInvalidError
+                                           code: WSCKeychainItemIsInvalidError
                                        userInfo: nil ];
             break;
             }
@@ -158,9 +158,9 @@ void _WSCDontBeABitch( NSError** _Error, ... )
                 newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainInvalidParametersErrorDescription;
                 } break;
 
-            case WSCKeychainKeychainItemIsInvalidError:
+            case WSCKeychainItemIsInvalidError:
                 {
-                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainKeychainItemIsInvalidErrorDescription;
+                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainItemIsInvalidErrorDescription;
                 } break;
 
             case WSCKeychainItemAttributeIsUniqueToInternetPasswordError:
