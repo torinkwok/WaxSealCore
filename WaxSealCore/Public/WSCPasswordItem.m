@@ -85,8 +85,8 @@
 /* The URL for the an Internet password represented by receiver. */
 - ( NSURL* ) URL
     {
-    NSMutableString* hostName = [ [ self p_extractAttribute: kSecServerItemAttr ] mutableCopy ];
-    NSMutableString* relativePath = [ [ self p_extractAttribute: kSecPathItemAttr ] mutableCopy ];
+    NSMutableString* hostName = [ [ [ self p_extractAttribute: kSecServerItemAttr ] mutableCopy ] autorelease ];
+    NSMutableString* relativePath = [ [ [ self p_extractAttribute: kSecPathItemAttr ] mutableCopy ] autorelease ];
     NSUInteger port = ( NSUInteger )[ self p_extractAttribute: kSecPortItemAttr ];
     WSCInternetProtocolType protocol = ( WSCInternetProtocolType )[ self p_extractAttribute: kSecProtocolItemAttr ];
 

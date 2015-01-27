@@ -489,7 +489,7 @@
 
     // It's an string likes "2015-01-23 00:11:17 +0800"
     // We are going to create an zulu time string which has the zulu format ("YYYYMMDDhhmmssZ")
-    NSMutableString* descOfNewDate = [ [ processedDate descriptionWithLocale: nil ] mutableCopy ];
+    NSMutableString* descOfNewDate = [ [ [ processedDate descriptionWithLocale: nil ] mutableCopy ] autorelease ];
 
     // Drop all the spaces
     [ descOfNewDate replaceOccurrencesOfString: @" " withString: @"" options: 0 range: NSMakeRange( 0, descOfNewDate.length ) ];
