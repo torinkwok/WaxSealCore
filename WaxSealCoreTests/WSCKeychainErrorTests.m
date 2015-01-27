@@ -91,12 +91,12 @@
     XCTAssertNotNil( error_testCase2.userInfo );
     XCTAssertNotNil( error_testCase2.userInfo[ NSLocalizedDescriptionKey ] );
     NSLog( @"Error Occured (%s: %d):\n%@", __PRETTY_FUNCTION__, __LINE__, error_testCase2 );
-
+wa
     // ----------------------------------------------------------
     // Test Case 3: same as previous test case excepts error code
     // ----------------------------------------------------------
     NSError* error_testCase3 = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                                    code: WSCKeychainKeychainURLIsInvalidError
+                                                    code: WSCKeychainURLIsInvalidError
                                                 userInfo: nil ];
     XCTAssertNotNil( error_testCase3 );
     XCTAssertNotNil( error_testCase3.userInfo );
@@ -107,7 +107,7 @@
     // Test Case 4: expicitly provide a userInfo without NSLocalizedDescription key/value pair
     // ----------------------------------------------------------
     NSError* error_testCase4 = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                                    code: WSCKeychainKeychainURLIsInvalidError
+                                                    code: WSCKeychainURLIsInvalidError
                                                 userInfo: @{ NSLocalizedFailureReasonErrorKey : @"HuhHuh" } ];
     XCTAssertNotNil( error_testCase4 );
     XCTAssertNotNil( error_testCase4.userInfo );
@@ -118,7 +118,7 @@
     // Test Case 5: expicitly provide a userInfo with a valid NSLocalizedDescription key/value pair
     // ----------------------------------------------------------
     NSError* error_testCase5 = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                                    code: WSCKeychainKeychainURLIsInvalidError
+                                                    code: WSCKeychainURLIsInvalidError
                                                 userInfo: @{ NSLocalizedDescriptionKey : @"Some description"
                                                            , NSLocalizedFailureReasonErrorKey : @"Some failure reason"
                                                            } ];

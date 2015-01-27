@@ -56,7 +56,7 @@ typedef NS_ENUM( NSUInteger, WSCKeychainErrorCode )
 
     /** The keychain couldn’t be created because the URL is invalid.
       */
-    , WSCKeychainKeychainURLIsInvalidError = 4U
+    , WSCKeychainURLIsInvalidError = 4U
 
     /** One or more parameters passed to the method were not valid.
       */

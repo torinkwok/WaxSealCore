@@ -526,7 +526,7 @@ WSCKeychain static* s_system = nil;
             /* Error Description: 
              * The keychain couldn’t be created because the URL is invalid. */
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCKeychainKeychainURLIsInvalidError
+                                           code: WSCKeychainURLIsInvalidError
                                        userInfo: nil ];
         return nil;
         }
