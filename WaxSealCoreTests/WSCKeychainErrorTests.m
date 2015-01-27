@@ -62,7 +62,7 @@
     // ----------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------
-    NSError* error_testCase0 = [ NSError errorWithDomain: WSCKeychainErrorDomain
+    NSError* error_testCase0 = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                                     code: WSCKeychainCannotBeDirectoryError
                                                 userInfo: nil ];
     XCTAssertNotNil( error_testCase0 );
@@ -73,7 +73,7 @@
     // ----------------------------------------------------------
     // Test Case 1: same as previous test case excepts error code
     // ----------------------------------------------------------
-    NSError* error_testCase1 = [ NSError errorWithDomain: WSCKeychainErrorDomain
+    NSError* error_testCase1 = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                                     code: WSCKeychainKeychainIsInvalidError
                                                 userInfo: nil ];
     XCTAssertNotNil( error_testCase1 );
@@ -84,7 +84,7 @@
     // ----------------------------------------------------------
     // Test Case 2: same as previous test case excepts error code
     // ----------------------------------------------------------
-    NSError* error_testCase2 = [ NSError errorWithDomain: WSCKeychainErrorDomain
+    NSError* error_testCase2 = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                                     code: WSCKeychainKeychainFileExistsError
                                                 userInfo: nil ];
     XCTAssertNotNil( error_testCase2 );
@@ -95,7 +95,7 @@
     // ----------------------------------------------------------
     // Test Case 3: same as previous test case excepts error code
     // ----------------------------------------------------------
-    NSError* error_testCase3 = [ NSError errorWithDomain: WSCKeychainErrorDomain
+    NSError* error_testCase3 = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                                     code: WSCKeychainKeychainURLIsInvalidError
                                                 userInfo: nil ];
     XCTAssertNotNil( error_testCase3 );
@@ -106,7 +106,7 @@
     // ----------------------------------------------------------
     // Test Case 4: expicitly provide a userInfo without NSLocalizedDescription key/value pair
     // ----------------------------------------------------------
-    NSError* error_testCase4 = [ NSError errorWithDomain: WSCKeychainErrorDomain
+    NSError* error_testCase4 = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                                     code: WSCKeychainKeychainURLIsInvalidError
                                                 userInfo: @{ NSLocalizedFailureReasonErrorKey : @"HuhHuh" } ];
     XCTAssertNotNil( error_testCase4 );
@@ -117,7 +117,7 @@
     // ----------------------------------------------------------
     // Test Case 5: expicitly provide a userInfo with a valid NSLocalizedDescription key/value pair
     // ----------------------------------------------------------
-    NSError* error_testCase5 = [ NSError errorWithDomain: WSCKeychainErrorDomain
+    NSError* error_testCase5 = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                                     code: WSCKeychainKeychainURLIsInvalidError
                                                 userInfo: @{ NSLocalizedDescriptionKey : @"Some description"
                                                            , NSLocalizedFailureReasonErrorKey : @"Some failure reason"

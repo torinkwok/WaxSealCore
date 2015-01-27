@@ -36,9 +36,9 @@
 
 /** `WSCKeychain` error domain.
   */
-NSString extern* const WSCKeychainErrorDomain;
+NSString extern* const WaxSealCoreErrorDomain;
 
-/** `NSError` code in `WSCKeychainErrorDomain` error domain
+/** `NSError` code in `WaxSealCoreErrorDomain` error domain
   */
 typedef NS_ENUM( NSUInteger, WSCKeychainErrorCode )
     {

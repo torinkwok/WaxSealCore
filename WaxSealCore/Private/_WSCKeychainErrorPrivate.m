@@ -78,7 +78,7 @@ void _WSCDontBeABitch( NSError** _Error, ... )
                 // and it must be kind of paramClass
                 || ![ argToBeChecked isKindOfClass: paramClass ] )
             {
-            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                            code: WSCKeychainInvalidParametersError
                                        userInfo: nil ];
             // Short-circuit test:
@@ -89,7 +89,7 @@ void _WSCDontBeABitch( NSError** _Error, ... )
         // If argToBeChecked is a keychain, it must not be invalid
         if ( [ argToBeChecked isKindOfClass: [ WSCKeychain class ] ] &&  !( ( WSCKeychain* )argToBeChecked ).isValid )
             {
-            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                            code: WSCKeychainKeychainIsInvalidError
                                        userInfo: nil ];
             break;
@@ -97,7 +97,7 @@ void _WSCDontBeABitch( NSError** _Error, ... )
 
         if ( [ argToBeChecked isKindOfClass: [ WSCKeychainItem class ] ] && !( ( WSCKeychainItem* )argToBeChecked ).isValid )
             {
-            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                            code: WSCKeychainKeychainItemIsInvalidError
                                        userInfo: nil ];
             break;
@@ -115,8 +115,8 @@ void _WSCDontBeABitch( NSError** _Error, ... )
     {
     NSMutableDictionary* newUserInfo = [ _UserInfo mutableCopy ];
 
-    /* We should only perform bellow operations for the errors which in WSCKeychainErrorDomain */
-    if ( [ _ErrorDomain isEqualToString: WSCKeychainErrorDomain ]
+    /* We should only perform bellow operations for the errors which in WaxSealCoreErrorDomain */
+    if ( [ _ErrorDomain isEqualToString: WaxSealCoreErrorDomain ]
             /* and the user did not provide a value for the NSLocalizedDescriptionKey key in _UserInfo dictionary
              * while they invoke +[ NSError errorWithDomain:code:userInfo: ] class method */
             && !newUserInfo[ NSLocalizedDescriptionKey ] )
@@ -176,7 +176,7 @@ void _WSCDontBeABitch( NSError** _Error, ... )
         }
 
     // If the error lies in other error domains such as NSCocoaErrorDomain or NSOSStatusErrorDomain,
-    // or the error does lie in WSCKeychainErrorDomain but the user explicitly provide a value
+    // or the error does lie in WaxSealCoreErrorDomain but the user explicitly provide a value
     // for NSLocalizedDescriptionKey in _UserInfo dictionary, do nothing.
 
     return [ [ self class ] alternative_errorWithDomain: _ErrorDomain

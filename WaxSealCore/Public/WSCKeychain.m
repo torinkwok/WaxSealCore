@@ -246,7 +246,7 @@ BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
         else
             {
             /* If the given path is a directory or the given path is NOT a directory but there is no such file */
-            *_Error = [ NSError errorWithDomain: isDir ? WSCKeychainErrorDomain : NSCocoaErrorDomain
+            *_Error = [ NSError errorWithDomain: isDir ? WaxSealCoreErrorDomain : NSCocoaErrorDomain
                                            code: isDir ? WSCKeychainCannotBeDirectoryError : NSFileNoSuchFileError
                                        userInfo: nil ];
             }
@@ -525,7 +525,7 @@ WSCKeychain static* s_system = nil;
         if ( _Error )
             /* Error Description: 
              * The keychain couldn’t be created because the URL is invalid. */
-            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                            code: WSCKeychainKeychainURLIsInvalidError
                                        userInfo: nil ];
         return nil;
@@ -537,7 +537,7 @@ WSCKeychain static* s_system = nil;
         if ( _Error )
             /* Error Description: 
              * The keychain couldn't be created because a file with the same name already exists. */
-            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                            code: WSCKeychainKeychainFileExistsError
                                        userInfo: nil ];
         return nil;
@@ -548,7 +548,7 @@ WSCKeychain static* s_system = nil;
         if ( _Error )
             /* Error Description:
              * One or more parameters passed to the method were not valid. */
-            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                            code: WSCKeychainInvalidParametersError
                                        userInfo: nil ];
         return nil;

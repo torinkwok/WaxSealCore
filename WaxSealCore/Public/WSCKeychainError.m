@@ -33,7 +33,7 @@
 
 #import "WSCKeychainError.h"
 
-NSString* const WSCKeychainErrorDomain = @"WSCKeychainErrorDomain";
+NSString* const WaxSealCoreErrorDomain = @"WaxSealCoreErrorDomain";
 
 //////////////////////////////////////////////////////////////////////////////
 

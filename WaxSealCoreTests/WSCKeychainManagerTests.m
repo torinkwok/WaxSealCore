@@ -396,14 +396,14 @@
     [ [ WSCKeychainManager defaultManager ] deleteKeychains: nil
                                                       error: &error ];
     XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
 
     [ [ WSCKeychainManager defaultManager ] deleteKeychain: nil
                                                      error: &error ];
     XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -723,7 +723,7 @@
     isSuccess = [ self.testManager1 deleteKeychains: evenNumbered
                                               error: &error ];
     XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     _WSCPrintNSErrorForUnitTest( error );
     XCTAssertFalse( isSuccess );
@@ -767,7 +767,7 @@
     olderDefault = [ self.testManager3 setDefaultKeychain: ( WSCKeychain* )[ NSDate date ] error: &error ];
     XCTAssertNil( olderDefault );
     XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -785,7 +785,7 @@
     isSuccess = [ self.testManager3 deleteKeychain: oddNumbered[ 0 ] error: &error ];
     XCTAssertFalse( isSuccess );
     XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -793,7 +793,7 @@
     isSuccess = [ self.testManager1 deleteKeychain: oddNumbered[ 0 ] error: &error ];
     XCTAssertFalse( isSuccess );
     XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -806,7 +806,7 @@
     isSuccess = [ self.testManager3 deleteKeychain: nil error: &error ];
     XCTAssertFalse( isSuccess );
     XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
     }
@@ -1151,7 +1151,7 @@
                                       withPassword: ( NSString* )@149 // whatever
                                              error: &error ];
     XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     _WSCPrintNSErrorForUnitTest( error );
     XCTAssertFalse( isSuccess );
@@ -1196,7 +1196,7 @@
                                                                                     error: &error ];
     XCTAssertFalse( isSuccess );
     XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1204,7 +1204,7 @@
                                                                 error: &error ];
     XCTAssertFalse( isSuccess );
     XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1218,7 +1218,7 @@
                                                                 error: &error ];
     XCTAssertFalse( isSuccess );
     XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1226,7 +1226,7 @@
                                                                 error: &error ];
     XCTAssertFalse( isSuccess );
     XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1237,7 +1237,7 @@
                                                                                     error: &error ];
     XCTAssertFalse( isSuccess );
     XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1257,7 +1257,7 @@
                                                                 error: &error ];
     XCTAssertFalse( isSuccess );
     XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1265,7 +1265,7 @@
                                                                 error: &error ];
     XCTAssertFalse( isSuccess );
     XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
     }
@@ -1501,7 +1501,7 @@
                                                                                  error: &error ];
     XCTAssertNotNil( error );
     XCTAssertFalse( isSuccess );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1527,7 +1527,7 @@
                                                              error: &error ];
     XCTAssertNotNil( error );
     XCTAssertFalse( isSuccess );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1552,7 +1552,7 @@
                                                                                  error: &error ];
     XCTAssertNotNil( error );
     XCTAssertFalse( isSuccess );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1566,7 +1566,7 @@
                                                              error: &error ];
     XCTAssertNotNil( error );
     XCTAssertFalse( isSuccess );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1574,7 +1574,7 @@
                                                              error: &error ];
     XCTAssertNotNil( error );
     XCTAssertFalse( isSuccess );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1582,7 +1582,7 @@
                                                              error: &error ];
     XCTAssertNotNil( error );
     XCTAssertFalse( isSuccess );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1652,7 +1652,7 @@
                                                                                       error: &error ];
     XCTAssertNotNil( error );
     XCTAssertFalse( isSuccess );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1672,7 +1672,7 @@
                                                                   error: &error ];
     XCTAssertNotNil( error );
     XCTAssertFalse( isSuccess );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1680,7 +1680,7 @@
                                                                   error: &error ];
     XCTAssertNotNil( error );
     XCTAssertFalse( isSuccess );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1688,7 +1688,7 @@
                                                                                       error: &error ];
     XCTAssertNotNil( error );
     XCTAssertFalse( isSuccess );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1708,7 +1708,7 @@
                                                                   error: &error ];
     XCTAssertNotNil( error );
     XCTAssertFalse( isSuccess );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1716,7 +1716,7 @@
                                                                   error: &error ];
     XCTAssertNotNil( error );
     XCTAssertFalse( isSuccess );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1746,7 +1746,7 @@
                                                                                       error: &error ];
     XCTAssertNotNil( error );
     XCTAssertFalse( isSuccess );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1766,7 +1766,7 @@
                                                                   error: &error ];
     XCTAssertNotNil( error );
     XCTAssertFalse( isSuccess );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -1774,7 +1774,7 @@
                                                                   error: &error ];
     XCTAssertNotNil( error );
     XCTAssertFalse( isSuccess );
-    XCTAssertEqualObjects( error.domain, WSCKeychainErrorDomain );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainKeychainIsInvalidError );
     _WSCPrintNSErrorForUnitTest( error );
     }

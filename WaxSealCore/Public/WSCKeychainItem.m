@@ -254,7 +254,7 @@
                 if ( !supportsAttr )
                     {
                     WSCKeychainItemClass classOfReceiver = [ self itemClass ];
-                    error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                    error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                                  code: ( classOfReceiver == WSCKeychainItemClassApplicationPasswordItem )
                                                                                 ? WSCKeychainItemAttributeIsUniqueToInternetPasswordError
                                                                                 : WSCKeychainItemAttributeIsUniqueToApplicationPasswordError
@@ -297,7 +297,7 @@
         stringValue = [ NSString stringWithCString: _SecKeychainAttrStruct.data encoding: NSUTF8StringEncoding ];
     else
         if ( _Error )
-            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                            code: WSCKeychainInvalidParametersError
                                        userInfo: nil ];
 
@@ -318,7 +318,7 @@
         }
     else
         if ( _Error )
-            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                            code: WSCKeychainInvalidParametersError
                                        userInfo: nil ];
     return attributeValue;
@@ -337,7 +337,7 @@
         }
     else
         if ( _Error )
-            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                            code: WSCKeychainInvalidParametersError
                                        userInfo: nil ];
     return attributeValue;
@@ -394,7 +394,7 @@
         }
     else
         if ( _Error )
-            *_Error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                            code: WSCKeychainInvalidParametersError
                                        userInfo: nil ];
     return dateWithCorrectTimeZone;
@@ -455,7 +455,7 @@
             if ( error && [ error.domain isEqualToString: NSOSStatusErrorDomain ] && error.code == errSecNoSuchAttr )
                 {
                 WSCKeychainItemClass receiverClass = [ self itemClass ];
-                error = [ NSError errorWithDomain: WSCKeychainErrorDomain
+                error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                              code: ( receiverClass == WSCKeychainItemClassApplicationPasswordItem )
                                                         ? WSCKeychainItemAttributeIsUniqueToInternetPasswordError
                                                         : WSCKeychainItemAttributeIsUniqueToApplicationPasswordError
