@@ -549,7 +549,7 @@ WSCKeychain static* s_system = nil;
             /* Error Description:
              * One or more parameters passed to the method were not valid. */
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCKeychainInvalidParametersError
+                                           code: WSCCommonInvalidParametersError
                                        userInfo: nil ];
         return nil;
         }

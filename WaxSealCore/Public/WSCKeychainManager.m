@@ -92,10 +92,10 @@ WSCKeychainManager static* s_defaultManager = nil;
         {
         // As described in the documentation:
         // Passing nil to this parameter returns an NSError object
-        // which encapsulated WSCKeychainInvalidParametersError error code.
+        // which encapsulated WSCCommonInvalidParametersError error code.
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCKeychainInvalidParametersError
+                                           code: WSCCommonInvalidParametersError
                                        userInfo: nil ];
         return NO;
         }
@@ -649,7 +649,7 @@ WSCKeychainManager static* s_defaultManager = nil;
                 || ![ argToBeChecked isKindOfClass: paramClass ] )
             {
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCKeychainInvalidParametersError
+                                           code: WSCCommonInvalidParametersError
                                        userInfo: nil ];
             // Short-circuit test:
             // we have encountered an error, so there is no necessary to proceed checking

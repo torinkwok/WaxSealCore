@@ -647,7 +647,7 @@
     [ [ WSCKeychainManager defaultManager ] setDefaultKeychain: login_testCase4 error: &error ];
     XCTAssertNotNil( error );
     XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
-    XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
+    XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
 
     // ----------------------------------------------------------------------------------
@@ -926,7 +926,7 @@
     XCTAssertNil( newKeychainItem_negativeTestCase0 );
     XCTAssertNotNil( error );
     XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
-    XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
+    XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
 
     newKeychainItem_negativeTestCase0 =
@@ -1031,7 +1031,7 @@
     XCTAssertNil( internetPassword_negativeTestCase0 );
     XCTAssertNotNil( error );
     XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
-    XCTAssertEqual( error.code, WSCKeychainInvalidParametersError );
+    XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
 
     internetPassword_negativeTestCase0 =

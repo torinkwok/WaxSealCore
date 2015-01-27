@@ -298,7 +298,7 @@
     else
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCKeychainInvalidParametersError
+                                           code: WSCCommonInvalidParametersError
                                        userInfo: nil ];
 
     return stringValue;
@@ -319,7 +319,7 @@
     else
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCKeychainInvalidParametersError
+                                           code: WSCCommonInvalidParametersError
                                        userInfo: nil ];
     return attributeValue;
     }
@@ -338,7 +338,7 @@
     else
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCKeychainInvalidParametersError
+                                           code: WSCCommonInvalidParametersError
                                        userInfo: nil ];
     return attributeValue;
     }
@@ -395,7 +395,7 @@
     else
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCKeychainInvalidParametersError
+                                           code: WSCCommonInvalidParametersError
                                        userInfo: nil ];
     return dateWithCorrectTimeZone;
     }

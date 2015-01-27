@@ -41,8 +41,8 @@
 NSString* const WSCKeychainCannotBeDirectoryErrorDescription        = @"The URL of a keychain file cannot be a directory.";
 NSString* const WSCKeychainIsInvalidErrorDescription                = @"Current keychain is no longer valid, it may has been deleted, moved or renamed.";
 NSString* const WSCKeychainFileExistsErrorDescription               = @"The keychain couldn't be created because a file with the same name already exists.";
-NSString* const WSCKeychainURLIsInvalidErrorDescription     = @"The keychain couldn’t be created because the URL is invalid.";
-NSString* const WSCKeychainInvalidParametersErrorDescription        = @"One or more parameters passed to the method were not valid.";
+NSString* const WSCKeychainURLIsInvalidErrorDescription             = @"The keychain couldn’t be created because the URL is invalid.";
+NSString* const WSCCommonInvalidParametersErrorDescription          = @"One or more parameters passed to the method were not valid.";
 NSString* const WSCKeychainItemIsInvalidErrorDescription            = @"Current keychain item is no longer valid, its resided keychain may has been deleted, moved or renamed.";
 NSString* const WSCKeychainItemAttributeIsUniqueToInternetPasswordErrorDescription    = @"The specified attribute was not be supported since this attribute is unique to the Internet password.";
 NSString* const WSCKeychainItemAttributeIsUniqueToApplicationPasswordErrorDescription = @"The specified attribute was not be supported since this attribute is unique to the application password.";
@@ -79,7 +79,7 @@ void _WSCDontBeABitch( NSError** _Error, ... )
                 || ![ argToBeChecked isKindOfClass: paramClass ] )
             {
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCKeychainInvalidParametersError
+                                           code: WSCCommonInvalidParametersError
                                        userInfo: nil ];
             // Short-circuit test:
             // we have encountered an error, so there is no necessary to proceed checking
@@ -153,9 +153,9 @@ void _WSCDontBeABitch( NSError** _Error, ... )
                 } break;
 
             /* One or more parameters passed to the method were not valid. */
-            case WSCKeychainInvalidParametersError:
+            case WSCCommonInvalidParametersError:
                 {
-                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainInvalidParametersErrorDescription;
+                newUserInfo[ NSLocalizedDescriptionKey ] = WSCCommonInvalidParametersErrorDescription;
                 } break;
 
             case WSCKeychainItemIsInvalidError:

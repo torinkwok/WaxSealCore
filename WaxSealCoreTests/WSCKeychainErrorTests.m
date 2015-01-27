@@ -91,7 +91,7 @@
     XCTAssertNotNil( error_testCase2.userInfo );
     XCTAssertNotNil( error_testCase2.userInfo[ NSLocalizedDescriptionKey ] );
     NSLog( @"Error Occured (%s: %d):\n%@", __PRETTY_FUNCTION__, __LINE__, error_testCase2 );
-wa
+
     // ----------------------------------------------------------
     // Test Case 3: same as previous test case excepts error code
     // ----------------------------------------------------------

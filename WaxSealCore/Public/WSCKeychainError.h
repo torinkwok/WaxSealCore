@@ -60,7 +60,7 @@ typedef NS_ENUM( NSUInteger, WSCKeychainErrorCode )
 
     /** One or more parameters passed to the method were not valid.
       */
-    , WSCKeychainInvalidParametersError = 5U
+    , WSCCommonInvalidParametersError = 5U
 
     /** Current keychain item is no longer valid.
       */
