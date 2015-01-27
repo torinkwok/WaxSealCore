@@ -188,7 +188,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
   @sa protocol
   @sa hostName
-  @sa relativeURLPath
+  @sa relativePath
   @sa port
   */
 @property ( retain, readonly ) NSURL* URL;
@@ -200,11 +200,13 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   */
 @property ( copy, readwrite ) NSString* hostName;
 
-/** The `NSString` object that identifies the relative URL path of an Internet password item represented by receiver.
+/** The `NSString` object that identifies the the path of a URL conforming to RFC 1808 
+    of an Internet password item represented by receiver.
 
   For example: in the URL "https://github.com/TongG/WaxSealCore", the relative URL path is "/TongG/WaxSealCore".
+  If the URL of receiver does not conform to RFC 1808, returns `nil`.
   */
-@property ( copy, readwrite ) NSString* relativeURLPath;
+@property ( copy, readwrite ) NSString* relativePath;
 
 /** The value of type WSCInternetAuthenticationType that identifies the authentication type of an internet password item represented by receiver.
   */

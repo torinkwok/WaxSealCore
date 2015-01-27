@@ -45,7 +45,7 @@
 @dynamic label;
 @dynamic URL;
 @dynamic hostName;
-@dynamic relativeURLPath;
+@dynamic relativePath;
 @dynamic authenticationType;
 @dynamic protocol;
 @dynamic port;
@@ -77,19 +77,19 @@
 - ( NSURL* ) URL
     {
     NSMutableString* hostName = [ [ self p_extractAttribute: kSecServerItemAttr ] mutableCopy ];
-    NSMutableString* relativeURLPath = [ [ self p_extractAttribute: kSecPathItemAttr ] mutableCopy ];
+    NSMutableString* relativePath = [ [ self p_extractAttribute: kSecPathItemAttr ] mutableCopy ];
     NSUInteger port = ( NSUInteger )[ self p_extractAttribute: kSecPortItemAttr ];
     WSCInternetProtocolType protocol = ( WSCInternetProtocolType )[ self p_extractAttribute: kSecProtocolItemAttr ];
 
     if ( port != 0 )
         [ hostName appendString: [ NSString stringWithFormat: @":%lu", port ] ];
 
-    if ( ![ relativeURLPath hasPrefix: @"/" ] )
-        [ relativeURLPath insertString: @"/" atIndex: 0 ];
+    if ( ![ relativePath hasPrefix: @"/" ] )
+        [ relativePath insertString: @"/" atIndex: 0 ];
 
     NSURL* absoluteURL = [ [ [ NSURL alloc ] initWithScheme: _WSCSchemeStringForProtocol( protocol )
                                                        host: hostName
-                                                       path: relativeURLPath ] autorelease ];
+                                                       path: relativePath ] autorelease ];
     return absoluteURL;
     }
 
@@ -105,12 +105,12 @@
     [ self p_modifyAttribute: kSecServerItemAttr withNewValue: _ServerName ];
     }
 
-- ( NSString* ) relativeURLPath
+- ( NSString* ) relativePath
     {
     return [ self p_extractAttribute: kSecPathItemAttr ];
     }
 
-- ( void ) setRelativeURLPath: ( NSString* )_RelativeURLPath
+- ( void ) setRelativePath: ( NSString* )_RelativeURLPath
     {
     [ self p_modifyAttribute: kSecPathItemAttr withNewValue: _RelativeURLPath ];
     }

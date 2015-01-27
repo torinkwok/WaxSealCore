@@ -177,17 +177,17 @@
     /*******/ NSLog( @"Server Name #1 (Test Case 0): %@", applicationPassword_testCase0.hostName ); /*******/
 
     #pragma mark Relative URL Path
-    [ applicationPassword_testCase0 setRelativeURLPath: relativeURLPathOne ];
-    XCTAssertNil( applicationPassword_testCase0.relativeURLPath );
-    XCTAssertNotEqualObjects( applicationPassword_testCase0.relativeURLPath, relativeURLPathOne );
+    [ applicationPassword_testCase0 setRelativePath: relativeURLPathOne ];
+    XCTAssertNil( applicationPassword_testCase0.relativePath );
+    XCTAssertNotEqualObjects( applicationPassword_testCase0.relativePath, relativeURLPathOne );
 
-    /*******/ NSLog( @"Relative Path #0 (Test Case 0): %@", applicationPassword_testCase0.relativeURLPath ); /*******/
+    /*******/ NSLog( @"Relative Path #0 (Test Case 0): %@", applicationPassword_testCase0.relativePath ); /*******/
 
-    [ applicationPassword_testCase0 setRelativeURLPath: relativeURLPathTwo ];
-    XCTAssertNil( applicationPassword_testCase0.relativeURLPath );
-    XCTAssertNotEqualObjects( applicationPassword_testCase0.relativeURLPath, relativeURLPathTwo );
+    [ applicationPassword_testCase0 setRelativePath: relativeURLPathTwo ];
+    XCTAssertNil( applicationPassword_testCase0.relativePath );
+    XCTAssertNotEqualObjects( applicationPassword_testCase0.relativePath, relativeURLPathTwo );
 
-    /*******/ NSLog( @"Relative Path #1 (Test Case 0): %@", applicationPassword_testCase0.relativeURLPath ); /*******/
+    /*******/ NSLog( @"Relative Path #1 (Test Case 0): %@", applicationPassword_testCase0.relativePath ); /*******/
 
     if ( applicationPassword_testCase0 )
         SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
@@ -207,11 +207,11 @@
 
     [ internetPassword_testCase1 setProtocol: WSCInternetProtocolTypeSSH ];
     [ internetPassword_testCase1 setHostName: @"www.facebook.com" ];
-    [ internetPassword_testCase1 setRelativeURLPath: @"//fucking/TongGuo" ];
+    [ internetPassword_testCase1 setRelativePath: @"//fucking/TongGuo" ];
     internetPassword_testCase1.port = 2194;
     NSLog( @"Fucking Host: %@", internetPassword_testCase1.hostName );
     NSLog( @"Fucking Port: %lu", internetPassword_testCase1.port );
-    NSLog( @"Fucking Path: %@", internetPassword_testCase1.relativeURLPath );
+    NSLog( @"Fucking Path: %@", internetPassword_testCase1.relativePath );
     NSLog( @"Fucking URL #2: %@", internetPassword_testCase1.URL );
     NSLog( @"Fucking Protocol: %@", _WSCSchemeStringForProtocol( internetPassword_testCase1.protocol ) );
     #pragma mark Comment
@@ -280,17 +280,17 @@
     /*******/ NSLog( @"Server Name #1 (Test Case 1): %@", internetPassword_testCase1.hostName ); /*******/
 
     #pragma mark Relative URL Path
-    [ internetPassword_testCase1 setRelativeURLPath: relativeURLPathOne ];
-    XCTAssertNotNil( internetPassword_testCase1.relativeURLPath );
-    XCTAssertEqualObjects( internetPassword_testCase1.relativeURLPath, relativeURLPathOne );
+    [ internetPassword_testCase1 setRelativePath: relativeURLPathOne ];
+    XCTAssertNotNil( internetPassword_testCase1.relativePath );
+    XCTAssertEqualObjects( internetPassword_testCase1.relativePath, relativeURLPathOne );
 
-    /*******/ NSLog( @"Relative Path #0 (Test Case 1): %@", internetPassword_testCase1.relativeURLPath ); /*******/
+    /*******/ NSLog( @"Relative Path #0 (Test Case 1): %@", internetPassword_testCase1.relativePath ); /*******/
 
-    [ internetPassword_testCase1 setRelativeURLPath: relativeURLPathTwo ];
-    XCTAssertNotNil( internetPassword_testCase1.relativeURLPath );
-    XCTAssertEqualObjects( internetPassword_testCase1.relativeURLPath, relativeURLPathTwo );
+    [ internetPassword_testCase1 setRelativePath: relativeURLPathTwo ];
+    XCTAssertNotNil( internetPassword_testCase1.relativePath );
+    XCTAssertEqualObjects( internetPassword_testCase1.relativePath, relativeURLPathTwo );
 
-    /*******/ NSLog( @"Relative Path #1 (Test Case 1): %@", internetPassword_testCase1.relativeURLPath ); /*******/
+    /*******/ NSLog( @"Relative Path #1 (Test Case 1): %@", internetPassword_testCase1.relativePath ); /*******/
 
     #pragma mark Auth Type
     [ internetPassword_testCase1 setAuthenticationType: authTypeOne ];
