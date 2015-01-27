@@ -67,14 +67,15 @@
   */
 @property ( retain, readonly ) NSURL* URL;
 
-/** The `NSString` object that identifies the Internet server’s domain name 
-    or IP address of an Internet password item represented by receiver.
+/** The `NSString` object that identifies the the host of a URL conforming to RFC 1808
+    of an Internet password item represented by receiver.
 
-  For example, in the URL "https://github.com/TongG/WaxSealCore", the host name is "https://github.com".
+  For example: in the URL "https://github.com/TongG/WaxSealCore", the host is "github.com".
+  If the URL of receiver does not conform to RFC 1808, returns `nil`.
   */
 @property ( copy, readwrite ) NSString* hostName;
 
-/** The `NSString` object that identifies the the path of a URL conforming to RFC 1808 
+/** The `NSString` object that identifies the the relative path of a URL conforming to RFC 1808
     of an Internet password item represented by receiver.
 
   For example: in the URL "https://github.com/TongG/WaxSealCore", the relative URL path is "/TongG/WaxSealCore".
