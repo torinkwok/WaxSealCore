@@ -202,7 +202,18 @@
                                                         protocol: WSCInternetProtocolTypeHTTPS
                                                         password: @"waxsealcore"
                                                            error: &error ];
-    NSLog( @"Fucking URL: %@", internetPassword_testCase1.URL );
+    internetPassword_testCase1.port = 324;
+    NSLog( @"Fucking URL #1: %@", internetPassword_testCase1.URL );
+
+    [ internetPassword_testCase1 setProtocol: WSCInternetProtocolTypeSSH ];
+    [ internetPassword_testCase1 setHostName: @"www.facebook.com" ];
+    [ internetPassword_testCase1 setRelativeURLPath: @"//fucking/TongGuo" ];
+    internetPassword_testCase1.port = 2194;
+    NSLog( @"Fucking Host: %@", internetPassword_testCase1.hostName );
+    NSLog( @"Fucking Port: %lu", internetPassword_testCase1.port );
+    NSLog( @"Fucking Path: %@", internetPassword_testCase1.relativeURLPath );
+    NSLog( @"Fucking URL #2: %@", internetPassword_testCase1.URL );
+    NSLog( @"Fucking Protocol: %@", _WSCSchemeStringForProtocol( internetPassword_testCase1.protocol ) );
     #pragma mark Comment
     [ internetPassword_testCase1 setComment: commentOne ];
     XCTAssertNotNil( internetPassword_testCase1.comment );

@@ -31,6 +31,8 @@
  **                                                                         **
  ****************************************************************************/
 
+#import "WSCKeychain.h"
+
 #define __THROW_EXCEPTION__WHEN_INVOKED_PURE_VIRTUAL_METHOD__           \
     @throw [ NSException exceptionWithName: NSGenericException  \
                          reason: [ NSString stringWithFormat: @"unimplemented pure virtual method `%@` in `%@` " \
@@ -94,6 +96,8 @@
 
 void _WSCFillErrorParamWithSecErrorCode( OSStatus _ResultCode, NSError** _ErrorParam );
 NSString* _WSCFourCharCode2NSString( FourCharCode _FourCharCodeValue );
+
+NSString* _WSCSchemeStringForProtocol( WSCInternetProtocolType _Protocol );
 
 //////////////////////////////////////////////////////////////////////////////
 

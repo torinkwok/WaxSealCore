@@ -72,6 +72,56 @@ inline NSString* _WSCFourCharCode2NSString( FourCharCode _FourCharCodeValue )
     return stringValue;
     }
 
+NSString* _WSCSchemeStringForProtocol( WSCInternetProtocolType _Protocol )
+    {
+    switch ( _Protocol )
+        {
+        case WSCInternetProtocolTypeFTP:
+        case WSCInternetProtocolTypeFTPProxy:
+        case WSCInternetProtocolTypeFTPAccount:         return @"ftp";
+
+        case WSCInternetProtocolTypeFTPS:               return @"ftps";
+
+        case WSCInternetProtocolTypeHTTP:
+        case WSCInternetProtocolTypeHTTPProxy:          return @"http";
+
+        case WSCInternetProtocolTypeHTTPS:
+        case WSCInternetProtocolTypeHTTPSProxy:         return @"https";
+        case WSCInternetProtocolTypeIRC:                return @"irc";
+        case WSCInternetProtocolTypeIRCS:               return @"ircs";
+        case WSCInternetProtocolTypeSOCKS:              return @"socks";
+        case WSCInternetProtocolTypePOP3:               return @"pop";
+        case WSCInternetProtocolTypePOP3S:              return @"pops";
+        case WSCInternetProtocolTypeIMAP:               return @"imap";
+        case WSCInternetProtocolTypeIMAPS:              return @"imps";
+        case WSCInternetProtocolTypeSMTP:               return @"smtp";
+        case WSCInternetProtocolTypeNNTP:               return @"nntp";
+        case WSCInternetProtocolTypeNNTPS:              return @"ntps";
+        case WSCInternetProtocolTypeLDAP:               return @"ldap";
+        case WSCInternetProtocolTypeLDAPS:              return @"ldps";
+
+        case WSCInternetProtocolTypeAFP:
+        case WSCInternetProtocolTypeAppleTalk:          return @"afp";
+
+        case WSCInternetProtocolTypeTelnet:             return @"telnet";
+        case WSCInternetProtocolTypeTelnetS:            return @"tels";
+        case WSCInternetProtocolTypeSSH:                return @"ssh";
+        case WSCInternetProtocolTypeCIFS:               return @"cifs";
+        case WSCInternetProtocolTypeSMB:                return @"smb";
+
+        case WSCInternetProtocolTypeRTSP:
+        case WSCInternetProtocolTypeRTSPProxy:          return @"rtsp";
+
+        case WSCInternetProtocolTypeSVN:                return @"svn";
+        case WSCInternetProtocolTypeDAAP:               return @"daap";
+        case WSCInternetProtocolTypeEPPC:               return @"eppc";
+        case WSCInternetProtocolTypeIPP:                return @"ipp";
+        case WSCInternetProtocolTypeCVSpserver:         return @"cvsp";
+
+        default:                                        return nil;
+        }
+    }
+
 //////////////////////////////////////////////////////////////////////////////
 
 /*****************************************************************************

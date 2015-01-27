@@ -184,9 +184,14 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 @property ( retain, readonly ) NSDate* modificationDate;
 
 #pragma mark Internet Password Attributes
-/** The URL for the an Internet password represented by receiver.
+/** The URL for the an Internet password represented by receiver. (read-only)
+
+  @sa protocol
+  @sa hostName
+  @sa relativeURLPath
+  @sa port
   */
-@property ( retain, readwrite ) NSURL* URL;
+@property ( retain, readonly ) NSURL* URL;
 
 /** The `NSString` object that identifies the Internet server’s domain name 
     or IP address of an Internet password item represented by receiver.
