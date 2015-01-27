@@ -33,8 +33,7 @@
 
 #import <XCTest/XCTest.h>
 
-#import "WSCApplicationPassword.h"
-#import "WSCInternetPassword.h"
+#import "WSCPasswordItem.h"
 #import "WSCKeychainItem.h"
 #import "NSURL+WSCKeychainURL.h"
 #import "WSCKeychainError.h"
@@ -863,7 +862,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-    WSCApplicationPassword* newKeychainItem_testCase0 =
+    WSCPasswordItem* newKeychainItem_testCase0 =
         [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: @"WaxSealCore Test Case 0"
                                                           accountName: @"NSTongG"
                                                              password: @"waxsealcore"
@@ -879,7 +878,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 1
     // ----------------------------------------------------------------------------------
-    WSCApplicationPassword* newKeychainItem_testCase1 =
+    WSCPasswordItem* newKeychainItem_testCase1 =
         [ [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: nil ]
             addApplicationPasswordWithServiceName: @"WaxSealCore Test Case 1"
                                       accountName: @"Tong Guo"
@@ -906,7 +905,7 @@
     XCTAssertNotNil( keychain_testCase2 );
     XCTAssertNil( error );
 
-    WSCApplicationPassword* newKeychainItem_testCase2 =
+    WSCPasswordItem* newKeychainItem_testCase2 =
         [ keychain_testCase2 addApplicationPasswordWithServiceName: @"WaxSealCore Test Case 2"
                                                        accountName: @"Tong G."
                                                           password: @"waxsealcore"
@@ -919,7 +918,7 @@
     // ----------------------------------------------------------------------------------
     // Negative Test Case 0
     // ----------------------------------------------------------------------------------
-    WSCApplicationPassword* newKeychainItem_negativeTestCase0 =
+    WSCPasswordItem* newKeychainItem_negativeTestCase0 =
         [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: nil
                                                           accountName: ( NSString* )[ NSDate date ]
                                                              password: ( NSString* )@342
@@ -940,7 +939,7 @@
     // ----------------------------------------------------------------------------------
     // Negative Test Case 1
     // ----------------------------------------------------------------------------------
-    WSCApplicationPassword* newKeychainItem_negativeTestCase1 =
+    WSCPasswordItem* newKeychainItem_negativeTestCase1 =
         [ _WSCCommonInvalidKeychainForUnitTests addApplicationPasswordWithServiceName: @"WaxSealCore Negative Test Case 1"
                                                                           accountName: @"NSTongG"
                                                                              password: @"waxsealcore"
@@ -959,7 +958,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-    WSCInternetPassword* newInternetPassword_testCase0 =
+    WSCPasswordItem* newInternetPassword_testCase0 =
         [ [ WSCKeychain login ] addInternetPasswordWithServerName: @"twitter.com"
                                                   URLRelativePath: @"/NSTongG"
                                                       accountName: @"NSTongG"
@@ -970,7 +969,7 @@
     XCTAssertNotNil( newInternetPassword_testCase0 );
     _WSCPrintNSErrorForUnitTest( error );
 
-    WSCInternetPassword* duplicatedPassword =
+    WSCPasswordItem* duplicatedPassword =
         [ [ WSCKeychain login ] addInternetPasswordWithServerName: @"twitter.com"
                                                   URLRelativePath: @"/NSTongG"
                                                       accountName: @"NSTongG"
@@ -992,7 +991,7 @@
     [ [ WSCKeychainManager defaultManager ] lockKeychain: _WSCCommonValidKeychainForUnitTests
                                                    error: nil ];
 
-    WSCInternetPassword* newInternetPassword_testCase1 =
+    WSCPasswordItem* newInternetPassword_testCase1 =
         [ _WSCCommonValidKeychainForUnitTests addInternetPasswordWithServerName: @"nstongg.tumblr.com"
                                                                 URLRelativePath: @"/post/105125066964/os-x-s-mime#105125066964"
                                                                     accountName: @"Tong G."
@@ -1006,7 +1005,7 @@
     // ----------------------------------------------------------------------------------
     // Test Case 2
     // ----------------------------------------------------------------------------------
-    WSCInternetPassword* newInternetPassword_testCase2 =
+    WSCPasswordItem* newInternetPassword_testCase2 =
         [ _WSCCommonValidKeychainForUnitTests addInternetPasswordWithServerName: @"ftp.freebsd.org"
                                                                 URLRelativePath: @"/pub/FreeBSD/releases/VM-IMAGES/10.1-RELEASE/i386/Latest"
                                                                     accountName: @"NSTongG"
@@ -1022,7 +1021,7 @@
     // ----------------------------------------------------------------------------------
     // Negative Test Case 0
     // ----------------------------------------------------------------------------------
-    WSCInternetPassword* internetPassword_negativeTestCase0 =
+    WSCPasswordItem* internetPassword_negativeTestCase0 =
         [ _WSCCommonValidKeychainForUnitTests addInternetPasswordWithServerName: nil
                                                                 URLRelativePath: ( NSString* )@24324
                                                                     accountName: nil
@@ -1047,7 +1046,7 @@
     // ----------------------------------------------------------------------------------
     // Negative Test Case 1
     // ----------------------------------------------------------------------------------
-    WSCInternetPassword* internetPassword_negativeTestCase1 =
+    WSCPasswordItem* internetPassword_negativeTestCase1 =
         [ _WSCCommonInvalidKeychainForUnitTests addInternetPasswordWithServerName: @"ftp.freebsd.org"
                                                                   URLRelativePath: @"/pub/FreeBSD/releases/VM-IMAGES/10.1-RELEASE/i386/Latest"
                                                                       accountName: @"NSTongG"

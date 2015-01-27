@@ -38,12 +38,14 @@
 #import "WSCKeychainError.h"
 #import "_WSCKeychainErrorPrivate.h"
 
-NSString* const WSCKeychainCannotBeDirectoryErrorDescription =      @"The URL of a keychain file cannot be a directory.";
-NSString* const WSCKeychainKeychainIsInvalidErrorDescription =      @"Current keychain is no longer valid, it may has been deleted, moved or renamed.";
-NSString* const WSCKeychainKeychainFileExistsErrorDescription =     @"The keychain couldn't be created because a file with the same name already exists.";
-NSString* const WSCKeychainKeychainURLIsInvalidErrorDescription =   @"The keychain couldn’t be created because the URL is invalid.";
-NSString* const WSCKeychainInvalidParametersErrorDescription =      @"One or more parameters passed to the method were not valid.";
-NSString* const WSCKeychainKeychainItemIsInvalidErrorDescription =  @"Current keychain item is no longer valid, its resided keychain may has been deleted, moved or renamed.";
+NSString* const WSCKeychainCannotBeDirectoryErrorDescription        = @"The URL of a keychain file cannot be a directory.";
+NSString* const WSCKeychainKeychainIsInvalidErrorDescription        = @"Current keychain is no longer valid, it may has been deleted, moved or renamed.";
+NSString* const WSCKeychainKeychainFileExistsErrorDescription       = @"The keychain couldn't be created because a file with the same name already exists.";
+NSString* const WSCKeychainKeychainURLIsInvalidErrorDescription     = @"The keychain couldn’t be created because the URL is invalid.";
+NSString* const WSCKeychainInvalidParametersErrorDescription        = @"One or more parameters passed to the method were not valid.";
+NSString* const WSCKeychainKeychainItemIsInvalidErrorDescription    = @"Current keychain item is no longer valid, its resided keychain may has been deleted, moved or renamed.";
+NSString* const WSCKeychainItemNoSuchAttributeInInternetPasswordErrorDescription    = @"The specified attribute was not be supported since this attribute is unique to the Internet password.";
+NSString* const WSCKeychainItemNoSuchAttributeInApplicationPasswordErrorDescription = @"The specified attribute was not be supported since this attribute is unique to the application password.";
 
 id const s_guard = ( id )'sgrd';
 void _WSCDontBeABitch( NSError** _Error, ... )
@@ -159,6 +161,16 @@ void _WSCDontBeABitch( NSError** _Error, ... )
             case WSCKeychainKeychainItemIsInvalidError:
                 {
                 newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainKeychainItemIsInvalidErrorDescription;
+                } break;
+
+            case WSCKeychainItemNoSuchAttributeInInternetPasswordError:
+                {
+                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainItemNoSuchAttributeInInternetPasswordErrorDescription;
+                } break;
+
+            case WSCKeychainItemNoSuchAttributeInApplicationPasswordError:
+                {
+                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainItemNoSuchAttributeInApplicationPasswordErrorDescription;
                 } break;
             }
         }

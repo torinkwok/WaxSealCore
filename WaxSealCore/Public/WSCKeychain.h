@@ -176,8 +176,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
     , WSCInternetAuthenticationTypeAny              = kSecAuthenticationTypeAny
     };
 
-@class WSCApplicationPassword;
-@class WSCInternetPassword;
+@class WSCPasswordItem;
 
 @class WSCAccessPermission;
 
@@ -422,13 +421,13 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
                 You may specify `nil` for this parameter if you don't want the error information.
 
   
-  @return A `WSCApplicationPassword` object representing the new keychain item.
+  @return A `WSCPasswordItem` object representing the new keychain item.
           Returns `nil` if an error occurs.
   */
-- ( WSCApplicationPassword* ) addApplicationPasswordWithServiceName: ( NSString* )_ServiceName
-                                                        accountName: ( NSString* )_AccountName
-                                                           password: ( NSString* )_Password
-                                                              error: ( NSError** )_Error;
+- ( WSCPasswordItem* ) addApplicationPasswordWithServiceName: ( NSString* )_ServiceName
+                                                 accountName: ( NSString* )_AccountName
+                                                    password: ( NSString* )_Password
+                                                       error: ( NSError** )_Error;
 
 /** Adds a new Internet password to the keychain represented by receiver.
 
@@ -458,15 +457,15 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
                 If an error occurs, this pointer is set to an actual error object containing the error information.
                 You may specify `nil` for this parameter if you don't want the error information.
 
-  @return A `WSCInternetPassword` object representing the new keychain item.
+  @return A `WSCPasswordItem` object representing the new keychain item.
           Returns `nil` if an error occurs.
   */
-- ( WSCInternetPassword* ) addInternetPasswordWithServerName: ( NSString* )_ServerName
-                                             URLRelativePath: ( NSString* )_URLRelativePath
-                                                 accountName: ( NSString* )_AccountName
-                                                    protocol: ( WSCInternetProtocolType )_Protocol
-                                                    password: ( NSString* )_Password
-                                                       error: ( NSError** )_Error;
+- ( WSCPasswordItem* ) addInternetPasswordWithServerName: ( NSString* )_ServerName
+                                         URLRelativePath: ( NSString* )_URLRelativePath
+                                             accountName: ( NSString* )_AccountName
+                                                protocol: ( WSCInternetProtocolType )_Protocol
+                                                password: ( NSString* )_Password
+                                                   error: ( NSError** )_Error;
 
 @end // WSCKeychain class
 

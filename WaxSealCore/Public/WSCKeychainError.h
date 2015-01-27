@@ -65,6 +65,14 @@ typedef NS_ENUM( NSUInteger, WSCKeychainErrorCode )
     /** Current keychain item is no longer valid.
       */
     , WSCKeychainKeychainItemIsInvalidError = 6U
+
+    /** The attribute does not exist in an Internet password.
+      */
+    , WSCKeychainItemNoSuchAttributeInInternetPasswordError = 7U
+
+    /** The attribute does not exist in an application password.
+      */
+    , WSCKeychainItemNoSuchAttributeInApplicationPasswordError = 8U
     };
 
 //////////////////////////////////////////////////////////////////////////////

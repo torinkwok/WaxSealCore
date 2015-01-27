@@ -118,8 +118,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   You typically do not use `WSCKeychainItem` object directly, you use objects whose
   classes descend from `WSCKeychainItem`:
   
-  * WSCApplicationPassword
-  * WSCInternetPassword
+  * WSCPasswordItem
   * WSCCertificate
   * WSCKey
   * WSCIdentity
@@ -147,25 +146,6 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   */
 @property ( assign, readonly ) BOOL isValid;
 
-/** The reference of the `SecKeychainItem` opaque object, which wrapped by `WSCKeychainItem` object. (read-only)
-  
-  If you are familiar with the underlying *Keychain Services* APIs,
-  you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this property.
-  */
-@property ( unsafe_unretained, readonly ) SecKeychainItemRef secKeychainItem;
-
-#pragma mark Common Password Attributes
-/** The `NSString` object that identifies the account of keychain item represented by receiver.
-  */
-@property ( copy, readwrite ) NSString* account;
-
-/** The `NSString` object that identifies the comment of keychain item represented by receiver.
-  */
-@property ( copy, readwrite ) NSString* comment;
-
-/** The `NSString` object that identifies the kind description of keychain item represented by receiver.
-  */
-@property ( copy, readwrite ) NSString* kindDescription;
 
 /** The `NSDate` object that identifies the creation date of the keychain item represented by receiver.
 
@@ -183,47 +163,12 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   */
 @property ( retain, readonly ) NSDate* modificationDate;
 
-#pragma mark Internet Password Attributes
-/** The URL for the an Internet password represented by receiver. (read-only)
-
-  @sa protocol
-  @sa hostName
-  @sa relativePath
-  @sa port
+/** The reference of the `SecKeychainItem` opaque object, which wrapped by `WSCKeychainItem` object. (read-only)
+  
+  If you are familiar with the underlying *Keychain Services* APIs,
+  you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this property.
   */
-@property ( retain, readonly ) NSURL* URL;
-
-/** The `NSString` object that identifies the Internet server’s domain name 
-    or IP address of an Internet password item represented by receiver.
-
-  For example, in the URL "https://github.com/TongG/WaxSealCore", the host name is "https://github.com".
-  */
-@property ( copy, readwrite ) NSString* hostName;
-
-/** The `NSString` object that identifies the the path of a URL conforming to RFC 1808 
-    of an Internet password item represented by receiver.
-
-  For example: in the URL "https://github.com/TongG/WaxSealCore", the relative URL path is "/TongG/WaxSealCore".
-  If the URL of receiver does not conform to RFC 1808, returns `nil`.
-  */
-@property ( copy, readwrite ) NSString* relativePath;
-
-/** The value of type WSCInternetAuthenticationType that identifies the authentication type of an internet password item represented by receiver.
-  */
-@property ( assign, readwrite ) WSCInternetAuthenticationType authenticationType;
-
-/** The value of type WSCInternetProtocolType that identifies the Internet protocol of an internet password item represented by receiver.
-  */
-@property ( assign, readwrite ) WSCInternetProtocolType protocol;
-
-/** The value that identifies the Internet port of an internet password item represented by receiver.
-  */
-@property ( assign, readwrite ) NSUInteger port;
-
-#pragma mark Application Password Attributes
-/** The `NSString` object that identifies the service name of an application password item represented by receiver.
-  */
-@property ( copy, readwrite ) NSString* serviceName;
+@property ( unsafe_unretained, readonly ) SecKeychainItemRef secKeychainItem;
 
 @end // WSCKeychainItem class
 

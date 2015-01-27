@@ -34,8 +34,7 @@
 #import <XCTest/XCTest.h>
 
 #import "WSCKeychain.h"
-#import "WSCApplicationPassword.h"
-#import "WSCInternetPassword.h"
+#import "WSCPasswordItem.h"
 #import "WSCKeychainItem.h"
 #import "NSURL+WSCKeychainURL.h"
 #import "WSCKeychainError.h"
@@ -66,11 +65,11 @@
     {
     NSError* error = nil;
 
-    for ( int _Index = 0; _Index < 20; _Index )
+    for ( int _Index = 0; _Index < 20; _Index++ )
         {
         @autoreleasepool
             {
-//            WSCInternetPassword*  
+
             }
         }
     }
@@ -119,7 +118,7 @@
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 0
     // -------------------------------------------------------------------------------------------------------------------- //
-    WSCApplicationPassword* applicationPassword_testCase0 =
+    WSCPasswordItem* applicationPassword_testCase0 =
         [ commonRandomKeychain addApplicationPasswordWithServiceName: @"WaxSealCore: testSetCreationDate"
                                                          accountName: @"testSetCreationDate Test Case 0"
                                                             password: @"waxsealcore"
@@ -208,13 +207,14 @@
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 1
     // -------------------------------------------------------------------------------------------------------------------- //
-    WSCInternetPassword* internetPassword_testCase1 =
+    WSCPasswordItem* internetPassword_testCase1 =
         [ commonRandomKeychain addInternetPasswordWithServerName: @"www.waxsealcore.org"
                                                  URLRelativePath: @"testSetCreationDate/test/case/0"
                                                      accountName: @"waxsealcore"
                                                         protocol: WSCInternetProtocolTypeHTTPS
                                                         password: @"waxsealcore"
                                                            error: &error ];
+    internetPassword_testCase1.serviceName = @"WaxSealCore Test";
     internetPassword_testCase1.port = 324;
     NSLog( @"Fucking URL #1: %@", internetPassword_testCase1.URL );
 
@@ -421,7 +421,7 @@
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 0
     // -------------------------------------------------------------------------------------------------------------------- //
-    WSCApplicationPassword* applicationPassword_testCase0 =
+    WSCPasswordItem* applicationPassword_testCase0 =
         [ commonRandomKeychain addApplicationPasswordWithServiceName: @"WaxSealCore: testSetCreationDate"
                                                          accountName: @"testSetCreationDate Test Case 0"
                                                             password: @"waxsealcore"
@@ -453,7 +453,7 @@
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 1
     // -------------------------------------------------------------------------------------------------------------------- //
-    WSCInternetPassword* internetPassword_testCase1 =
+    WSCPasswordItem* internetPassword_testCase1 =
         [ commonRandomKeychain addInternetPasswordWithServerName: @"www.waxsealcore.org"
                                                  URLRelativePath: @"testSetCreationDate/test/case/0"
                                                      accountName: @"waxsealcore"
@@ -512,7 +512,7 @@
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 0
     // -------------------------------------------------------------------------------------------------------------------- //
-    WSCApplicationPassword* applicationPassword_testCase0 =
+    WSCPasswordItem* applicationPassword_testCase0 =
         [ commonRandomKeychain addApplicationPasswordWithServiceName: @"WaxSealCore: testModificationDate"
                                                          accountName: @"testModificationDate Test Case 0"
                                                             password: @"waxsealcore"
@@ -526,7 +526,7 @@
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 1
     // -------------------------------------------------------------------------------------------------------------------- //
-    WSCInternetPassword* internetPassword_testCase1 =
+    WSCPasswordItem* internetPassword_testCase1 =
         [ commonRandomKeychain addInternetPasswordWithServerName: @"www.waxsealcore.org"
                                                  URLRelativePath: @"testModificationDate/test/case/1"
                                                      accountName: @"NSTongG"
@@ -571,7 +571,7 @@
     // ----------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------
-    WSCApplicationPassword* applicationPassword_testCase0 =
+    WSCPasswordItem* applicationPassword_testCase0 =
         [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: @"WaxSealCore"
                                                           accountName: @"Test Case 0"
                                                              password: @"waxsealcore"
@@ -586,7 +586,7 @@
     // ----------------------------------------------------------
     // Test Case 1
     // ----------------------------------------------------------
-    WSCInternetPassword* internetPassword_testCase1 =
+    WSCPasswordItem* internetPassword_testCase1 =
         [ [ WSCKeychain login ] addInternetPasswordWithServerName: @"www.waxsealcore.org"
                                                   URLRelativePath: @"testCase1"
                                                       accountName: @"Test Case 1"

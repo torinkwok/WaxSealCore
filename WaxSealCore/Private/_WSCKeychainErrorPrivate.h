@@ -38,6 +38,8 @@ NSString extern* const WSCKeychainKeychainIsInvalidErrorDescription;
 NSString extern* const WSCKeychainKeychainFileExistsErrorDescription;
 NSString extern* const WSCKeychainKeychainURLIsInvalidErrorDescription;
 NSString extern* const WSCKeychainKeychainItemIsInvalidErrorDescription;
+NSString extern* const WSCKeychainItemNoSuchAttributeInInternetPasswordErrorDescription;
+NSString extern* const WSCKeychainItemNoSuchAttributeInApplicationPasswordErrorDescription;
 
 id extern const s_guard;
 void _WSCDontBeABitch( NSError** _Error, ... );
