@@ -40,7 +40,7 @@
 
 /* Objective-C wrapper for SecKeychainCreate() function */
 + ( instancetype ) p_keychainWithURL: ( NSURL* )_URL
-                            password: ( NSString* )_Password
+                          passphrase: ( NSString* )_Passphrase
                       doesPromptUser: ( BOOL )_DoesPromptUser
                        initialAccess: ( WSCAccessPermission* )_InitalAccess
                       becomesDefault: ( BOOL )_WillBecomeDefault

@@ -245,7 +245,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
 
 /** Creates and returns a `WSCKeychain` object using the given URL, password, and inital access rights.
 
-  This class method creates an empty keychain. The `_Password` parameter is required, and `_InitialAccess` parameter is optional.
+  This class method creates an empty keychain. The `_Passphrase` parameter is required, and `_InitialAccess` parameter is optional.
   If user interaction to create a keychain is posted, the newly-created keychain is automatically unlocked after creation.
 
   The system ensures that a default keychain is created for the user at login, thus, in most cases, 
@@ -260,8 +260,8 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
               The URL in this parameter must not be a file reference URL or an URL other than file scheme
               This parameter must not be `nil`.
 
-  @param _Password A NSString object containing the password which is used to protect the new keychain.
-                   This parameter must not be `nil`.
+  @param _Passphrase A NSString object containing the password which is used to protect the new keychain.
+                     This parameter must not be `nil`.
 
   @param _InitalAccess An WSCAccessPermission object indicating the initial access rights for the new keychain,
                        A keychain's access rights determine which application have permission to user the keychain.
@@ -280,7 +280,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
   @sa +keychainWithContentsOfURL:error:
   */
 + ( instancetype ) keychainWithURL: ( NSURL* )_URL
-                          password: ( NSString* )_Password
+                        passphrase: ( NSString* )_Passphrase
                      initialAccess: ( WSCAccessPermission* )_InitalAccess
                     becomesDefault: ( BOOL )_WillBecomeDefault
                              error: ( NSError** )_Error;
@@ -316,7 +316,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
   @return A `WSCKeychain` object initialized with above parameters as well as a password, 
           which is obtained from the password dialog.
           
-  @sa +keychainWithURL:password:initialAccess:becomesDefault:error:
+  @sa +keychainWithURL:passphrase:initialAccess:becomesDefault:error:
   @sa +keychainWithSecKeychainRef:
   @sa +keychainWithContentsOfURL:error:
   */
@@ -332,7 +332,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
   @return A `WSCKeychain` object initialized with the givent reference to the instance of `SecKeychain` opaque type.
           Return `nil` if *_SecKeychainRef* is `nil`.
           
-  @sa +keychainWithURL:password:initialAccess:becomesDefault:error:
+  @sa +keychainWithURL:passphrase:initialAccess:becomesDefault:error:
   @sa +keychainWhosePasswordWillBeObtainedFromUserWithURL:initialAccess:becomesDefault:error:
   @sa +keychainWithContentsOfURL:error:
   */
@@ -350,7 +350,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
 
   @return A `WSCKeychain` object represented a keychain located at the given URL.
   
-  @sa +keychainWithURL:password:initialAccess:becomesDefault:error:
+  @sa +keychainWithURL:passphrase:initialAccess:becomesDefault:error:
   @sa +keychainWhosePasswordWillBeObtainedFromUserWithURL:initialAccess:becomesDefault:error:
   @sa +keychainWithSecKeychainRef:
   */
@@ -414,7 +414,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
 
   @param _AccountName An `NSString` object representing the account name.
 
-  @param _Password An `NSString` object representing the password.
+  @param _Passphrase An `NSString` object representing the password.
   
   @param _Error On input, a pointer to an error object.
                 If an error occurs, this pointer is set to an actual error object containing the error information.
@@ -426,7 +426,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
   */
 - ( WSCPasswordItem* ) addApplicationPasswordWithServiceName: ( NSString* )_ServiceName
                                                  accountName: ( NSString* )_AccountName
-                                                    password: ( NSString* )_Password
+                                                  passphrase: ( NSString* )_Passphrase
                                                        error: ( NSError** )_Error;
 
 /** Adds a new Internet password to the keychain represented by receiver.
@@ -451,7 +451,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
   @param _Protocol The protocol associated with this password. 
                    See ["WaxSealCore Internet Protocol Type Constants"](WSCInternetProtocolType) for a description of possible values.
                    
-  @param _Password An `NSString` object containing the password.
+  @param _Passphrase An `NSString` object containing the password.
   
   @param _Error On input, a pointer to an error object.
                 If an error occurs, this pointer is set to an actual error object containing the error information.
@@ -464,7 +464,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
                                          URLRelativePath: ( NSString* )_URLRelativePath
                                              accountName: ( NSString* )_AccountName
                                                 protocol: ( WSCInternetProtocolType )_Protocol
-                                                password: ( NSString* )_Password
+                                              passphrase: ( NSString* )_Passphrase
                                                    error: ( NSError** )_Error;
 
 @end // WSCKeychain class

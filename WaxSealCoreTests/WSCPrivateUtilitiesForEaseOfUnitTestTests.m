@@ -126,7 +126,7 @@
     XCTAssertNil( error );
 
     WSCKeychain* keychain_testCase0 = [ WSCKeychain keychainWithURL: URLForTestCase0
-                                                           password: @"waxsealcore"
+                                                         passphrase: @"waxsealcore"
                                                       initialAccess: nil
                                                      becomesDefault: NO
                                                               error: &error ];

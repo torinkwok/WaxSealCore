@@ -177,13 +177,13 @@ BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
 
 /* Creates and returns a `WSCKeychain` object using the given URL, password, and inital access rights. */
 + ( instancetype ) keychainWithURL: ( NSURL* )_URL
-                          password: ( NSString* )_Password
+                        passphrase: ( NSString* )_Passphrase
                      initialAccess: ( WSCAccessPermission* )_InitalAccess
                     becomesDefault: ( BOOL )_WillBecomeDefault
                              error: ( NSError** )_Error
     {
     return [ self p_keychainWithURL: _URL
-                           password: _Password
+                         passphrase: _Passphrase
                      doesPromptUser: NO
                       initialAccess: _InitalAccess
                      becomesDefault: _WillBecomeDefault
@@ -197,7 +197,7 @@ BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
                                                                 error: ( NSError** )_Error
     {
     return [ self p_keychainWithURL: _URL
-                           password: nil
+                         passphrase: nil
                      doesPromptUser: YES
                       initialAccess: _InitalAccess
                      becomesDefault: _WillBecomeDefault
@@ -318,7 +318,7 @@ WSCKeychain static* s_system = nil;
  */
 - ( WSCPasswordItem* ) addApplicationPasswordWithServiceName: ( NSString* )_ServiceName
                                                  accountName: ( NSString* )_AccountName
-                                                    password: ( NSString* )_Password
+                                                  passphrase: ( NSString* )_Passphrase
                                                        error: ( NSError** )_Error
     {
     NSError* error = nil;
@@ -329,7 +329,7 @@ WSCKeychain static* s_system = nil;
                     , self,         [ WSCKeychain class ]
                     , _ServiceName, [ NSString class ]
                     , _AccountName, [ NSString class ]
-                    , _Password,    [ NSString class ]
+                    , _Passphrase,    [ NSString class ]
                     , s_guard
                     );
     if ( !error )
@@ -347,7 +347,7 @@ WSCKeychain static* s_system = nil;
             resultCode = SecKeychainAddGenericPassword( self.secKeychain
                                                       , ( UInt32 )_ServiceName.length, _ServiceName.UTF8String
                                                       , ( UInt32 )_AccountName.length, _AccountName.UTF8String
-                                                      , ( UInt32 )_Password.length, _Password.UTF8String
+                                                      , ( UInt32 )_Passphrase.length, _Passphrase.UTF8String
                                                       , &secKeychainItem
                                                       );
             if ( resultCode == errSecSuccess )
@@ -368,7 +368,7 @@ WSCKeychain static* s_system = nil;
                                          URLRelativePath: ( NSString* )_URLRelativePath
                                              accountName: ( NSString* )_AccountName
                                                 protocol: ( WSCInternetProtocolType )_Protocol
-                                                password: ( NSString* )_Password
+                                              passphrase: ( NSString* )_Passphrase
                                                    error: ( NSError** )_Error
     {
     NSError* error = nil;
@@ -379,7 +379,7 @@ WSCKeychain static* s_system = nil;
                     , _ServerName,      [ NSString class ]
                     , _URLRelativePath, [ NSString class ]
                     , _AccountName,     [ NSString class ]
-                    , _Password,        [ NSString class ]
+                    , _Passphrase,        [ NSString class ]
                     , s_guard
                     );
     if ( !error )
@@ -406,7 +406,7 @@ WSCKeychain static* s_system = nil;
                                                        , ( SecProtocolType )_Protocol
                                                        , kSecAuthenticationTypeDefault
                                                        // Internet Password
-                                                       , ( UInt32 )_Password.length, _Password.UTF8String
+                                                       , ( UInt32 )_Passphrase.length, _Passphrase.UTF8String
                                                        , &secKeychainItem
                                                        );
             if ( resultCode == errSecSuccess )
@@ -513,13 +513,13 @@ WSCKeychain static* s_system = nil;
  * interaction prompt and inital access rights. 
  */
 + ( instancetype ) p_keychainWithURL: ( NSURL* )_URL
-                            password: ( NSString* )_Password
+                          passphrase: ( NSString* )_Passphrase
                       doesPromptUser: ( BOOL )_DoesPromptUser
                        initialAccess: ( WSCAccessPermission* )_InitalAccess
                       becomesDefault: ( BOOL )_WillBecomeDefault
                                error: ( NSError** )_Error
     {
-    if ( !_URL /* The _URL and _Password parameters must not be nil */
+    if ( !_URL /* The _URL and _Passphrase parameters must not be nil */
             || ![ _URL isFileURL ] /* The _URL must has the file scheme */ )
         {
         if ( _Error )
@@ -543,7 +543,7 @@ WSCKeychain static* s_system = nil;
         return nil;
         }
 
-    if ( !_Password && !_DoesPromptUser  )
+    if ( !_Passphrase && !_DoesPromptUser  )
         {
         if ( _Error )
             /* Error Description:
@@ -558,7 +558,7 @@ WSCKeychain static* s_system = nil;
 
     SecKeychainRef newSecKeychain = NULL;
     resultCode = SecKeychainCreate( [ _URL path ].UTF8String
-                                  , ( UInt32 )[ _Password length ], _Password.UTF8String
+                                  , ( UInt32 )[ _Passphrase length ], _Passphrase.UTF8String
                                   , ( Boolean )_DoesPromptUser
                                   , nil
                                   , &newSecKeychain

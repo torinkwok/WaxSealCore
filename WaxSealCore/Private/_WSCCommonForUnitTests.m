@@ -42,7 +42,7 @@
 #import "_WSCKeychainPrivate.h"
 #import "_WSCCommonForUnitTests.h"
 
-NSString* _WSCTestPassword = @"waxsealcore";
+NSString* _WSCTestPassphrase = @"waxsealcore";
 
 WSCKeychainSelectivelyUnlockKeychainBlock _WSCSelectivelyUnlockKeychainsBasedOnPassword =
     ^( void )
@@ -60,20 +60,20 @@ WSCKeychainSelectivelyUnlockKeychainBlock _WSCSelectivelyUnlockKeychainsBasedOnP
             {
             if ( [ _Keychain isEqualToKeychain: [ WSCKeychain login ] ] )
                 {
-                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"waxsealcore" error: &error ];
+                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassphrase: @"waxsealcore" error: &error ];
                 _WSCPrintNSErrorForLog( error );
                 continue;
                 }
 
             if ( [ _Keychain.URL.path contains: @"withPrompt" ]
                     || [ _Keychain.URL.path contains: @"WithInteractionPrompt" ] )
-                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"isgtforever" error: &error ];
+                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassphrase: @"isgtforever" error: &error ];
 
             else if ( [ [ _Keychain.URL path ] contains: @"nonPrompt" ] )
-                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"waxsealcore" error: &error ];
+                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassphrase: @"waxsealcore" error: &error ];
 
             else
-                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassword: @"isgtforever" error: &error ];
+                [ [ WSCKeychainManager defaultManager ] unlockKeychain: _Keychain withPassphrase: @"isgtforever" error: &error ];
 
             _WSCPrintNSErrorForLog( error );
             }
@@ -111,7 +111,7 @@ static void s_setUpCommonValidKeychain()
 
                     NSURL* URLForKeychain = [ [ NSURL URLForTemporaryDirectory ] URLByAppendingPathComponent: @"CommonValidKeychain.keychain" ];
                     _WSCCommonValidKeychainForUnitTests = [ [ [ WSCKeychain keychainWithURL: URLForKeychain
-                                                                                   password: @"waxsealcore"
+                                                                                 passphrase: @"waxsealcore"
                                                                               initialAccess: nil
                                                                              becomesDefault: NO
                                                                                       error: &error ] retain ] autodelete ];
@@ -152,7 +152,7 @@ static void s_commonTearDownForUnitTestModules()
     [ [ WSCKeychainManager defaultManager ] setDefaultKeychain: [ WSCKeychain login ] error: nil ];
 
     [ [ WSCKeychainManager defaultManager ] unlockKeychain: [ WSCKeychain login ]
-                                              withPassword: @"waxsealcore"
+                                            withPassphrase: @"waxsealcore"
                                                      error: nil ];
     }
 
@@ -172,7 +172,7 @@ WSCKeychain* _WSCRandomKeychain()
     NSError* error = nil;
     NSURL* randomURL = _WSCRandomURL();
     WSCKeychain* randomKeychain = [ [ WSCKeychain p_keychainWithURL: randomURL
-                                                           password: @"waxsealcore"
+                                                         passphrase: @"waxsealcore"
                                                      doesPromptUser: NO
                                                       initialAccess: nil
                                                      becomesDefault: NO
@@ -214,7 +214,7 @@ WSCPasswordItem* _WSC_www_waxsealcore_org_InternetKeychainItem( NSError** _Error
                                                     URLRelativePath: @"common/test/internet/keychain/item"
                                                         accountName: @"waxsealcore"
                                                            protocol: WSCInternetProtocolTypeHTTPS
-                                                           password: @"waxsealcore"
+                                                         passphrase: @"waxsealcore"
                                                               error: &error ] autodelete ];
     if ( _Error )
         *_Error = [ error copy ];
@@ -228,7 +228,7 @@ WSCPasswordItem* _WSC_WaxSealCoreTests_ApplicationKeychainItem( NSError** _Error
     WSCPasswordItem* applicationPassword_testCase0 =
         [ [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: @"WaxSealCore: Common Test"
                                                             accountName: @"NSTongG"
-                                                               password: @"waxsealcore"
+                                                             passphrase: @"waxsealcore"
                                                                   error: &error ] autodelete ];
     if ( _Error )
         *_Error = [ error copy ];

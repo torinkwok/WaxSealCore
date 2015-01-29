@@ -118,7 +118,7 @@ NSString* _WSCPassphrases[] =
     {
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-
+#if 0
 - ( void ) testPassphraseProperty
     {
     NSError* error = nil;
@@ -267,7 +267,7 @@ NSString* _WSCPassphrases[] =
             }
         }
     }
-
+#endif
 - ( void ) testProperties
     {
     NSError* error = nil;
@@ -315,7 +315,7 @@ NSString* _WSCPassphrases[] =
     WSCPasswordItem* applicationPassword_testCase0 =
         [ commonRandomKeychain addApplicationPasswordWithServiceName: @"WaxSealCore: testSetCreationDate"
                                                          accountName: @"testSetCreationDate Test Case 0"
-                                                            password: @"waxsealcore"
+                                                          passphrase: @"waxsealcore"
                                                                error: &error ];
     #pragma mark Comment
     [ applicationPassword_testCase0 setComment: commentOne ];
@@ -406,7 +406,7 @@ NSString* _WSCPassphrases[] =
                                                  URLRelativePath: @"testSetCreationDate/test/case/0"
                                                      accountName: @"waxsealcore"
                                                         protocol: WSCInternetProtocolTypeHTTPS
-                                                        password: @"waxsealcore"
+                                                      passphrase: @"waxsealcore"
                                                            error: &error ];
     internetPassword_testCase1.serviceName = @"WaxSealCore Test";
     internetPassword_testCase1.port = 324;
@@ -618,7 +618,7 @@ NSString* _WSCPassphrases[] =
     WSCPasswordItem* applicationPassword_testCase0 =
         [ commonRandomKeychain addApplicationPasswordWithServiceName: @"WaxSealCore: testSetCreationDate"
                                                          accountName: @"testSetCreationDate Test Case 0"
-                                                            password: @"waxsealcore"
+                                                          passphrase: @"waxsealcore"
                                                                error: &error ];
 
     /*******/ NSLog( @"Before modifying applicationPassword_testCase0: %@", [ applicationPassword_testCase0 creationDate ] ); /*******/
@@ -652,7 +652,7 @@ NSString* _WSCPassphrases[] =
                                                  URLRelativePath: @"testSetCreationDate/test/case/0"
                                                      accountName: @"waxsealcore"
                                                         protocol: WSCInternetProtocolTypeHTTPS
-                                                        password: @"waxsealcore"
+                                                      passphrase: @"waxsealcore"
                                                            error: &error ];
 
     /*******/ NSLog( @"Before modifying internetPassword_testCase1: %@", [ internetPassword_testCase1 creationDate ] ); /*******/
@@ -709,7 +709,7 @@ NSString* _WSCPassphrases[] =
     WSCPasswordItem* applicationPassword_testCase0 =
         [ commonRandomKeychain addApplicationPasswordWithServiceName: @"WaxSealCore: testModificationDate"
                                                          accountName: @"testModificationDate Test Case 0"
-                                                            password: @"waxsealcore"
+                                                          passphrase: @"waxsealcore"
                                                                error: &error ];
 
     XCTAssertNotNil( applicationPassword_testCase0.modificationDate );
@@ -725,7 +725,7 @@ NSString* _WSCPassphrases[] =
                                                  URLRelativePath: @"testModificationDate/test/case/1"
                                                      accountName: @"NSTongG"
                                                         protocol: WSCInternetProtocolTypeFTPS
-                                                        password: @"waxsealcore"
+                                                      passphrase: @"waxsealcore"
                                                            error: &error ];
 
     XCTAssertNotNil( internetPassword_testCase1.creationDate );
@@ -768,7 +768,7 @@ NSString* _WSCPassphrases[] =
     WSCPasswordItem* applicationPassword_testCase0 =
         [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: @"WaxSealCore"
                                                           accountName: @"Test Case 0"
-                                                             password: @"waxsealcore"
+                                                           passphrase: @"waxsealcore"
                                                                 error: &error ];
     XCTAssertNotNil( applicationPassword_testCase0 );
     XCTAssertEqual( applicationPassword_testCase0.itemClass, WSCKeychainItemClassApplicationPasswordItem );
@@ -785,7 +785,7 @@ NSString* _WSCPassphrases[] =
                                                   URLRelativePath: @"testCase1"
                                                       accountName: @"Test Case 1"
                                                          protocol: WSCInternetProtocolTypeHTTPS
-                                                         password: @"waxsealcore"
+                                                       passphrase: @"waxsealcore"
                                                             error: &error ];
 
     XCTAssertNotNil( internetPassword_testCase1 );

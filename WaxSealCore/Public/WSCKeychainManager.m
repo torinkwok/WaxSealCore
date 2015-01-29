@@ -295,18 +295,18 @@ WSCKeychainManager static* s_defaultManager = nil;
 
 /* Unlocks a keychain with an explicitly provided password. */
 - ( BOOL ) unlockKeychain: ( WSCKeychain* )_Keychain
-             withPassword: ( NSString* )_Password
+           withPassphrase: ( NSString* )_Passphrase
                     error: ( NSError** )_Error
     {
-    if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldUnlockKeychain:withPassword: ) ]
-            && ![ self.delegate keychainManager: self shouldUnlockKeychain: _Keychain withPassword: _Password ] )
+    if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldUnlockKeychain:withPassphrase: ) ]
+            && ![ self.delegate keychainManager: self shouldUnlockKeychain: _Keychain withPassphrase: _Passphrase ] )
         // If the delegate aborts the unlocking operation for a keychain, this method returns YES.
         return YES;
 
     NSError* errorPassedInDelegateMethod = nil;
     _WSCDontBeABitch( &errorPassedInDelegateMethod
                     , _Keychain, [ WSCKeychain class ]
-                    , _Password, [ NSString class ]
+                    , _Passphrase, [ NSString class ]
                     , s_guard
                     );
 
@@ -316,8 +316,8 @@ WSCKeychainManager static* s_defaultManager = nil;
             {
             OSStatus resultCode = errSecSuccess;
             resultCode = SecKeychainUnlock( _Keychain.secKeychain
-                                          , ( UInt32 )_Password.length
-                                          , _Password.UTF8String
+                                          , ( UInt32 )_Passphrase.length
+                                          , _Passphrase.UTF8String
                                           , YES
                                           );
 
@@ -331,7 +331,7 @@ WSCKeychainManager static* s_defaultManager = nil;
         return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
                                       occuredIn: _cmd
                                     copiedError: _Error
-                                               , self, errorPassedInDelegateMethod, _Keychain, _Password
+                                               , self, errorPassedInDelegateMethod, _Keychain, _Passphrase
                                                , s_guard ];
 
     // If every parameters is correct but the keychain has been already unlocked:
@@ -693,8 +693,8 @@ WSCKeychainManager static* s_defaultManager = nil;
         else if ( _APISelector == @selector( lockAllKeychains: ) )
             delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError );
     #endif
-        else if ( _APISelector == @selector( unlockKeychain:withPassword:error: ) )
-            delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:unlockingKeychain:withPassword: );
+        else if ( _APISelector == @selector( unlockKeychain:withPassphrase:error: ) )
+            delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:unlockingKeychain:withPassphrase: );
 
         else if ( _APISelector == @selector( unlockKeychainWithUserInteraction:error: ) )
             delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:unlockingKeychainWithUserInteraction: );

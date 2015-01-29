@@ -86,7 +86,7 @@
 
     NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0", NO, YES );
     WSCKeychain* newKeychain_testCase0 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase0
-                                                              password: _WSCTestPassword
+                                                            passphrase: _WSCTestPassphrase
                                                          initialAccess: nil
                                                         becomesDefault: NO
                                                                  error: &error ];
@@ -122,7 +122,7 @@
 
     SecKeychainItemRef passwordItem_testCase0 = [ self _addKeychainItemOfClass: kSecInternetPasswordItemClass
                                                                     toKeychain: newKeychain_testCase0.secKeychain
-                                                                  withPassword: @"waxsealcore"
+                                                                withPassphrase: @"waxsealcore"
                                                                 attributesList: &attrsList
                                                       initialAccessControlList: access_testCase0.secAccess
                                                                         status: &resultCode ];
@@ -139,7 +139,7 @@
 
     NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0", NO, YES );
     WSCKeychain* newKeychain_testCase0 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase0
-                                                              password: _WSCTestPassword
+                                                            passphrase: _WSCTestPassphrase
                                                          initialAccess: nil
                                                         becomesDefault: NO
                                                                  error: &error ];
@@ -179,7 +179,7 @@
 
     SecKeychainItemRef passwordItem_testCase0 = [ self _addKeychainItemOfClass: kSecInternetPasswordItemClass
                                                                     toKeychain: newKeychain_testCase0.secKeychain
-                                                                  withPassword: @"waxsealcore"
+                                                                withPassphrase: @"waxsealcore"
                                                                 attributesList: &attrsList
                                                       initialAccessControlList: accessPermission_testCase0.secAccess
                                                                         status: &resultCode ];
@@ -195,7 +195,7 @@
 
 - ( SecKeychainItemRef ) _addKeychainItemOfClass: ( SecItemClass )_ItemClass
                                       toKeychain: ( SecKeychainRef )_Keychain
-                                    withPassword: ( NSString* )_Password
+                                  withPassphrase: ( NSString* )_Passphrase
                                   attributesList: ( SecKeychainAttributeList* )_AttrList
                         initialAccessControlList: ( SecAccessRef )_InitialAccess
                                           status: ( OSStatus* )_Status
@@ -203,11 +203,11 @@
     SecKeychainItemRef newItem = NULL;
     OSStatus resultCode = errSecSuccess;
 
-    const void* password = ( const void* )[ _Password UTF8String ];
+    const void* passphrase = ( const void* )[ _Passphrase UTF8String ];
     resultCode = SecKeychainItemCreateFromContent( _ItemClass
                                                  , _AttrList
-                                                 ,( UInt32 )strlen( password )
-                                                 , password
+                                                 ,( UInt32 )strlen( passphrase )
+                                                 , passphrase
                                                  , _Keychain
                                                  , _InitialAccess
                                                  , &newItem

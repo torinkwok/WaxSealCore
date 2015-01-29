@@ -228,11 +228,11 @@
 /** Unlocks a keychain with an explicitly provided password.
 
   Prior to unlocking the specified keychain with the specified password, the keychain manager asks its delegate if it should actually do so.
-  It does this by calling the [keychainManager:shouldUnlockKeychain:withPassword:](-[WSCKeychainManagerDelegate keychainManager:shouldUnlockKeychain:withPassword:]) method;
+  It does this by calling the [keychainManager:shouldUnlockKeychain:withPassphrase:](-[WSCKeychainManagerDelegate keychainManager:shouldUnlockKeychain:withPassphrase:]) method;
   If the delegate method returns `YES`, or if the delegate does not implement the appropriate methods,
   the keychain manager proceeds to unlock the specified keychain with the specified password.
   If there is an error unlocking a keychain, the keychain manager may also call the delegate's
-  [keychainManager:shouldProceedAfterError:unlockingKeychain:withPassword:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:unlockingKeychain:withPassword:]) method to determine how to proceed.
+  [keychainManager:shouldProceedAfterError:unlockingKeychain:withPassphrase:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:unlockingKeychain:withPassphrase:]) method to determine how to proceed.
 
   In most cases, your application does not need to invoke this method directly, 
   since most *WaxSealCore* APIs and the underlying *Keychain Services* functions that require an unlocked keychain do so for you.
@@ -242,7 +242,7 @@
                    Passing `nil` to this parameter returns an `NSError` object which encapsulated `WSCCommonInvalidParametersError` error code.
                    And passing an invalid keychain to this parameter returns an `NSError` object which encapsulated `WSCKeychainIsInvalidError` error code.
 
-  @param _Password A string containing the password for the specified keychain.
+  @param _Passphrase A string containing the password for the specified keychain.
                    This parameter must **NOT** be `nil`.
 
   @param _Error On input, a pointer to an error object.
@@ -251,7 +251,7 @@
   @return `YES` if the specified keychain was unlocked successfully; otherwise, `NO`.
   */
 - ( BOOL ) unlockKeychain: ( WSCKeychain* )_Keychain
-             withPassword: ( NSString* )_Password
+           withPassphrase: ( NSString* )_Passphrase
                     error: ( NSError** )_Error;
 
 /** Unlocks a keychain with the user interaction which is used to retrieve password from the user.
@@ -519,15 +519,15 @@
   
   @param _Keychain The keychain that the keychain manager tried to unlock.
   
-  @param _Password A string containing the password for the keychain that the keychain manager tried to unlock.
+  @param _Passphrase A string containing the password for the keychain that the keychain manager tried to unlock.
   
   @return `YES` if the specified keychain should be unlocked or `NO` if it should not be unlocked.
 
-  @sa [- unlockKeychain:withPassword:error:](-[WSCKeychainManager unlockKeychain:withPassword:error:])
+  @sa [- unlockKeychain:withPassphrase:error:](-[WSCKeychainManager unlockKeychain:withPassphrase:error:])
   */
 - ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
       shouldUnlockKeychain: ( WSCKeychain* )_Keychain
-              withPassword: ( NSString* )_Password;
+            withPassphrase: ( NSString* )_Passphrase;
 
 /** Asks the delegate if the operation should continue after an error occurs while unlocking the specified keychain with the specified password.
 
@@ -537,17 +537,17 @@
 
   @param _Keychain The keychain that the keychain manager tried to unlock.
   
-  @param _Password A string containing the password for the keychain that the keychain manager tried to unlock.
+  @param _Passphrase A string containing the password for the keychain that the keychain manager tried to unlock.
   
   @return `YES` if the operation should proceed or `NO` if it should be aborted. 
           If you do not implement this method, the keychain manager assumes a response of `NO`.
           
-  @sa [- unlockKeychain:withPassword:error:](-[WSCKeychainManager unlockKeychain:withPassword:error:])
+  @sa [- unlockKeychain:withPassphrase:error:](-[WSCKeychainManager unlockKeychain:withPassphrase:error:])
   */
 - ( BOOL )  keychainManager: ( WSCKeychainManager* )_KeychainManager
     shouldProceedAfterError: ( NSError* )_Error
           unlockingKeychain: ( WSCKeychain* )_Keychain
-               withPassword: ( NSString* )_Password;
+             withPassphrase: ( NSString* )_Passphrase;
 
 /** Asks the delegate whether the specified keychain should be unlocked with user interaction.
 

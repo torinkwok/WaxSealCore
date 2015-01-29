@@ -124,7 +124,7 @@
     // ----------------------------------------------------------------------------------
     NSURL* randomURL_negativeTestCase2 = _WSCRandomURL();
     WSCKeychain* randomKeychain_negativeTest2 = [ WSCKeychain p_keychainWithURL: randomURL_negativeTestCase2
-                                                                       password: _WSCTestPassword
+                                                                     passphrase: _WSCTestPassphrase
                                                                  doesPromptUser: NO
                                                                   initialAccess: nil
                                                                  becomesDefault: NO
@@ -151,7 +151,7 @@
     // ----------------------------------------------------------------------------------
     NSURL* randomURL_negativeTestCase3 = _WSCRandomURL();
     WSCKeychain* randomKeychain_negativeTest3 = [ WSCKeychain p_keychainWithURL: randomURL_negativeTestCase3
-                                                                       password: _WSCTestPassword
+                                                                     passphrase: _WSCTestPassphrase
                                                                  doesPromptUser: NO
                                                                   initialAccess: nil
                                                                  becomesDefault: NO
@@ -184,7 +184,7 @@
     NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0", NO, YES );
     XCTAssertFalse( [ URLForNewKeychain_testCase0 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainNonPrompt_testCase0 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase0
-                                                                       password: _WSCTestPassword
+                                                                     passphrase: _WSCTestPassphrase
                                                                   initialAccess: nil
                                                                  becomesDefault: NO
                                                                           error: &error ];
@@ -202,7 +202,7 @@
 
     XCTAssertFalse( [ URLForNewKeychain_testCase1 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainNonPrompt_testCase1 = [ WSCKeychain keychainWithURL: URLForNewKeychain_testCase1
-                                                                       password: _WSCTestPassword
+                                                                     passphrase: _WSCTestPassphrase
                                                                   initialAccess: nil
                                                                  becomesDefault: YES
                                                                           error: &error ];
@@ -220,7 +220,7 @@
 
     XCTAssertFalse( [ URLForNewKeychain_negativeTestCase0 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainNonPrompt_negativeTestCase0 = [ WSCKeychain keychainWithURL: URLForNewKeychain_negativeTestCase0
-                                                                               password: nil
+                                                                             passphrase: nil
                                                                           initialAccess: nil
                                                                          becomesDefault: NO
                                                                                   error: &error ];
@@ -238,7 +238,7 @@
     XCTAssertFalse( [ invalidURLForNewKeychain_negativeTestCase1 checkResourceIsReachableAndReturnError: nil ] );
     XCTAssertFalse( [ invalidURLForNewKeychain_negativeTestCase1 isFileURL ] );
     WSCKeychain* newKeychainNonPrompt_negativeTestCase1 = [ WSCKeychain keychainWithURL: invalidURLForNewKeychain_negativeTestCase1
-                                                                               password: _WSCTestPassword
+                                                                             passphrase: _WSCTestPassphrase
                                                                           initialAccess: nil
                                                                          becomesDefault: NO
                                                                                   error: &error ];
@@ -253,7 +253,7 @@
     // Negative Test Case 1: With a nil for URL parameter
     // ----------------------------------------------------------------------------------
     WSCKeychain* newKeychainNonPrompt_negativeTestCase2 = [ WSCKeychain keychainWithURL: nil
-                                                                               password: _WSCTestPassword
+                                                                             passphrase: _WSCTestPassphrase
                                                                           initialAccess: nil
                                                                          becomesDefault: NO
                                                                                   error: &error ];
@@ -350,7 +350,7 @@
 
     XCTAssertFalse( [ URLForNewKeychain_testCase0 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainNonPrompt_testCase0 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_testCase0
-                                                                         password: _WSCTestPassword
+                                                                       passphrase: _WSCTestPassphrase
                                                                    doesPromptUser: NO
                                                                     initialAccess: nil
                                                                    becomesDefault: NO
@@ -369,7 +369,7 @@
 
     XCTAssertFalse( [ URLForNewKeychain_testCase1 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainWithPrompt_testCase1 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_testCase1
-                                                                          password: nil // Will be ignored
+                                                                        passphrase: nil // Will be ignored
                                                                     doesPromptUser: YES
                                                                      initialAccess: nil
                                                                     becomesDefault: YES   // Sets the new keychain as default
@@ -390,7 +390,7 @@
     /* The file identified by URLForNewKeychain_testCase0 must be already exist due to above code */
     XCTAssertTrue( [ URLForNewKeychain_negativeTestCase0 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainNonPrompt_negativeCase0 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_negativeTestCase0
-                                                                             password: _WSCTestPassword
+                                                                           passphrase: _WSCTestPassphrase
                                                                        doesPromptUser: NO
                                                                         initialAccess: nil
                                                                        becomesDefault: NO
@@ -409,7 +409,7 @@
     XCTAssertFalse( [ invalidURLForNewKeychain_negativeTestCase1 checkResourceIsReachableAndReturnError: nil ] );
     XCTAssertFalse( [ invalidURLForNewKeychain_negativeTestCase1 isFileURL ] );
     WSCKeychain* newKeychainWithPrompt_negativeCase1 = [ WSCKeychain p_keychainWithURL: invalidURLForNewKeychain_negativeTestCase1
-                                                                              password: _WSCTestPassword /* Will be ignored */
+                                                                            passphrase: _WSCTestPassphrase /* Will be ignored */
                                                                         doesPromptUser: YES
                                                                          initialAccess: nil
                                                                         becomesDefault: NO
@@ -425,7 +425,7 @@
     // Negative Test Case 1: With a nil for URL parameter
     // ----------------------------------------------------------------------------------
     WSCKeychain* newKeychainWithPrompt_negativeCase2 = [ WSCKeychain p_keychainWithURL: nil
-                                                                              password: _WSCTestPassword /* Will be ignored */
+                                                                            passphrase: _WSCTestPassphrase /* Will be ignored */
                                                                         doesPromptUser: YES
                                                                          initialAccess: nil
                                                                         becomesDefault: NO
@@ -443,7 +443,7 @@
     NSURL* URLForNewKeychain_negativeTestCase3 = _WSCURLForTestCase( _cmd, @"negativeTestCase3", YES, YES );
 
     WSCKeychain* newKeychainWithPrompt_negativeCase3 = [ WSCKeychain p_keychainWithURL: URLForNewKeychain_negativeTestCase3
-                                                                              password: nil /* Will be ignored */
+                                                                            passphrase: nil /* Will be ignored */
                                                                         doesPromptUser: NO
                                                                          initialAccess: nil
                                                                         becomesDefault: NO
@@ -482,7 +482,7 @@
     // ----------------------------------------------------------------------------------
     NSURL* randomURL_negativeTestCase1 = _WSCRandomURL();
     WSCKeychain* randomKeychain_negativeTestCase1 = [ WSCKeychain p_keychainWithURL: randomURL_negativeTestCase1
-                                                                           password: _WSCTestPassword
+                                                                         passphrase: _WSCTestPassphrase
                                                                      doesPromptUser: NO
                                                                       initialAccess: nil
                                                                      becomesDefault: NO
@@ -749,7 +749,7 @@
     // Create sec keychain for test case 1
     SecKeychainRef secKeychain_nonPrompt = NULL;
     resultCode = SecKeychainCreate( [ URLForNewKeychain_nonPrompt.path UTF8String ]
-                                  , ( UInt32)[ _WSCTestPassword length ], [ _WSCTestPassword UTF8String ]
+                                  , ( UInt32)[ _WSCTestPassphrase length ], [ _WSCTestPassphrase UTF8String ]
                                   , NO
                                   , nil
                                   , &secKeychain_nonPrompt
@@ -758,7 +758,7 @@
     // Create sec keychain for test case 2
     SecKeychainRef secKeychain_withPrompt = NULL;
     resultCode = SecKeychainCreate( [ URLForNewKeychain_withPrompt.path UTF8String ]
-                                  , ( UInt32)[ _WSCTestPassword length ], [ _WSCTestPassword UTF8String ]
+                                  , ( UInt32)[ _WSCTestPassphrase length ], [ _WSCTestPassphrase UTF8String ]
                                   , YES
                                   , nil
                                   , &secKeychain_withPrompt
@@ -865,7 +865,7 @@
     WSCPasswordItem* newKeychainItem_testCase0 =
         [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: @"WaxSealCore Test Case 0"
                                                           accountName: @"NSTongG"
-                                                             password: @"waxsealcore"
+                                                           passphrase: @"waxsealcore"
                                                                 error: &error ];
     XCTAssertNotNil( newKeychainItem_testCase0 );
     XCTAssertNil( error );
@@ -882,7 +882,7 @@
         [ [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: nil ]
             addApplicationPasswordWithServiceName: @"WaxSealCore Test Case 1"
                                       accountName: @"Tong Guo"
-                                         password: @"waxsealcore"
+                                       passphrase: @"waxsealcore"
                                             error: &error ];
 
     XCTAssertNotNil( newKeychainItem_testCase1 );
@@ -898,7 +898,7 @@
     // ----------------------------------------------------------------------------------
     NSURL* URLForKeychain_testCase2 = _WSCURLForTestCase( _cmd, @"testCase2", NO, YES );
     WSCKeychain* keychain_testCase2 = [ WSCKeychain keychainWithURL: URLForKeychain_testCase2
-                                                           password: @"waxsealcore"
+                                                         passphrase: @"waxsealcore"
                                                       initialAccess: nil
                                                      becomesDefault: NO
                                                               error: &error ];
@@ -908,7 +908,7 @@
     WSCPasswordItem* newKeychainItem_testCase2 =
         [ keychain_testCase2 addApplicationPasswordWithServiceName: @"WaxSealCore Test Case 2"
                                                        accountName: @"Tong G."
-                                                          password: @"waxsealcore"
+                                                        passphrase: @"waxsealcore"
                                                              error: &error ];
     XCTAssertNotNil( newKeychainItem_testCase2 );
     XCTAssertNil( error );
@@ -921,7 +921,7 @@
     WSCPasswordItem* newKeychainItem_negativeTestCase0 =
         [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: nil
                                                           accountName: ( NSString* )[ NSDate date ]
-                                                             password: ( NSString* )@342
+                                                           passphrase: ( NSString* )@342
                                                                 error: &error ];
     XCTAssertNil( newKeychainItem_negativeTestCase0 );
     XCTAssertNotNil( error );
@@ -932,7 +932,7 @@
     newKeychainItem_negativeTestCase0 =
         [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: nil
                                                           accountName: ( NSString* )[ NSDate date ]
-                                                             password: ( NSString* )@342
+                                                           passphrase: ( NSString* )@342
                                                                 error: nil ];
     XCTAssertNil( newKeychainItem_negativeTestCase0 );
 
@@ -942,7 +942,7 @@
     WSCPasswordItem* newKeychainItem_negativeTestCase1 =
         [ _WSCCommonInvalidKeychainForUnitTests addApplicationPasswordWithServiceName: @"WaxSealCore Negative Test Case 1"
                                                                           accountName: @"NSTongG"
-                                                                             password: @"waxsealcore"
+                                                                           passphrase: @"waxsealcore"
                                                                                 error: &error ];
     XCTAssertNil( newKeychainItem_negativeTestCase1 );
     XCTAssertNotNil( error );
@@ -963,7 +963,7 @@
                                                   URLRelativePath: @"/NSTongG"
                                                       accountName: @"NSTongG"
                                                          protocol: WSCInternetProtocolTypeHTTPS
-                                                         password: _WSCTestPassword
+                                                       passphrase: _WSCTestPassphrase
                                                             error: &error ];
     XCTAssertNil( error );
     XCTAssertNotNil( newInternetPassword_testCase0 );
@@ -974,7 +974,7 @@
                                                   URLRelativePath: @"/NSTongG"
                                                       accountName: @"NSTongG"
                                                          protocol: WSCInternetProtocolTypeHTTPS
-                                                         password: _WSCTestPassword
+                                                       passphrase: _WSCTestPassphrase
                                                             error: &error ];
     XCTAssertNil( duplicatedPassword );
     XCTAssertNotNil( error );
@@ -996,7 +996,7 @@
                                                                 URLRelativePath: @"/post/105125066964/os-x-s-mime#105125066964"
                                                                     accountName: @"Tong G."
                                                                        protocol: WSCInternetProtocolTypeHTTP
-                                                                       password: _WSCTestPassword
+                                                                     passphrase: _WSCTestPassphrase
                                                                           error: &error ];
     XCTAssertNotNil( newInternetPassword_testCase1 );
     XCTAssertNil( error );
@@ -1010,7 +1010,7 @@
                                                                 URLRelativePath: @"/pub/FreeBSD/releases/VM-IMAGES/10.1-RELEASE/i386/Latest"
                                                                     accountName: @"NSTongG"
                                                                        protocol: WSCInternetProtocolTypeFTP
-                                                                       password: _WSCTestPassword
+                                                                     passphrase: _WSCTestPassphrase
                                                                           error: &error ];
     XCTAssertNotNil( newInternetPassword_testCase2 );
     XCTAssertNil( error );
@@ -1026,7 +1026,7 @@
                                                                 URLRelativePath: ( NSString* )@24324
                                                                     accountName: nil
                                                                        protocol: WSCInternetProtocolTypeHTTP
-                                                                       password: _WSCTestPassword
+                                                                     passphrase: _WSCTestPassphrase
                                                                           error: &error ];
     XCTAssertNil( internetPassword_negativeTestCase0 );
     XCTAssertNotNil( error );
@@ -1039,7 +1039,7 @@
                                                                 URLRelativePath: ( NSString* )@24324
                                                                     accountName: nil
                                                                        protocol: WSCInternetProtocolTypeHTTP
-                                                                       password: _WSCTestPassword
+                                                                     passphrase: _WSCTestPassphrase
                                                                           error: nil ];
     XCTAssertNil( error );
 
@@ -1051,7 +1051,7 @@
                                                                   URLRelativePath: @"/pub/FreeBSD/releases/VM-IMAGES/10.1-RELEASE/i386/Latest"
                                                                       accountName: @"NSTongG"
                                                                          protocol: WSCInternetProtocolTypeFTP
-                                                                         password: _WSCTestPassword
+                                                                       passphrase: _WSCTestPassphrase
                                                                             error: &error ];
     XCTAssertNil( internetPassword_negativeTestCase1 );
     XCTAssertNotNil( error );

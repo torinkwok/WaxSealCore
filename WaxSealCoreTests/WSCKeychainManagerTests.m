@@ -206,7 +206,7 @@
 
 - ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
       shouldUnlockKeychain: ( WSCKeychain* )_Keychain
-              withPassword: ( NSString* )_Password
+            withPassphrase: ( NSString* )_Passphrase
     {
     if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
             || _KeychainManager == self.testManager1
@@ -219,7 +219,7 @@
 - ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
    shouldProceedAfterError: ( NSError* )_Error
          unlockingKeychain: ( WSCKeychain* )_Keychain
-              withPassword: ( NSString* )_Password
+            withPassphrase: ( NSString* )_Passphrase
     {
     if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
             || _KeychainManager == self.testManager1 )
@@ -423,7 +423,7 @@
     // ----------------------------------------------------------------------------------
     NSURL* URLForKeychan_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0", NO, YES );
     WSCKeychain* keychain_testCase0 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase0
-                                                           password: _WSCTestPassword
+                                                         passphrase: _WSCTestPassphrase
                                                       initialAccess: nil
                                                      becomesDefault: NO
                                                               error: &error ];
@@ -448,7 +448,7 @@
     NSURL* URLForKeychan_testCase1 = _WSCURLForTestCase( _cmd, @"testCase1", NO, YES );
 
     WSCKeychain* keychain_testCase1 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase1
-                                                           password: _WSCTestPassword
+                                                         passphrase: _WSCTestPassphrase
                                                       initialAccess: nil
                                                      becomesDefault: NO
                                                               error: &error ];
@@ -473,7 +473,7 @@
     NSURL* URLForKeychan_testCase2 = _WSCURLForTestCase( _cmd, @"testCase2", NO, YES );
 
     WSCKeychain* keychain_testCase2 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase2
-                                                           password: _WSCTestPassword
+                                                         passphrase: _WSCTestPassphrase
                                                       initialAccess: nil
                                                      becomesDefault: YES
                                                               error: &error ];
@@ -495,7 +495,7 @@
     NSURL* URLForKeychan_testCase3 = _WSCURLForTestCase( _cmd, @"testCase3", NO, YES );
 
     WSCKeychain* keychain_testCase3 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase3
-                                                           password: _WSCTestPassword
+                                                         passphrase: _WSCTestPassphrase
                                                       initialAccess: nil
                                                      becomesDefault: NO
                                                               error: &error ];
@@ -519,7 +519,7 @@
     // ----------------------------------------------------------------------------------
     NSURL* URLForKeychan_testCase4 = _WSCURLForTestCase( _cmd, @"testCase4", NO, YES );
     WSCKeychain* keychain_testCase4 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase4
-                                                           password: _WSCTestPassword
+                                                         passphrase: _WSCTestPassphrase
                                                       initialAccess: nil
                                                      becomesDefault: NO
                                                               error: &error ];
@@ -547,7 +547,7 @@
     NSURL* URLForKeychan_testCase5 = _WSCURLForTestCase( _cmd, @"testCase5", NO, YES );
 
     WSCKeychain* keychain_testCase5 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase5
-                                                           password: _WSCTestPassword
+                                                         passphrase: _WSCTestPassphrase
                                                       initialAccess: nil
                                                      becomesDefault: YES
                                                               error: &error ];
@@ -571,7 +571,7 @@
     NSURL* URLForKeychan_testCase6 = _WSCURLForTestCase( _cmd, @"testCase6", NO, YES );
 
     WSCKeychain* keychain_testCase6 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase6
-                                                           password: _WSCTestPassword
+                                                         passphrase: _WSCTestPassphrase
                                                       initialAccess: nil
                                                      becomesDefault: NO
                                                               error: &error ];
@@ -598,7 +598,7 @@
     // ----------------------------------------------------------------------------------
     NSURL* URLForKeychan_testCase7 = _WSCURLForTestCase( _cmd, @"testCase7", NO, YES );
     WSCKeychain* keychain_testCase7 = [ WSCKeychain keychainWithURL: URLForKeychan_testCase7
-                                                           password: _WSCTestPassword
+                                                         passphrase: _WSCTestPassphrase
                                                       initialAccess: nil
                                                      becomesDefault: NO
                                                               error: &error ];
@@ -938,7 +938,7 @@
     // ----------------------------------------------------------------------------------
     NSURL* URLForKeychain_negativeTestCase2 = _WSCURLForTestCase( _cmd, @"negativeCase2", NO, YES );
     WSCKeychain* keychain_negativeTestCase2 = [ WSCKeychain keychainWithURL: URLForKeychain_negativeTestCase2
-                                                                   password: _WSCTestPassword
+                                                                 passphrase: _WSCTestPassphrase
                                                               initialAccess: nil
                                                              becomesDefault: NO
                                                                       error: &error ];
@@ -1039,7 +1039,7 @@
     // Test Case 0: Unlock login.keychain with correct password
     // ----------------------------------------------------------------------------------
     isSuccess = [ self.testManager3 unlockKeychain: [ WSCKeychain login ]
-                                      withPassword: @"waxsealcore"
+                                    withPassphrase: @"waxsealcore"
                                              error: &error ];
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
@@ -1056,7 +1056,7 @@
     // Test Case 1: Unlock System.keychain with user interaction
     // ----------------------------------------------------------------------------------
 //    isSuccess = [ self.testManager1 unlockKeychain: [ WSCKeychain system ]
-//                                      withPassword: @"Isgtforever77!."
+//                                    withPassphrase: @"Isgtforever77!."
 //                                             error: &error ];
 //    XCTAssertNil( error );
 //    _WSCPrintNSErrorForUnitTest( error );
@@ -1072,7 +1072,7 @@
     /* We are using self.testManager2
      * so the delegate method keychainManager:shouldProceedAfterError:lockingKeychain: returns YES */
     isSuccess = [ self.testManager2 unlockKeychain: _WSCCommonValidKeychainForUnitTests
-                                      withPassword: _WSCTestPassword
+                                    withPassphrase: _WSCTestPassphrase
                                              error: &error ];
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
@@ -1080,7 +1080,7 @@
     XCTAssertTrue( _WSCCommonValidKeychainForUnitTests.isLocked );
 
     isSuccess = [ self.testManager1 unlockKeychain: _WSCCommonValidKeychainForUnitTests
-                                      withPassword: @"123456"
+                                    withPassphrase: @"123456"
                                              error: &error ];
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
@@ -1091,7 +1091,7 @@
     XCTAssertTrue( _WSCCommonValidKeychainForUnitTests.isLocked );
 
     isSuccess = [ self.testManager3 unlockKeychain: _WSCCommonValidKeychainForUnitTests
-                                      withPassword: _WSCTestPassword
+                                    withPassphrase: _WSCTestPassphrase
                                              error: &error ];
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
@@ -1102,7 +1102,7 @@
     // Negative Test Case 0: Unlock login.keychain with an incorrect password
     // ----------------------------------------------------------------------------------
     isSuccess = [ self.testManager3 unlockKeychain: [ WSCKeychain login ]
-                                      withPassword: @"123456"  // whatever
+                                    withPassphrase: @"123456"  // whatever
                                              error: &error ];
     XCTAssertNotNil( error );
     _WSCPrintNSErrorForUnitTest( error );
@@ -1113,7 +1113,7 @@
     // Negative Test Case 1: Unlock login.keychain with nil
     // ----------------------------------------------------------------------------------
     isSuccess = [ self.testManager1 unlockKeychain: [ WSCKeychain login ]
-                                      withPassword: nil
+                                    withPassphrase: nil
                                              error: &error ];
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
@@ -1124,7 +1124,7 @@
     // Negative Test Case 2: Unlock login.keychain with NSNumber object
     // ----------------------------------------------------------------------------------
     isSuccess = [ self.testManager3 unlockKeychain: [ WSCKeychain login ]
-                                      withPassword: ( NSString* )@149 // whatever
+                                    withPassphrase: ( NSString* )@149 // whatever
                                              error: &error ];
     XCTAssertNotNil( error );
     _WSCPrintNSErrorForUnitTest( error );
@@ -1137,7 +1137,7 @@
     NSURL* URLForKeychain_negativeTestCase3 = _WSCURLForTestCase( _cmd, @"negativeCase2", NO, YES );
 
     WSCKeychain* keychain_negativeTestCase3 = [ WSCKeychain keychainWithURL: URLForKeychain_negativeTestCase3
-                                                                   password: _WSCTestPassword
+                                                                 passphrase: _WSCTestPassphrase
                                                               initialAccess: nil
                                                              becomesDefault: NO
                                                                       error: &error ];
@@ -1148,7 +1148,7 @@
     XCTAssertFalse( keychain_negativeTestCase3.isValid );
 
     isSuccess = [ self.testManager3 unlockKeychain: keychain_negativeTestCase3
-                                      withPassword: ( NSString* )@149 // whatever
+                                    withPassphrase: ( NSString* )@149 // whatever
                                              error: &error ];
     XCTAssertNotNil( error );
     XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
@@ -1307,7 +1307,7 @@
     NSURL* URLForKeychain_negativeTestCase1 = _WSCURLForTestCase( _cmd, @"negativeCase1", NO, YES );
 
     WSCKeychain* keychain_negativeTestCase1 = [ WSCKeychain keychainWithURL: URLForKeychain_negativeTestCase1
-                                                                   password: _WSCTestPassword
+                                                                 passphrase: _WSCTestPassphrase
                                                               initialAccess: nil
                                                              becomesDefault: NO
                                                                       error: &error ];
@@ -1537,7 +1537,7 @@
     NSURL* URLForKeychain_negativeTestCase1 = _WSCURLForTestCase( _cmd, @"negativeCase1", NO, YES );
 
     WSCKeychain* keychain_negativeTestCase1 = [ WSCKeychain keychainWithURL: URLForKeychain_negativeTestCase1
-                                                                   password: _WSCTestPassword
+                                                                 passphrase: _WSCTestPassphrase
                                                               initialAccess: nil
                                                              becomesDefault: NO
                                                                       error: &error ];
@@ -1725,7 +1725,7 @@
     // -------------------------------------------------------------------------------------------------------
     NSURL* URLForKeychain_negativeTestCase1 = _WSCURLForTestCase( _cmd, @"negativeCase1", NO, YES );
     WSCKeychain* keychain_negativeTestCase1 = [ WSCKeychain keychainWithURL: URLForKeychain_negativeTestCase1
-                                                                   password: _WSCTestPassword
+                                                                 passphrase: _WSCTestPassphrase
                                                               initialAccess: nil
                                                              becomesDefault: NO
                                                                       error: &error ];
