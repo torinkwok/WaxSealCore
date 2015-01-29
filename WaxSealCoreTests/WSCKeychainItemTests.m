@@ -176,7 +176,7 @@ NSString* _WSCPassphrases[] =
 
     SecKeychainItemDelete( internetPassphraseItem.secKeychainItem );
     SecKeychainItemDelete( applicationPassphraseItem.secKeychainItem );
-
+#if 0
     // -------------------------------------------------------------------------------
     // Negaytive Test Case 1: the application passphrase is already invalid
     // -------------------------------------------------------------------------------
@@ -197,6 +197,7 @@ NSString* _WSCPassphrases[] =
             XCTAssertNotEqualObjects( passphraseString, _WSCPassphrases[ _Index ] );
             }
         }
+#endif
     }
 
 - ( void ) testHostNameProperty

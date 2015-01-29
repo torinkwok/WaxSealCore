@@ -105,7 +105,10 @@
         resultCode = SecKeychainItemCopyAttributesAndData( self.secKeychainItem, NULL, NULL, NULL
                                                          , &lengthOfSecretData, &secretData );
         if ( resultCode == errSecSuccess )
+            {
             passphraseData = [ NSData dataWithBytes: secretData length: lengthOfSecretData ];
+            SecKeychainItemFreeAttributesAndData( NULL, secretData );
+            }
         else
             error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
         }
