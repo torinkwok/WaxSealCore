@@ -43,17 +43,40 @@
 #pragma mark Common Password Attributes
 /** @name Common Password Attributes */
 
-/** The `NSString` object that identifies the account of keychain item represented by receiver.
+/** The `NSString` object that identifies the account of the keychain item represented by receiver.
   */
 @property ( copy, readwrite ) NSString* account;
 
-/** The `NSString` object that identifies the comment of keychain item represented by receiver.
+/** The `NSString` object that identifies the comment of the keychain item represented by receiver.
   */
 @property ( copy, readwrite ) NSString* comment;
 
-/** The `NSString` object that identifies the kind description of keychain item represented by receiver.
+/** The `NSString` object that identifies the kind description of the keychain item represented by receiver.
   */
 @property ( copy, readwrite ) NSString* kindDescription;
+
+/** The `NSData` object that contains the passphrase data of the keychain item represented by receiver.
+
+  The following code fragment demonstrates how to retrieve/set the passphrase of an password item:
+
+  Retrieve Passphrase:
+
+    NSData* secretData = [ demoPasswordItem passphrase ];
+    NSString* passphraseString = 
+        [ [ [ NSString alloc ] initWithData: secretData encoding: NSUTF8StringEncoding ] autorelease ];
+    
+  Set Passphrase:
+    
+    // The string to be set as the passphrase of an password item.
+    NSString* passphraseString = @"waxsealcore";
+
+    NSData* secretData = [ passphraseString dataUsingEncoding: NSUTF8StringEncoding
+                                         allowLossyConversion: NO ];
+
+    // Now the passphrase of the password item represeted by demoPasswordItem is "waxsealcore".
+    demoPasswordItem.passphrase = secretData;
+  */
+@property ( retain, readwrite ) NSData* passphrase;
 
 #pragma mark Unique to Internet Password
 /** @name Unique to Internet Password */

@@ -40,6 +40,7 @@
 @dynamic account;
 @dynamic comment;
 @dynamic kindDescription;
+@dynamic passphrase;
 
 @dynamic URL;
 @dynamic hostName;
@@ -81,6 +82,18 @@
 - ( void ) setKindDescription:( NSString* )_KindDescription
     {
     [ self p_modifyAttribute: kSecDescriptionItemAttr withNewValue: _KindDescription ];
+    }
+
+/* The `NSString` object that identifies the passphrase of the keychain item represented by receiver. */
+- ( NSString* ) passphrase
+    {
+    OSStatus resultCode = errSecSuccess;
+    
+    }
+
+- ( void ) setPassphrase: ( NSString* )_Passphrase
+    {
+
     }
 
 /* The URL for the an Internet password represented by receiver. */
