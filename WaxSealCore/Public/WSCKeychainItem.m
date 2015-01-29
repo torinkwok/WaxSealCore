@@ -294,7 +294,9 @@
             || _SecKeychainAttrStruct.tag == kSecServiceItemAttr
             || _SecKeychainAttrStruct.tag == kSecServerItemAttr
             || _SecKeychainAttrStruct.tag == kSecPathItemAttr ) // TODO: NEW ATTR
-        stringValue = [ NSString stringWithCString: _SecKeychainAttrStruct.data encoding: NSUTF8StringEncoding ];
+        stringValue = [ [ [ NSString alloc ] initWithBytes: _SecKeychainAttrStruct.data
+                                                    length: _SecKeychainAttrStruct.length
+                                                  encoding: NSUTF8StringEncoding ] autorelease ];
     else
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
@@ -513,7 +515,7 @@
                                         forAttr: ( SecItemAttr )_Attr
     {
     void* value = ( void* )[ _StringValue cStringUsingEncoding: NSUTF8StringEncoding ];
-    SecKeychainAttribute attrStruct = { _Attr, ( UInt32 )strlen( value ) + 1, value };
+    SecKeychainAttribute attrStruct = { _Attr, ( UInt32 )strlen( value ), value };
 
     return attrStruct;
     }

@@ -172,9 +172,65 @@ NSString* _WSCHostsForPositiveTests[] =
             _WSCPrintNSErrorForUnitTest( error );
 
             applicationPasswordItem.hostName = _WSCHostsForPositiveTests[ _Index ];
-
             XCTAssertNil( applicationPasswordItem.hostName );
             XCTAssertNotEqualObjects( applicationPasswordItem.hostName, _WSCHostsForPositiveTests[ _Index ] );
+
+            SecKeychainItemDelete( applicationPasswordItem.secKeychainItem );
+            }
+        }
+    }
+
+- ( void ) testProtocolProperty
+    {
+    NSError* error = nil;
+    size_t size = sizeof( _WSCProtocols ) / sizeof( _WSCProtocols[ 0 ] );
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 0
+    // -------------------------------------------------------------------------------
+    for ( size_t _Index = 0; _Index < size; _Index++ )
+        {
+        NSLog( @"Loop: %lu", _Index );
+        @autoreleasepool
+            {
+            WSCPasswordItem* internetPasswordItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
+            XCTAssertNil( error );
+            _WSCPrintNSErrorForUnitTest( error );
+
+            internetPasswordItem.protocol = _WSCProtocols[ _Index ];
+
+            NSString* schemeString = [ internetPasswordItem.URL scheme ];
+            NSLog( @"Scheme String #%lu: %@", _Index, schemeString );
+
+            XCTAssertEqual( internetPasswordItem.protocol, _WSCProtocols[ _Index ] );
+            XCTAssertEqualObjects( _WSCSchemeStringForProtocol( internetPasswordItem.protocol )
+                                 , _WSCSchemeStringForProtocol( _WSCProtocols[ _Index ] ) );
+            XCTAssertEqualObjects( _WSCSchemeStringForProtocol( internetPasswordItem.protocol ), schemeString );
+
+            SecKeychainItemDelete( internetPasswordItem.secKeychainItem );
+            }
+        }
+
+    // -------------------------------------------------------------------------------
+    // Negative Test Case 0
+    // -------------------------------------------------------------------------------
+    for ( size_t _Index = 0; _Index < size; _Index++ )
+        {
+        @autoreleasepool
+            {
+            WSCPasswordItem* applicationPasswordItem = _WSC_WaxSealCoreTests_ApplicationKeychainItem( &error );
+            XCTAssertNil( error );
+            _WSCPrintNSErrorForUnitTest( error );
+
+            applicationPasswordItem.protocol = _WSCProtocols[ _Index ];
+
+            NSString* schemeString = [ applicationPasswordItem.URL scheme ];
+            NSLog( @"Scheme String #%lu: %@", _Index, schemeString );
+
+            XCTAssertEqual( applicationPasswordItem.protocol, _WSCProtocols[ _Index ] );
+            XCTAssertEqualObjects( _WSCSchemeStringForProtocol( applicationPasswordItem.protocol )
+                                 , _WSCSchemeStringForProtocol( _WSCProtocols[ _Index ] ) );
+            XCTAssertEqualObjects( _WSCSchemeStringForProtocol( applicationPasswordItem.protocol ), schemeString );
 
             SecKeychainItemDelete( applicationPasswordItem.secKeychainItem );
             }

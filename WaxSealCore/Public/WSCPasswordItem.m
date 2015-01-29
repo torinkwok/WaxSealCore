@@ -99,6 +99,9 @@
     NSURL* absoluteURL = [ [ [ NSURL alloc ] initWithScheme: _WSCSchemeStringForProtocol( protocol )
                                                        host: hostName
                                                        path: relativePath ] autorelease ];
+    NSLog( @"Fucking Host: %@", hostName );
+    NSLog( @"Fucking Path: %@", relativePath );
+    NSLog( @"Fucking Absolute URL: %@", absoluteURL );
     return absoluteURL;
     }
 
