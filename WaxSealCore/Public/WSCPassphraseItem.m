@@ -31,13 +31,13 @@
  **                                                                         **
  ****************************************************************************/
 
-#import "WSCPasswordItem.h"
+#import "WSCPassphraseItem.h"
 #import "WSCKeychainError.h"
 
 #import "_WSCKeychainErrorPrivate.h"
 #import "_WSCKeychainItemPrivate.h"
 
-@implementation WSCPasswordItem
+@implementation WSCPassphraseItem
 
 @dynamic account;
 @dynamic comment;
@@ -93,7 +93,7 @@
     OSStatus resultCode = errSecSuccess;
 
     // The receiver must not be invalid.
-    _WSCDontBeABitch( &error, self, [ WSCPasswordItem class ], s_guard );
+    _WSCDontBeABitch( &error, self, [ WSCPassphraseItem class ], s_guard );
 
     NSData* passphraseData = nil;
     if ( !error )
@@ -124,7 +124,7 @@
 
     // The receiver must not be invalid.
     _WSCDontBeABitch( &error
-                    , self, [ WSCPasswordItem class ]
+                    , self, [ WSCPassphraseItem class ]
                     , _Passphrase, [ NSData class ]
                     , s_guard );
 
@@ -246,7 +246,7 @@
     [ self p_modifyAttribute: kSecServiceItemAttr withNewValue: _ServiceName ];
     }
 
-@end // WSCPasswordItem class
+@end // WSCPassphraseItem class
 
 //////////////////////////////////////////////////////////////////////////////
 

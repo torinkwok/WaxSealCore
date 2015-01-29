@@ -34,7 +34,7 @@
 #import <XCTest/XCTest.h>
 
 #import "WSCKeychain.h"
-#import "WSCPasswordItem.h"
+#import "WSCPassphraseItem.h"
 #import "WSCKeychainItem.h"
 #import "NSURL+WSCKeychainURL.h"
 #import "WSCKeychainError.h"
@@ -123,7 +123,7 @@ NSString* _WSCPassphrases[] =
     {
     NSError* error = nil;
 
-    WSCPasswordItem* passwordItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
+    WSCPassphraseItem* passwordItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -151,7 +151,7 @@ NSString* _WSCPassphrases[] =
         {
         @autoreleasepool
             {
-            WSCPasswordItem* internetPasswordItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
+            WSCPassphraseItem* internetPasswordItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
             XCTAssertNil( error );
             _WSCPrintNSErrorForUnitTest( error );
 
@@ -172,7 +172,7 @@ NSString* _WSCPassphrases[] =
         {
         @autoreleasepool
             {
-            WSCPasswordItem* internetPasswordItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
+            WSCPassphraseItem* internetPasswordItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
             XCTAssertNil( error );
             _WSCPrintNSErrorForUnitTest( error );
 
@@ -197,7 +197,7 @@ NSString* _WSCPassphrases[] =
         {
         @autoreleasepool
             {
-            WSCPasswordItem* applicationPasswordItem = _WSC_WaxSealCoreTests_ApplicationKeychainItem( &error );
+            WSCPassphraseItem* applicationPasswordItem = _WSC_WaxSealCoreTests_ApplicationKeychainItem( &error );
             XCTAssertNil( error );
             _WSCPrintNSErrorForUnitTest( error );
 
@@ -223,7 +223,7 @@ NSString* _WSCPassphrases[] =
         NSLog( @"Loop #0: %lu", _Index );
         @autoreleasepool
             {
-            WSCPasswordItem* internetPasswordItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
+            WSCPassphraseItem* internetPasswordItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
             XCTAssertNil( error );
             _WSCPrintNSErrorForUnitTest( error );
 
@@ -249,7 +249,7 @@ NSString* _WSCPassphrases[] =
         NSLog( @"Loop #1: %lu", _Index );
         @autoreleasepool
             {
-            WSCPasswordItem* applicationPasswordItem = _WSC_WaxSealCoreTests_ApplicationKeychainItem( &error );
+            WSCPassphraseItem* applicationPasswordItem = _WSC_WaxSealCoreTests_ApplicationKeychainItem( &error );
             XCTAssertNil( error );
             _WSCPrintNSErrorForUnitTest( error );
 
@@ -312,7 +312,7 @@ NSString* _WSCPassphrases[] =
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 0
     // -------------------------------------------------------------------------------------------------------------------- //
-    WSCPasswordItem* applicationPassword_testCase0 =
+    WSCPassphraseItem* applicationPassword_testCase0 =
         [ commonRandomKeychain addApplicationPasswordWithServiceName: @"WaxSealCore: testSetCreationDate"
                                                          accountName: @"testSetCreationDate Test Case 0"
                                                           passphrase: @"waxsealcore"
@@ -401,7 +401,7 @@ NSString* _WSCPassphrases[] =
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 1
     // -------------------------------------------------------------------------------------------------------------------- //
-    WSCPasswordItem* internetPassword_testCase1 =
+    WSCPassphraseItem* internetPassword_testCase1 =
         [ commonRandomKeychain addInternetPasswordWithServerName: @"www.waxsealcore.org"
                                                  URLRelativePath: @"testSetCreationDate/test/case/0"
                                                      accountName: @"waxsealcore"
@@ -615,7 +615,7 @@ NSString* _WSCPassphrases[] =
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 0
     // -------------------------------------------------------------------------------------------------------------------- //
-    WSCPasswordItem* applicationPassword_testCase0 =
+    WSCPassphraseItem* applicationPassword_testCase0 =
         [ commonRandomKeychain addApplicationPasswordWithServiceName: @"WaxSealCore: testSetCreationDate"
                                                          accountName: @"testSetCreationDate Test Case 0"
                                                           passphrase: @"waxsealcore"
@@ -647,7 +647,7 @@ NSString* _WSCPassphrases[] =
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 1
     // -------------------------------------------------------------------------------------------------------------------- //
-    WSCPasswordItem* internetPassword_testCase1 =
+    WSCPassphraseItem* internetPassword_testCase1 =
         [ commonRandomKeychain addInternetPasswordWithServerName: @"www.waxsealcore.org"
                                                  URLRelativePath: @"testSetCreationDate/test/case/0"
                                                      accountName: @"waxsealcore"
@@ -706,7 +706,7 @@ NSString* _WSCPassphrases[] =
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 0
     // -------------------------------------------------------------------------------------------------------------------- //
-    WSCPasswordItem* applicationPassword_testCase0 =
+    WSCPassphraseItem* applicationPassword_testCase0 =
         [ commonRandomKeychain addApplicationPasswordWithServiceName: @"WaxSealCore: testModificationDate"
                                                          accountName: @"testModificationDate Test Case 0"
                                                           passphrase: @"waxsealcore"
@@ -720,7 +720,7 @@ NSString* _WSCPassphrases[] =
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 1
     // -------------------------------------------------------------------------------------------------------------------- //
-    WSCPasswordItem* internetPassword_testCase1 =
+    WSCPassphraseItem* internetPassword_testCase1 =
         [ commonRandomKeychain addInternetPasswordWithServerName: @"www.waxsealcore.org"
                                                  URLRelativePath: @"testModificationDate/test/case/1"
                                                      accountName: @"NSTongG"
@@ -765,7 +765,7 @@ NSString* _WSCPassphrases[] =
     // ----------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------
-    WSCPasswordItem* applicationPassword_testCase0 =
+    WSCPassphraseItem* applicationPassword_testCase0 =
         [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: @"WaxSealCore"
                                                           accountName: @"Test Case 0"
                                                            passphrase: @"waxsealcore"
@@ -780,7 +780,7 @@ NSString* _WSCPassphrases[] =
     // ----------------------------------------------------------
     // Test Case 1
     // ----------------------------------------------------------
-    WSCPasswordItem* internetPassword_testCase1 =
+    WSCPassphraseItem* internetPassword_testCase1 =
         [ [ WSCKeychain login ] addInternetPasswordWithServerName: @"www.waxsealcore.org"
                                                   URLRelativePath: @"testCase1"
                                                       accountName: @"Test Case 1"

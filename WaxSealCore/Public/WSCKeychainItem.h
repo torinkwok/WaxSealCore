@@ -118,7 +118,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   You typically do not use `WSCKeychainItem` object directly, you use objects whose
   classes descend from `WSCKeychainItem`:
   
-  * WSCPasswordItem
+  * WSCPassphraseItem
   * WSCCertificate
   * WSCKey
   * WSCIdentity

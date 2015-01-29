@@ -32,7 +32,7 @@
  ****************************************************************************/
 
 #import "WSCKeychain.h"
-#import "WSCPasswordItem.h"
+#import "WSCPassphraseItem.h"
 #import "NSURL+WSCKeychainURL.h"
 #import "WSCKeychainError.h"
 #import "WSCKeychainManager.h"
@@ -316,7 +316,7 @@ WSCKeychain static* s_system = nil;
 #pragma mark Public Programmatic Interfaces for Creating and Managing Keychain Items
 /* Adds a new generic password to the keychain represented by receiver.
  */
-- ( WSCPasswordItem* ) addApplicationPasswordWithServiceName: ( NSString* )_ServiceName
+- ( WSCPassphraseItem* ) addApplicationPasswordWithServiceName: ( NSString* )_ServiceName
                                                  accountName: ( NSString* )_AccountName
                                                   passphrase: ( NSString* )_Passphrase
                                                        error: ( NSError** )_Error
@@ -351,7 +351,7 @@ WSCKeychain static* s_system = nil;
                                                       , &secKeychainItem
                                                       );
             if ( resultCode == errSecSuccess )
-                return [ [ [ WSCPasswordItem alloc ] p_initWithSecKeychainItemRef: secKeychainItem ] autorelease ];
+                return [ [ [ WSCPassphraseItem alloc ] p_initWithSecKeychainItemRef: secKeychainItem ] autorelease ];
             else
                 _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
             }
@@ -364,7 +364,7 @@ WSCKeychain static* s_system = nil;
     }
 
 /* Adds a new Internet password to the keychain represented by receiver. */
-- ( WSCPasswordItem* ) addInternetPasswordWithServerName: ( NSString* )_ServerName
+- ( WSCPassphraseItem* ) addInternetPasswordWithServerName: ( NSString* )_ServerName
                                          URLRelativePath: ( NSString* )_URLRelativePath
                                              accountName: ( NSString* )_AccountName
                                                 protocol: ( WSCInternetProtocolType )_Protocol
@@ -410,7 +410,7 @@ WSCKeychain static* s_system = nil;
                                                        , &secKeychainItem
                                                        );
             if ( resultCode == errSecSuccess )
-                return [ [ [ WSCPasswordItem alloc ] p_initWithSecKeychainItemRef: secKeychainItem ] autorelease ];
+                return [ [ [ WSCPassphraseItem alloc ] p_initWithSecKeychainItemRef: secKeychainItem ] autorelease ];
             else
                 _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
             }

@@ -206,10 +206,10 @@ NSURL* _WSCURLForTestCase( SEL _TestCase, NSString* _TestCaseDesc, BOOL _DoesPro
     return newURL;
     }
 
-WSCPasswordItem* _WSC_www_waxsealcore_org_InternetKeychainItem( NSError** _Error )
+WSCPassphraseItem* _WSC_www_waxsealcore_org_InternetKeychainItem( NSError** _Error )
     {
     NSError* error = nil;
-    WSCPasswordItem* www_waxsealcore_org =
+    WSCPassphraseItem* www_waxsealcore_org =
         [ [ [ WSCKeychain login ] addInternetPasswordWithServerName: @"www.waxsealcore.org"
                                                     URLRelativePath: @"common/test/internet/keychain/item"
                                                         accountName: @"waxsealcore"
@@ -222,10 +222,10 @@ WSCPasswordItem* _WSC_www_waxsealcore_org_InternetKeychainItem( NSError** _Error
     return www_waxsealcore_org;
     }
 
-WSCPasswordItem* _WSC_WaxSealCoreTests_ApplicationKeychainItem( NSError** _Error )
+WSCPassphraseItem* _WSC_WaxSealCoreTests_ApplicationKeychainItem( NSError** _Error )
     {
     NSError* error = nil;
-    WSCPasswordItem* applicationPassword_testCase0 =
+    WSCPassphraseItem* applicationPassword_testCase0 =
         [ [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: @"WaxSealCore: Common Test"
                                                             accountName: @"NSTongG"
                                                              passphrase: @"waxsealcore"

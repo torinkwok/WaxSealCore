@@ -35,10 +35,10 @@
 
 #import "WSCKeychainItem.h"
 
-/** The `WSCPasswordItem` class is a subclass of `WSCKeychainItem` 
+/** The `WSCPassphraseItem` class is a subclass of `WSCKeychainItem` 
     that contains information about application password and Internet password.
   */
-@interface WSCPasswordItem : WSCKeychainItem
+@interface WSCPassphraseItem : WSCKeychainItem
 
 #pragma mark Common Password Attributes
 /** @name Common Password Attributes */
@@ -139,7 +139,7 @@
   */
 @property ( copy, readwrite ) NSString* serviceName;
 
-@end // WSCPasswordItem class
+@end // WSCPassphraseItem class
 
 //////////////////////////////////////////////////////////////////////////////
 
