@@ -40,6 +40,54 @@
 #import "WSCKeychainError.h"
 #import "WSCKeychainManager.h"
 
+WSCInternetProtocolType _WSCProtocols[] =
+    { WSCInternetProtocolTypeFTP
+    , WSCInternetProtocolTypeFTPAccount
+    , WSCInternetProtocolTypeHTTP
+    , WSCInternetProtocolTypeIRC
+    , WSCInternetProtocolTypeNNTP
+    , WSCInternetProtocolTypePOP3
+    , WSCInternetProtocolTypeSMTP
+    , WSCInternetProtocolTypeSOCKS
+    , WSCInternetProtocolTypeIMAP
+    , WSCInternetProtocolTypeLDAP
+    , WSCInternetProtocolTypeAppleTalk
+    , WSCInternetProtocolTypeAFP
+    , WSCInternetProtocolTypeTelnet
+    , WSCInternetProtocolTypeSSH
+    , WSCInternetProtocolTypeFTPS
+    , WSCInternetProtocolTypeHTTPS
+    , WSCInternetProtocolTypeHTTPProxy
+    , WSCInternetProtocolTypeHTTPSProxy
+    , WSCInternetProtocolTypeFTPProxy
+    , WSCInternetProtocolTypeCIFS
+    , WSCInternetProtocolTypeSMB
+    , WSCInternetProtocolTypeRTSP
+    , WSCInternetProtocolTypeRTSPProxy
+    , WSCInternetProtocolTypeDAAP
+    , WSCInternetProtocolTypeEPPC
+    , WSCInternetProtocolTypeIPP
+    , WSCInternetProtocolTypeNNTPS
+    , WSCInternetProtocolTypeLDAPS
+    , WSCInternetProtocolTypeTelnetS
+    , WSCInternetProtocolTypeIMAPS
+    , WSCInternetProtocolTypeIRCS
+    , WSCInternetProtocolTypePOP3S
+    , WSCInternetProtocolTypeCVSpserver
+    , WSCInternetProtocolTypeSVN
+    , WSCInternetProtocolTypeAny
+    };
+
+NSString* _WSCHostsForPositiveTests[] =
+    { @"https://twitter.com"
+    , @"www.waxsealcore.org"
+    , @"www.facebook.com"
+    , @"nstongg.tumblr.com"
+    , @"github.com"
+    , @"encrypted.google.com"
+    , @"duckduckgo.com"
+    };
+
 // --------------------------------------------------------
 #pragma mark Interface of WSCKeychainItemTests case
 // --------------------------------------------------------
@@ -64,12 +112,71 @@
 - ( void ) testHostNameProperty
     {
     NSError* error = nil;
+    size_t size = sizeof( _WSCHostsForPositiveTests ) / sizeof( _WSCHostsForPositiveTests[ 0 ] );
 
-    for ( int _Index = 0; _Index < 20; _Index++ )
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 0
+    // -------------------------------------------------------------------------------
+    for ( size_t _Index = 0; _Index < size; _Index++ )
         {
         @autoreleasepool
             {
+            WSCPasswordItem* internetPasswordItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
+            XCTAssertNil( error );
+            _WSCPrintNSErrorForUnitTest( error );
 
+            internetPasswordItem.hostName = _WSCHostsForPositiveTests[ _Index ];
+
+            XCTAssertNotNil( internetPasswordItem.hostName );
+            XCTAssertEqualObjects( internetPasswordItem.hostName, _WSCHostsForPositiveTests[ _Index ] );
+
+            SecKeychainItemDelete( internetPasswordItem.secKeychainItem );
+            }
+        }
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 1
+    // -------------------------------------------------------------------------------
+    NSArray* extraPunctuations = @[ @"...,,", @".,13//", @"\\//", @":'\"", @"`!@#$%^&*()¥" ];
+    for ( size_t _Index = 0; _Index < size; _Index++ )
+        {
+        @autoreleasepool
+            {
+            WSCPasswordItem* internetPasswordItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
+            XCTAssertNil( error );
+            _WSCPrintNSErrorForUnitTest( error );
+
+            for ( NSString* extraPunctuation in extraPunctuations )
+                {
+                NSString* strangeHost = [ _WSCHostsForPositiveTests[ _Index ] stringByAppendingString: extraPunctuation ];
+
+                internetPasswordItem.hostName = strangeHost;
+
+                XCTAssertNotNil( internetPasswordItem.hostName );
+                XCTAssertEqualObjects( internetPasswordItem.hostName, strangeHost );
+                }
+
+            SecKeychainItemDelete( internetPasswordItem.secKeychainItem );
+            }
+        }
+
+    // -------------------------------------------------------------------------------
+    // Negative Test Case 0
+    // -------------------------------------------------------------------------------
+    for ( size_t _Index = 0; _Index < size; _Index++ )
+        {
+        @autoreleasepool
+            {
+            WSCPasswordItem* applicationPasswordItem = _WSC_WaxSealCoreTests_ApplicationKeychainItem( &error );
+            XCTAssertNil( error );
+            _WSCPrintNSErrorForUnitTest( error );
+
+            applicationPasswordItem.hostName = _WSCHostsForPositiveTests[ _Index ];
+
+            XCTAssertNil( applicationPasswordItem.hostName );
+            XCTAssertNotEqualObjects( applicationPasswordItem.hostName, _WSCHostsForPositiveTests[ _Index ] );
+
+            SecKeychainItemDelete( applicationPasswordItem.secKeychainItem );
             }
         }
     }
