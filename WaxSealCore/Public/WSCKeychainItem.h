@@ -89,28 +89,28 @@ typedef NS_ENUM( NSUInteger, WSCKeychainItemAccessibilityType )
 typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
     {
     /// Indicates that the item is an Internet passphrase.
-      WSCKeychainItemClassInternetPassphraseItem      = kSecInternetPasswordItemClass
+      WSCKeychainItemClassInternetPassphraseItem        = kSecInternetPasswordItemClass
 
     /// Indicates that the item is an application passphrase.
-    , WSCKeychainItemClassApplicationPassphraseItem   = kSecGenericPasswordItemClass
+    , WSCKeychainItemClassApplicationPassphraseItem     = kSecGenericPasswordItemClass
 
     /// Indicates that the item is an AppleShare passphrase.
-    , WSCKeychainItemClassAppleSharePassphraseItem    = kSecAppleSharePasswordItemClass
+    , WSCKeychainItemClassAppleSharePassphraseItem      = kSecAppleSharePasswordItemClass
 
     /// Indicates that the item is an X509 certificate.
-    , WSCKeychainItemClassCertificateItem           = kSecCertificateItemClass
+    , WSCKeychainItemClassCertificateItem               = kSecCertificateItemClass
 
     /// Indicates that the item is a public key of a public-private pair.
-    , WSCKeychainItemClassPublicKeyItem             = kSecPublicKeyItemClass
+    , WSCKeychainItemClassPublicKeyItem                 = kSecPublicKeyItemClass
 
     /// Indicates that the item is a private key of a public-private pair.
-    , WSCKeychainItemClassPrivateKeyItem            = kSecPrivateKeyItemClass
+    , WSCKeychainItemClassPrivateKeyItem                = kSecPrivateKeyItemClass
 
     /// Indicates that the item is a private key used for symmetric-key encryption.
-    , WSCKeychainItemClassSymmetricKeyItem          = kSecSymmetricKeyItemClass
+    , WSCKeychainItemClassSymmetricKeyItem              = kSecSymmetricKeyItemClass
 
     /// The item can be any type of key; used for searches only.
-    , WSCKeychainItemClassAllKeys                   = CSSM_DL_DB_RECORD_ALL_KEYS
+    , WSCKeychainItemClassAllKeys                       = CSSM_DL_DB_RECORD_ALL_KEYS
     };
 
 /** The `WSCKeychainItem` defines the basic property of an keychain item.

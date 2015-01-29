@@ -118,25 +118,85 @@ NSString* _WSCPassphrases[] =
     {
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-#if 0
+
 - ( void ) testPassphraseProperty
     {
     NSError* error = nil;
+    size_t size = sizeof( _WSCPassphrases ) / sizeof( _WSCPassphrases[ 0 ] );
 
-    WSCPassphraseItem* passphraseItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
+    WSCPassphraseItem* internetPassphraseItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    NSData* passphrase = passphraseItem.passphrase;
-    NSString* passphraseString = [ [ [ NSString alloc ] initWithData: passphrase encoding: NSUTF8StringEncoding ] autorelease ];
-    NSLog( @"Passphrase #0: %@", passphrase );
-    NSLog( @"Passphrase String #0: %@", passphraseString );
+    WSCPassphraseItem* applicationPassphraseItem = _WSC_WaxSealCoreTests_ApplicationKeychainItem( &error );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
 
-    passphraseItem.passphrase = [ _WSCPassphrases[ 0 ] dataUsingEncoding: NSUTF8StringEncoding ];
-    passphrase = passphraseItem.passphrase;
-    passphraseString = [ [ [ NSString alloc ] initWithData: passphrase encoding: NSUTF8StringEncoding ] autorelease ];
-    NSLog( @"Passphrase #1: %@", passphrase );
-    NSLog( @"Passphrase String #1: %@", passphraseString );
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 0: for Internet passphrase item
+    // -------------------------------------------------------------------------------
+    for ( size_t _Index = 0; _Index < size; _Index++ )
+        {
+        @autoreleasepool
+            {
+            internetPassphraseItem.passphrase = [ _WSCPassphrases[ _Index ] dataUsingEncoding: NSUTF8StringEncoding ];
+
+            NSData* passphraseData = [ internetPassphraseItem passphrase ];
+            NSString* passphraseString = [ [ [ NSString alloc ] initWithData: passphraseData encoding: NSUTF8StringEncoding ] autorelease ];
+            XCTAssertNotNil( internetPassphraseItem.passphrase );
+            XCTAssertNotNil( passphraseData );
+            XCTAssertNotNil( passphraseString );
+            XCTAssertEqual( _WSCPassphrases[ _Index ].length, passphraseData.length );
+            XCTAssertEqual( passphraseData.length, passphraseString.length );
+            XCTAssertEqual( passphraseString.length, _WSCPassphrases[ _Index ].length );
+            XCTAssertEqualObjects( passphraseString, _WSCPassphrases[ _Index ] );
+            }
+        }
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 1: for application passphrase item
+    // -------------------------------------------------------------------------------
+    for ( size_t _Index = 0; _Index < size; _Index++ )
+        {
+        @autoreleasepool
+            {
+            applicationPassphraseItem.passphrase = [ _WSCPassphrases[ _Index ] dataUsingEncoding: NSUTF8StringEncoding ];
+
+            NSData* passphraseData = [ applicationPassphraseItem passphrase ];
+            NSString* passphraseString = [ [ [ NSString alloc ] initWithData: passphraseData encoding: NSUTF8StringEncoding ] autorelease ];
+            XCTAssertNotNil( applicationPassphraseItem.passphrase );
+            XCTAssertNotNil( passphraseData );
+            XCTAssertNotNil( passphraseString );
+            XCTAssertEqual( _WSCPassphrases[ _Index ].length, passphraseData.length );
+            XCTAssertEqual( passphraseData.length, passphraseString.length );
+            XCTAssertEqual( passphraseString.length, _WSCPassphrases[ _Index ].length );
+            XCTAssertEqualObjects( passphraseString, _WSCPassphrases[ _Index ] );
+            }
+        }
+
+    SecKeychainItemDelete( internetPassphraseItem.secKeychainItem );
+    SecKeychainItemDelete( applicationPassphraseItem.secKeychainItem );
+
+    // -------------------------------------------------------------------------------
+    // Negaytive Test Case 1: the application passphrase is already invalid
+    // -------------------------------------------------------------------------------
+    for ( size_t _Index = 0; _Index < size; _Index++ )
+        {
+        @autoreleasepool
+            {
+            applicationPassphraseItem.passphrase = [ _WSCPassphrases[ _Index ] dataUsingEncoding: NSUTF8StringEncoding ];
+
+            NSData* passphraseData = [ applicationPassphraseItem passphrase ];
+            NSString* passphraseString = [ [ [ NSString alloc ] initWithData: passphraseData encoding: NSUTF8StringEncoding ] autorelease ];
+            XCTAssertNil( applicationPassphraseItem.passphrase );
+            XCTAssertNil( passphraseData );
+            XCTAssertNil( passphraseString );
+            XCTAssertNotEqual( _WSCPassphrases[ _Index ].length, 0 );
+            XCTAssertNotEqual( passphraseData.length, passphraseString.length );
+            XCTAssertNotEqual( passphraseString.length, _WSCPassphrases[ _Index ].length );
+            XCTAssertNotEqualObjects( passphraseString, _WSCPassphrases[ _Index ] );
+            }
+        }
     }
 
 - ( void ) testHostNameProperty
@@ -267,7 +327,7 @@ NSString* _WSCPassphrases[] =
             }
         }
     }
-#endif
+
 - ( void ) testProperties
     {
     NSError* error = nil;

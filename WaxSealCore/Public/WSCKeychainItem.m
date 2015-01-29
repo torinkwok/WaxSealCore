@@ -428,7 +428,7 @@
             case kSecServerItemAttr:
             case kSecPathItemAttr:
                 newAttr = [ self p_attrForStringValue: ( NSString* )_NewValue
-                                               forAttr: _AttributeTag ];
+                                              forAttr: _AttributeTag ];
                 break;
 
             case kSecAuthenticationTypeItemAttr:

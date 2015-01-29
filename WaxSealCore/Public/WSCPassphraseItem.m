@@ -126,8 +126,8 @@
     _WSCDontBeABitch( &error
                     , self, [ WSCPassphraseItem class ]
                     , _Passphrase, [ NSData class ]
-                    , s_guard );
-
+                    , s_guard
+                    );
     if ( !error )
         {
         // Modify the passphrase of the passphrase item represeted by receiver.

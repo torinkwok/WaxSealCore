@@ -329,7 +329,7 @@ WSCKeychain static* s_system = nil;
                     , self,         [ WSCKeychain class ]
                     , _ServiceName, [ NSString class ]
                     , _AccountName, [ NSString class ]
-                    , _Passphrase,    [ NSString class ]
+                    , _Passphrase,  [ NSString class ]
                     , s_guard
                     );
     if ( !error )
@@ -379,7 +379,7 @@ WSCKeychain static* s_system = nil;
                     , _ServerName,      [ NSString class ]
                     , _URLRelativePath, [ NSString class ]
                     , _AccountName,     [ NSString class ]
-                    , _Passphrase,        [ NSString class ]
+                    , _Passphrase,      [ NSString class ]
                     , s_guard
                     );
     if ( !error )
