@@ -44,8 +44,8 @@ NSString* const WSCKeychainFileExistsErrorDescription               = @"The keyc
 NSString* const WSCKeychainURLIsInvalidErrorDescription             = @"The keychain couldn’t be created because the URL is invalid.";
 NSString* const WSCCommonInvalidParametersErrorDescription          = @"One or more parameters passed to the method were not valid.";
 NSString* const WSCKeychainItemIsInvalidErrorDescription            = @"Current keychain item is no longer valid, its resided keychain may has been deleted, moved or renamed.";
-NSString* const WSCKeychainItemAttributeIsUniqueToInternetPasswordErrorDescription    = @"The specified attribute was not be supported since this attribute is unique to the Internet passphrase.";
-NSString* const WSCKeychainItemAttributeIsUniqueToApplicationPasswordErrorDescription = @"The specified attribute was not be supported since this attribute is unique to the application passphrase.";
+NSString* const WSCKeychainItemAttributeIsUniqueToInternetPassphraseErrorDescription    = @"The specified attribute was not be supported since this attribute is unique to the Internet passphrase.";
+NSString* const WSCKeychainItemAttributeIsUniqueToApplicationPassphraseErrorDescription = @"The specified attribute was not be supported since this attribute is unique to the application passphrase.";
 
 id const s_guard = ( id )'sgrd';
 void _WSCDontBeABitch( NSError** _Error, ... )
@@ -163,14 +163,14 @@ void _WSCDontBeABitch( NSError** _Error, ... )
                 newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainItemIsInvalidErrorDescription;
                 } break;
 
-            case WSCKeychainItemAttributeIsUniqueToInternetPasswordError:
+            case WSCKeychainItemAttributeIsUniqueToInternetPassphraseError:
                 {
-                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainItemAttributeIsUniqueToInternetPasswordErrorDescription;
+                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainItemAttributeIsUniqueToInternetPassphraseErrorDescription;
                 } break;
 
-            case WSCKeychainItemAttributeIsUniqueToApplicationPasswordError:
+            case WSCKeychainItemAttributeIsUniqueToApplicationPassphraseError:
                 {
-                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainItemAttributeIsUniqueToApplicationPasswordErrorDescription;
+                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainItemAttributeIsUniqueToApplicationPassphraseErrorDescription;
                 } break;
             }
         }

@@ -1021,7 +1021,7 @@
     _WSCSelectivelyUnlockKeychainsBasedOnPassphrase();
     }
 
-- ( void ) testUnlockKeychainWithPassword
+- ( void ) testUnlockKeychainWithPassphrase
     {
     NSError* error = nil;
     BOOL isSuccess = NO;

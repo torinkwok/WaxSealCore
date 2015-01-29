@@ -210,12 +210,12 @@ WSCPassphraseItem* _WSC_www_waxsealcore_org_InternetKeychainItem( NSError** _Err
     {
     NSError* error = nil;
     WSCPassphraseItem* www_waxsealcore_org =
-        [ [ [ WSCKeychain login ] addInternetPasswordWithServerName: @"www.waxsealcore.org"
-                                                    URLRelativePath: @"common/test/internet/keychain/item"
-                                                        accountName: @"waxsealcore"
-                                                           protocol: WSCInternetProtocolTypeHTTPS
-                                                         passphrase: @"waxsealcore"
-                                                              error: &error ] autodelete ];
+        [ [ [ WSCKeychain login ] addInternetPassphraseWithServerName: @"www.waxsealcore.org"
+                                                      URLRelativePath: @"common/test/internet/keychain/item"
+                                                          accountName: @"waxsealcore"
+                                                             protocol: WSCInternetProtocolTypeHTTPS
+                                                           passphrase: @"waxsealcore"
+                                                                error: &error ] autodelete ];
     if ( _Error )
         *_Error = [ error copy ];
 
@@ -225,15 +225,15 @@ WSCPassphraseItem* _WSC_www_waxsealcore_org_InternetKeychainItem( NSError** _Err
 WSCPassphraseItem* _WSC_WaxSealCoreTests_ApplicationKeychainItem( NSError** _Error )
     {
     NSError* error = nil;
-    WSCPassphraseItem* applicationPassword_testCase0 =
-        [ [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: @"WaxSealCore: Common Test"
-                                                            accountName: @"NSTongG"
-                                                             passphrase: @"waxsealcore"
-                                                                  error: &error ] autodelete ];
+    WSCPassphraseItem* applicationPassphrase_testCase0 =
+        [ [ [ WSCKeychain login ] addApplicationPassphraseWithServiceName: @"WaxSealCore: Common Test"
+                                                              accountName: @"NSTongG"
+                                                               passphrase: @"waxsealcore"
+                                                                    error: &error ] autodelete ];
     if ( _Error )
         *_Error = [ error copy ];
 
-    return applicationPassword_testCase0;
+    return applicationPassphrase_testCase0;
     }
 
 #pragma mark Private Programmatic Interfaces for Ease of Unit Tests

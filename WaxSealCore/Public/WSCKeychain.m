@@ -191,7 +191,7 @@ BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     }
 
 /* Creates and returns a `WSCKeychain` object using the given URL, interaction prompt and inital access rights. */
-+ ( instancetype ) keychainWhosePasswordWillBeObtainedFromUserWithURL: ( NSURL* )_URL
++ ( instancetype ) keychainWhosePassphraseWillBeObtainedFromUserWithURL: ( NSURL* )_URL
                                                         initialAccess: ( WSCAccessPermission* )_InitalAccess
                                                        becomesDefault: ( BOOL )_WillBecomeDefault
                                                                 error: ( NSError** )_Error
@@ -316,10 +316,10 @@ WSCKeychain static* s_system = nil;
 #pragma mark Public Programmatic Interfaces for Creating and Managing Keychain Items
 /* Adds a new generic passphrase to the keychain represented by receiver.
  */
-- ( WSCPassphraseItem* ) addApplicationPasswordWithServiceName: ( NSString* )_ServiceName
-                                                   accountName: ( NSString* )_AccountName
-                                                    passphrase: ( NSString* )_Passphrase
-                                                         error: ( NSError** )_Error
+- ( WSCPassphraseItem* ) addApplicationPassphraseWithServiceName: ( NSString* )_ServiceName
+                                                     accountName: ( NSString* )_AccountName
+                                                      passphrase: ( NSString* )_Passphrase
+                                                           error: ( NSError** )_Error
     {
     NSError* error = nil;
 
@@ -364,12 +364,12 @@ WSCKeychain static* s_system = nil;
     }
 
 /* Adds a new Internet passphrase to the keychain represented by receiver. */
-- ( WSCPassphraseItem* ) addInternetPasswordWithServerName: ( NSString* )_ServerName
-                                         URLRelativePath: ( NSString* )_URLRelativePath
-                                             accountName: ( NSString* )_AccountName
-                                                protocol: ( WSCInternetProtocolType )_Protocol
-                                              passphrase: ( NSString* )_Passphrase
-                                                   error: ( NSError** )_Error
+- ( WSCPassphraseItem* ) addInternetPassphraseWithServerName: ( NSString* )_ServerName
+                                             URLRelativePath: ( NSString* )_URLRelativePath
+                                                 accountName: ( NSString* )_AccountName
+                                                    protocol: ( WSCInternetProtocolType )_Protocol
+                                                  passphrase: ( NSString* )_Passphrase
+                                                       error: ( NSError** )_Error
     {
     NSError* error = nil;
 
@@ -405,7 +405,7 @@ WSCKeychain static* s_system = nil;
                                                        , 0
                                                        , ( SecProtocolType )_Protocol
                                                        , kSecAuthenticationTypeDefault
-                                                       // Internet Password
+                                                       // Internet Passphrase
                                                        , ( UInt32 )_Passphrase.length, _Passphrase.UTF8String
                                                        , &secKeychainItem
                                                        );

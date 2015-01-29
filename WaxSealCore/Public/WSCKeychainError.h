@@ -68,11 +68,11 @@ typedef NS_ENUM( NSUInteger, WaxSealCoreErrorCode )
 
     /** The attribute does not exist in an Internet passphrase.
       */
-    , WSCKeychainItemAttributeIsUniqueToInternetPasswordError = 7U
+    , WSCKeychainItemAttributeIsUniqueToInternetPassphraseError = 7U
 
     /** The attribute does not exist in an application passphrase.
       */
-    , WSCKeychainItemAttributeIsUniqueToApplicationPasswordError = 8U
+    , WSCKeychainItemAttributeIsUniqueToApplicationPassphraseError = 8U
     };
 
 //////////////////////////////////////////////////////////////////////////////

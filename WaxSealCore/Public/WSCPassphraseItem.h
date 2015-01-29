@@ -40,8 +40,8 @@
   */
 @interface WSCPassphraseItem : WSCKeychainItem
 
-#pragma mark Common Password Attributes
-/** @name Common Password Attributes */
+#pragma mark Common Passphrase Attributes
+/** @name Common Passphrase Attributes */
 
 /** The `NSString` object that identifies the account of the keychain item represented by receiver.
   */
@@ -61,7 +61,7 @@
 
   Retrieve Passphrase:
 
-    NSData* secretData = [ demoPasswordItem passphrase ];
+    NSData* secretData = [ demoPassphraseItem passphrase ];
     NSString* passphraseString = 
         [ [ [ NSString alloc ] initWithData: secretData encoding: NSUTF8StringEncoding ] autorelease ];
     
@@ -73,13 +73,13 @@
     NSData* secretData = [ passphraseString dataUsingEncoding: NSUTF8StringEncoding
                                          allowLossyConversion: NO ];
 
-    // Now the passphrase of the passphrase item represeted by demoPasswordItem is "waxsealcore".
-    demoPasswordItem.passphrase = secretData;
+    // Now the passphrase of the passphrase item represeted by demoPassphraseItem is "waxsealcore".
+    demoPassphraseItem.passphrase = secretData;
   */
 @property ( retain, readwrite ) NSData* passphrase;
 
-#pragma mark Unique to Internet Password
-/** @name Unique to Internet Password */
+#pragma mark Unique to Internet Passphrase
+/** @name Unique to Internet Passphrase */
 
 /** The URL for the an Internet passphrase represented by receiver. (read-only)
 
@@ -130,8 +130,8 @@
   */
 @property ( assign, readwrite ) NSUInteger port;
 
-#pragma mark Unique to Application Password
-/** @name Unique to Application Password */
+#pragma mark Unique to Application Passphrase
+/** @name Unique to Application Passphrase */
 
 /** The `NSString` object that identifies the service name of an application passphrase item represented by receiver.
 

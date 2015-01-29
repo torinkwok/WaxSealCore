@@ -151,16 +151,16 @@ NSString* _WSCPassphrases[] =
         {
         @autoreleasepool
             {
-            WSCPassphraseItem* internetPasswordItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
+            WSCPassphraseItem* internetPassphraseItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
             XCTAssertNil( error );
             _WSCPrintNSErrorForUnitTest( error );
 
-            internetPasswordItem.hostName = _WSCHostsForPositiveTests[ _Index ];
+            internetPassphraseItem.hostName = _WSCHostsForPositiveTests[ _Index ];
 
-            XCTAssertNotNil( internetPasswordItem.hostName );
-            XCTAssertEqualObjects( internetPasswordItem.hostName, _WSCHostsForPositiveTests[ _Index ] );
+            XCTAssertNotNil( internetPassphraseItem.hostName );
+            XCTAssertEqualObjects( internetPassphraseItem.hostName, _WSCHostsForPositiveTests[ _Index ] );
 
-            SecKeychainItemDelete( internetPasswordItem.secKeychainItem );
+            SecKeychainItemDelete( internetPassphraseItem.secKeychainItem );
             }
         }
 
@@ -172,7 +172,7 @@ NSString* _WSCPassphrases[] =
         {
         @autoreleasepool
             {
-            WSCPassphraseItem* internetPasswordItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
+            WSCPassphraseItem* internetPassphraseItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
             XCTAssertNil( error );
             _WSCPrintNSErrorForUnitTest( error );
 
@@ -180,13 +180,13 @@ NSString* _WSCPassphrases[] =
                 {
                 NSString* strangeHost = [ _WSCHostsForPositiveTests[ _Index ] stringByAppendingString: extraPunctuation ];
 
-                internetPasswordItem.hostName = strangeHost;
+                internetPassphraseItem.hostName = strangeHost;
 
-                XCTAssertNotNil( internetPasswordItem.hostName );
-                XCTAssertEqualObjects( internetPasswordItem.hostName, strangeHost );
+                XCTAssertNotNil( internetPassphraseItem.hostName );
+                XCTAssertEqualObjects( internetPassphraseItem.hostName, strangeHost );
                 }
 
-            SecKeychainItemDelete( internetPasswordItem.secKeychainItem );
+            SecKeychainItemDelete( internetPassphraseItem.secKeychainItem );
             }
         }
 
@@ -197,15 +197,15 @@ NSString* _WSCPassphrases[] =
         {
         @autoreleasepool
             {
-            WSCPassphraseItem* applicationPasswordItem = _WSC_WaxSealCoreTests_ApplicationKeychainItem( &error );
+            WSCPassphraseItem* applicationPassphraseItem = _WSC_WaxSealCoreTests_ApplicationKeychainItem( &error );
             XCTAssertNil( error );
             _WSCPrintNSErrorForUnitTest( error );
 
-            applicationPasswordItem.hostName = _WSCHostsForPositiveTests[ _Index ];
-            XCTAssertNil( applicationPasswordItem.hostName );
-            XCTAssertNotEqualObjects( applicationPasswordItem.hostName, _WSCHostsForPositiveTests[ _Index ] );
+            applicationPassphraseItem.hostName = _WSCHostsForPositiveTests[ _Index ];
+            XCTAssertNil( applicationPassphraseItem.hostName );
+            XCTAssertNotEqualObjects( applicationPassphraseItem.hostName, _WSCHostsForPositiveTests[ _Index ] );
 
-            SecKeychainItemDelete( applicationPasswordItem.secKeychainItem );
+            SecKeychainItemDelete( applicationPassphraseItem.secKeychainItem );
             }
         }
     }
@@ -223,21 +223,21 @@ NSString* _WSCPassphrases[] =
         NSLog( @"Loop #0: %lu", _Index );
         @autoreleasepool
             {
-            WSCPassphraseItem* internetPasswordItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
+            WSCPassphraseItem* internetPassphraseItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
             XCTAssertNil( error );
             _WSCPrintNSErrorForUnitTest( error );
 
-            internetPasswordItem.protocol = _WSCProtocols[ _Index ];
+            internetPassphraseItem.protocol = _WSCProtocols[ _Index ];
 
-            NSString* schemeString = [ internetPasswordItem.URL scheme ];
+            NSString* schemeString = [ internetPassphraseItem.URL scheme ];
             NSLog( @"Scheme String #%lu: %@", _Index, schemeString );
 
-            XCTAssertEqual( internetPasswordItem.protocol, _WSCProtocols[ _Index ] );
-            XCTAssertEqualObjects( _WSCSchemeStringForProtocol( internetPasswordItem.protocol )
+            XCTAssertEqual( internetPassphraseItem.protocol, _WSCProtocols[ _Index ] );
+            XCTAssertEqualObjects( _WSCSchemeStringForProtocol( internetPassphraseItem.protocol )
                                  , _WSCSchemeStringForProtocol( _WSCProtocols[ _Index ] ) );
-            XCTAssertEqualObjects( _WSCSchemeStringForProtocol( internetPasswordItem.protocol ), schemeString );
+            XCTAssertEqualObjects( _WSCSchemeStringForProtocol( internetPassphraseItem.protocol ), schemeString );
 
-            SecKeychainItemDelete( internetPasswordItem.secKeychainItem );
+            SecKeychainItemDelete( internetPassphraseItem.secKeychainItem );
             }
         }
 
@@ -249,21 +249,21 @@ NSString* _WSCPassphrases[] =
         NSLog( @"Loop #1: %lu", _Index );
         @autoreleasepool
             {
-            WSCPassphraseItem* applicationPasswordItem = _WSC_WaxSealCoreTests_ApplicationKeychainItem( &error );
+            WSCPassphraseItem* applicationPassphraseItem = _WSC_WaxSealCoreTests_ApplicationKeychainItem( &error );
             XCTAssertNil( error );
             _WSCPrintNSErrorForUnitTest( error );
 
-            applicationPasswordItem.protocol = _WSCProtocols[ _Index ];
+            applicationPassphraseItem.protocol = _WSCProtocols[ _Index ];
 
-            NSString* schemeString = [ applicationPasswordItem.URL scheme ];
+            NSString* schemeString = [ applicationPassphraseItem.URL scheme ];
             NSLog( @"Scheme String #%lu: %@", _Index, schemeString );
 
-            XCTAssertEqual( applicationPasswordItem.protocol, 0 );
+            XCTAssertEqual( applicationPassphraseItem.protocol, 0 );
 
-            XCTAssertNil( _WSCSchemeStringForProtocol( applicationPasswordItem.protocol ) );
+            XCTAssertNil( _WSCSchemeStringForProtocol( applicationPassphraseItem.protocol ) );
             XCTAssertNil( schemeString );
 
-            SecKeychainItemDelete( applicationPasswordItem.secKeychainItem );
+            SecKeychainItemDelete( applicationPassphraseItem.secKeychainItem );
             }
         }
     }
@@ -285,7 +285,7 @@ NSString* _WSCPassphrases[] =
     NSString* accountOne = @"NSTongG";
     NSString* accountTwo = @"Tong G.";
 
-    NSString* kindDescriptionOne = @"WaxSealCore Password";
+    NSString* kindDescriptionOne = @"WaxSealCore Passphrase";
     NSString* kindDescriptionTwo = @"Passphrase for WaxSealCore";
 
     NSString* serviceNameOne = @"My Precious Framework";
@@ -312,273 +312,273 @@ NSString* _WSCPassphrases[] =
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 0
     // -------------------------------------------------------------------------------------------------------------------- //
-    WSCPassphraseItem* applicationPassword_testCase0 =
-        [ commonRandomKeychain addApplicationPasswordWithServiceName: @"WaxSealCore: testSetCreationDate"
-                                                         accountName: @"testSetCreationDate Test Case 0"
-                                                          passphrase: @"waxsealcore"
-                                                               error: &error ];
+    WSCPassphraseItem* applicationPassphrase_testCase0 =
+        [ commonRandomKeychain addApplicationPassphraseWithServiceName: @"WaxSealCore: testSetCreationDate"
+                                                           accountName: @"testSetCreationDate Test Case 0"
+                                                            passphrase: @"waxsealcore"
+                                                                 error: &error ];
     #pragma mark Comment
-    [ applicationPassword_testCase0 setComment: commentOne ];
-    XCTAssertNotNil( applicationPassword_testCase0.comment );
-    XCTAssertEqualObjects( applicationPassword_testCase0.comment, commentOne );
+    [ applicationPassphrase_testCase0 setComment: commentOne ];
+    XCTAssertNotNil( applicationPassphrase_testCase0.comment );
+    XCTAssertEqualObjects( applicationPassphrase_testCase0.comment, commentOne );
 
-     /*******/ NSLog( @"Comment #0 (Test Case 0): %@", applicationPassword_testCase0.comment ); /*******/
+     /*******/ NSLog( @"Comment #0 (Test Case 0): %@", applicationPassphrase_testCase0.comment ); /*******/
 
-    [ applicationPassword_testCase0 setComment: commentTwo ];
-    XCTAssertNotNil( applicationPassword_testCase0.comment );
-    XCTAssertEqualObjects( applicationPassword_testCase0.comment, commentTwo );
+    [ applicationPassphrase_testCase0 setComment: commentTwo ];
+    XCTAssertNotNil( applicationPassphrase_testCase0.comment );
+    XCTAssertEqualObjects( applicationPassphrase_testCase0.comment, commentTwo );
 
-    /*******/ NSLog( @"Comment #1 (Test Case 0): %@", applicationPassword_testCase0.comment ); /*******/
+    /*******/ NSLog( @"Comment #1 (Test Case 0): %@", applicationPassphrase_testCase0.comment ); /*******/
 
     #pragma mark Account
-    [ applicationPassword_testCase0 setAccount: accountOne ];
-    XCTAssertNotNil( applicationPassword_testCase0.account );
-    XCTAssertEqualObjects( applicationPassword_testCase0.account, accountOne );
+    [ applicationPassphrase_testCase0 setAccount: accountOne ];
+    XCTAssertNotNil( applicationPassphrase_testCase0.account );
+    XCTAssertEqualObjects( applicationPassphrase_testCase0.account, accountOne );
 
-    /*******/ NSLog( @"Account #0 (Test Case 0): %@", applicationPassword_testCase0.account ); /*******/
+    /*******/ NSLog( @"Account #0 (Test Case 0): %@", applicationPassphrase_testCase0.account ); /*******/
 
-    [ applicationPassword_testCase0 setAccount: accountTwo ];
-    XCTAssertNotNil( applicationPassword_testCase0.account );
-    XCTAssertEqualObjects( applicationPassword_testCase0.account, accountTwo );
+    [ applicationPassphrase_testCase0 setAccount: accountTwo ];
+    XCTAssertNotNil( applicationPassphrase_testCase0.account );
+    XCTAssertEqualObjects( applicationPassphrase_testCase0.account, accountTwo );
 
-    /*******/ NSLog( @"Account #1 (Test Case 0): %@", applicationPassword_testCase0.account ); /*******/
+    /*******/ NSLog( @"Account #1 (Test Case 0): %@", applicationPassphrase_testCase0.account ); /*******/
 
     #pragma mark Kind Description
-    [ applicationPassword_testCase0 setKindDescription: kindDescriptionOne ];
-    XCTAssertNotNil( applicationPassword_testCase0.kindDescription );
-    XCTAssertEqualObjects( applicationPassword_testCase0.kindDescription, kindDescriptionOne );
+    [ applicationPassphrase_testCase0 setKindDescription: kindDescriptionOne ];
+    XCTAssertNotNil( applicationPassphrase_testCase0.kindDescription );
+    XCTAssertEqualObjects( applicationPassphrase_testCase0.kindDescription, kindDescriptionOne );
 
-    /*******/ NSLog( @"Kind Description #0 (Test Case 0): %@", applicationPassword_testCase0.kindDescription ); /*******/
+    /*******/ NSLog( @"Kind Description #0 (Test Case 0): %@", applicationPassphrase_testCase0.kindDescription ); /*******/
 
-    [ applicationPassword_testCase0 setKindDescription: kindDescriptionTwo ];
-    XCTAssertNotNil( applicationPassword_testCase0.kindDescription );
-    XCTAssertEqualObjects( applicationPassword_testCase0.kindDescription, kindDescriptionTwo );
+    [ applicationPassphrase_testCase0 setKindDescription: kindDescriptionTwo ];
+    XCTAssertNotNil( applicationPassphrase_testCase0.kindDescription );
+    XCTAssertEqualObjects( applicationPassphrase_testCase0.kindDescription, kindDescriptionTwo );
 
-    /*******/ NSLog( @"Kind Description #1 (Test Case 0): %@", applicationPassword_testCase0.kindDescription ); /*******/
+    /*******/ NSLog( @"Kind Description #1 (Test Case 0): %@", applicationPassphrase_testCase0.kindDescription ); /*******/
 
     #pragma mark Service Name
-    [ applicationPassword_testCase0 setServiceName: serviceNameOne ];
-    XCTAssertNotNil( applicationPassword_testCase0.serviceName );
-    XCTAssertEqualObjects( applicationPassword_testCase0.serviceName, serviceNameOne );
+    [ applicationPassphrase_testCase0 setServiceName: serviceNameOne ];
+    XCTAssertNotNil( applicationPassphrase_testCase0.serviceName );
+    XCTAssertEqualObjects( applicationPassphrase_testCase0.serviceName, serviceNameOne );
 
-    /*******/ NSLog( @"Service Name #0 (Test Case 0): %@", applicationPassword_testCase0.serviceName ); /*******/
+    /*******/ NSLog( @"Service Name #0 (Test Case 0): %@", applicationPassphrase_testCase0.serviceName ); /*******/
 
-    [ applicationPassword_testCase0 setServiceName: serviceNameTwo ];
-    XCTAssertNotNil( applicationPassword_testCase0.serviceName );
-    XCTAssertEqualObjects( applicationPassword_testCase0.serviceName, serviceNameTwo );
+    [ applicationPassphrase_testCase0 setServiceName: serviceNameTwo ];
+    XCTAssertNotNil( applicationPassphrase_testCase0.serviceName );
+    XCTAssertEqualObjects( applicationPassphrase_testCase0.serviceName, serviceNameTwo );
 
-    /*******/ NSLog( @"Service Name #1 (Test Case 0): %@", applicationPassword_testCase0.serviceName ); /*******/
+    /*******/ NSLog( @"Service Name #1 (Test Case 0): %@", applicationPassphrase_testCase0.serviceName ); /*******/
 
     #pragma mark Server Name
-    [ applicationPassword_testCase0 setHostName: hostNameOne ];
-    XCTAssertNil( applicationPassword_testCase0.hostName );
-    XCTAssertNotEqualObjects( applicationPassword_testCase0.hostName, hostNameOne );
+    [ applicationPassphrase_testCase0 setHostName: hostNameOne ];
+    XCTAssertNil( applicationPassphrase_testCase0.hostName );
+    XCTAssertNotEqualObjects( applicationPassphrase_testCase0.hostName, hostNameOne );
 
-    /*******/ NSLog( @"Server Name #0 (Test Case 0): %@", applicationPassword_testCase0.hostName ); /*******/
+    /*******/ NSLog( @"Server Name #0 (Test Case 0): %@", applicationPassphrase_testCase0.hostName ); /*******/
 
-    [ applicationPassword_testCase0 setHostName: hostNameTwo ];
-    XCTAssertNil( applicationPassword_testCase0.hostName );
-    XCTAssertNotEqualObjects( applicationPassword_testCase0.hostName, hostNameTwo );
+    [ applicationPassphrase_testCase0 setHostName: hostNameTwo ];
+    XCTAssertNil( applicationPassphrase_testCase0.hostName );
+    XCTAssertNotEqualObjects( applicationPassphrase_testCase0.hostName, hostNameTwo );
 
-    /*******/ NSLog( @"Server Name #1 (Test Case 0): %@", applicationPassword_testCase0.hostName ); /*******/
+    /*******/ NSLog( @"Server Name #1 (Test Case 0): %@", applicationPassphrase_testCase0.hostName ); /*******/
 
     #pragma mark Relative URL Path
-    [ applicationPassword_testCase0 setRelativePath: relativeURLPathOne ];
-    XCTAssertNil( applicationPassword_testCase0.relativePath );
-    XCTAssertNotEqualObjects( applicationPassword_testCase0.relativePath, relativeURLPathOne );
+    [ applicationPassphrase_testCase0 setRelativePath: relativeURLPathOne ];
+    XCTAssertNil( applicationPassphrase_testCase0.relativePath );
+    XCTAssertNotEqualObjects( applicationPassphrase_testCase0.relativePath, relativeURLPathOne );
 
-    /*******/ NSLog( @"Relative Path #0 (Test Case 0): %@", applicationPassword_testCase0.relativePath ); /*******/
+    /*******/ NSLog( @"Relative Path #0 (Test Case 0): %@", applicationPassphrase_testCase0.relativePath ); /*******/
 
-    [ applicationPassword_testCase0 setRelativePath: relativeURLPathTwo ];
-    XCTAssertNil( applicationPassword_testCase0.relativePath );
-    XCTAssertNotEqualObjects( applicationPassword_testCase0.relativePath, relativeURLPathTwo );
+    [ applicationPassphrase_testCase0 setRelativePath: relativeURLPathTwo ];
+    XCTAssertNil( applicationPassphrase_testCase0.relativePath );
+    XCTAssertNotEqualObjects( applicationPassphrase_testCase0.relativePath, relativeURLPathTwo );
 
-    /*******/ NSLog( @"Relative Path #1 (Test Case 0): %@", applicationPassword_testCase0.relativePath ); /*******/
+    /*******/ NSLog( @"Relative Path #1 (Test Case 0): %@", applicationPassphrase_testCase0.relativePath ); /*******/
 
-    if ( applicationPassword_testCase0 )
-        SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
+    if ( applicationPassphrase_testCase0 )
+        SecKeychainItemDelete( applicationPassphrase_testCase0.secKeychainItem );
 
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 1
     // -------------------------------------------------------------------------------------------------------------------- //
-    WSCPassphraseItem* internetPassword_testCase1 =
-        [ commonRandomKeychain addInternetPasswordWithServerName: @"www.waxsealcore.org"
-                                                 URLRelativePath: @"testSetCreationDate/test/case/0"
-                                                     accountName: @"waxsealcore"
-                                                        protocol: WSCInternetProtocolTypeHTTPS
-                                                      passphrase: @"waxsealcore"
-                                                           error: &error ];
-    internetPassword_testCase1.serviceName = @"WaxSealCore Test";
-    internetPassword_testCase1.port = 324;
-    NSLog( @"Fucking URL #1: %@", internetPassword_testCase1.URL );
+    WSCPassphraseItem* internetPassphrase_testCase1 =
+        [ commonRandomKeychain addInternetPassphraseWithServerName: @"www.waxsealcore.org"
+                                                   URLRelativePath: @"testSetCreationDate/test/case/0"
+                                                       accountName: @"waxsealcore"
+                                                          protocol: WSCInternetProtocolTypeHTTPS
+                                                        passphrase: @"waxsealcore"
+                                                             error: &error ];
+    internetPassphrase_testCase1.serviceName = @"WaxSealCore Test";
+    internetPassphrase_testCase1.port = 324;
+    NSLog( @"Fucking URL #1: %@", internetPassphrase_testCase1.URL );
 
-    [ internetPassword_testCase1 setProtocol: WSCInternetProtocolTypeSSH ];
-    [ internetPassword_testCase1 setHostName: @"www.facebook.com" ];
-    [ internetPassword_testCase1 setRelativePath: @"//fucking/TongGuo" ];
-    internetPassword_testCase1.port = 2194;
-    NSLog( @"Fucking Host: %@", internetPassword_testCase1.hostName );
-    NSLog( @"Fucking Port: %lu", internetPassword_testCase1.port );
-    NSLog( @"Fucking Path: %@", internetPassword_testCase1.relativePath );
-    NSLog( @"Fucking URL #2: %@", internetPassword_testCase1.URL );
-    NSLog( @"Fucking Protocol: %@", _WSCSchemeStringForProtocol( internetPassword_testCase1.protocol ) );
+    [ internetPassphrase_testCase1 setProtocol: WSCInternetProtocolTypeSSH ];
+    [ internetPassphrase_testCase1 setHostName: @"www.facebook.com" ];
+    [ internetPassphrase_testCase1 setRelativePath: @"//fucking/TongGuo" ];
+    internetPassphrase_testCase1.port = 2194;
+    NSLog( @"Fucking Host: %@", internetPassphrase_testCase1.hostName );
+    NSLog( @"Fucking Port: %lu", internetPassphrase_testCase1.port );
+    NSLog( @"Fucking Path: %@", internetPassphrase_testCase1.relativePath );
+    NSLog( @"Fucking URL #2: %@", internetPassphrase_testCase1.URL );
+    NSLog( @"Fucking Protocol: %@", _WSCSchemeStringForProtocol( internetPassphrase_testCase1.protocol ) );
     #pragma mark Comment
-    [ internetPassword_testCase1 setComment: commentOne ];
-    XCTAssertNotNil( internetPassword_testCase1.comment );
-    XCTAssertEqualObjects( internetPassword_testCase1.comment, commentOne );
+    [ internetPassphrase_testCase1 setComment: commentOne ];
+    XCTAssertNotNil( internetPassphrase_testCase1.comment );
+    XCTAssertEqualObjects( internetPassphrase_testCase1.comment, commentOne );
 
-    /*******/ NSLog( @"Comment #0 (Test Case 1): %@", internetPassword_testCase1.comment ); /*******/
+    /*******/ NSLog( @"Comment #0 (Test Case 1): %@", internetPassphrase_testCase1.comment ); /*******/
 
-    [ internetPassword_testCase1 setComment: commentTwo ];
-    XCTAssertNotNil( internetPassword_testCase1.comment );
-    XCTAssertEqualObjects( internetPassword_testCase1.comment, commentTwo );
+    [ internetPassphrase_testCase1 setComment: commentTwo ];
+    XCTAssertNotNil( internetPassphrase_testCase1.comment );
+    XCTAssertEqualObjects( internetPassphrase_testCase1.comment, commentTwo );
 
-    /*******/ NSLog( @"Comment #1 (Test Case 1): %@", internetPassword_testCase1.comment ); /*******/
+    /*******/ NSLog( @"Comment #1 (Test Case 1): %@", internetPassphrase_testCase1.comment ); /*******/
 
     #pragma mark Account
-    [ internetPassword_testCase1 setAccount: accountOne ];
-    XCTAssertNotNil( internetPassword_testCase1.account );
-    XCTAssertEqualObjects( internetPassword_testCase1.account, accountOne );
+    [ internetPassphrase_testCase1 setAccount: accountOne ];
+    XCTAssertNotNil( internetPassphrase_testCase1.account );
+    XCTAssertEqualObjects( internetPassphrase_testCase1.account, accountOne );
 
-    /*******/ NSLog( @"Account #0 (Test Case 1): %@", internetPassword_testCase1.account ); /*******/
+    /*******/ NSLog( @"Account #0 (Test Case 1): %@", internetPassphrase_testCase1.account ); /*******/
 
-    [ internetPassword_testCase1 setAccount: accountTwo ];
-    XCTAssertNotNil( internetPassword_testCase1.account );
-    XCTAssertEqualObjects( internetPassword_testCase1.account, accountTwo );
+    [ internetPassphrase_testCase1 setAccount: accountTwo ];
+    XCTAssertNotNil( internetPassphrase_testCase1.account );
+    XCTAssertEqualObjects( internetPassphrase_testCase1.account, accountTwo );
 
-    /*******/ NSLog( @"Account #1 (Test Case 1): %@", internetPassword_testCase1.account ); /*******/
+    /*******/ NSLog( @"Account #1 (Test Case 1): %@", internetPassphrase_testCase1.account ); /*******/
 
     #pragma mark Kind Description
-    [ internetPassword_testCase1 setKindDescription: kindDescriptionOne ];
-    XCTAssertNotNil( internetPassword_testCase1.kindDescription );
-    XCTAssertEqualObjects( internetPassword_testCase1.kindDescription, kindDescriptionOne );
+    [ internetPassphrase_testCase1 setKindDescription: kindDescriptionOne ];
+    XCTAssertNotNil( internetPassphrase_testCase1.kindDescription );
+    XCTAssertEqualObjects( internetPassphrase_testCase1.kindDescription, kindDescriptionOne );
 
-    /*******/ NSLog( @"Kind Description #0 (Test Case 1): %@", internetPassword_testCase1.kindDescription ); /*******/
+    /*******/ NSLog( @"Kind Description #0 (Test Case 1): %@", internetPassphrase_testCase1.kindDescription ); /*******/
 
-    [ internetPassword_testCase1 setKindDescription: kindDescriptionTwo ];
-    XCTAssertNotNil( internetPassword_testCase1.kindDescription );
-    XCTAssertEqualObjects( internetPassword_testCase1.kindDescription, kindDescriptionTwo );
+    [ internetPassphrase_testCase1 setKindDescription: kindDescriptionTwo ];
+    XCTAssertNotNil( internetPassphrase_testCase1.kindDescription );
+    XCTAssertEqualObjects( internetPassphrase_testCase1.kindDescription, kindDescriptionTwo );
 
-    /*******/ NSLog( @"Kind Description #1 (Test Case 1): %@", internetPassword_testCase1.kindDescription ); /*******/
+    /*******/ NSLog( @"Kind Description #1 (Test Case 1): %@", internetPassphrase_testCase1.kindDescription ); /*******/
 
     #pragma mark Service Name
-    [ internetPassword_testCase1 setServiceName: serviceNameOne ];
-    XCTAssertNil( internetPassword_testCase1.serviceName );
-    XCTAssertNotEqualObjects( internetPassword_testCase1.serviceName, serviceNameOne );
+    [ internetPassphrase_testCase1 setServiceName: serviceNameOne ];
+    XCTAssertNil( internetPassphrase_testCase1.serviceName );
+    XCTAssertNotEqualObjects( internetPassphrase_testCase1.serviceName, serviceNameOne );
 
-    /*******/ NSLog( @"Service Name #0 (Test Case 1): %@", internetPassword_testCase1.serviceName ); /*******/
+    /*******/ NSLog( @"Service Name #0 (Test Case 1): %@", internetPassphrase_testCase1.serviceName ); /*******/
 
-    [ internetPassword_testCase1 setServiceName: serviceNameTwo ];
-    XCTAssertNil( internetPassword_testCase1.serviceName );
-    XCTAssertNotEqualObjects( internetPassword_testCase1.serviceName, serviceNameTwo );
+    [ internetPassphrase_testCase1 setServiceName: serviceNameTwo ];
+    XCTAssertNil( internetPassphrase_testCase1.serviceName );
+    XCTAssertNotEqualObjects( internetPassphrase_testCase1.serviceName, serviceNameTwo );
 
-    /*******/ NSLog( @"Service Name #1 (Test Case 1): %@", internetPassword_testCase1.serviceName ); /*******/
+    /*******/ NSLog( @"Service Name #1 (Test Case 1): %@", internetPassphrase_testCase1.serviceName ); /*******/
 
     #pragma mark Server Name
-    [ internetPassword_testCase1 setHostName: hostNameOne ];
-    XCTAssertNotNil( internetPassword_testCase1.hostName );
-    XCTAssertEqualObjects( internetPassword_testCase1.hostName, hostNameOne );
+    [ internetPassphrase_testCase1 setHostName: hostNameOne ];
+    XCTAssertNotNil( internetPassphrase_testCase1.hostName );
+    XCTAssertEqualObjects( internetPassphrase_testCase1.hostName, hostNameOne );
 
-    /*******/ NSLog( @"Server Name #0 (Test Case 1): %@", internetPassword_testCase1.hostName ); /*******/
+    /*******/ NSLog( @"Server Name #0 (Test Case 1): %@", internetPassphrase_testCase1.hostName ); /*******/
 
-    [ internetPassword_testCase1 setHostName: hostNameTwo ];
-    XCTAssertNotNil( internetPassword_testCase1.hostName );
-    XCTAssertEqualObjects( internetPassword_testCase1.hostName, hostNameTwo );
+    [ internetPassphrase_testCase1 setHostName: hostNameTwo ];
+    XCTAssertNotNil( internetPassphrase_testCase1.hostName );
+    XCTAssertEqualObjects( internetPassphrase_testCase1.hostName, hostNameTwo );
 
-    /*******/ NSLog( @"Server Name #1 (Test Case 1): %@", internetPassword_testCase1.hostName ); /*******/
+    /*******/ NSLog( @"Server Name #1 (Test Case 1): %@", internetPassphrase_testCase1.hostName ); /*******/
 
     #pragma mark Relative URL Path
-    [ internetPassword_testCase1 setRelativePath: relativeURLPathOne ];
-    XCTAssertNotNil( internetPassword_testCase1.relativePath );
-    XCTAssertEqualObjects( internetPassword_testCase1.relativePath, relativeURLPathOne );
+    [ internetPassphrase_testCase1 setRelativePath: relativeURLPathOne ];
+    XCTAssertNotNil( internetPassphrase_testCase1.relativePath );
+    XCTAssertEqualObjects( internetPassphrase_testCase1.relativePath, relativeURLPathOne );
 
-    /*******/ NSLog( @"Relative Path #0 (Test Case 1): %@", internetPassword_testCase1.relativePath ); /*******/
+    /*******/ NSLog( @"Relative Path #0 (Test Case 1): %@", internetPassphrase_testCase1.relativePath ); /*******/
 
-    [ internetPassword_testCase1 setRelativePath: relativeURLPathTwo ];
-    XCTAssertNotNil( internetPassword_testCase1.relativePath );
-    XCTAssertEqualObjects( internetPassword_testCase1.relativePath, relativeURLPathTwo );
+    [ internetPassphrase_testCase1 setRelativePath: relativeURLPathTwo ];
+    XCTAssertNotNil( internetPassphrase_testCase1.relativePath );
+    XCTAssertEqualObjects( internetPassphrase_testCase1.relativePath, relativeURLPathTwo );
 
-    /*******/ NSLog( @"Relative Path #1 (Test Case 1): %@", internetPassword_testCase1.relativePath ); /*******/
+    /*******/ NSLog( @"Relative Path #1 (Test Case 1): %@", internetPassphrase_testCase1.relativePath ); /*******/
 
     #pragma mark Auth Type
-    [ internetPassword_testCase1 setAuthenticationType: authTypeOne ];
-    XCTAssertNotEqual( internetPassword_testCase1.authenticationType, 0 );
-    XCTAssertEqual( internetPassword_testCase1.authenticationType, authTypeOne );
-    XCTAssertEqual( internetPassword_testCase1.authenticationType, WSCInternetAuthenticationTypeHTMLForm );
-    XCTAssertEqual( internetPassword_testCase1.authenticationType, kSecAuthenticationTypeHTMLForm );
+    [ internetPassphrase_testCase1 setAuthenticationType: authTypeOne ];
+    XCTAssertNotEqual( internetPassphrase_testCase1.authenticationType, 0 );
+    XCTAssertEqual( internetPassphrase_testCase1.authenticationType, authTypeOne );
+    XCTAssertEqual( internetPassphrase_testCase1.authenticationType, WSCInternetAuthenticationTypeHTMLForm );
+    XCTAssertEqual( internetPassphrase_testCase1.authenticationType, kSecAuthenticationTypeHTMLForm );
 
-    /*******/ NSLog( @"Auth Type #0 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassword_testCase1.authenticationType ) ); /*******/
+    /*******/ NSLog( @"Auth Type #0 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassphrase_testCase1.authenticationType ) ); /*******/
 
-    [ internetPassword_testCase1 setAuthenticationType: authTypeTwo ];
-    XCTAssertNotEqual( internetPassword_testCase1.authenticationType, 0 );
-    XCTAssertEqual( internetPassword_testCase1.authenticationType, authTypeTwo );
-    XCTAssertEqual( internetPassword_testCase1.authenticationType, WSCInternetAuthenticationTypeMSN );
-    XCTAssertEqual( internetPassword_testCase1.authenticationType, kSecAuthenticationTypeMSN );
+    [ internetPassphrase_testCase1 setAuthenticationType: authTypeTwo ];
+    XCTAssertNotEqual( internetPassphrase_testCase1.authenticationType, 0 );
+    XCTAssertEqual( internetPassphrase_testCase1.authenticationType, authTypeTwo );
+    XCTAssertEqual( internetPassphrase_testCase1.authenticationType, WSCInternetAuthenticationTypeMSN );
+    XCTAssertEqual( internetPassphrase_testCase1.authenticationType, kSecAuthenticationTypeMSN );
 
-    /*******/ NSLog( @"Auth Type #1 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassword_testCase1.authenticationType ) ); /*******/
+    /*******/ NSLog( @"Auth Type #1 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassphrase_testCase1.authenticationType ) ); /*******/
 
-    [ internetPassword_testCase1 setAuthenticationType: authTypeThree ];
-    XCTAssertNotEqual( internetPassword_testCase1.authenticationType, 0 );
-    XCTAssertEqual( internetPassword_testCase1.authenticationType, authTypeThree );
-    XCTAssertEqual( internetPassword_testCase1.authenticationType, WSCInternetAuthenticationTypeHTTPDigest );
-    XCTAssertEqual( internetPassword_testCase1.authenticationType, kSecAuthenticationTypeHTTPDigest );
+    [ internetPassphrase_testCase1 setAuthenticationType: authTypeThree ];
+    XCTAssertNotEqual( internetPassphrase_testCase1.authenticationType, 0 );
+    XCTAssertEqual( internetPassphrase_testCase1.authenticationType, authTypeThree );
+    XCTAssertEqual( internetPassphrase_testCase1.authenticationType, WSCInternetAuthenticationTypeHTTPDigest );
+    XCTAssertEqual( internetPassphrase_testCase1.authenticationType, kSecAuthenticationTypeHTTPDigest );
 
-    /*******/ NSLog( @"Auth Type #2 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassword_testCase1.authenticationType ) ); /*******/
+    /*******/ NSLog( @"Auth Type #2 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassphrase_testCase1.authenticationType ) ); /*******/
 
     #pragma mark Protocol Type
-    [ internetPassword_testCase1 setProtocol: protocolTypeOne ];
-    XCTAssertNotEqual( internetPassword_testCase1.protocol, 0 );
-    XCTAssertEqual( internetPassword_testCase1.protocol, protocolTypeOne );
-    XCTAssertEqual( internetPassword_testCase1.protocol, WSCInternetProtocolTypeHTTPS );
-    XCTAssertEqual( internetPassword_testCase1.protocol, kSecProtocolTypeHTTPS );
+    [ internetPassphrase_testCase1 setProtocol: protocolTypeOne ];
+    XCTAssertNotEqual( internetPassphrase_testCase1.protocol, 0 );
+    XCTAssertEqual( internetPassphrase_testCase1.protocol, protocolTypeOne );
+    XCTAssertEqual( internetPassphrase_testCase1.protocol, WSCInternetProtocolTypeHTTPS );
+    XCTAssertEqual( internetPassphrase_testCase1.protocol, kSecProtocolTypeHTTPS );
 
-    /*******/ NSLog( @"Protocol Type #0 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassword_testCase1.protocol ) ); /*******/
+    /*******/ NSLog( @"Protocol Type #0 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassphrase_testCase1.protocol ) ); /*******/
 
-    [ internetPassword_testCase1 setProtocol: protocolTypeTwo ];
-    XCTAssertNotEqual( internetPassword_testCase1.protocol, 0 );
-    XCTAssertEqual( internetPassword_testCase1.protocol, protocolTypeTwo );
-    XCTAssertEqual( internetPassword_testCase1.protocol, WSCInternetProtocolTypeHTTP );
-    XCTAssertEqual( internetPassword_testCase1.protocol, kSecProtocolTypeHTTP );
+    [ internetPassphrase_testCase1 setProtocol: protocolTypeTwo ];
+    XCTAssertNotEqual( internetPassphrase_testCase1.protocol, 0 );
+    XCTAssertEqual( internetPassphrase_testCase1.protocol, protocolTypeTwo );
+    XCTAssertEqual( internetPassphrase_testCase1.protocol, WSCInternetProtocolTypeHTTP );
+    XCTAssertEqual( internetPassphrase_testCase1.protocol, kSecProtocolTypeHTTP );
 
-    /*******/ NSLog( @"Protocol Type #1 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassword_testCase1.protocol ) ); /*******/
+    /*******/ NSLog( @"Protocol Type #1 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassphrase_testCase1.protocol ) ); /*******/
 
-    [ internetPassword_testCase1 setProtocol: protocolTypeThree ];
-    XCTAssertNotEqual( internetPassword_testCase1.protocol, 0 );
-    XCTAssertEqual( internetPassword_testCase1.protocol, protocolTypeThree );
-    XCTAssertEqual( internetPassword_testCase1.protocol, WSCInternetProtocolTypeFTP );
-    XCTAssertEqual( internetPassword_testCase1.protocol, kSecProtocolTypeFTP );
+    [ internetPassphrase_testCase1 setProtocol: protocolTypeThree ];
+    XCTAssertNotEqual( internetPassphrase_testCase1.protocol, 0 );
+    XCTAssertEqual( internetPassphrase_testCase1.protocol, protocolTypeThree );
+    XCTAssertEqual( internetPassphrase_testCase1.protocol, WSCInternetProtocolTypeFTP );
+    XCTAssertEqual( internetPassphrase_testCase1.protocol, kSecProtocolTypeFTP );
 
-    /*******/ NSLog( @"Protocol Type #2 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassword_testCase1.protocol ) ); /*******/
+    /*******/ NSLog( @"Protocol Type #2 (Test Case 1): %@", _WSCFourCharCode2NSString( internetPassphrase_testCase1.protocol ) ); /*******/
 
     #pragma mark Port Number
-    [ internetPassword_testCase1 setPort: portOne ];
-    XCTAssertNotEqual( internetPassword_testCase1.port, 0 );
-    XCTAssertEqual( internetPassword_testCase1.port, portOne );
+    [ internetPassphrase_testCase1 setPort: portOne ];
+    XCTAssertNotEqual( internetPassphrase_testCase1.port, 0 );
+    XCTAssertEqual( internetPassphrase_testCase1.port, portOne );
 
-    /*******/ NSLog( @"Port Number #0 (Test Case 1): %lu", internetPassword_testCase1.port ); /*******/
+    /*******/ NSLog( @"Port Number #0 (Test Case 1): %lu", internetPassphrase_testCase1.port ); /*******/
 
-    [ internetPassword_testCase1 setPort: portTwo ];
-    XCTAssertNotEqual( internetPassword_testCase1.port, 0 );
-    XCTAssertEqual( internetPassword_testCase1.port, portTwo );
+    [ internetPassphrase_testCase1 setPort: portTwo ];
+    XCTAssertNotEqual( internetPassphrase_testCase1.port, 0 );
+    XCTAssertEqual( internetPassphrase_testCase1.port, portTwo );
 
-    /*******/ NSLog( @"Port Number #1 (Test Case 1): %lu", internetPassword_testCase1.port ); /*******/
+    /*******/ NSLog( @"Port Number #1 (Test Case 1): %lu", internetPassphrase_testCase1.port ); /*******/
 
-    [ internetPassword_testCase1 setPort: portThree ];
-    XCTAssertEqual( internetPassword_testCase1.port, 0 );
-    XCTAssertEqual( internetPassword_testCase1.port, portThree );
+    [ internetPassphrase_testCase1 setPort: portThree ];
+    XCTAssertEqual( internetPassphrase_testCase1.port, 0 );
+    XCTAssertEqual( internetPassphrase_testCase1.port, portThree );
 
-    /*******/ NSLog( @"Port Number #2 (Test Case 1): %lu", internetPassword_testCase1.port ); /*******/
+    /*******/ NSLog( @"Port Number #2 (Test Case 1): %lu", internetPassphrase_testCase1.port ); /*******/
 
-    if ( applicationPassword_testCase0 )
-        SecKeychainItemDelete( internetPassword_testCase1.secKeychainItem );
+    if ( applicationPassphrase_testCase0 )
+        SecKeychainItemDelete( internetPassphrase_testCase1.secKeychainItem );
 
     // -------------------------------------------------------------------------------------------------------------------- //
-    // Negative Test Case 1: The keychain item: internetPassword_testCase1 has been already deleted
+    // Negative Test Case 1: The keychain item: internetPassphrase_testCase1 has been already deleted
     // -------------------------------------------------------------------------------------------------------------------- //
-    if ( applicationPassword_testCase0 )
-        SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
+    if ( applicationPassphrase_testCase0 )
+        SecKeychainItemDelete( applicationPassphrase_testCase0.secKeychainItem );
 
-    // TODO: XCTAssertFalse( applicationPassword_testCase0.isValid );
-    XCTAssertNil( applicationPassword_testCase0.comment );
+    // TODO: XCTAssertFalse( applicationPassphrase_testCase0.isValid );
+    XCTAssertNil( applicationPassphrase_testCase0.comment );
 
     // -------------------------------------------------------------------------------------------------------------------- //
     // Negative Test Case 2: The keychain: randomKeychain has been already deleted
@@ -586,8 +586,8 @@ NSString* _WSCPassphrases[] =
     [ [ WSCKeychainManager defaultManager ] deleteKeychain: commonRandomKeychain
                                                      error: nil ];
 
-    XCTAssertFalse( internetPassword_testCase1.isValid );
-    XCTAssertNil( internetPassword_testCase1.comment );
+    XCTAssertFalse( internetPassphrase_testCase1.isValid );
+    XCTAssertNil( internetPassphrase_testCase1.comment );
     }
 
 #define WSCAssertDateEqual( _LhsDate, _RhsDate )\
@@ -615,74 +615,74 @@ NSString* _WSCPassphrases[] =
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 0
     // -------------------------------------------------------------------------------------------------------------------- //
-    WSCPassphraseItem* applicationPassword_testCase0 =
-        [ commonRandomKeychain addApplicationPasswordWithServiceName: @"WaxSealCore: testSetCreationDate"
-                                                         accountName: @"testSetCreationDate Test Case 0"
-                                                          passphrase: @"waxsealcore"
-                                                               error: &error ];
+    WSCPassphraseItem* applicationPassphrase_testCase0 =
+        [ commonRandomKeychain addApplicationPassphraseWithServiceName: @"WaxSealCore: testSetCreationDate"
+                                                           accountName: @"testSetCreationDate Test Case 0"
+                                                            passphrase: @"waxsealcore"
+                                                                 error: &error ];
 
-    /*******/ NSLog( @"Before modifying applicationPassword_testCase0: %@", [ applicationPassword_testCase0 creationDate ] ); /*******/
+    /*******/ NSLog( @"Before modifying applicationPassphrase_testCase0: %@", [ applicationPassphrase_testCase0 creationDate ] ); /*******/
 
     NSDate* newDate0_testCase0 = [ NSDate dateWithString: @"2018-12-20 10:45:32 +0800" ];
-    [ applicationPassword_testCase0 setCreationDate: newDate0_testCase0 ];
-    WSCAssertDateEqual( newDate0_testCase0, applicationPassword_testCase0.creationDate );
+    [ applicationPassphrase_testCase0 setCreationDate: newDate0_testCase0 ];
+    WSCAssertDateEqual( newDate0_testCase0, applicationPassphrase_testCase0.creationDate );
 
-    /*******/ NSLog( @"Modification (Test Case 0) #0: %@", [ applicationPassword_testCase0 creationDate ] ); /*******/
+    /*******/ NSLog( @"Modification (Test Case 0) #0: %@", [ applicationPassphrase_testCase0 creationDate ] ); /*******/
 
     NSDate* newDate1_testCase0 = [ NSDate distantFuture ];
-    [ applicationPassword_testCase0 setCreationDate: newDate1_testCase0 ];
-    WSCAssertDateEqual( newDate1_testCase0, applicationPassword_testCase0.creationDate );
+    [ applicationPassphrase_testCase0 setCreationDate: newDate1_testCase0 ];
+    WSCAssertDateEqual( newDate1_testCase0, applicationPassphrase_testCase0.creationDate );
 
-    /*******/ NSLog( @"Modification (Test Case 0) #1: %@", [ applicationPassword_testCase0 creationDate ] ); /*******/
+    /*******/ NSLog( @"Modification (Test Case 0) #1: %@", [ applicationPassphrase_testCase0 creationDate ] ); /*******/
 
     NSDate* newDate2_testCase0 = [ NSDate distantPast ];
-    [ applicationPassword_testCase0 setCreationDate: newDate2_testCase0 ];
-    WSCAssertDateEqual( newDate2_testCase0, applicationPassword_testCase0.creationDate );
+    [ applicationPassphrase_testCase0 setCreationDate: newDate2_testCase0 ];
+    WSCAssertDateEqual( newDate2_testCase0, applicationPassphrase_testCase0.creationDate );
 
-    /*******/ NSLog( @"Modification (Test Case 0) #2: %@", [ applicationPassword_testCase0 creationDate ] ); /*******/
+    /*******/ NSLog( @"Modification (Test Case 0) #2: %@", [ applicationPassphrase_testCase0 creationDate ] ); /*******/
 
-    if ( applicationPassword_testCase0 )
-        SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
+    if ( applicationPassphrase_testCase0 )
+        SecKeychainItemDelete( applicationPassphrase_testCase0.secKeychainItem );
 
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 1
     // -------------------------------------------------------------------------------------------------------------------- //
-    WSCPassphraseItem* internetPassword_testCase1 =
-        [ commonRandomKeychain addInternetPasswordWithServerName: @"www.waxsealcore.org"
-                                                 URLRelativePath: @"testSetCreationDate/test/case/0"
-                                                     accountName: @"waxsealcore"
-                                                        protocol: WSCInternetProtocolTypeHTTPS
-                                                      passphrase: @"waxsealcore"
-                                                           error: &error ];
+    WSCPassphraseItem* internetPassphrase_testCase1 =
+        [ commonRandomKeychain addInternetPassphraseWithServerName: @"www.waxsealcore.org"
+                                                   URLRelativePath: @"testSetCreationDate/test/case/0"
+                                                       accountName: @"waxsealcore"
+                                                          protocol: WSCInternetProtocolTypeHTTPS
+                                                        passphrase: @"waxsealcore"
+                                                             error: &error ];
 
-    /*******/ NSLog( @"Before modifying internetPassword_testCase1: %@", [ internetPassword_testCase1 creationDate ] ); /*******/
+    /*******/ NSLog( @"Before modifying internetPassphrase_testCase1: %@", [ internetPassphrase_testCase1 creationDate ] ); /*******/
 
     NSDate* newDate0_testCase1 = [ NSDate date ];
-    [ internetPassword_testCase1 setCreationDate: newDate0_testCase1 ];
-    WSCAssertDateEqual( newDate0_testCase1, internetPassword_testCase1.creationDate );
+    [ internetPassphrase_testCase1 setCreationDate: newDate0_testCase1 ];
+    WSCAssertDateEqual( newDate0_testCase1, internetPassphrase_testCase1.creationDate );
 
-    NSLog( @"Modification (Test Case 1) #0: %@", [ internetPassword_testCase1 creationDate ] );
+    NSLog( @"Modification (Test Case 1) #0: %@", [ internetPassphrase_testCase1 creationDate ] );
 
     // -------------------------------------------------------------------------------------------------------------------- //
     // Negative Test Case 0: Set an invalid date
     // -------------------------------------------------------------------------------------------------------------------- //
     NSDate* tooLargeDate = [ NSDate dateWithString: @"123456-2-23 19:29:30 +0800" ];
-    [ internetPassword_testCase1 setCreationDate: tooLargeDate ];
+    [ internetPassphrase_testCase1 setCreationDate: tooLargeDate ];
 
-    WSCAssertDateEqual( [ NSDate dateWithString: @"9999-2-23 19:29:30 +0800" ], internetPassword_testCase1.creationDate );
+    WSCAssertDateEqual( [ NSDate dateWithString: @"9999-2-23 19:29:30 +0800" ], internetPassphrase_testCase1.creationDate );
 
     // -------------------------------------------------------------------------------------------------------------------- //
-    // Negative Test Case 1: The keychain item: internetPassword_testCase1 has been already deleted
+    // Negative Test Case 1: The keychain item: internetPassphrase_testCase1 has been already deleted
     // -------------------------------------------------------------------------------------------------------------------- //
-    if ( applicationPassword_testCase0 )
-        SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
+    if ( applicationPassphrase_testCase0 )
+        SecKeychainItemDelete( applicationPassphrase_testCase0.secKeychainItem );
 
-    // TODO: XCTAssertFalse( applicationPassword_testCase0.isValid );
-    XCTAssertNil( applicationPassword_testCase0.creationDate );
+    // TODO: XCTAssertFalse( applicationPassphrase_testCase0.isValid );
+    XCTAssertNil( applicationPassphrase_testCase0.creationDate );
 
-    NSLog( @"Modification (Negative Test Case 0) #0: %@", [ applicationPassword_testCase0 creationDate ] );
-    [ applicationPassword_testCase0 setCreationDate: [ NSDate dateWithNaturalLanguageString: @"1998-2-8 21:23:19 +0300" ] ];
-    NSLog( @"Modification (Negative Test Case 0) #1: %@", [ applicationPassword_testCase0 creationDate ] );
+    NSLog( @"Modification (Negative Test Case 0) #0: %@", [ applicationPassphrase_testCase0 creationDate ] );
+    [ applicationPassphrase_testCase0 setCreationDate: [ NSDate dateWithNaturalLanguageString: @"1998-2-8 21:23:19 +0300" ] ];
+    NSLog( @"Modification (Negative Test Case 0) #1: %@", [ applicationPassphrase_testCase0 creationDate ] );
 
     // -------------------------------------------------------------------------------------------------------------------- //
     // Negative Test Case 2: The keychain: randomKeychain has been already deleted
@@ -690,12 +690,12 @@ NSString* _WSCPassphrases[] =
     [ [ WSCKeychainManager defaultManager ] deleteKeychain: commonRandomKeychain
                                                      error: nil ];
 
-    XCTAssertFalse( internetPassword_testCase1.isValid );
-    XCTAssertNil( internetPassword_testCase1.creationDate );
+    XCTAssertFalse( internetPassphrase_testCase1.isValid );
+    XCTAssertNil( internetPassphrase_testCase1.creationDate );
 
-    NSLog( @"Modification (Negative Test Case 1) #0: %@", [ internetPassword_testCase1 creationDate ] );
-    [ internetPassword_testCase1 setCreationDate: [ NSDate dateWithNaturalLanguageString: @"1998-2-8 21:23:19 +0300" ] ];
-    NSLog( @"Modification (Negative Test Case 1) #1: %@", [ internetPassword_testCase1 creationDate ] );
+    NSLog( @"Modification (Negative Test Case 1) #0: %@", [ internetPassphrase_testCase1 creationDate ] );
+    [ internetPassphrase_testCase1 setCreationDate: [ NSDate dateWithNaturalLanguageString: @"1998-2-8 21:23:19 +0300" ] ];
+    NSLog( @"Modification (Negative Test Case 1) #1: %@", [ internetPassphrase_testCase1 creationDate ] );
     }
 
 - ( void ) testModificationDateReadOnlyProperty
@@ -706,51 +706,51 @@ NSString* _WSCPassphrases[] =
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 0
     // -------------------------------------------------------------------------------------------------------------------- //
-    WSCPassphraseItem* applicationPassword_testCase0 =
-        [ commonRandomKeychain addApplicationPasswordWithServiceName: @"WaxSealCore: testModificationDate"
-                                                         accountName: @"testModificationDate Test Case 0"
-                                                          passphrase: @"waxsealcore"
-                                                               error: &error ];
+    WSCPassphraseItem* applicationPassphrase_testCase0 =
+        [ commonRandomKeychain addApplicationPassphraseWithServiceName: @"WaxSealCore: testModificationDate"
+                                                           accountName: @"testModificationDate Test Case 0"
+                                                            passphrase: @"waxsealcore"
+                                                                 error: &error ];
 
-    XCTAssertNotNil( applicationPassword_testCase0.modificationDate );
-    NSLog( @"Modification Date #0: %@", applicationPassword_testCase0.modificationDate );
+    XCTAssertNotNil( applicationPassphrase_testCase0.modificationDate );
+    NSLog( @"Modification Date #0: %@", applicationPassphrase_testCase0.modificationDate );
 
     sleep( 5 );
 
     // -------------------------------------------------------------------------------------------------------------------- //
     // Test Case 1
     // -------------------------------------------------------------------------------------------------------------------- //
-    WSCPassphraseItem* internetPassword_testCase1 =
-        [ commonRandomKeychain addInternetPasswordWithServerName: @"www.waxsealcore.org"
-                                                 URLRelativePath: @"testModificationDate/test/case/1"
-                                                     accountName: @"NSTongG"
-                                                        protocol: WSCInternetProtocolTypeFTPS
-                                                      passphrase: @"waxsealcore"
-                                                           error: &error ];
+    WSCPassphraseItem* internetPassphrase_testCase1 =
+        [ commonRandomKeychain addInternetPassphraseWithServerName: @"www.waxsealcore.org"
+                                                   URLRelativePath: @"testModificationDate/test/case/1"
+                                                       accountName: @"NSTongG"
+                                                          protocol: WSCInternetProtocolTypeFTPS
+                                                        passphrase: @"waxsealcore"
+                                                             error: &error ];
 
-    XCTAssertNotNil( internetPassword_testCase1.creationDate );
-    NSLog( @"Modification Date #1: %@", internetPassword_testCase1.modificationDate );
-
-    // -------------------------------------------------------------------------------------------------------------------- //
-    // Negative Test Case 0: The keychain item: applicationPassword_testCase0 has been already deleted
-    // -------------------------------------------------------------------------------------------------------------------- //
-    if ( applicationPassword_testCase0 )
-        SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
-
-    // TODO: XCTAssertFalse( applicationPassword_testCase0.isValid );
-    XCTAssertNil( applicationPassword_testCase0.modificationDate );
+    XCTAssertNotNil( internetPassphrase_testCase1.creationDate );
+    NSLog( @"Modification Date #1: %@", internetPassphrase_testCase1.modificationDate );
 
     // -------------------------------------------------------------------------------------------------------------------- //
-    // Negative Test Case 1: The keychain item: internetPassword_testCase1 has been already deleted
+    // Negative Test Case 0: The keychain item: applicationPassphrase_testCase0 has been already deleted
     // -------------------------------------------------------------------------------------------------------------------- //
-    XCTAssertTrue( internetPassword_testCase1.isValid );
+    if ( applicationPassphrase_testCase0 )
+        SecKeychainItemDelete( applicationPassphrase_testCase0.secKeychainItem );
+
+    // TODO: XCTAssertFalse( applicationPassphrase_testCase0.isValid );
+    XCTAssertNil( applicationPassphrase_testCase0.modificationDate );
+
+    // -------------------------------------------------------------------------------------------------------------------- //
+    // Negative Test Case 1: The keychain item: internetPassphrase_testCase1 has been already deleted
+    // -------------------------------------------------------------------------------------------------------------------- //
+    XCTAssertTrue( internetPassphrase_testCase1.isValid );
     [ [ WSCKeychainManager defaultManager ] deleteKeychain: commonRandomKeychain
                                                      error: nil ];
-    XCTAssertFalse( internetPassword_testCase1.isValid );
-    XCTAssertNil( internetPassword_testCase1.modificationDate );
+    XCTAssertFalse( internetPassphrase_testCase1.isValid );
+    XCTAssertNil( internetPassphrase_testCase1.modificationDate );
 
-    if ( internetPassword_testCase1 )
-        SecKeychainItemDelete( internetPassword_testCase1.secKeychainItem );
+    if ( internetPassphrase_testCase1 )
+        SecKeychainItemDelete( internetPassphrase_testCase1.secKeychainItem );
     }
 
 - ( void ) testIsValidProperty
@@ -765,35 +765,34 @@ NSString* _WSCPassphrases[] =
     // ----------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------
-    WSCPassphraseItem* applicationPassword_testCase0 =
-        [ [ WSCKeychain login ] addApplicationPasswordWithServiceName: @"WaxSealCore"
-                                                          accountName: @"Test Case 0"
-                                                           passphrase: @"waxsealcore"
-                                                                error: &error ];
-    XCTAssertNotNil( applicationPassword_testCase0 );
-    XCTAssertEqual( applicationPassword_testCase0.itemClass, WSCKeychainItemClassApplicationPasswordItem );
+    WSCPassphraseItem* applicationPassphrase_testCase0 =
+        [ [ WSCKeychain login ] addApplicationPassphraseWithServiceName: @"WaxSealCore"
+                                                            accountName: @"Test Case 0"
+                                                             passphrase: @"waxsealcore"
+                                                                  error: &error ];
+    XCTAssertNotNil( applicationPassphrase_testCase0 );
+    XCTAssertEqual( applicationPassphrase_testCase0.itemClass, WSCKeychainItemClassApplicationPassphraseItem );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
-    if ( applicationPassword_testCase0 )
-        SecKeychainItemDelete( applicationPassword_testCase0.secKeychainItem );
+    if ( applicationPassphrase_testCase0 )
+        SecKeychainItemDelete( applicationPassphrase_testCase0.secKeychainItem );
 
     // ----------------------------------------------------------
     // Test Case 1
     // ----------------------------------------------------------
-    WSCPassphraseItem* internetPassword_testCase1 =
-        [ [ WSCKeychain login ] addInternetPasswordWithServerName: @"www.waxsealcore.org"
-                                                  URLRelativePath: @"testCase1"
-                                                      accountName: @"Test Case 1"
-                                                         protocol: WSCInternetProtocolTypeHTTPS
-                                                       passphrase: @"waxsealcore"
-                                                            error: &error ];
-
-    XCTAssertNotNil( internetPassword_testCase1 );
-    XCTAssertEqual( internetPassword_testCase1.itemClass, WSCKeychainItemClassInternetPasswordItem );
+    WSCPassphraseItem* internetPassphrase_testCase1 =
+        [ [ WSCKeychain login ] addInternetPassphraseWithServerName: @"www.waxsealcore.org"
+                                                    URLRelativePath: @"testCase1"
+                                                        accountName: @"Test Case 1"
+                                                           protocol: WSCInternetProtocolTypeHTTPS
+                                                         passphrase: @"waxsealcore"
+                                                              error: &error ];
+    XCTAssertNotNil( internetPassphrase_testCase1 );
+    XCTAssertEqual( internetPassphrase_testCase1.itemClass, WSCKeychainItemClassInternetPassphraseItem );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
-    if ( internetPassword_testCase1 )
-        SecKeychainItemDelete( internetPassword_testCase1.secKeychainItem );
+    if ( internetPassphrase_testCase1 )
+        SecKeychainItemDelete( internetPassphrase_testCase1.secKeychainItem );
 
     // TODO: Waiting for more positive and negative test case
     }

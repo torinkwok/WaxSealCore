@@ -98,7 +98,7 @@
     void* server = "node-cnx.vnet.link";
     void* account = "sosueme";
     void* comment = "Big Brother Is WATCHING You!";
-    void* description = "Proxy Password";
+    void* description = "Proxy Passphrase";
     BOOL isInvisible = NO;
     UInt32 creator = 'Tong';
     SecProtocolType protocol = kSecProtocolTypeHTTPSProxy;
@@ -151,7 +151,7 @@
     void* server = "node-cnx.vnet.link";
     void* account = "sosueme";
     void* comment = "Big Brother Is WATCHING You!";
-    void* description = "Proxy Password";
+    void* description = "Proxy Passphrase";
     BOOL isInvisible = NO;
     UInt32 creator = 'Tong';
     SecProtocolType protocol = kSecProtocolTypeHTTPSProxy;

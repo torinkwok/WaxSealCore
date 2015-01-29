@@ -153,10 +153,10 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
     /// Specifies Microsoft Network default authentication.
     , WSCInternetAuthenticationTypeMSN              = kSecAuthenticationTypeMSN
 
-    /// Specifies Distributed Password authentication.
+    /// Specifies Distributed Passphrase authentication.
     , WSCInternetAuthenticationTypeDPA              = kSecAuthenticationTypeDPA
 
-    /// Specifies Remote Password authentication.
+    /// Specifies Remote Passphrase authentication.
     , WSCInternetAuthenticationTypeRPA              = kSecAuthenticationTypeRPA
 
     /// Specifies HTTP Basic authentication.
@@ -275,7 +275,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
                 
   @return A `WSCKeychain` object initialized with above parameters.
   
-  @sa +keychainWhosePasswordWillBeObtainedFromUserWithURL:initialAccess:becomesDefault:error:
+  @sa +keychainWhosePassphraseWillBeObtainedFromUserWithURL:initialAccess:becomesDefault:error:
   @sa +keychainWithSecKeychainRef:
   @sa +keychainWithContentsOfURL:error:
   */
@@ -320,7 +320,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
   @sa +keychainWithSecKeychainRef:
   @sa +keychainWithContentsOfURL:error:
   */
-+ ( instancetype ) keychainWhosePasswordWillBeObtainedFromUserWithURL: ( NSURL* )_URL
++ ( instancetype ) keychainWhosePassphraseWillBeObtainedFromUserWithURL: ( NSURL* )_URL
                                                         initialAccess: ( WSCAccessPermission* )_InitalAccess
                                                        becomesDefault: ( BOOL )_WillBecomeDefault
                                                                 error: ( NSError** )_Error;
@@ -333,7 +333,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
           Return `nil` if *_SecKeychainRef* is `nil`.
           
   @sa +keychainWithURL:passphrase:initialAccess:becomesDefault:error:
-  @sa +keychainWhosePasswordWillBeObtainedFromUserWithURL:initialAccess:becomesDefault:error:
+  @sa +keychainWhosePassphraseWillBeObtainedFromUserWithURL:initialAccess:becomesDefault:error:
   @sa +keychainWithContentsOfURL:error:
   */
 + ( instancetype ) keychainWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef;
@@ -351,7 +351,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
   @return A `WSCKeychain` object represented a keychain located at the given URL.
   
   @sa +keychainWithURL:passphrase:initialAccess:becomesDefault:error:
-  @sa +keychainWhosePasswordWillBeObtainedFromUserWithURL:initialAccess:becomesDefault:error:
+  @sa +keychainWhosePassphraseWillBeObtainedFromUserWithURL:initialAccess:becomesDefault:error:
   @sa +keychainWithSecKeychainRef:
   */
 + ( instancetype ) keychainWithContentsOfURL: ( NSURL* )_URLOfKeychain
@@ -424,10 +424,10 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
   @return A `WSCPassphraseItem` object representing the new keychain item.
           Returns `nil` if an error occurs.
   */
-- ( WSCPassphraseItem* ) addApplicationPasswordWithServiceName: ( NSString* )_ServiceName
-                                                 accountName: ( NSString* )_AccountName
-                                                  passphrase: ( NSString* )_Passphrase
-                                                       error: ( NSError** )_Error;
+- ( WSCPassphraseItem* ) addApplicationPassphraseWithServiceName: ( NSString* )_ServiceName
+                                                     accountName: ( NSString* )_AccountName
+                                                      passphrase: ( NSString* )_Passphrase
+                                                           error: ( NSError** )_Error;
 
 /** Adds a new Internet passphrase to the keychain represented by receiver.
 
@@ -460,12 +460,12 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
   @return A `WSCPassphraseItem` object representing the new keychain item.
           Returns `nil` if an error occurs.
   */
-- ( WSCPassphraseItem* ) addInternetPasswordWithServerName: ( NSString* )_ServerName
-                                         URLRelativePath: ( NSString* )_URLRelativePath
-                                             accountName: ( NSString* )_AccountName
-                                                protocol: ( WSCInternetProtocolType )_Protocol
-                                              passphrase: ( NSString* )_Passphrase
-                                                   error: ( NSError** )_Error;
+- ( WSCPassphraseItem* ) addInternetPassphraseWithServerName: ( NSString* )_ServerName
+                                             URLRelativePath: ( NSString* )_URLRelativePath
+                                                 accountName: ( NSString* )_AccountName
+                                                    protocol: ( WSCInternetProtocolType )_Protocol
+                                                  passphrase: ( NSString* )_Passphrase
+                                                       error: ( NSError** )_Error;
 
 @end // WSCKeychain class
 

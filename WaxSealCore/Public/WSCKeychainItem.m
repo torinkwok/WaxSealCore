@@ -175,9 +175,9 @@
         // Mapping for creating the SecKeychainAttributeInfo struct.
         switch ( self.itemClass )
             {
-            case WSCKeychainItemClassInternetPasswordItem:      itemID = CSSM_DL_DB_RECORD_INTERNET_PASSWORD;   break;
-            case WSCKeychainItemClassApplicationPasswordItem:   itemID = CSSM_DL_DB_RECORD_GENERIC_PASSWORD;    break;
-            case WSCKeychainItemClassAppleSharePasswordItem:    itemID = CSSM_DL_DB_RECORD_APPLESHARE_PASSWORD; break;
+            case WSCKeychainItemClassInternetPassphraseItem:      itemID = CSSM_DL_DB_RECORD_INTERNET_PASSWORD;   break;
+            case WSCKeychainItemClassApplicationPassphraseItem:   itemID = CSSM_DL_DB_RECORD_GENERIC_PASSWORD;    break;
+            case WSCKeychainItemClassAppleSharePassphraseItem:    itemID = CSSM_DL_DB_RECORD_APPLESHARE_PASSWORD; break;
             case WSCKeychainItemClassCertificateItem:           itemID = CSSM_DL_DB_RECORD_X509_CERTIFICATE;    break;
             case WSCKeychainItemClassPublicKeyItem:
             case WSCKeychainItemClassPrivateKeyItem:
@@ -255,9 +255,9 @@
                     {
                     WSCKeychainItemClass classOfReceiver = [ self itemClass ];
                     error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                                 code: ( classOfReceiver == WSCKeychainItemClassApplicationPasswordItem )
-                                                            ? WSCKeychainItemAttributeIsUniqueToInternetPasswordError
-                                                            : WSCKeychainItemAttributeIsUniqueToApplicationPasswordError
+                                                 code: ( classOfReceiver == WSCKeychainItemClassApplicationPassphraseItem )
+                                                            ? WSCKeychainItemAttributeIsUniqueToInternetPassphraseError
+                                                            : WSCKeychainItemAttributeIsUniqueToApplicationPassphraseError
                                              userInfo: nil ];
                     }
 
@@ -458,9 +458,9 @@
                 {
                 WSCKeychainItemClass receiverClass = [ self itemClass ];
                 error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                             code: ( receiverClass == WSCKeychainItemClassApplicationPasswordItem )
-                                                        ? WSCKeychainItemAttributeIsUniqueToInternetPasswordError
-                                                        : WSCKeychainItemAttributeIsUniqueToApplicationPasswordError
+                                             code: ( receiverClass == WSCKeychainItemClassApplicationPassphraseItem )
+                                                        ? WSCKeychainItemAttributeIsUniqueToInternetPassphraseError
+                                                        : WSCKeychainItemAttributeIsUniqueToApplicationPassphraseError
                                          userInfo: @{ NSUnderlyingErrorKey : error } ];
                 }
             }

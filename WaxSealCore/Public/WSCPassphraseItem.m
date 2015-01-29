@@ -147,10 +147,10 @@
     {
     // The `URL` property is unique to the Internet passphrase item
     // So the receiver must be an Internet passphrase item.
-    if ( [ self itemClass ] != WSCKeychainItemClassInternetPasswordItem )
+    if ( [ self itemClass ] != WSCKeychainItemClassInternetPassphraseItem )
         {
         NSError* error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                              code: WSCKeychainItemAttributeIsUniqueToInternetPasswordError
+                                              code: WSCKeychainItemAttributeIsUniqueToInternetPassphraseError
                                           userInfo: nil ];
         _WSCPrintNSErrorForLog( error );
         return nil;

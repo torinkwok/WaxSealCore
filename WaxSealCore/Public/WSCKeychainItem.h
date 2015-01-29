@@ -89,13 +89,13 @@ typedef NS_ENUM( NSUInteger, WSCKeychainItemAccessibilityType )
 typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
     {
     /// Indicates that the item is an Internet passphrase.
-      WSCKeychainItemClassInternetPasswordItem      = kSecInternetPasswordItemClass
+      WSCKeychainItemClassInternetPassphraseItem      = kSecInternetPasswordItemClass
 
     /// Indicates that the item is an application passphrase.
-    , WSCKeychainItemClassApplicationPasswordItem   = kSecGenericPasswordItemClass
+    , WSCKeychainItemClassApplicationPassphraseItem   = kSecGenericPasswordItemClass
 
     /// Indicates that the item is an AppleShare passphrase.
-    , WSCKeychainItemClassAppleSharePasswordItem    = kSecAppleSharePasswordItemClass
+    , WSCKeychainItemClassAppleSharePassphraseItem    = kSecAppleSharePasswordItemClass
 
     /// Indicates that the item is an X509 certificate.
     , WSCKeychainItemClassCertificateItem           = kSecCertificateItemClass
@@ -113,7 +113,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
     , WSCKeychainItemClassAllKeys                   = CSSM_DL_DB_RECORD_ALL_KEYS
     };
 
-/** The `WSCKeychainItem` defines the basic property of an keychain item
+/** The `WSCKeychainItem` defines the basic property of an keychain item.
 
   You typically do not use `WSCKeychainItem` object directly, you use objects whose
   classes descend from `WSCKeychainItem`:
