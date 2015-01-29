@@ -521,7 +521,7 @@
     for ( WSCKeychain* _Keychain in currentDefaultSearchList )
         XCTAssertTrue( _Keychain.isLocked );
 
-    _WSCSelectivelyUnlockKeychainsBasedOnPassword();
+    _WSCSelectivelyUnlockKeychainsBasedOnPassphrase();
 
     for ( WSCKeychain* _Keychain in currentDefaultSearchList )
         if ( ![ _Keychain isEqualToKeychain: [ WSCKeychain system ] ] )

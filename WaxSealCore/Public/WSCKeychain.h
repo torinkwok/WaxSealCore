@@ -32,7 +32,7 @@
 
 #import <Foundation/Foundation.h>
 
-/** Defines the protocol type associated with an Internet password.
+/** Defines the protocol type associated with an Internet passphrase.
   */
 typedef NS_ENUM( FourCharCode, WSCInternetProtocolType )
     {
@@ -143,7 +143,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetProtocolType )
     , WSCInternetProtocolTypeAny         = kSecProtocolTypeAny
     };
 
-/** Defines constants you can use to identify the type of authentication to use for an Internet password.
+/** Defines constants you can use to identify the type of authentication to use for an Internet passphrase.
   */
 typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
     {
@@ -180,10 +180,10 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
 
 @class WSCAccessPermission;
 
-/** A keychain is an encrypted container that holds passwords for multiple applications and secure services. 
+/** A keychain is an encrypted container that holds passphrases for multiple applications and secure services. 
 
   Keychains are secure storage containers, which means that when the keychain is locked, no one can access its protected contents. 
-  In OS X, users can unlock a keychain—thus providing trusted applications access to the contents—by entering a single master password.
+  In OS X, users can unlock a keychain—thus providing trusted applications access to the contents—by entering a single master passphrase.
   
   The above encrypted container which is called "keychain" is represented by `WSCKeychain` object in *WaxSealCore* framework
   and `SecKeychainRef` in *Keychain Services* APIs.
@@ -204,7 +204,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
 
   In most cases, your application should not need to set the default keychain, 
   because this is a choice normally made by the user. You may call this method to change where a
-  password or other keychain items are added, but since this is a user choice, 
+  passphrase or other keychain items are added, but since this is a user choice, 
   you should set the default keychain back to the user specified keychain when you are done.
   */
 @property ( assign, readonly ) BOOL isDefault;
@@ -243,7 +243,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
 #pragma mark Public Programmatic Interfaces for Creating Keychains
 /** @name Creating Keychains */
 
-/** Creates and returns a `WSCKeychain` object using the given URL, password, and inital access rights.
+/** Creates and returns a `WSCKeychain` object using the given URL, passphrase, and inital access rights.
 
   This class method creates an empty keychain. The `_Passphrase` parameter is required, and `_InitialAccess` parameter is optional.
   If user interaction to create a keychain is posted, the newly-created keychain is automatically unlocked after creation.
@@ -260,7 +260,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
               The URL in this parameter must not be a file reference URL or an URL other than file scheme
               This parameter must not be `nil`.
 
-  @param _Passphrase A NSString object containing the password which is used to protect the new keychain.
+  @param _Passphrase A NSString object containing the passphrase which is used to protect the new keychain.
                      This parameter must not be `nil`.
 
   @param _InitalAccess An WSCAccessPermission object indicating the initial access rights for the new keychain,
@@ -288,7 +288,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
 /** Creates and returns a `WSCKeychain` object using the given URL, interaction prompt and inital access rights.
 
   This class method creates an empty keychain. The and `_InitialAccess` parameter is optional.
-  And this method will display a password dialog to user.
+  And this method will display a passphrase dialog to user.
   If user interaction to create a keychain is posted, the newly-created keychain is automatically unlocked after creation.
 
   The system ensures that a default keychain is created for the user at login, thus, in most cases, 
@@ -313,8 +313,8 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
                 If an error occurs, this pointer is set to an actual error object containing the error information.
                 You may specify `nil` for this parameter if you don't want the error information.
                 
-  @return A `WSCKeychain` object initialized with above parameters as well as a password, 
-          which is obtained from the password dialog.
+  @return A `WSCKeychain` object initialized with above parameters as well as a passphrase, 
+          which is obtained from the passphrase dialog.
           
   @sa +keychainWithURL:passphrase:initialAccess:becomesDefault:error:
   @sa +keychainWithSecKeychainRef:
@@ -396,14 +396,14 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
 #pragma mark Public Programmatic Interfaces for Creating and Managing Keychain Items
 /** @name Creating and Managing Keychain Items */
 
-/** Adds a new generic password to the keychain represented by receiver.
+/** Adds a new generic passphrase to the keychain represented by receiver.
 
-  This method adds a new generic password to the keychain represented by receiver.
-  Required parameters to identify the password are *_ServiceName* and *_AccountName*, which are application-defined strings. 
+  This method adds a new generic passphrase to the keychain represented by receiver.
+  Required parameters to identify the passphrase are *_ServiceName* and *_AccountName*, which are application-defined strings. 
   This method returns a newly added item represented by a `WSCKeychainItem` object.
 
-  You can use this method to add passwords for accounts other than the Internet. 
-  For example, you might add Evernote or IRC Client passwords, or passwords for your database or scheduling programs.
+  You can use this method to add passphrases for accounts other than the Internet. 
+  For example, you might add Evernote or IRC Client passphrases, or passphrases for your database or scheduling programs.
 
   This method sets the initial access rights for the new keychain item so that the application creating the item is given trusted access.
   
@@ -414,7 +414,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
 
   @param _AccountName An `NSString` object representing the account name.
 
-  @param _Passphrase An `NSString` object representing the password.
+  @param _Passphrase An `NSString` object representing the passphrase.
   
   @param _Error On input, a pointer to an error object.
                 If an error occurs, this pointer is set to an actual error object containing the error information.
@@ -429,10 +429,10 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
                                                   passphrase: ( NSString* )_Passphrase
                                                        error: ( NSError** )_Error;
 
-/** Adds a new Internet password to the keychain represented by receiver.
+/** Adds a new Internet passphrase to the keychain represented by receiver.
 
-  This method adds a new Internet server password to the specified keychain. 
-  Required parameters to identify the password are *_ServerName* and *_AccountName* (you cannot pass `nil` for both parameters).
+  This method adds a new Internet server passphrase to the specified keychain. 
+  Required parameters to identify the passphrase are *_ServerName* and *_AccountName* (you cannot pass `nil` for both parameters).
   In addition, some protocols may require an optional *_SecurityDomain* when authentication is requested. 
   This method returns a newly added item represented by a `WSCKeychainItem` object.
 
@@ -448,10 +448,10 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
                          
   @param _AccountName An `NSString` object representing the account name.
   
-  @param _Protocol The protocol associated with this password. 
+  @param _Protocol The protocol associated with this passphrase. 
                    See ["WaxSealCore Internet Protocol Type Constants"](WSCInternetProtocolType) for a description of possible values.
                    
-  @param _Passphrase An `NSString` object containing the password.
+  @param _Passphrase An `NSString` object containing the passphrase.
   
   @param _Error On input, a pointer to an error object.
                 If an error occurs, this pointer is set to an actual error object containing the error information.

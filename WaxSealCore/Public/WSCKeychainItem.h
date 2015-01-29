@@ -88,13 +88,13 @@ typedef NS_ENUM( NSUInteger, WSCKeychainItemAccessibilityType )
   */
 typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
     {
-    /// Indicates that the item is an Internet password.
+    /// Indicates that the item is an Internet passphrase.
       WSCKeychainItemClassInternetPasswordItem      = kSecInternetPasswordItemClass
 
-    /// Indicates that the item is an application password.
+    /// Indicates that the item is an application passphrase.
     , WSCKeychainItemClassApplicationPasswordItem   = kSecGenericPasswordItemClass
 
-    /// Indicates that the item is an AppleShare password.
+    /// Indicates that the item is an AppleShare passphrase.
     , WSCKeychainItemClassAppleSharePasswordItem    = kSecAppleSharePasswordItemClass
 
     /// Indicates that the item is an X509 certificate.

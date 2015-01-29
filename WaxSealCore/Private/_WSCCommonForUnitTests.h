@@ -39,7 +39,7 @@
 
 typedef void ( ^WSCKeychainSelectivelyUnlockKeychainBlock )( void );
 
-WSCKeychainSelectivelyUnlockKeychainBlock extern _WSCSelectivelyUnlockKeychainsBasedOnPassword;
+WSCKeychainSelectivelyUnlockKeychainBlock extern _WSCSelectivelyUnlockKeychainsBasedOnPassphrase;
 
 WSCKeychain  extern* _WSCCommonValidKeychainForUnitTests;
 WSCKeychain  extern* _WSCCommonInvalidKeychainForUnitTests;

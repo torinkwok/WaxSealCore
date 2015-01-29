@@ -293,7 +293,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     return YES;
     }
 
-/* Unlocks a keychain with an explicitly provided password. */
+/* Unlocks a keychain with an explicitly provided passphrase. */
 - ( BOOL ) unlockKeychain: ( WSCKeychain* )_Keychain
            withPassphrase: ( NSString* )_Passphrase
                     error: ( NSError** )_Error
@@ -339,7 +339,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     return YES;
     }
 
-/* Unlocks a keychain with the user interaction which is used to retrieve password from the user. */
+/* Unlocks a keychain with the user interaction which is used to retrieve passphrase from the user. */
 - ( BOOL ) unlockKeychainWithUserInteraction: ( WSCKeychain* )_Keychain
                                        error: ( NSError** )_Error
     {

@@ -978,7 +978,7 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    _WSCSelectivelyUnlockKeychainsBasedOnPassword();
+    _WSCSelectivelyUnlockKeychainsBasedOnPassphrase();
 
     // ----------------------------------------------------------------------------------
     // Test Case 1
@@ -988,7 +988,7 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    _WSCSelectivelyUnlockKeychainsBasedOnPassword();
+    _WSCSelectivelyUnlockKeychainsBasedOnPassphrase();
 
     // ----------------------------------------------------------------------------------
     // Test Case 2
@@ -998,7 +998,7 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    _WSCSelectivelyUnlockKeychainsBasedOnPassword();
+    _WSCSelectivelyUnlockKeychainsBasedOnPassphrase();
 
     // ----------------------------------------------------------------------------------
     // Test Case 3
@@ -1008,7 +1008,7 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    _WSCSelectivelyUnlockKeychainsBasedOnPassword();
+    _WSCSelectivelyUnlockKeychainsBasedOnPassphrase();
 
     // ----------------------------------------------------------------------------------
     // Test Case 4
@@ -1018,7 +1018,7 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    _WSCSelectivelyUnlockKeychainsBasedOnPassword();
+    _WSCSelectivelyUnlockKeychainsBasedOnPassphrase();
     }
 
 - ( void ) testUnlockKeychainWithPassword
@@ -1036,7 +1036,7 @@
                                error: nil ];
 
     // ----------------------------------------------------------------------------------
-    // Test Case 0: Unlock login.keychain with correct password
+    // Test Case 0: Unlock login.keychain with correct passphrase
     // ----------------------------------------------------------------------------------
     isSuccess = [ self.testManager3 unlockKeychain: [ WSCKeychain login ]
                                     withPassphrase: @"waxsealcore"
@@ -1099,7 +1099,7 @@
     XCTAssertFalse( _WSCCommonValidKeychainForUnitTests.isLocked );
 
     // ----------------------------------------------------------------------------------
-    // Negative Test Case 0: Unlock login.keychain with an incorrect password
+    // Negative Test Case 0: Unlock login.keychain with an incorrect passphrase
     // ----------------------------------------------------------------------------------
     isSuccess = [ self.testManager3 unlockKeychain: [ WSCKeychain login ]
                                     withPassphrase: @"123456"  // whatever
@@ -1132,7 +1132,7 @@
     XCTAssertTrue( [ WSCKeychain login ].isLocked );
 
     // ----------------------------------------------------------------------------------
-    // Negative Test Case 3: Unloc an invalid keychain and incorrect type of password parameter
+    // Negative Test Case 3: Unloc an invalid keychain and incorrect type of passphrase parameter
     // ----------------------------------------------------------------------------------
     NSURL* URLForKeychain_negativeTestCase3 = _WSCURLForTestCase( _cmd, @"negativeCase2", NO, YES );
 

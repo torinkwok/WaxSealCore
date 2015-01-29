@@ -146,7 +146,7 @@
   
   In most cases, your application should not need to set the default keychain, 
   because this is a choice normally made by the user. You may call this method to change where a
-  password or other keychain items are added, but since this is a user choice, 
+  passphrase or other keychain items are added, but since this is a user choice, 
   you should set the default keychain back to the user specified keychain when you are done.
   
   @param _Keychain The keychain you wish to make the default.
@@ -225,12 +225,12 @@
   */
 - ( BOOL ) lockAllKeychains: ( NSError** )_Error;
 
-/** Unlocks a keychain with an explicitly provided password.
+/** Unlocks a keychain with an explicitly provided passphrase.
 
-  Prior to unlocking the specified keychain with the specified password, the keychain manager asks its delegate if it should actually do so.
+  Prior to unlocking the specified keychain with the specified passphrase, the keychain manager asks its delegate if it should actually do so.
   It does this by calling the [keychainManager:shouldUnlockKeychain:withPassphrase:](-[WSCKeychainManagerDelegate keychainManager:shouldUnlockKeychain:withPassphrase:]) method;
   If the delegate method returns `YES`, or if the delegate does not implement the appropriate methods,
-  the keychain manager proceeds to unlock the specified keychain with the specified password.
+  the keychain manager proceeds to unlock the specified keychain with the specified passphrase.
   If there is an error unlocking a keychain, the keychain manager may also call the delegate's
   [keychainManager:shouldProceedAfterError:unlockingKeychain:withPassphrase:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:unlockingKeychain:withPassphrase:]) method to determine how to proceed.
 
@@ -242,7 +242,7 @@
                    Passing `nil` to this parameter returns an `NSError` object which encapsulated `WSCCommonInvalidParametersError` error code.
                    And passing an invalid keychain to this parameter returns an `NSError` object which encapsulated `WSCKeychainIsInvalidError` error code.
 
-  @param _Passphrase A string containing the password for the specified keychain.
+  @param _Passphrase A string containing the passphrase for the specified keychain.
                    This parameter must **NOT** be `nil`.
 
   @param _Error On input, a pointer to an error object.
@@ -254,7 +254,7 @@
            withPassphrase: ( NSString* )_Passphrase
                     error: ( NSError** )_Error;
 
-/** Unlocks a keychain with the user interaction which is used to retrieve password from the user.
+/** Unlocks a keychain with the user interaction which is used to retrieve passphrase from the user.
 
   This method will display an Unlock Keychain dialog box.
   If the specified keychain is currently unlocked, the Unlock Keychain dialog won't be displayed.
@@ -511,15 +511,15 @@
 #pragma mark Unlocking Keychains
 /** @name Unlocking Keychains */
 
-/** Asks the delegate whether the specified keychain should be unlocked with the specified password.
+/** Asks the delegate whether the specified keychain should be unlocked with the specified passphrase.
 
   If you do not implement this method, the keychain manager assumes a repsonse of `YES`.
 
-  @param _KeychainManager The keychain manager that attempted to unlock the specified keychain with the specified password.
+  @param _KeychainManager The keychain manager that attempted to unlock the specified keychain with the specified passphrase.
   
   @param _Keychain The keychain that the keychain manager tried to unlock.
   
-  @param _Passphrase A string containing the password for the keychain that the keychain manager tried to unlock.
+  @param _Passphrase A string containing the passphrase for the keychain that the keychain manager tried to unlock.
   
   @return `YES` if the specified keychain should be unlocked or `NO` if it should not be unlocked.
 
@@ -529,15 +529,15 @@
       shouldUnlockKeychain: ( WSCKeychain* )_Keychain
             withPassphrase: ( NSString* )_Passphrase;
 
-/** Asks the delegate if the operation should continue after an error occurs while unlocking the specified keychain with the specified password.
+/** Asks the delegate if the operation should continue after an error occurs while unlocking the specified keychain with the specified passphrase.
 
-  @param _KeychainManager The keychain manager that attempted to unlock the specified keychain with the specified password.
+  @param _KeychainManager The keychain manager that attempted to unlock the specified keychain with the specified passphrase.
   
-  @param _Error The error that occurred while attempting to unlock the specified keychain with the specified password.
+  @param _Error The error that occurred while attempting to unlock the specified keychain with the specified passphrase.
 
   @param _Keychain The keychain that the keychain manager tried to unlock.
   
-  @param _Passphrase A string containing the password for the keychain that the keychain manager tried to unlock.
+  @param _Passphrase A string containing the passphrase for the keychain that the keychain manager tried to unlock.
   
   @return `YES` if the operation should proceed or `NO` if it should be aborted. 
           If you do not implement this method, the keychain manager assumes a response of `NO`.

@@ -175,7 +175,7 @@ BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
 
 #pragma mark Public Programmatic Interfaces for Creating Keychains
 
-/* Creates and returns a `WSCKeychain` object using the given URL, password, and inital access rights. */
+/* Creates and returns a `WSCKeychain` object using the given URL, passphrase, and inital access rights. */
 + ( instancetype ) keychainWithURL: ( NSURL* )_URL
                         passphrase: ( NSString* )_Passphrase
                      initialAccess: ( WSCAccessPermission* )_InitalAccess
@@ -314,12 +314,12 @@ WSCKeychain static* s_system = nil;
     }
 
 #pragma mark Public Programmatic Interfaces for Creating and Managing Keychain Items
-/* Adds a new generic password to the keychain represented by receiver.
+/* Adds a new generic passphrase to the keychain represented by receiver.
  */
 - ( WSCPassphraseItem* ) addApplicationPasswordWithServiceName: ( NSString* )_ServiceName
-                                                 accountName: ( NSString* )_AccountName
-                                                  passphrase: ( NSString* )_Passphrase
-                                                       error: ( NSError** )_Error
+                                                   accountName: ( NSString* )_AccountName
+                                                    passphrase: ( NSString* )_Passphrase
+                                                         error: ( NSError** )_Error
     {
     NSError* error = nil;
 
@@ -363,7 +363,7 @@ WSCKeychain static* s_system = nil;
     return nil;
     }
 
-/* Adds a new Internet password to the keychain represented by receiver. */
+/* Adds a new Internet passphrase to the keychain represented by receiver. */
 - ( WSCPassphraseItem* ) addInternetPasswordWithServerName: ( NSString* )_ServerName
                                          URLRelativePath: ( NSString* )_URLRelativePath
                                              accountName: ( NSString* )_AccountName
@@ -509,7 +509,7 @@ WSCKeychain static* s_system = nil;
 
 /* Objective-C wrapper for SecKeychainCreate() function.
  *
- * Creates and returns a WSCKeychain object using the given URL, password,
+ * Creates and returns a WSCKeychain object using the given URL, passphrase,
  * interaction prompt and inital access rights. 
  */
 + ( instancetype ) p_keychainWithURL: ( NSURL* )_URL

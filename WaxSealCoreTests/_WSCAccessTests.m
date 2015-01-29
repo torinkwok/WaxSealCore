@@ -120,16 +120,16 @@
                                                  trustedApplications: @[ iMessage, AppleMail, iPhoto ]
                                                                error: &error ];
 
-    SecKeychainItemRef passwordItem_testCase0 = [ self _addKeychainItemOfClass: kSecInternetPasswordItemClass
+    SecKeychainItemRef passphraseItem_testCase0 = [ self _addKeychainItemOfClass: kSecInternetPasswordItemClass
                                                                     toKeychain: newKeychain_testCase0.secKeychain
                                                                 withPassphrase: @"waxsealcore"
                                                                 attributesList: &attrsList
                                                       initialAccessControlList: access_testCase0.secAccess
                                                                         status: &resultCode ];
 
-    WSCKeychainItem* keychainItem_testCase0 = [ [ [ WSCKeychainItem alloc ] p_initWithSecKeychainItemRef: passwordItem_testCase0 ] autorelease ];
+    WSCKeychainItem* keychainItem_testCase0 = [ [ [ WSCKeychainItem alloc ] p_initWithSecKeychainItemRef: passphraseItem_testCase0 ] autorelease ];
     XCTAssertNotNil( keychainItem_testCase0 );
-    XCTAssertEqual( keychainItem_testCase0.secKeychainItem, passwordItem_testCase0 );
+    XCTAssertEqual( keychainItem_testCase0.secKeychainItem, passphraseItem_testCase0 );
     }
 
 - ( void ) testCreatingAccessWithSecAccessRef
@@ -177,7 +177,7 @@
     XCTAssertNotNil( accessPermission_testCase0 );
     XCTAssertEqual( accessPermission_testCase0.secAccess, secAccess_testCase0 );
 
-    SecKeychainItemRef passwordItem_testCase0 = [ self _addKeychainItemOfClass: kSecInternetPasswordItemClass
+    SecKeychainItemRef passphraseItem_testCase0 = [ self _addKeychainItemOfClass: kSecInternetPasswordItemClass
                                                                     toKeychain: newKeychain_testCase0.secKeychain
                                                                 withPassphrase: @"waxsealcore"
                                                                 attributesList: &attrsList
@@ -189,8 +189,8 @@
     if( secAccess_testCase0 )
         CFRelease( secAccess_testCase0 );
 
-    if ( passwordItem_testCase0 )
-        CFRelease( passwordItem_testCase0 );
+    if ( passphraseItem_testCase0 )
+        CFRelease( passphraseItem_testCase0 );
     }
 
 - ( SecKeychainItemRef ) _addKeychainItemOfClass: ( SecItemClass )_ItemClass

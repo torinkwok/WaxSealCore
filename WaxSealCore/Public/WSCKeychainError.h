@@ -66,11 +66,11 @@ typedef NS_ENUM( NSUInteger, WaxSealCoreErrorCode )
       */
     , WSCKeychainItemIsInvalidError = 6U
 
-    /** The attribute does not exist in an Internet password.
+    /** The attribute does not exist in an Internet passphrase.
       */
     , WSCKeychainItemAttributeIsUniqueToInternetPasswordError = 7U
 
-    /** The attribute does not exist in an application password.
+    /** The attribute does not exist in an application passphrase.
       */
     , WSCKeychainItemAttributeIsUniqueToApplicationPasswordError = 8U
     };

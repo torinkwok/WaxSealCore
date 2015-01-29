@@ -44,8 +44,8 @@ NSString* const WSCKeychainFileExistsErrorDescription               = @"The keyc
 NSString* const WSCKeychainURLIsInvalidErrorDescription             = @"The keychain couldn’t be created because the URL is invalid.";
 NSString* const WSCCommonInvalidParametersErrorDescription          = @"One or more parameters passed to the method were not valid.";
 NSString* const WSCKeychainItemIsInvalidErrorDescription            = @"Current keychain item is no longer valid, its resided keychain may has been deleted, moved or renamed.";
-NSString* const WSCKeychainItemAttributeIsUniqueToInternetPasswordErrorDescription    = @"The specified attribute was not be supported since this attribute is unique to the Internet password.";
-NSString* const WSCKeychainItemAttributeIsUniqueToApplicationPasswordErrorDescription = @"The specified attribute was not be supported since this attribute is unique to the application password.";
+NSString* const WSCKeychainItemAttributeIsUniqueToInternetPasswordErrorDescription    = @"The specified attribute was not be supported since this attribute is unique to the Internet passphrase.";
+NSString* const WSCKeychainItemAttributeIsUniqueToApplicationPasswordErrorDescription = @"The specified attribute was not be supported since this attribute is unique to the application passphrase.";
 
 id const s_guard = ( id )'sgrd';
 void _WSCDontBeABitch( NSError** _Error, ... )

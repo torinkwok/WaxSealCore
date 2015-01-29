@@ -130,7 +130,7 @@
 
     if ( !error )
         {
-        // Modify the passphrase of the password item represeted by receiver.
+        // Modify the passphrase of the passphrase item represeted by receiver.
         resultCode = SecKeychainItemModifyAttributesAndData( self.secKeychainItem, NULL
                                                            , ( UInt32 )_Passphrase.length, _Passphrase.bytes );
         if ( resultCode != errSecSuccess )
@@ -142,11 +142,11 @@
                                  userInfo: nil ];
     }
 
-/* The URL for the an Internet password represented by receiver. */
+/* The URL for the an Internet passphrase represented by receiver. */
 - ( NSURL* ) URL
     {
-    // The `URL` property is unique to the Internet password item
-    // So the receiver must be an Internet password item.
+    // The `URL` property is unique to the Internet passphrase item
+    // So the receiver must be an Internet passphrase item.
     if ( [ self itemClass ] != WSCKeychainItemClassInternetPasswordItem )
         {
         NSError* error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
@@ -187,7 +187,7 @@
     }
 
 /* The `NSString` object that identifies the the path of a URL conforming to RFC 1808 
- * of an Internet password item represented by receiver.
+ * of an Internet passphrase item represented by receiver.
  */
 - ( NSString* ) relativePath
     {
@@ -199,7 +199,7 @@
     [ self p_modifyAttribute: kSecPathItemAttr withNewValue: _RelativeURLPath ];
     }
 
-/* The value of type WSCInternetAuthenticationType that identifies the authentication type of an internet password item represented by receiver.
+/* The value of type WSCInternetAuthenticationType that identifies the authentication type of an internet passphrase item represented by receiver.
  */
 - ( WSCInternetAuthenticationType ) authenticationType
     {
@@ -211,7 +211,7 @@
     [ self p_modifyAttribute: kSecAuthenticationTypeItemAttr withNewValue: ( id )_AuthType ];
     }
 
-/* The value of type WSCInternetProtocolType that identifies the Internet protocol of an internet password item represented by receiver.
+/* The value of type WSCInternetProtocolType that identifies the Internet protocol of an internet passphrase item represented by receiver.
  */
 - ( WSCInternetProtocolType ) protocol
     {
@@ -223,7 +223,7 @@
     [ self p_modifyAttribute: kSecProtocolItemAttr withNewValue: ( id )_Protocol ];
     }
 
-/* The value that identifies the Internet port of an internet password item represented by receiver.
+/* The value that identifies the Internet port of an internet passphrase item represented by receiver.
  */
 - ( NSUInteger ) port
     {
@@ -235,7 +235,7 @@
     [ self p_modifyAttribute: kSecPortItemAttr withNewValue: ( id )_PortNumber ];
     }
 
-/* The `NSString` object that identifies the service name of an application password item represented by receiver. */
+/* The `NSString` object that identifies the service name of an application passphrase item represented by receiver. */
 - ( NSString* ) serviceName
     {
     return [ self p_extractAttribute: kSecServiceItemAttr ];

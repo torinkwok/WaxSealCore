@@ -56,7 +56,7 @@
 
 /** Creates and returns a `WSCAccessPermission` object using the given reference to the instance of `SecAccess` opaque type.
 
-  Each protected keychain item (such as a password or private key) has an associated access object 
+  Each protected keychain item (such as a passphrase or private key) has an associated access object 
   (represented by `WSCAccessPermission` object in *WaxSealCore* framework and `SecAccessRef` in *Keychain Services* APIs).
   The access object contains access control list (ACL) entries, which specify trusted applications
   and the operations for which those operations are trusted. 

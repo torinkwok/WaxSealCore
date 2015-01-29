@@ -123,17 +123,17 @@ NSString* _WSCPassphrases[] =
     {
     NSError* error = nil;
 
-    WSCPassphraseItem* passwordItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
+    WSCPassphraseItem* passphraseItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    NSData* passphrase = passwordItem.passphrase;
+    NSData* passphrase = passphraseItem.passphrase;
     NSString* passphraseString = [ [ [ NSString alloc ] initWithData: passphrase encoding: NSUTF8StringEncoding ] autorelease ];
     NSLog( @"Passphrase #0: %@", passphrase );
     NSLog( @"Passphrase String #0: %@", passphraseString );
 
-    passwordItem.passphrase = [ _WSCPassphrases[ 0 ] dataUsingEncoding: NSUTF8StringEncoding ];
-    passphrase = passwordItem.passphrase;
+    passphraseItem.passphrase = [ _WSCPassphrases[ 0 ] dataUsingEncoding: NSUTF8StringEncoding ];
+    passphrase = passphraseItem.passphrase;
     passphraseString = [ [ [ NSString alloc ] initWithData: passphrase encoding: NSUTF8StringEncoding ] autorelease ];
     NSLog( @"Passphrase #1: %@", passphrase );
     NSLog( @"Passphrase String #1: %@", passphraseString );
@@ -273,10 +273,10 @@ NSString* _WSCPassphrases[] =
     NSError* error = nil;
     WSCKeychain* commonRandomKeychain = _WSCRandomKeychain();
 
-    NSString* commentOne = @"A keychain is an encrypted container that holds passwords for multiple applications and secure services."
+    NSString* commentOne = @"A keychain is an encrypted container that holds passphrases for multiple applications and secure services."
                             "Keychains are secure storage containers, which means that when the keychain is locked, no one can access "
                             "its protected contents. In OS X, users can unlock a keychain—thus providing trusted applications access to "
-                            "the contents—by entering a single master password."
+                            "the contents—by entering a single master passphrase."
                             "The above encrypted container which is called “keychain” is represented by WSCKeychain object in WaxSealCore "
                             "framework and SecKeychainRef in Keychain Services APIs.";
 

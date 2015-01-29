@@ -44,7 +44,7 @@
 
 NSString* _WSCTestPassphrase = @"waxsealcore";
 
-WSCKeychainSelectivelyUnlockKeychainBlock _WSCSelectivelyUnlockKeychainsBasedOnPassword =
+WSCKeychainSelectivelyUnlockKeychainBlock _WSCSelectivelyUnlockKeychainsBasedOnPassphrase =
     ^( void )
         {
         NSError* error = nil;
