@@ -33,6 +33,8 @@
 
 #import "WSCPasswordItem.h"
 #import "WSCKeychainError.h"
+
+#import "_WSCKeychainErrorPrivate.h"
 #import "_WSCKeychainItemPrivate.h"
 
 @implementation WSCPasswordItem
@@ -85,15 +87,59 @@
     }
 
 /* The `NSString` object that identifies the passphrase of the keychain item represented by receiver. */
-- ( NSString* ) passphrase
+- ( NSData* ) passphrase
     {
+    NSError* error = nil;
     OSStatus resultCode = errSecSuccess;
-    
+
+    // The receiver must not be invalid.
+    _WSCDontBeABitch( &error, self, [ WSCPasswordItem class ], s_guard );
+
+    NSData* passphraseData = nil;
+    if ( !error )
+        {
+        UInt32 lengthOfSecretData = 0;
+        void* secretData = NULL;
+
+        // Get the secret data
+        resultCode = SecKeychainItemCopyAttributesAndData( self.secKeychainItem, NULL, NULL, NULL
+                                                         , &lengthOfSecretData, &secretData );
+        if ( resultCode == errSecSuccess )
+            passphraseData = [ NSData dataWithBytes: secretData length: lengthOfSecretData ];
+        else
+            error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+        }
+    else
+        error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                     code: WSCKeychainItemIsInvalidError
+                                 userInfo: nil ];
+
+    return passphraseData;
     }
 
-- ( void ) setPassphrase: ( NSString* )_Passphrase
+- ( void ) setPassphrase: ( NSData* )_Passphrase
     {
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
 
+    // The receiver must not be invalid.
+    _WSCDontBeABitch( &error
+                    , self, [ WSCPasswordItem class ]
+                    , _Passphrase, [ NSData class ]
+                    , s_guard );
+
+    if ( !error )
+        {
+        // Modify the passphrase of the password item represeted by receiver.
+        resultCode = SecKeychainItemModifyAttributesAndData( self.secKeychainItem, NULL
+                                                           , ( UInt32 )_Passphrase.length, _Passphrase.bytes );
+        if ( resultCode != errSecSuccess )
+            error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+        }
+    else
+        error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                     code: WSCKeychainItemIsInvalidError
+                                 userInfo: nil ];
     }
 
 /* The URL for the an Internet password represented by receiver. */
