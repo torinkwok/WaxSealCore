@@ -190,7 +190,7 @@ NSString* _WSCHostsForPositiveTests[] =
     // -------------------------------------------------------------------------------
     for ( size_t _Index = 0; _Index < size; _Index++ )
         {
-        NSLog( @"Loop: %lu", _Index );
+        NSLog( @"Loop #0: %lu", _Index );
         @autoreleasepool
             {
             WSCPasswordItem* internetPasswordItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
@@ -216,6 +216,7 @@ NSString* _WSCHostsForPositiveTests[] =
     // -------------------------------------------------------------------------------
     for ( size_t _Index = 0; _Index < size; _Index++ )
         {
+        NSLog( @"Loop #1: %lu", _Index );
         @autoreleasepool
             {
             WSCPasswordItem* applicationPasswordItem = _WSC_WaxSealCoreTests_ApplicationKeychainItem( &error );
@@ -227,10 +228,10 @@ NSString* _WSCHostsForPositiveTests[] =
             NSString* schemeString = [ applicationPasswordItem.URL scheme ];
             NSLog( @"Scheme String #%lu: %@", _Index, schemeString );
 
-            XCTAssertEqual( applicationPasswordItem.protocol, _WSCProtocols[ _Index ] );
-            XCTAssertEqualObjects( _WSCSchemeStringForProtocol( applicationPasswordItem.protocol )
-                                 , _WSCSchemeStringForProtocol( _WSCProtocols[ _Index ] ) );
-            XCTAssertEqualObjects( _WSCSchemeStringForProtocol( applicationPasswordItem.protocol ), schemeString );
+            XCTAssertEqual( applicationPasswordItem.protocol, 0 );
+
+            XCTAssertNil( _WSCSchemeStringForProtocol( applicationPasswordItem.protocol ) );
+            XCTAssertNil( schemeString );
 
             SecKeychainItemDelete( applicationPasswordItem.secKeychainItem );
             }

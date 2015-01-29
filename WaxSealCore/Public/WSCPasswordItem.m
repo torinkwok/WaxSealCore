@@ -32,6 +32,7 @@
  ****************************************************************************/
 
 #import "WSCPasswordItem.h"
+#import "WSCKeychainError.h"
 #import "_WSCKeychainItemPrivate.h"
 
 @implementation WSCPasswordItem
@@ -85,6 +86,17 @@
 /* The URL for the an Internet password represented by receiver. */
 - ( NSURL* ) URL
     {
+    // The `URL` property is unique to the Internet password item
+    // So the receiver must be an Internet password item.
+    if ( [ self itemClass ] != WSCKeychainItemClassInternetPasswordItem )
+        {
+        NSError* error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                              code: WSCKeychainItemAttributeIsUniqueToInternetPasswordError
+                                          userInfo: nil ];
+        _WSCPrintNSErrorForLog( error );
+        return nil;
+        }
+
     NSMutableString* hostName = [ [ [ self p_extractAttribute: kSecServerItemAttr ] mutableCopy ] autorelease ];
     NSMutableString* relativePath = [ [ [ self p_extractAttribute: kSecPathItemAttr ] mutableCopy ] autorelease ];
     NSUInteger port = ( NSUInteger )[ self p_extractAttribute: kSecPortItemAttr ];
@@ -93,15 +105,13 @@
     if ( port != 0 )
         [ hostName appendString: [ NSString stringWithFormat: @":%lu", port ] ];
 
-    if ( ![ relativePath hasPrefix: @"/" ] )
+    if ( ![ relativePath hasPrefix: @"/" ] /* For instance, "member/NSTongG" */ )
+        // Intert a forwar slash, got the "/member/NSTongG"
         [ relativePath insertString: @"/" atIndex: 0 ];
 
     NSURL* absoluteURL = [ [ [ NSURL alloc ] initWithScheme: _WSCSchemeStringForProtocol( protocol )
                                                        host: hostName
                                                        path: relativePath ] autorelease ];
-    NSLog( @"Fucking Host: %@", hostName );
-    NSLog( @"Fucking Path: %@", relativePath );
-    NSLog( @"Fucking Absolute URL: %@", absoluteURL );
     return absoluteURL;
     }
 

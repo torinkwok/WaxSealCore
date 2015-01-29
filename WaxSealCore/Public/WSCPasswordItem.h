@@ -60,6 +60,8 @@
 
 /** The URL for the an Internet password represented by receiver. (read-only)
 
+  @warning This attribute is unique to **Internet** password item.
+
   @sa protocol
   @sa hostName
   @sa relativePath
@@ -72,6 +74,8 @@
 
   For example: in the URL "https://github.com/TongG/WaxSealCore", the host is "github.com".
   If the URL of receiver does not conform to RFC 1808, returns `nil`.
+  
+  @warning This attribute is unique to **Internet** password item.
   */
 @property ( copy, readwrite ) NSString* hostName;
 
@@ -80,18 +84,26 @@
 
   For example: in the URL "https://github.com/TongG/WaxSealCore", the relative URL path is "/TongG/WaxSealCore".
   If the URL of receiver does not conform to RFC 1808, returns `nil`.
+  
+  @warning This attribute is unique to **Internet** password item.
   */
 @property ( copy, readwrite ) NSString* relativePath;
 
 /** The value of type WSCInternetAuthenticationType that identifies the authentication type of an internet password item represented by receiver.
+
+  @warning This attribute is unique to **Internet** password item.
   */
 @property ( assign, readwrite ) WSCInternetAuthenticationType authenticationType;
 
 /** The value of type WSCInternetProtocolType that identifies the Internet protocol of an internet password item represented by receiver.
+
+  @warning This attribute is unique to **Internet** password item.
   */
 @property ( assign, readwrite ) WSCInternetProtocolType protocol;
 
 /** The value that identifies the Internet port of an internet password item represented by receiver.
+
+  @warning This attribute is unique to **Internet** password item.
   */
 @property ( assign, readwrite ) NSUInteger port;
 
@@ -99,6 +111,8 @@
 /** @name Unique to Application Password */
 
 /** The `NSString` object that identifies the service name of an application password item represented by receiver.
+
+  @warning This attribute is unique to **application** password item.
   */
 @property ( copy, readwrite ) NSString* serviceName;
 
