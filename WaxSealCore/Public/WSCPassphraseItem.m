@@ -282,25 +282,63 @@
                 unsigned short port = ( unsigned short )[ self p_extractAttribute: kSecPortItemAttr ];
                 SecProtocolType protocolType = ( SecProtocolType )[ self p_extractAttribute: kSecProtocolItemAttr ];
 
-                UInt32 sizeOfServerName = ( UInt32 )strlen( c_serverName );
-                UInt32 sizeOfPath = ( UInt32 )strlen( c_path );
-                UInt32 sizeOfAccount = ( UInt32 )strlen( c_account );
-                UInt32 sizeOfComment = ( UInt32 )strlen( c_comment );
-                UInt32 sizeOfDescription = ( UInt32 )strlen( c_kindDescription );
+                NSMutableArray* attrsArray = [ NSMutableArray array ];
+                if ( c_serverName && strlen( c_serverName ) )
+                    {
+                    SecKeychainAttribute serverAttr = { kSecServerItemAttr, ( UInt32 )strlen( c_serverName ), c_serverName };
+                    NSValue* serverAttrValue = [ NSValue valueWithBytes: &serverAttr objCType: @encode( SecKeychainAttribute ) ];
+                    [ attrsArray addObject: serverAttrValue ];
+                    }
 
-                UInt32 sizeOfPort = ( UInt32 )sizeof( port );
-                UInt32 sizeOfKindDescription = ( UInt32 )sizeof( protocolType );
+                if ( c_path && strlen( c_path ) )
+                    {
+                    SecKeychainAttribute pathAttr = { kSecPathItemAttr, ( UInt32 )strlen( c_path ), c_path };
+                    NSValue* pathAttrValue = [ NSValue valueWithBytes: &pathAttr objCType: @encode( SecKeychainAttribute ) ];
+                    [ attrsArray addObject: pathAttrValue ];
+                    }
 
-                SecKeychainAttribute attrs[] = { { kSecServerItemAttr, ( UInt32 )strlen( c_serverName ), c_serverName }
-                                               , { kSecPathItemAttr, ( UInt32 )strlen( c_path ), c_path }
-                                               , { kSecAccountItemAttr, ( UInt32 )strlen( c_account ), c_account }
-//                                               , { kSecCommentItemAttr, ( UInt32 )strlen( c_comment ), c_comment }
-//                                               , { kSecDescriptionItemAttr, ( UInt32 )strlen( c_kindDescription ), c_kindDescription }
-                                               , { kSecPortItemAttr, ( UInt32 )sizeof( port ), &port }
-                                               , { kSecProtocolItemAttr, ( UInt32 )sizeof( protocolType ), &protocolType }
-                                               };
+                if ( c_account && strlen( c_account ) )
+                    {
+                    SecKeychainAttribute accountAttr = { kSecAccountItemAttr, ( UInt32 )strlen( c_account ), c_account };
+                    NSValue* accountAttrValue = [ NSValue valueWithBytes: &accountAttr objCType: @encode( SecKeychainAttribute ) ];
+                    [ attrsArray addObject: accountAttrValue ];
+                    }
 
-                SecKeychainAttributeList attrsList = { sizeof( attrs ) / sizeof( attrs[ 0 ] ), attrs };
+                if ( c_comment && strlen( c_comment ) )
+                    {
+                    SecKeychainAttribute commentAttr = { kSecCommentItemAttr, ( UInt32 )strlen( c_comment ), c_comment };
+                    NSValue* commentAttrValue = [ NSValue valueWithBytes: &commentAttr objCType: @encode( SecKeychainAttribute ) ];
+                    [ attrsArray addObject: commentAttrValue ];
+                    }
+
+                if ( c_kindDescription && strlen( c_kindDescription ) )
+                    {
+                    SecKeychainAttribute descriptionAttr = { kSecDescriptionItemAttr, ( UInt32 )strlen( c_kindDescription ), c_kindDescription };
+                    NSValue* descriptionAttrValue = [ NSValue valueWithBytes: &descriptionAttr objCType: @encode( SecKeychainAttribute ) ];
+                    [ attrsArray addObject: descriptionAttrValue ];
+                    }
+
+                SecKeychainAttribute portAttr = { kSecPortItemAttr, ( UInt32 )sizeof( port ), &port };
+                NSValue* portAttrValue = [ NSValue valueWithBytes: &portAttr objCType: @encode( SecKeychainAttribute ) ];
+                [ attrsArray addObject: portAttrValue ];
+
+                SecKeychainAttribute protocolTypeAttr = { kSecProtocolItemAttr, ( UInt32 )sizeof( protocolType ), &protocolType };
+                NSValue* protocolTypeValue = [ NSValue valueWithBytes: &protocolTypeAttr objCType: @encode( SecKeychainAttribute ) ];
+                [ attrsArray addObject: protocolTypeValue ];
+
+                NSRange range = NSMakeRange( 0, attrsArray.count );
+                NSValue** objects = malloc( sizeof( NSValue* ) * range.length );
+                [ attrsArray getObjects: objects range: range ];
+
+                SecKeychainAttribute* finalArray = malloc( sizeof( SecKeychainAttribute ) * attrsArray.count );
+                for ( int _Index = 0; _Index < attrsArray.count; _Index++ )
+                    {
+                    SecKeychainAttribute elem;
+                    [ objects[ _Index ] getValue: &elem ];
+                    finalArray[ _Index ] = elem;
+                    }
+
+                SecKeychainAttributeList attrsList = { ( UInt32 )attrsArray.count, finalArray };
                 resultCode = SecKeychainSearchCreateFromAttributes( ( CFTypeRef )theKeychainToBeSearched
                                                                   , ( SecItemClass )self.itemClass
                                                                   , &attrsList
