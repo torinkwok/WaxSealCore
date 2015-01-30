@@ -249,6 +249,90 @@
     [ self p_modifyAttribute: kSecServiceItemAttr withNewValue: _ServiceName ];
     }
 
+#pragma mark Overrides
+- ( BOOL ) isValid
+    {
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
+    BOOL isReceiverValid = NO;
+
+    if ( [ super isValid ] )
+        {
+        SecKeychainRef theKeychainToBeSearched = NULL;
+        SecKeychainSearchRef searchCriteria = NULL;
+
+        if ( ( resultCode = SecKeychainItemCopyKeychain( self.secKeychainItem, &theKeychainToBeSearched ) )
+                == errSecSuccess )
+            {
+            if ( [ self itemClass ] == WSCKeychainItemClassInternetPassphraseItem )
+                {
+                // TODO: label property
+                NSString* serverName = [ self p_extractAttribute: kSecServerItemAttr ];
+                NSString* path = [ self p_extractAttribute: kSecPathItemAttr ];
+                NSString* account = [ self p_extractAttribute: kSecAccountItemAttr ];
+                NSString* comment = [ self p_extractAttribute: kSecCommentItemAttr ];
+                NSString* kindDescription = [ self p_extractAttribute: kSecDescriptionItemAttr ];
+
+                void* c_serverName = ( void* )[ serverName cStringUsingEncoding: NSUTF8StringEncoding ];
+                void* c_path = ( void* )[ path cStringUsingEncoding: NSUTF8StringEncoding ];
+                void* c_account = ( void* )[ account cStringUsingEncoding: NSUTF8StringEncoding ];
+                void* c_comment = ( void* )[ comment cStringUsingEncoding: NSUTF8StringEncoding ];
+                void* c_kindDescription = ( void* )[ kindDescription cStringUsingEncoding: NSUTF8StringEncoding ];
+
+                unsigned short port = ( unsigned short )[ self p_extractAttribute: kSecPortItemAttr ];
+                SecProtocolType protocolType = ( SecProtocolType )[ self p_extractAttribute: kSecProtocolItemAttr ];
+
+                UInt32 sizeOfServerName = ( UInt32 )strlen( c_serverName );
+                UInt32 sizeOfPath = ( UInt32 )strlen( c_path );
+                UInt32 sizeOfAccount = ( UInt32 )strlen( c_account );
+                UInt32 sizeOfComment = ( UInt32 )strlen( c_comment );
+                UInt32 sizeOfDescription = ( UInt32 )strlen( c_kindDescription );
+
+                UInt32 sizeOfPort = ( UInt32 )sizeof( port );
+                UInt32 sizeOfKindDescription = ( UInt32 )sizeof( protocolType );
+
+                SecKeychainAttribute attrs[] = { { kSecServerItemAttr, ( UInt32 )strlen( c_serverName ), c_serverName }
+                                               , { kSecPathItemAttr, ( UInt32 )strlen( c_path ), c_path }
+                                               , { kSecAccountItemAttr, ( UInt32 )strlen( c_account ), c_account }
+//                                               , { kSecCommentItemAttr, ( UInt32 )strlen( c_comment ), c_comment }
+//                                               , { kSecDescriptionItemAttr, ( UInt32 )strlen( c_kindDescription ), c_kindDescription }
+                                               , { kSecPortItemAttr, ( UInt32 )sizeof( port ), &port }
+                                               , { kSecProtocolItemAttr, ( UInt32 )sizeof( protocolType ), &protocolType }
+                                               };
+
+                SecKeychainAttributeList attrsList = { sizeof( attrs ) / sizeof( attrs[ 0 ] ), attrs };
+                resultCode = SecKeychainSearchCreateFromAttributes( ( CFTypeRef )theKeychainToBeSearched
+                                                                  , ( SecItemClass )self.itemClass
+                                                                  , &attrsList
+                                                                  , &searchCriteria
+                                                                  );
+                if ( resultCode == errSecSuccess )
+                    {
+                    SecKeychainItemRef matchedItem = NULL;
+                    while ( ( resultCode == SecKeychainSearchCopyNext( searchCriteria, &matchedItem ) ) != errSecItemNotFound )
+                        {
+                        if ( matchedItem )
+                            {
+                            isReceiverValid = YES;
+                            CFRelease( matchedItem );
+                            break;
+                            }
+                        }
+                    }
+                }
+
+            if ( theKeychainToBeSearched )  CFRelease( theKeychainToBeSearched );
+            if ( searchCriteria )           CFRelease( searchCriteria );
+            }
+        else
+            error = [ NSError errorWithDomain: NSOSStatusErrorDomain
+                                         code: resultCode
+                                     userInfo: nil ];
+        }
+
+    return isReceiverValid;
+    }
+
 @end // WSCPassphraseItem class
 
 //////////////////////////////////////////////////////////////////////////////

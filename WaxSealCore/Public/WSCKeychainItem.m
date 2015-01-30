@@ -93,12 +93,7 @@
         // the receiver is invalid.
         return _WSCKeychainIsSecKeychainValid( secResideKeychain );
     else
-        {
-        NSError* error = nil;
-        _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
-
         return NO;
-        }
     }
 
 /* The value that indicates which type of keychain item the receiver is.
@@ -167,7 +162,7 @@
     OSStatus resultCode = errSecSuccess;
     id attribute = nil;
 
-    _WSCDontBeABitch( &error, self, [ WSCKeychainItem class ], s_guard );
+//    _WSCDontBeABitch( &error, self, [ WSCKeychainItem class ], s_guard );
     if ( !error )
         {
         CSSM_DB_RECORDTYPE itemID = 0;

@@ -119,6 +119,15 @@ NSString* _WSCPassphrases[] =
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+- ( void ) testIsValidProperty
+    {
+    CFArrayRef secSearchList = NULL;
+    SecKeychainCopySearchList( &secSearchList );
+
+    NSLog( @"Count of secSearchList: %lu", CFArrayGetCount( secSearchList ) );
+    NSLog( @"Count of default search list: %lu", [ [ WSCKeychainManager defaultManager] keychainSearchList ].count );
+    }
+
 - ( void ) testPassphraseProperty
     {
     NSError* error = nil;
@@ -176,17 +185,17 @@ NSString* _WSCPassphrases[] =
 
     SecKeychainItemDelete( internetPassphraseItem.secKeychainItem );
     SecKeychainItemDelete( applicationPassphraseItem.secKeychainItem );
-#if 0
+#if 1
     // -------------------------------------------------------------------------------
-    // Negaytive Test Case 1: the application passphrase is already invalid
+    // Negaytive Test Case 0: the Internet passphrase is already invalid
     // -------------------------------------------------------------------------------
     for ( size_t _Index = 0; _Index < size; _Index++ )
         {
         @autoreleasepool
             {
-            applicationPassphraseItem.passphrase = [ _WSCPassphrases[ _Index ] dataUsingEncoding: NSUTF8StringEncoding ];
+            internetPassphraseItem.passphrase = [ _WSCPassphrases[ _Index ] dataUsingEncoding: NSUTF8StringEncoding ];
 
-            NSData* passphraseData = [ applicationPassphraseItem passphrase ];
+            NSData* passphraseData = [ internetPassphraseItem passphrase ];
             NSString* passphraseString = [ [ [ NSString alloc ] initWithData: passphraseData encoding: NSUTF8StringEncoding ] autorelease ];
             XCTAssertNil( applicationPassphraseItem.passphrase );
             XCTAssertNil( passphraseData );
@@ -812,11 +821,6 @@ NSString* _WSCPassphrases[] =
 
     if ( internetPassphrase_testCase1 )
         SecKeychainItemDelete( internetPassphrase_testCase1.secKeychainItem );
-    }
-
-- ( void ) testIsValidProperty
-    {
-    // Test in testCreationDate test case.
     }
 
 - ( void ) testItemClassProperty
