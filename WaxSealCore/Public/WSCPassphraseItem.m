@@ -249,6 +249,97 @@
     [ self p_modifyAttribute: kSecServiceItemAttr withNewValue: _ServiceName ];
     }
 
+- ( NSMutableArray* ) p_wrapInternetPasswordSearchCriterias
+    {
+    NSMutableArray* searchCriterias = [ NSMutableArray array ];
+
+    // TODO: label property
+    NSString* serverName = [ self p_extractAttribute: kSecServerItemAttr ];
+    NSString* path = [ self p_extractAttribute: kSecPathItemAttr ];
+    NSString* account = [ self p_extractAttribute: kSecAccountItemAttr ];
+    NSString* comment = [ self p_extractAttribute: kSecCommentItemAttr ];
+    NSString* kindDescription = [ self p_extractAttribute: kSecDescriptionItemAttr ];
+
+    void* c_serverName = ( void* )[ serverName cStringUsingEncoding: NSUTF8StringEncoding ];
+    void* c_path = ( void* )[ path cStringUsingEncoding: NSUTF8StringEncoding ];
+    void* c_account = ( void* )[ account cStringUsingEncoding: NSUTF8StringEncoding ];
+    void* c_comment = ( void* )[ comment cStringUsingEncoding: NSUTF8StringEncoding ];
+    void* c_kindDescription = ( void* )[ kindDescription cStringUsingEncoding: NSUTF8StringEncoding ];
+
+    unsigned short port = ( unsigned short )[ self p_extractAttribute: kSecPortItemAttr ];
+    SecProtocolType protocolType = ( SecProtocolType )[ self p_extractAttribute: kSecProtocolItemAttr ];
+
+    if ( c_serverName && strlen( c_serverName ) )
+        {
+        SecKeychainAttribute* serverAttr = malloc( sizeof( SecKeychainAttribute ) );
+        serverAttr->tag = kSecServerItemAttr;
+        serverAttr->length = ( UInt32 )strlen( c_serverName );
+        serverAttr->data = c_serverName;
+        NSValue* serverAttrValue = [ NSValue valueWithBytes: serverAttr objCType: @encode( SecKeychainAttribute ) ];
+        [ searchCriterias addObject: serverAttrValue ];
+        }
+
+    if ( c_path && strlen( c_path ) )
+        {
+        SecKeychainAttribute* pathAttr = malloc( sizeof( SecKeychainAttribute ) );
+        pathAttr->tag = kSecPathItemAttr;
+        pathAttr->length = ( UInt32 )strlen( c_path );
+        pathAttr->data = c_path;
+        NSValue* pathAttrValue = [ NSValue valueWithBytes: pathAttr objCType: @encode( SecKeychainAttribute ) ];
+        [ searchCriterias addObject: pathAttrValue ];
+        }
+
+    if ( c_account && strlen( c_account ) )
+        {
+        SecKeychainAttribute* accountAttr = malloc( sizeof( SecKeychainAttribute ) );
+        accountAttr->tag = kSecAccountItemAttr;
+        accountAttr->length = ( UInt32 )strlen( c_account );
+        accountAttr->data = c_account;
+        NSValue* accountAttrValue = [ NSValue valueWithBytes: accountAttr objCType: @encode( SecKeychainAttribute ) ];
+        [ searchCriterias addObject: accountAttrValue ];
+        }
+
+    if ( c_comment && strlen( c_comment ) )
+        {
+        SecKeychainAttribute* commentAttr = malloc( sizeof( SecKeychainAttribute ) );
+        commentAttr->tag = kSecCommentItemAttr;
+        commentAttr->length = ( UInt32 )strlen( c_comment );
+        commentAttr->data = c_comment;
+        NSValue* commentAttrValue = [ NSValue valueWithBytes: commentAttr objCType: @encode( SecKeychainAttribute ) ];
+        [ searchCriterias addObject: commentAttrValue ];
+        }
+
+    if ( c_kindDescription && strlen( c_kindDescription ) )
+        {
+        SecKeychainAttribute* descriptionAttr = malloc( sizeof( SecKeychainAttribute ) );
+        descriptionAttr->tag = kSecDescriptionItemAttr;
+        descriptionAttr->length = ( UInt32 )strlen( c_kindDescription );
+        descriptionAttr->data = c_kindDescription;
+        NSValue* descriptionAttrValue = [ NSValue valueWithBytes: descriptionAttr objCType: @encode( SecKeychainAttribute ) ];
+        [ searchCriterias addObject: descriptionAttrValue ];
+        }
+
+    SecKeychainAttribute* portAttr = malloc( sizeof( SecKeychainAttribute ) );
+    unsigned short* portBuffer = malloc( sizeof( unsigned short ) );
+    memcpy( portBuffer, &port, sizeof( port ) );
+    portAttr->tag = kSecPortItemAttr;
+    portAttr->length = ( UInt32 )sizeof( port );
+    portAttr->data = portBuffer;
+    NSValue* portAttrValue = [ NSValue valueWithBytes: portAttr objCType: @encode( SecKeychainAttribute ) ];
+    [ searchCriterias addObject: portAttrValue ];
+
+    SecKeychainAttribute* protocolTypeAttr = malloc( sizeof( SecKeychainAttribute ) );
+    SecProtocolType* protocolTypeBuffer = malloc( sizeof( SecProtocolType ) );
+    memcpy( protocolTypeBuffer, &protocolType, sizeof( protocolType ) );
+    protocolTypeAttr->tag = kSecProtocolItemAttr;
+    protocolTypeAttr->length = ( UInt32 )sizeof( protocolType );
+    protocolTypeAttr->data = protocolTypeBuffer;
+    NSValue* protocolTypeValue = [ NSValue valueWithBytes: protocolTypeAttr objCType: @encode( SecKeychainAttribute ) ];
+    [ searchCriterias addObject: protocolTypeValue ];
+
+    return searchCriterias;
+    }
+
 #pragma mark Overrides
 - ( BOOL ) isValid
     {
@@ -264,97 +355,39 @@
         if ( ( resultCode = SecKeychainItemCopyKeychain( self.secKeychainItem, &theKeychainToBeSearched ) )
                 == errSecSuccess )
             {
+            NSMutableArray* searchCriterias = [ NSMutableArray array ];
+
             if ( [ self itemClass ] == WSCKeychainItemClassInternetPassphraseItem )
+                searchCriterias = [ self p_wrapInternetPasswordSearchCriterias ];
+
+            NSRange range = NSMakeRange( 0, searchCriterias.count );
+            NSValue** objects = malloc( sizeof( NSValue* ) * range.length );
+            [ searchCriterias getObjects: objects range: range ];
+
+            SecKeychainAttribute* finalArray = malloc( sizeof( SecKeychainAttribute ) * searchCriterias.count );
+            for ( int _Index = 0; _Index < searchCriterias.count; _Index++ )
                 {
-                // TODO: label property
-                NSString* serverName = [ self p_extractAttribute: kSecServerItemAttr ];
-                NSString* path = [ self p_extractAttribute: kSecPathItemAttr ];
-                NSString* account = [ self p_extractAttribute: kSecAccountItemAttr ];
-                NSString* comment = [ self p_extractAttribute: kSecCommentItemAttr ];
-                NSString* kindDescription = [ self p_extractAttribute: kSecDescriptionItemAttr ];
+                SecKeychainAttribute elem;
+                [ objects[ _Index ] getValue: &elem ];
+                finalArray[ _Index ] = elem;
+                }
 
-                void* c_serverName = ( void* )[ serverName cStringUsingEncoding: NSUTF8StringEncoding ];
-                void* c_path = ( void* )[ path cStringUsingEncoding: NSUTF8StringEncoding ];
-                void* c_account = ( void* )[ account cStringUsingEncoding: NSUTF8StringEncoding ];
-                void* c_comment = ( void* )[ comment cStringUsingEncoding: NSUTF8StringEncoding ];
-                void* c_kindDescription = ( void* )[ kindDescription cStringUsingEncoding: NSUTF8StringEncoding ];
-
-                unsigned short port = ( unsigned short )[ self p_extractAttribute: kSecPortItemAttr ];
-                SecProtocolType protocolType = ( SecProtocolType )[ self p_extractAttribute: kSecProtocolItemAttr ];
-
-                NSMutableArray* attrsArray = [ NSMutableArray array ];
-                if ( c_serverName && strlen( c_serverName ) )
+            SecKeychainAttributeList attrsList = { ( UInt32 )searchCriterias.count, finalArray };
+            resultCode = SecKeychainSearchCreateFromAttributes( ( CFTypeRef )theKeychainToBeSearched
+                                                              , ( SecItemClass )self.itemClass
+                                                              , &attrsList
+                                                              , &searchCriteria
+                                                              );
+            if ( resultCode == errSecSuccess )
+                {
+                SecKeychainItemRef matchedItem = NULL;
+                while ( ( resultCode == SecKeychainSearchCopyNext( searchCriteria, &matchedItem ) ) != errSecItemNotFound )
                     {
-                    SecKeychainAttribute serverAttr = { kSecServerItemAttr, ( UInt32 )strlen( c_serverName ), c_serverName };
-                    NSValue* serverAttrValue = [ NSValue valueWithBytes: &serverAttr objCType: @encode( SecKeychainAttribute ) ];
-                    [ attrsArray addObject: serverAttrValue ];
-                    }
-
-                if ( c_path && strlen( c_path ) )
-                    {
-                    SecKeychainAttribute pathAttr = { kSecPathItemAttr, ( UInt32 )strlen( c_path ), c_path };
-                    NSValue* pathAttrValue = [ NSValue valueWithBytes: &pathAttr objCType: @encode( SecKeychainAttribute ) ];
-                    [ attrsArray addObject: pathAttrValue ];
-                    }
-
-                if ( c_account && strlen( c_account ) )
-                    {
-                    SecKeychainAttribute accountAttr = { kSecAccountItemAttr, ( UInt32 )strlen( c_account ), c_account };
-                    NSValue* accountAttrValue = [ NSValue valueWithBytes: &accountAttr objCType: @encode( SecKeychainAttribute ) ];
-                    [ attrsArray addObject: accountAttrValue ];
-                    }
-
-                if ( c_comment && strlen( c_comment ) )
-                    {
-                    SecKeychainAttribute commentAttr = { kSecCommentItemAttr, ( UInt32 )strlen( c_comment ), c_comment };
-                    NSValue* commentAttrValue = [ NSValue valueWithBytes: &commentAttr objCType: @encode( SecKeychainAttribute ) ];
-                    [ attrsArray addObject: commentAttrValue ];
-                    }
-
-                if ( c_kindDescription && strlen( c_kindDescription ) )
-                    {
-                    SecKeychainAttribute descriptionAttr = { kSecDescriptionItemAttr, ( UInt32 )strlen( c_kindDescription ), c_kindDescription };
-                    NSValue* descriptionAttrValue = [ NSValue valueWithBytes: &descriptionAttr objCType: @encode( SecKeychainAttribute ) ];
-                    [ attrsArray addObject: descriptionAttrValue ];
-                    }
-
-                SecKeychainAttribute portAttr = { kSecPortItemAttr, ( UInt32 )sizeof( port ), &port };
-                NSValue* portAttrValue = [ NSValue valueWithBytes: &portAttr objCType: @encode( SecKeychainAttribute ) ];
-                [ attrsArray addObject: portAttrValue ];
-
-                SecKeychainAttribute protocolTypeAttr = { kSecProtocolItemAttr, ( UInt32 )sizeof( protocolType ), &protocolType };
-                NSValue* protocolTypeValue = [ NSValue valueWithBytes: &protocolTypeAttr objCType: @encode( SecKeychainAttribute ) ];
-                [ attrsArray addObject: protocolTypeValue ];
-
-                NSRange range = NSMakeRange( 0, attrsArray.count );
-                NSValue** objects = malloc( sizeof( NSValue* ) * range.length );
-                [ attrsArray getObjects: objects range: range ];
-
-                SecKeychainAttribute* finalArray = malloc( sizeof( SecKeychainAttribute ) * attrsArray.count );
-                for ( int _Index = 0; _Index < attrsArray.count; _Index++ )
-                    {
-                    SecKeychainAttribute elem;
-                    [ objects[ _Index ] getValue: &elem ];
-                    finalArray[ _Index ] = elem;
-                    }
-
-                SecKeychainAttributeList attrsList = { ( UInt32 )attrsArray.count, finalArray };
-                resultCode = SecKeychainSearchCreateFromAttributes( ( CFTypeRef )theKeychainToBeSearched
-                                                                  , ( SecItemClass )self.itemClass
-                                                                  , &attrsList
-                                                                  , &searchCriteria
-                                                                  );
-                if ( resultCode == errSecSuccess )
-                    {
-                    SecKeychainItemRef matchedItem = NULL;
-                    while ( ( resultCode == SecKeychainSearchCopyNext( searchCriteria, &matchedItem ) ) != errSecItemNotFound )
+                    if ( matchedItem )
                         {
-                        if ( matchedItem )
-                            {
-                            isReceiverValid = YES;
-                            CFRelease( matchedItem );
-                            break;
-                            }
+                        isReceiverValid = YES;
+                        CFRelease( matchedItem );
+                        break;
                         }
                     }
                 }

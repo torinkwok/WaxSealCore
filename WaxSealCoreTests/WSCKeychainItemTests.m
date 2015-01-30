@@ -128,6 +128,14 @@ NSString* _WSCPassphrases[] =
     NSLog( @"Count of default search list: %lu", [ [ WSCKeychainManager defaultManager] keychainSearchList ].count );
     }
 
+- ( void ) testFukcking
+    {
+    WSCPassphraseItem* passphraseItem = _WSC_www_waxsealcore_org_InternetKeychainItem( nil );
+    NSMutableArray* searchCriterias = [ passphraseItem p_wrapInternetPasswordSearchCriterias ];
+
+    NSLog( @"Search Criterias: %@", searchCriterias );
+    }
+
 - ( void ) testPassphraseProperty
     {
     NSError* error = nil;
