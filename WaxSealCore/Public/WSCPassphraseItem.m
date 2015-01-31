@@ -36,6 +36,7 @@
 
 #import "_WSCKeychainErrorPrivate.h"
 #import "_WSCKeychainItemPrivate.h"
+#import "_WSCPassphraseItemPrivate.h"
 
 @implementation WSCPassphraseItem
 
@@ -249,6 +250,78 @@
     [ self p_modifyAttribute: kSecServiceItemAttr withNewValue: _ServiceName ];
     }
 
+#pragma mark Overrides
+- ( BOOL ) isValid
+    {
+    OSStatus resultCode = errSecSuccess;
+    BOOL isReceiverValid = NO;
+
+    if ( [ super isValid ] )
+        {
+        SecKeychainRef theKeychainToBeSearched = NULL;
+
+        // Get the resided keychain of the password item represented by reciever.
+        if ( ( resultCode = SecKeychainItemCopyKeychain( self.secKeychainItem, &theKeychainToBeSearched ) )
+                == errSecSuccess )
+            {
+            NSMutableArray* searchCriterias = [ NSMutableArray array ];
+            SecKeychainSearchRef searchCriteria = NULL;
+
+            if ( [ self itemClass ] == WSCKeychainItemClassInternetPassphraseItem )
+                searchCriterias = [ self p_wrapInternetPasswordItemSearchCriterias ];
+            else
+                searchCriterias = [ self p_wrapApplicationPasswordItemSearchCriterias ];
+
+            if ( searchCriterias.count != 0 )
+                {
+                NSRange range = NSMakeRange( 0, searchCriterias.count );
+                NSValue** objects = malloc( sizeof( NSValue* ) * range.length );
+                [ searchCriterias getObjects: objects range: range ];
+
+                SecKeychainAttribute* finalArray = malloc( sizeof( SecKeychainAttribute ) * searchCriterias.count );
+                for ( int _Index = 0; _Index < searchCriterias.count; _Index++ )
+                    {
+                    SecKeychainAttribute elem;
+                    [ objects[ _Index ] getValue: &elem ];
+                    finalArray[ _Index ] = elem;
+                    }
+
+                SecKeychainAttributeList attrsList = { ( UInt32 )searchCriterias.count, finalArray };
+                resultCode = SecKeychainSearchCreateFromAttributes( ( CFTypeRef )theKeychainToBeSearched
+                                                                  , ( SecItemClass )self.itemClass
+                                                                  , &attrsList
+                                                                  , &searchCriteria
+                                                                  );
+                if ( resultCode == errSecSuccess )
+                    {
+                    SecKeychainItemRef matchedItem = NULL;
+                    if ( ( resultCode == SecKeychainSearchCopyNext( searchCriteria, &matchedItem ) ) != errSecItemNotFound )
+                        {
+                        if ( matchedItem )
+                            {
+                            isReceiverValid = YES;
+                            CFRelease( matchedItem );
+                            }
+                        }
+                    }
+
+                if ( searchCriteria )
+                    CFRelease( searchCriteria );
+                }
+
+            if ( theKeychainToBeSearched )
+                CFRelease( theKeychainToBeSearched );
+            }
+        }
+
+    return isReceiverValid;
+    }
+
+@end // WSCPassphraseItem class
+
+#pragma mark WSCPassphraseItem + WSCPasswordPrivateUtilities
+@implementation WSCPassphraseItem ( WSCPasswordPrivateUtilities )
+
 - ( NSMutableArray* ) p_wrapCommonPasswordItemSearchCriterias
     {
     NSMutableArray* searchCriterias = [ NSMutableArray array ];
@@ -314,7 +387,7 @@
     return searchCriterias;
     }
 
-- ( NSMutableArray* ) p_wrapInternetPasswordSearchCriterias
+- ( NSMutableArray* ) p_wrapInternetPasswordItemSearchCriterias
     {
     NSMutableArray* searchCriterias = [ self p_wrapCommonPasswordItemSearchCriterias ];
 
@@ -348,93 +421,34 @@
         [ searchCriterias addObject: pathAttrValue ];
         }
 
-    SecKeychainAttribute* portAttr = malloc( sizeof( SecKeychainAttribute ) );
-    unsigned short* portBuffer = malloc( sizeof( unsigned short ) );
-    memcpy( portBuffer, &port, sizeof( port ) );
-    portAttr->tag = kSecPortItemAttr;
-    portAttr->length = ( UInt32 )sizeof( port );
-    portAttr->data = portBuffer;
-    NSValue* portAttrValue = [ NSValue valueWithBytes: portAttr objCType: @encode( SecKeychainAttribute ) ];
-    [ searchCriterias addObject: portAttrValue ];
+    if ( port != 0 )
+        {
+        SecKeychainAttribute* portAttr = malloc( sizeof( SecKeychainAttribute ) );
+        unsigned short* portBuffer = malloc( sizeof( unsigned short ) );
+        memcpy( portBuffer, &port, sizeof( port ) );
+        portAttr->tag = kSecPortItemAttr;
+        portAttr->length = ( UInt32 )sizeof( port );
+        portAttr->data = portBuffer;
+        NSValue* portAttrValue = [ NSValue valueWithBytes: portAttr objCType: @encode( SecKeychainAttribute ) ];
+        [ searchCriterias addObject: portAttrValue ];
+        }
 
-    SecKeychainAttribute* protocolTypeAttr = malloc( sizeof( SecKeychainAttribute ) );
-    SecProtocolType* protocolTypeBuffer = malloc( sizeof( SecProtocolType ) );
-    memcpy( protocolTypeBuffer, &protocolType, sizeof( protocolType ) );
-    protocolTypeAttr->tag = kSecProtocolItemAttr;
-    protocolTypeAttr->length = ( UInt32 )sizeof( protocolType );
-    protocolTypeAttr->data = protocolTypeBuffer;
-    NSValue* protocolTypeValue = [ NSValue valueWithBytes: protocolTypeAttr objCType: @encode( SecKeychainAttribute ) ];
-    [ searchCriterias addObject: protocolTypeValue ];
+    if ( protocolType != '\0\0\0\0' )
+        {
+        SecKeychainAttribute* protocolTypeAttr = malloc( sizeof( SecKeychainAttribute ) );
+        SecProtocolType* protocolTypeBuffer = malloc( sizeof( SecProtocolType ) );
+        memcpy( protocolTypeBuffer, &protocolType, sizeof( protocolType ) );
+        protocolTypeAttr->tag = kSecProtocolItemAttr;
+        protocolTypeAttr->length = ( UInt32 )sizeof( protocolType );
+        protocolTypeAttr->data = protocolTypeBuffer;
+        NSValue* protocolTypeValue = [ NSValue valueWithBytes: protocolTypeAttr objCType: @encode( SecKeychainAttribute ) ];
+        [ searchCriterias addObject: protocolTypeValue ];
+        }
 
     return searchCriterias;
     }
 
-#pragma mark Overrides
-- ( BOOL ) isValid
-    {
-    NSError* error = nil;
-    OSStatus resultCode = errSecSuccess;
-    BOOL isReceiverValid = NO;
-
-    if ( [ super isValid ] )
-        {
-        SecKeychainRef theKeychainToBeSearched = NULL;
-        SecKeychainSearchRef searchCriteria = NULL;
-
-        if ( ( resultCode = SecKeychainItemCopyKeychain( self.secKeychainItem, &theKeychainToBeSearched ) )
-                == errSecSuccess )
-            {
-            NSMutableArray* searchCriterias = [ NSMutableArray array ];
-
-            if ( [ self itemClass ] == WSCKeychainItemClassInternetPassphraseItem )
-                searchCriterias = [ self p_wrapInternetPasswordSearchCriterias ];
-            else
-                searchCriterias = [ self p_wrapApplicationPasswordItemSearchCriterias ];
-
-            NSRange range = NSMakeRange( 0, searchCriterias.count );
-            NSValue** objects = malloc( sizeof( NSValue* ) * range.length );
-            [ searchCriterias getObjects: objects range: range ];
-
-            SecKeychainAttribute* finalArray = malloc( sizeof( SecKeychainAttribute ) * searchCriterias.count );
-            for ( int _Index = 0; _Index < searchCriterias.count; _Index++ )
-                {
-                SecKeychainAttribute elem;
-                [ objects[ _Index ] getValue: &elem ];
-                finalArray[ _Index ] = elem;
-                }
-
-            SecKeychainAttributeList attrsList = { ( UInt32 )searchCriterias.count, finalArray };
-            resultCode = SecKeychainSearchCreateFromAttributes( ( CFTypeRef )theKeychainToBeSearched
-                                                              , ( SecItemClass )self.itemClass
-                                                              , &attrsList
-                                                              , &searchCriteria
-                                                              );
-            if ( resultCode == errSecSuccess )
-                {
-                SecKeychainItemRef matchedItem = NULL;
-                if ( ( resultCode == SecKeychainSearchCopyNext( searchCriteria, &matchedItem ) ) != errSecItemNotFound )
-                    {
-                    if ( matchedItem )
-                        {
-                        isReceiverValid = YES;
-                        CFRelease( matchedItem );
-                        }
-                    }
-                }
-
-            if ( theKeychainToBeSearched )  CFRelease( theKeychainToBeSearched );
-            if ( searchCriteria )           CFRelease( searchCriteria );
-            }
-        else
-            error = [ NSError errorWithDomain: NSOSStatusErrorDomain
-                                         code: resultCode
-                                     userInfo: nil ];
-        }
-
-    return isReceiverValid;
-    }
-
-@end // WSCPassphraseItem class
+@end // WSCPassphraseItem + WSCPasswordPrivateUtilities
 
 //////////////////////////////////////////////////////////////////////////////
 

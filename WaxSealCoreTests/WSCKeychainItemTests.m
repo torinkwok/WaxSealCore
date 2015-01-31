@@ -121,19 +121,19 @@ NSString* _WSCPassphrases[] =
 
 - ( void ) testIsValidProperty
     {
-    CFArrayRef secSearchList = NULL;
-    SecKeychainCopySearchList( &secSearchList );
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
 
-    NSLog( @"Count of secSearchList: %lu", CFArrayGetCount( secSearchList ) );
-    NSLog( @"Count of default search list: %lu", [ [ WSCKeychainManager defaultManager] keychainSearchList ].count );
-    }
+    WSCPassphraseItem* internetPassphraseItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
 
-- ( void ) testFukcking
-    {
-    WSCPassphraseItem* passphraseItem = _WSC_www_waxsealcore_org_InternetKeychainItem( nil );
-    NSMutableArray* searchCriterias = [ passphraseItem p_wrapInternetPasswordSearchCriterias ];
+    XCTAssertTrue( internetPassphraseItem.isValid );
 
-    NSLog( @"Search Criterias: %@", searchCriterias );
+    resultCode = SecKeychainItemDelete( internetPassphraseItem.secKeychainItem );
+    XCTAssertEqual( resultCode, errSecSuccess );
+
+    XCTAssertFalse( internetPassphraseItem.isValid );
     }
 
 - ( void ) testPassphraseProperty
@@ -207,9 +207,8 @@ NSString* _WSCPassphrases[] =
             NSString* passphraseString = [ [ [ NSString alloc ] initWithData: passphraseData encoding: NSUTF8StringEncoding ] autorelease ];
             XCTAssertNil( applicationPassphraseItem.passphrase );
             XCTAssertNil( passphraseData );
-            XCTAssertNil( passphraseString );
+            XCTAssertEqual( passphraseString.length, 0 );
             XCTAssertNotEqual( _WSCPassphrases[ _Index ].length, 0 );
-            XCTAssertNotEqual( passphraseData.length, passphraseString.length );
             XCTAssertNotEqual( passphraseString.length, _WSCPassphrases[ _Index ].length );
             XCTAssertNotEqualObjects( passphraseString, _WSCPassphrases[ _Index ] );
             }

@@ -51,6 +51,7 @@
 		83C7239E1A4C1B240084221A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723741A4C1AA60084221A /* Foundation.framework */; };
 		83C723A01A4C1B280084221A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C7239F1A4C1B280084221A /* Security.framework */; };
 		83C723A21A4C1B2C0084221A /* SecurityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723A11A4C1B2C0084221A /* SecurityFoundation.framework */; };
+		83D70F0D1A7CBD0200329504 /* _WSCPassphraseItemPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 83D70F0C1A7CBD0200329504 /* _WSCPassphraseItemPrivate.h */; };
 		83D8E7801A67696D00F77E28 /* WSCPrivateUtilitiesForEaseOfUnitTestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83D8E77F1A67696D00F77E28 /* WSCPrivateUtilitiesForEaseOfUnitTestTests.m */; };
 		83D9C8791A6A685700B31F25 /* WSCTrustedApplicationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83D9C8781A6A685700B31F25 /* WSCTrustedApplicationTests.m */; };
 		83DBD7E01A6E25E800D0D107 /* WSCKeychainItemTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83DBD7DF1A6E25E800D0D107 /* WSCKeychainItemTests.m */; };
@@ -123,6 +124,7 @@
 		83C7239C1A4C1B1E0084221A /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		83C7239F1A4C1B280084221A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		83C723A11A4C1B2C0084221A /* SecurityFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityFoundation.framework; path = System/Library/Frameworks/SecurityFoundation.framework; sourceTree = SDKROOT; };
+		83D70F0C1A7CBD0200329504 /* _WSCPassphraseItemPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _WSCPassphraseItemPrivate.h; path = Private/_WSCPassphraseItemPrivate.h; sourceTree = "<group>"; };
 		83D8E77F1A67696D00F77E28 /* WSCPrivateUtilitiesForEaseOfUnitTestTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCPrivateUtilitiesForEaseOfUnitTestTests.m; sourceTree = "<group>"; };
 		83D9C8781A6A685700B31F25 /* WSCTrustedApplicationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCTrustedApplicationTests.m; sourceTree = "<group>"; };
 		83DBD7DF1A6E25E800D0D107 /* WSCKeychainItemTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCKeychainItemTests.m; sourceTree = "<group>"; };
@@ -233,6 +235,7 @@
 			isa = PBXGroup;
 			children = (
 				837C8B4F1A6D4D7700FFE4FF /* _WSCKeychainPrivate.h */,
+				83D70F0C1A7CBD0200329504 /* _WSCPassphraseItemPrivate.h */,
 				837C8B531A6D4DA000FFE4FF /* _WSCKeychainErrorPrivate.h */,
 				837C8B4D1A6D4D7700FFE4FF /* _WSCKeychainErrorPrivate.m */,
 			);
@@ -394,6 +397,7 @@
 				837C8B591A6D4DD400FFE4FF /* _WSCAccess.h in Headers */,
 				837C8B5C1A6D4DD400FFE4FF /* _WSCTrustedApplicationPrivate.h in Headers */,
 				830376A11A7835DE0032C717 /* NSString+_OMCString.h in Headers */,
+				83D70F0D1A7CBD0200329504 /* _WSCPassphraseItemPrivate.h in Headers */,
 				837C8B7D1A6D514600FFE4FF /* WSCKeychain.h in Headers */,
 				837C8B611A6D4DF000FFE4FF /* _WSCCommon.h in Headers */,
 			);
