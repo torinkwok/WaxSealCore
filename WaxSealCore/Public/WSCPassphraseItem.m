@@ -251,6 +251,9 @@
     }
 
 #pragma mark Overrides
+/* Overrides the implementation in WSCKeychainItem class.
+ * Boolean value that indicates whether the receiver is currently valid. (read-only)
+ */
 - ( BOOL ) isValid
     {
     OSStatus resultCode = errSecSuccess;
@@ -258,6 +261,7 @@
 
     if ( [ super isValid ] )
         {
+        // We are going to search for the keychain item from its resided keychain
         SecKeychainRef theKeychainToBeSearched = NULL;
 
         // Get the resided keychain of the password item represented by reciever.
@@ -265,37 +269,48 @@
                 == errSecSuccess )
             {
             NSMutableArray* searchCriterias = [ NSMutableArray array ];
-            SecKeychainSearchRef searchCriteria = NULL;
+            SecKeychainSearchRef secSearch = NULL;
 
+            // Get the search criterias for the Internet or application password item.
             if ( [ self itemClass ] == WSCKeychainItemClassInternetPassphraseItem )
                 searchCriterias = [ self p_wrapInternetPasswordItemSearchCriterias ];
             else
                 searchCriterias = [ self p_wrapApplicationPasswordItemSearchCriterias ];
 
+            // If there is not any search criteria,
+            // we can consider that the keychain item represented by receiver is already invalid,
+            // we should skip the searching;
+            // otherwise, begin to search.
             if ( searchCriterias.count != 0 )
                 {
-                NSRange range = NSMakeRange( 0, searchCriterias.count );
-                NSValue** objects = malloc( sizeof( NSValue* ) * range.length );
-                [ searchCriterias getObjects: objects range: range ];
-
-                SecKeychainAttribute* finalArray = malloc( sizeof( SecKeychainAttribute ) * searchCriterias.count );
+                // The SecKeychainAttribute structs that will be used in the searching
+                // was encapsulated in the NSValue objects.
+                // Now let's unbox them.
+                SecKeychainAttribute* secSearchCriterias = malloc( sizeof( SecKeychainAttribute ) * searchCriterias.count );
                 for ( int _Index = 0; _Index < searchCriterias.count; _Index++ )
                     {
                     SecKeychainAttribute elem;
-                    [ objects[ _Index ] getValue: &elem ];
-                    finalArray[ _Index ] = elem;
+                    [ searchCriterias[ _Index ] getValue: &elem ];
+                    secSearchCriterias[ _Index ] = elem;
                     }
 
-                SecKeychainAttributeList attrsList = { ( UInt32 )searchCriterias.count, finalArray };
+                SecKeychainAttributeList attrsList = { ( UInt32 )searchCriterias.count, secSearchCriterias };
+
+                // Creates a search object matching the given list of search criterias.
                 resultCode = SecKeychainSearchCreateFromAttributes( ( CFTypeRef )theKeychainToBeSearched
                                                                   , ( SecItemClass )self.itemClass
                                                                   , &attrsList
-                                                                  , &searchCriteria
+                                                                  , &secSearch
                                                                   );
                 if ( resultCode == errSecSuccess )
                     {
                     SecKeychainItemRef matchedItem = NULL;
-                    if ( ( resultCode == SecKeychainSearchCopyNext( searchCriteria, &matchedItem ) ) != errSecItemNotFound )
+
+                    // Finds the next keychain item matching the given search criterias.
+                    // We use the `if` statement because
+                    // we need only one keychain item matching the given search criterias
+                    // to proof the keychain item represented by receiver is still valid.
+                    if ( ( resultCode == SecKeychainSearchCopyNext( secSearch, &matchedItem ) ) != errSecItemNotFound )
                         {
                         if ( matchedItem )
                             {
@@ -305,8 +320,13 @@
                         }
                     }
 
-                if ( searchCriteria )
-                    CFRelease( searchCriteria );
+                if ( secSearch )
+                    CFRelease( secSearch );
+
+                for ( int _Index = 0; _Index < searchCriterias.count; _Index++ )
+                    if ( secSearchCriterias[ _Index ].tag == kSecPortItemAttr
+                            || secSearchCriterias[ _Index ].tag == kSecProtocolItemAttr )
+                        free( secSearchCriterias[ _Index ].data );
                 }
 
             if ( theKeychainToBeSearched )

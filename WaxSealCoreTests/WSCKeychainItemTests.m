@@ -124,16 +124,115 @@ NSString* _WSCPassphrases[] =
     NSError* error = nil;
     OSStatus resultCode = errSecSuccess;
 
-    WSCPassphraseItem* internetPassphraseItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
+    // ============================================================================================================ //
+    // Positive Test Case 0: for Internet passphrase item
+    WSCPassphraseItem* internetPassphraseItem_testCase0 = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    XCTAssertTrue( internetPassphraseItem.isValid );
+    XCTAssertTrue( internetPassphraseItem_testCase0.isValid );
 
-    resultCode = SecKeychainItemDelete( internetPassphraseItem.secKeychainItem );
+    // Negative Test Case 0: for Internet passphrase item
+    resultCode = SecKeychainItemDelete( internetPassphraseItem_testCase0.secKeychainItem );
     XCTAssertEqual( resultCode, errSecSuccess );
 
-    XCTAssertFalse( internetPassphraseItem.isValid );
+    XCTAssertFalse( internetPassphraseItem_testCase0.isValid );
+
+    // ============================================================================================================ //
+    // Positive Test Case 1: for application passphrase item
+    WSCPassphraseItem* applicationPassphraseItem_testCase1 = _WSC_WaxSealCoreTests_ApplicationKeychainItem( &error );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    XCTAssertTrue( applicationPassphraseItem_testCase1.isValid );
+
+    // Negative Test Case 1: for application passphrase item
+    resultCode = SecKeychainItemDelete( applicationPassphraseItem_testCase1.secKeychainItem );
+    XCTAssertEqual( resultCode, errSecSuccess );
+
+    XCTAssertFalse( applicationPassphraseItem_testCase1.isValid );
+
+    // ============================================================================================================ //
+    // Positive Test Case 2: for application passphrase item
+    WSCKeychain* randomKeychain_testCase2 = _WSCRandomKeychain();
+    WSCPassphraseItem* applicationPassphraseItem_testCase2 =
+        [ randomKeychain_testCase2 addApplicationPassphraseWithServiceName: @"Oh My WaxSealCore!"
+                                                               accountName: @"NSTongG"
+                                                                passphrase: @"waxsealcore"
+                                                                     error: &error ];
+    XCTAssertNotNil( applicationPassphraseItem_testCase2 );
+    XCTAssertTrue( applicationPassphraseItem_testCase2.isValid );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Negative Test Case 2: for application passphrase item
+    [ [ WSCKeychainManager defaultManager ] deleteKeychain: randomKeychain_testCase2 error: &error ];
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    XCTAssertFalse( applicationPassphraseItem_testCase2.isValid );
+
+    // ============================================================================================================ //
+    // Positive Test Case 3: for Internet passphrase item
+    WSCKeychain* randomKeychain_testCase3 = _WSCRandomKeychain();
+    WSCPassphraseItem* internetPassphraseItem_testCase3 =
+        [ randomKeychain_testCase3 addInternetPassphraseWithServerName: @"ohmywaxsealcore.me"
+                                                       URLRelativePath: @"testisvalidproperty/negative/testcase/3"
+                                                           accountName: @"NSTongG"
+                                                              protocol: WSCInternetProtocolTypeHTTPS
+                                                            passphrase: @"waxsealcore"
+                                                                 error: &error ];
+    internetPassphraseItem_testCase3.port = 3234;
+    internetPassphraseItem_testCase3.comment = @"Core of WaxSeal, a modern and full feature Objective-C wrapper"
+                                                "for Keychain Services, Certificate, Key, and Trust Services APIs.";
+    internetPassphraseItem_testCase3.kindDescription = @"WaxSealCore Account Passphrase";
+    XCTAssertNotNil( internetPassphraseItem_testCase3 );
+    XCTAssertTrue( internetPassphraseItem_testCase3.isValid );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Negative Test Case 3: for Internet passphrase item
+    [ [ WSCKeychainManager defaultManager ] deleteKeychain: randomKeychain_testCase3 error: &error ];
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    XCTAssertFalse( internetPassphraseItem_testCase3.isValid );
+
+    // ============================================================================================================ //
+    // Positive Test Case 4: for Internet passphrase item
+    WSCKeychain* randomKeychain_testCase4 = _WSCRandomKeychain();
+    WSCPassphraseItem* samePassphraseItem0_testCase4 =
+        [ randomKeychain_testCase4 addInternetPassphraseWithServerName: @"omywaxsealcore.me"
+                                                       URLRelativePath: @"testisvalidproperty/negative/testcase/same/4"
+                                                           accountName: @"NSTongG"
+                                                              protocol: WSCInternetProtocolTypeHTTP
+                                                            passphrase: @"waxsealcore0"
+                                                                 error: &error ];
+    XCTAssertNotNil( samePassphraseItem0_testCase4 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    WSCPassphraseItem* samePassphraseItem1_testCase4 =
+        [ randomKeychain_testCase4 addInternetPassphraseWithServerName: @"omywaxsealcore.me"
+                                                       URLRelativePath: @"testisvalidproperty/negative/testcase/same/4"
+                                                           accountName: @"NSTongG"
+                                                              protocol: WSCInternetProtocolTypeHTTPS
+                                                            passphrase: @"waxsealcore1"
+                                                                 error: &error ];
+    samePassphraseItem0_testCase4.protocol = WSCInternetProtocolTypeHTTP;
+    XCTAssertNotNil( samePassphraseItem1_testCase4 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    XCTAssertTrue( samePassphraseItem0_testCase4.isValid );
+    XCTAssertTrue( samePassphraseItem1_testCase4.isValid );
+
+    // Negative Test Case 4: for Internet passphrase item
+    SecKeychainItemDelete( samePassphraseItem0_testCase4.secKeychainItem );
+    SecKeychainItemDelete( samePassphraseItem1_testCase4.secKeychainItem );
+
+    XCTAssertFalse( samePassphraseItem0_testCase4.isValid );
+    XCTAssertFalse( samePassphraseItem1_testCase4.isValid );
     }
 
 - ( void ) testPassphraseProperty
