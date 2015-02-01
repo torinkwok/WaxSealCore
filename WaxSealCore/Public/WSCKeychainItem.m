@@ -142,7 +142,10 @@
         resultCode = SecKeychainItemCopyKeychain( self.secKeychainItem, &secKeychainResidingIn );
 
         if ( resultCode == errSecSuccess )
+            {
             keychainResidingIn = [ WSCKeychain keychainWithSecKeychainRef: secKeychainResidingIn ];
+            CFRelease( secKeychainResidingIn );
+            }
         else
             error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
         }
