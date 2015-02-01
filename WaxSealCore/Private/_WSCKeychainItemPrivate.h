@@ -42,6 +42,10 @@
 @interface WSCKeychainItem ( WSCKeychainItemPrivateAccessingAttributes )
 
 #pragma mark Extracting
+// Because of the fucking potential infinite recursion,
+// we have to separate the "Don't be a bitch" logic with the p_extractAttribute: private method.
+- ( id ) p_extractAttributeWithCheckingParameter: ( SecItemAttr )_AttributeTag;
+
 - ( id ) p_extractAttribute: ( SecItemAttr )_AttrbuteTag;
 
 // Extract NSString object from the SecKeychainAttribute struct.

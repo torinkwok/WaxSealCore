@@ -57,7 +57,7 @@
 /* The `NSString` object that identifies the account of keychain item represented by receiver. */
 - ( NSString* ) account
     {
-    return [ self p_extractAttribute: kSecAccountItemAttr ];
+    return [ self p_extractAttributeWithCheckingParameter: kSecAccountItemAttr ];
     }
 
 - ( void ) setAccount: ( NSString* )_Account
@@ -68,7 +68,7 @@
 /* The `NSString` object that identifies the comment of keychain item represented by receiver. */
 - ( NSString* ) comment
     {
-    return [ self p_extractAttribute: kSecCommentItemAttr ];
+    return [ self p_extractAttributeWithCheckingParameter: kSecCommentItemAttr ];
     }
 
 - ( void ) setComment: ( NSString* )_Comment
@@ -79,7 +79,7 @@
 /* The `NSString` object that identifies the kind description of keychain item represented by receiver. */
 - ( NSString* ) kindDescription
     {
-    return [ self p_extractAttribute: kSecDescriptionItemAttr ];
+    return [ self p_extractAttributeWithCheckingParameter: kSecDescriptionItemAttr ];
     }
 
 - ( void ) setKindDescription:( NSString* )_KindDescription
@@ -160,10 +160,10 @@
         return nil;
         }
 
-    NSMutableString* hostName = [ [ [ self p_extractAttribute: kSecServerItemAttr ] mutableCopy ] autorelease ];
-    NSMutableString* relativePath = [ [ [ self p_extractAttribute: kSecPathItemAttr ] mutableCopy ] autorelease ];
-    NSUInteger port = ( NSUInteger )[ self p_extractAttribute: kSecPortItemAttr ];
-    WSCInternetProtocolType protocol = ( WSCInternetProtocolType )[ self p_extractAttribute: kSecProtocolItemAttr ];
+    NSMutableString* hostName = [ [ [ self p_extractAttributeWithCheckingParameter: kSecServerItemAttr ] mutableCopy ] autorelease ];
+    NSMutableString* relativePath = [ [ [ self p_extractAttributeWithCheckingParameter: kSecPathItemAttr ] mutableCopy ] autorelease ];
+    NSUInteger port = ( NSUInteger )[ self p_extractAttributeWithCheckingParameter: kSecPortItemAttr ];
+    WSCInternetProtocolType protocol = ( WSCInternetProtocolType )[ self p_extractAttributeWithCheckingParameter: kSecProtocolItemAttr ];
 
     if ( port != 0 )
         [ hostName appendString: [ NSString stringWithFormat: @":%lu", port ] ];
@@ -182,7 +182,7 @@
  */
 - ( NSString* ) hostName
     {
-    return [ self p_extractAttribute: kSecServerItemAttr ];
+    return [ self p_extractAttributeWithCheckingParameter: kSecServerItemAttr ];
     }
 
 - ( void ) setHostName: ( NSString* )_ServerName
@@ -195,7 +195,7 @@
  */
 - ( NSString* ) relativePath
     {
-    return [ self p_extractAttribute: kSecPathItemAttr ];
+    return [ self p_extractAttributeWithCheckingParameter: kSecPathItemAttr ];
     }
 
 - ( void ) setRelativePath: ( NSString* )_RelativeURLPath
@@ -207,7 +207,7 @@
  */
 - ( WSCInternetAuthenticationType ) authenticationType
     {
-    return ( WSCInternetAuthenticationType )( [ self p_extractAttribute: kSecAuthenticationTypeItemAttr ] );
+    return ( WSCInternetAuthenticationType )( [ self p_extractAttributeWithCheckingParameter: kSecAuthenticationTypeItemAttr ] );
     }
 
 - ( void ) setAuthenticationType: ( WSCInternetAuthenticationType )_AuthType
@@ -219,7 +219,7 @@
  */
 - ( WSCInternetProtocolType ) protocol
     {
-    return ( WSCInternetProtocolType )[ self p_extractAttribute: kSecProtocolItemAttr ];
+    return ( WSCInternetProtocolType )[ self p_extractAttributeWithCheckingParameter: kSecProtocolItemAttr ];
     }
 
 - ( void ) setProtocol: ( WSCInternetProtocolType )_Protocol
@@ -231,7 +231,7 @@
  */
 - ( NSUInteger ) port
     {
-    return ( NSUInteger )[ self p_extractAttribute: kSecPortItemAttr ];
+    return ( NSUInteger )[ self p_extractAttributeWithCheckingParameter: kSecPortItemAttr ];
     }
 
 - ( void ) setPort: ( NSUInteger )_PortNumber
@@ -242,7 +242,7 @@
 /* The `NSString` object that identifies the service name of an application passphrase item represented by receiver. */
 - ( NSString* ) serviceName
     {
-    return [ self p_extractAttribute: kSecServiceItemAttr ];
+    return [ self p_extractAttributeWithCheckingParameter: kSecServiceItemAttr ];
     }
 
 - ( void ) setServiceName: ( NSString* )_ServiceName
@@ -346,6 +346,9 @@
                                      itemAttr: ( SecItemAttr )_ItemAttr
     {
     BOOL isSuccess = NO;
+
+    // Because of the fucking potential infinite recursion,
+    // we should never invoke the p_extractAttributeWithCheckingParameter: method.
     NSString* cocoaStringData = [ self p_extractAttribute: _ItemAttr ];
     void* cStringData = ( void* )[ cocoaStringData cStringUsingEncoding: NSUTF8StringEncoding ];
 
@@ -369,6 +372,9 @@
                                     itemAttr: ( SecItemAttr )_ItemAttr
     {
     BOOL isSuccess = NO;
+
+    // Because of the fucking potential infinite recursion,
+    // we should never invoke the p_extractAttributeWithCheckingParameter: method.
     UInt32 UInt32Data = ( UInt32 )[ self p_extractAttribute: _ItemAttr ];
 
     if ( UInt32Data != 0 )
