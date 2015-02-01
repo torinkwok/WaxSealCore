@@ -233,6 +233,9 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
   */
 @property ( assign, readonly ) BOOL isWritable;
 
+#pragma mark Keychain Services Bridge
+/** @name Keychain Services Bridge */
+
 /** The reference of the `SecKeychain` opaque object, which wrapped by `WSCKeychain` object.
   
   If you are familiar with the underlying *Keychain Services* APIs,
@@ -265,7 +268,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
 
   @param _InitalAccess An WSCAccessPermission object indicating the initial access rights for the new keychain,
                        A keychain's access rights determine which application have permission to user the keychain.
-                       You may pass `nil` for the standard access rights
+                       You may pass `nil` for the standard access rights.
 
   @param _WillBecomeDefault A `BOOL` value representing whether to set the new keychain as default keychain.
 
@@ -305,7 +308,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
 
   @param _InitalAccess An WSCAccessPermission object indicating the initial access rights for the new keychain,
                        A keychain's access rights determine which application have permission to user the keychain.
-                       You may pass `nil` for the standard access rights
+                       You may pass `nil` for the standard access rights.
                        
   @param _WillBecomeDefault A `BOOL` value representing whether to set the new keychain as default keychain.
 

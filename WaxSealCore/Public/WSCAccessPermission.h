@@ -44,6 +44,10 @@
     SecAccessRef _secAccess;
     }
 
+
+#pragma mark Keychain Services Bridge
+/** @name Keychain Services Bridge */
+
 /** The reference of the `SecAccess` opaque object, which wrapped by `WSCAccessPermission` object.
   
   If you are familiar with the underlying *Keychain Services* APIs,

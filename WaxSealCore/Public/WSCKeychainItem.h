@@ -130,6 +130,8 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
     }
 
 #pragma mark Common Keychain Item Attributes
+/** @name Keychain Item Attributes */
+
 /** The `NSString` object that identifies the label of keychain item represented by receiver.
   */
 @property ( copy, readwrite ) NSString* label;
@@ -139,13 +141,6 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   For a list of possible class values, see ["WaxSealCore Keychain Item Class Constants."](WSCKeychainItemClass)
   */
 @property ( assign, readonly ) WSCKeychainItemClass itemClass;
-
-/** Boolean value that indicates whether the receiver is currently valid. (read-only)
-
-  `YES` if the receiver is still capable of referring to a valid keychain item; otherwise, *NO*.
-  */
-@property ( assign, readonly ) BOOL isValid;
-
 
 /** The `NSDate` object that identifies the creation date of the keychain item represented by receiver.
 
@@ -162,6 +157,22 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   use a [CSSM (Common Security Services Manager)](https://developer.apple.com/library/mac/documentation/Security/Conceptual/cryptoservices/CDSA/CDSA.html) function to do so.
   */
 @property ( retain, readonly ) NSDate* modificationDate;
+
+#pragma mark Managing Keychain Items
+/** @name Managing Keychain Items */
+
+/** Boolean value that indicates whether the receiver is currently valid. (read-only)
+
+  `YES` if the receiver is still capable of referring to a valid keychain item; otherwise, *NO*.
+  */
+@property ( assign, readonly ) BOOL isValid;
+
+/** The keychain in which the keychain item represented by receiver residing.
+  */
+@property ( unsafe_unretained, readonly ) WSCKeychain* keychain;
+
+#pragma mark Keychain Services Bridge
+/** @name Keychain Services Bridge */
 
 /** The reference of the `SecKeychainItem` opaque object, which wrapped by `WSCKeychainItem` object. (read-only)
   
