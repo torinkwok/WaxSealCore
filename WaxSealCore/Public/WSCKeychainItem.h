@@ -130,7 +130,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
     }
 
 #pragma mark Common Keychain Item Attributes
-/** @name Keychain Item Attributes */
+/** @name Common Keychain Item Attributes */
 
 /** The `NSString` object that identifies the label of keychain item represented by receiver.
   */
@@ -167,7 +167,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   */
 @property ( assign, readonly ) BOOL isValid;
 
-/** The keychain in which the keychain item represented by receiver residing.
+/** The keychain in which the keychain item represented by receiver residing. (read-only)
   */
 @property ( unsafe_unretained, readonly ) WSCKeychain* keychain;
 

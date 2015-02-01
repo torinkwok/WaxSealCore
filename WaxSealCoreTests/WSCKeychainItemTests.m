@@ -235,6 +235,77 @@ NSString* _WSCPassphrases[] =
     XCTAssertFalse( samePassphraseItem1_testCase4.isValid );
     }
 
+- ( void ) testKeychainProperty
+    {
+    NSError* error = nil;
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 0: for Internet passphrase item
+    // -------------------------------------------------------------------------------
+    for ( int _Index = 0; _Index < 20; _Index++ )
+        {
+        WSCKeychain* hostKeychain = _WSCRandomKeychain();
+
+        WSCPassphraseItem* passphraseItem =
+            [ hostKeychain addInternetPassphraseWithServerName: @"waxsealcore.io"
+                                               URLRelativePath: [ NSString stringWithFormat: @"/testcase/0/loop%d", _Index ]
+                                                   accountName: @"NSTongG"
+                                                      protocol: WSCInternetProtocolTypeHTTPS
+                                                    passphrase: @"waxsealcore"
+                                                         error: &error ];
+        XCTAssertNotNil( passphraseItem );
+        XCTAssertTrue( passphraseItem.isValid );
+        XCTAssertNil( error );
+        _WSCPrintNSErrorForUnitTest( error );
+
+        WSCKeychain* theKeychainResidingIn = [ passphraseItem keychain ];
+        XCTAssertNotNil( theKeychainResidingIn );
+        XCTAssertEqualObjects( theKeychainResidingIn, hostKeychain );
+        XCTAssertEqual( theKeychainResidingIn.hash, hostKeychain.hash );
+        XCTAssertEqualObjects( theKeychainResidingIn.URL, hostKeychain.URL );
+
+        [ [ WSCKeychainManager defaultManager ] deleteKeychain: hostKeychain error: &error ];
+        XCTAssertNil( error );
+        _WSCPrintNSErrorForUnitTest( error );
+
+        theKeychainResidingIn = [ passphraseItem keychain ];
+        XCTAssertNil( theKeychainResidingIn );
+        XCTAssertNotEqualObjects( theKeychainResidingIn, hostKeychain );
+        }
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 1: for application passphrase item
+    // -------------------------------------------------------------------------------
+    for ( int _Index = 0; _Index < 20; _Index++ )
+        {
+        WSCKeychain* hostKeychain = _WSCRandomKeychain();
+
+        WSCPassphraseItem* passphraseItem =
+            [ hostKeychain addApplicationPassphraseWithServiceName: @"WaxSealCore Unit Test"
+                                                       accountName: @"NSTongG"
+                                                        passphrase: @"waxsealcore"
+                                                             error: &error ];
+        XCTAssertNotNil( passphraseItem );
+        XCTAssertTrue( passphraseItem.isValid );
+        XCTAssertNil( error );
+        _WSCPrintNSErrorForUnitTest( error );
+
+        WSCKeychain* theKeychainResidingIn = [ passphraseItem keychain ];
+        XCTAssertNotNil( theKeychainResidingIn );
+        XCTAssertEqualObjects( theKeychainResidingIn, hostKeychain );
+        XCTAssertEqual( theKeychainResidingIn.hash, hostKeychain.hash );
+        XCTAssertEqualObjects( theKeychainResidingIn.URL, hostKeychain.URL );
+
+        SecKeychainItemDelete( passphraseItem.secKeychainItem );
+        XCTAssertNil( error );
+        _WSCPrintNSErrorForUnitTest( error );
+
+        theKeychainResidingIn = [ passphraseItem keychain ];
+        XCTAssertNil( theKeychainResidingIn );
+        XCTAssertNotEqualObjects( theKeychainResidingIn, hostKeychain );
+        }
+    }
+
 - ( void ) testPassphraseProperty
     {
     NSError* error = nil;

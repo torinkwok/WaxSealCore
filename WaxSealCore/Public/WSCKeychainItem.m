@@ -44,13 +44,15 @@
 
 @dynamic label;
 @dynamic itemClass;
-@dynamic isValid;
 @dynamic creationDate;
 @dynamic modificationDate;
 
+@dynamic isValid;
+@dynamic keychain;
+
 @synthesize secKeychainItem = _secKeychainItem;
 
-#pragma mark Accessor
+#pragma mark Common Keychain Item Attributes
 /* The `NSString` object that identifies the label of keychain item represented by receiver. */
 - ( NSString* ) label
     {
@@ -60,40 +62,6 @@
 - ( void ) setLabel: ( NSString* )_Label
     {
     [ self p_modifyAttribute: kSecLabelItemAttr withNewValue: _Label ];
-    }
-
-/* The `NSDate` object that identifies the creation date of the keychain item represented by receiver. */
-- ( void ) setCreationDate: ( NSDate* )_Date
-    {
-    [ self p_modifyAttribute: kSecCreationDateItemAttr withNewValue: _Date ];
-    }
-
-- ( NSDate* ) creationDate
-    {
-    return [ self p_extractAttribute: kSecCreationDateItemAttr ];
-    }
-
-/* The `NSDate` object that identifies the modification date of the keychain item represented by receiver. (read-only) */
-- ( NSDate* ) modificationDate
-    {
-    return [ self p_extractAttribute: kSecModDateItemAttr ];
-    }
-
-/* Boolean value that indicates whether the receiver is currently valid. (read-only)
- */
-- ( BOOL ) isValid
-    {
-    OSStatus resultCode = errSecSuccess;
-
-    SecKeychainRef secResideKeychain = nil;
-    resultCode = SecKeychainItemCopyKeychain( self.secKeychainItem, &secResideKeychain );
-
-    if ( resultCode == errSecSuccess )
-        // If the reside keychain is already invalid (may be deleted, renamed or moved)
-        // the receiver is invalid.
-        return _WSCKeychainIsSecKeychainValid( secResideKeychain );
-    else
-        return NO;
     }
 
 /* The value that indicates which type of keychain item the receiver is.
@@ -122,6 +90,70 @@
     return ( WSCKeychainItemClass )class;
     }
 
+/* The `NSDate` object that identifies the creation date of the keychain item represented by receiver. */
+- ( void ) setCreationDate: ( NSDate* )_Date
+    {
+    [ self p_modifyAttribute: kSecCreationDateItemAttr withNewValue: _Date ];
+    }
+
+- ( NSDate* ) creationDate
+    {
+    return [ self p_extractAttribute: kSecCreationDateItemAttr ];
+    }
+
+/* The `NSDate` object that identifies the modification date of the keychain item represented by receiver. (read-only) */
+- ( NSDate* ) modificationDate
+    {
+    return [ self p_extractAttribute: kSecModDateItemAttr ];
+    }
+
+#pragma mark Managing Keychain Items
+/* Boolean value that indicates whether the receiver is currently valid. (read-only)
+ */
+- ( BOOL ) isValid
+    {
+    OSStatus resultCode = errSecSuccess;
+
+    SecKeychainRef secResideKeychain = nil;
+    resultCode = SecKeychainItemCopyKeychain( self.secKeychainItem, &secResideKeychain );
+
+    if ( resultCode == errSecSuccess )
+        // If the reside keychain is already invalid (may be deleted, renamed or moved)
+        // the receiver is invalid.
+        return _WSCKeychainIsSecKeychainValid( secResideKeychain );
+    else
+        return NO;
+    }
+
+/* The keychain in which the keychain item represented by receiver residing. (read-only) 
+ */
+- ( WSCKeychain* ) keychain
+    {
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
+    WSCKeychain* keychainResidingIn = nil;
+
+    _WSCDontBeABitch( &error, self, [ WSCKeychainItem class ], s_guard );
+    if ( !error )
+        {
+        SecKeychainRef secKeychainResidingIn = NULL;
+
+        // Get the keychain object of given keychain item
+        resultCode = SecKeychainItemCopyKeychain( self.secKeychainItem, &secKeychainResidingIn );
+
+        if ( resultCode == errSecSuccess )
+            keychainResidingIn = [ WSCKeychain keychainWithSecKeychainRef: secKeychainResidingIn ];
+        else
+            error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+        }
+
+    if ( error )
+        _WSCPrintNSErrorForLog( error );
+
+    return keychainResidingIn;
+    }
+
+#pragma mark Overrides
 - ( void ) dealloc
     {
     if ( self->_secKeychainItem )

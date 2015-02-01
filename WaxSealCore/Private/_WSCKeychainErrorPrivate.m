@@ -43,7 +43,7 @@ NSString* const WSCKeychainIsInvalidErrorDescription                = @"Current 
 NSString* const WSCKeychainFileExistsErrorDescription               = @"The keychain couldn't be created because a file with the same name already exists.";
 NSString* const WSCKeychainURLIsInvalidErrorDescription             = @"The keychain couldn’t be created because the URL is invalid.";
 NSString* const WSCCommonInvalidParametersErrorDescription          = @"One or more parameters passed to the method were not valid.";
-NSString* const WSCKeychainItemIsInvalidErrorDescription            = @"Current keychain item is no longer valid, its resided keychain may has been deleted, moved or renamed.";
+NSString* const WSCKeychainItemIsInvalidErrorDescription            = @"Current keychain item is no longer valid, it may has been deleted, or the keychain in which it residing may has been deleted, moved or renamed.";
 NSString* const WSCKeychainItemAttributeIsUniqueToInternetPassphraseErrorDescription    = @"The specified attribute was not be supported since this attribute is unique to the Internet passphrase.";
 NSString* const WSCKeychainItemAttributeIsUniqueToApplicationPassphraseErrorDescription = @"The specified attribute was not be supported since this attribute is unique to the application passphrase.";
 
