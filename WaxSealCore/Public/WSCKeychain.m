@@ -300,7 +300,7 @@ WSCKeychain static* s_system = nil;
     return s_system;
     }
 
-#pragma mark Public Programmatic Interfaces for Managing Keychains
+#pragma mark Comparing Keychains
 /* Returns a Boolean value that indicates 
  * whether a given keychain is equal to receiver using an URL comparision. 
  */

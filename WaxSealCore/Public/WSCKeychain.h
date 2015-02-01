@@ -382,26 +382,28 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
   */
 + ( instancetype ) system;
 
-#pragma mark Public Programmatic Interfaces for Managing Keychains
-/** @name Managing Keychains */
+#pragma mark Comparing Keychains
+/** @name Comparing Keychains */
 
 /** Returns a Boolean value that indicates whether a given keychain is equal to receiver using an URL comparision.
 
   @param _AnotherKeychain The keychain with which to compare the receiver.
 
-  @return `YES` if *_AnotherKeychain* is equivalent to receiver (if they have the same URL), otherwise *NO*.
+  @return `YES` if *_AnotherKeychain* is equivalent to receiver (if they have the same URL);
+          otherwise *NO*.
 
-  @warning When you know both objects are keychains,
-           this method is a faster way to check equality than method `-[NSObject isEqual:]`.
+  **Special Considerations**
+
+   When you know both objects are keychains, this method is a faster way to check equality than method `-[NSObject isEqual:]`.
   */
 - ( BOOL ) isEqualToKeychain: ( WSCKeychain* )_AnotherKeychain;
 
 #pragma mark Public Programmatic Interfaces for Creating and Managing Keychain Items
 /** @name Creating and Managing Keychain Items */
 
-/** Adds a new generic passphrase to the keychain represented by receiver.
+/** Adds a new application passphrase to the keychain represented by receiver.
 
-  This method adds a new generic passphrase to the keychain represented by receiver.
+  This method adds a new application passphrase to the keychain represented by receiver.
   Required parameters to identify the passphrase are *_ServiceName* and *_AccountName*, which are application-defined strings. 
   This method returns a newly added item represented by a `WSCKeychainItem` object.
 

@@ -139,6 +139,21 @@
   */
 @property ( copy, readwrite ) NSString* serviceName;
 
+#pragma mark Comparing Passphrase Items
+/** @name Comparing Passphrase Items */
+
+/** Returns a Boolean value that indicates whether a given passphrase item is equal to the receiver.
+
+  @param _AnotherPassphraseItem The passphrase item with which to compare the receiver.
+  
+  @return `YES` if *_AnotherPassphraseItem* is equivalent to receiver (if they have the same attributes);
+          otherwise *NO*.
+          
+  **One more thing**   
+   When you know both objects are passphrase items, this method is a faster way to check equality than method `-[NSObject isEqual:]`.
+  */
+- ( BOOL ) isEqualToPassphraseItem: ( WSCPassphraseItem* )_AnotherPassphraseItem;
+
 @end // WSCPassphraseItem class
 
 //////////////////////////////////////////////////////////////////////////////
