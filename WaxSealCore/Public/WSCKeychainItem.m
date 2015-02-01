@@ -218,9 +218,9 @@
     // Mapping for creating the SecKeychainAttributeInfo struct.
     switch ( self.itemClass )
         {
-        case WSCKeychainItemClassInternetPassphraseItem:      itemID = CSSM_DL_DB_RECORD_INTERNET_PASSWORD;   break;
-        case WSCKeychainItemClassApplicationPassphraseItem:   itemID = CSSM_DL_DB_RECORD_GENERIC_PASSWORD;    break;
-        case WSCKeychainItemClassAppleSharePassphraseItem:    itemID = CSSM_DL_DB_RECORD_APPLESHARE_PASSWORD; break;
+        case WSCKeychainItemClassInternetPassphraseItem:    itemID = CSSM_DL_DB_RECORD_INTERNET_PASSWORD;   break;
+        case WSCKeychainItemClassApplicationPassphraseItem: itemID = CSSM_DL_DB_RECORD_GENERIC_PASSWORD;    break;
+        case WSCKeychainItemClassAppleSharePassphraseItem:  itemID = CSSM_DL_DB_RECORD_APPLESHARE_PASSWORD; break;
         case WSCKeychainItemClassCertificateItem:           itemID = CSSM_DL_DB_RECORD_X509_CERTIFICATE;    break;
         case WSCKeychainItemClassPublicKeyItem:
         case WSCKeychainItemClassPrivateKeyItem:
@@ -278,14 +278,9 @@
                         break;
                         }
 
-                    else if ( _AttrbuteTag == kSecAuthenticationTypeItemAttr
+                    else if ( _AttrbuteTag == kSecPortItemAttr
+                                || _AttrbuteTag == kSecAuthenticationTypeItemAttr
                                 || _AttrbuteTag == kSecProtocolItemAttr )
-                        {
-                        // Ignore the warning, cast the FourCharCode to id explicitly.
-                        attribute = ( id )[ self p_extractFourCharCodeFromSecAttrStruct: attrStruct error: &error ];
-                        break;
-                        }
-                    else if ( _AttrbuteTag == kSecPortItemAttr )
                         {
                         // Ignore the warning, cast the UInt32 to id explicitly.
                         attribute = ( id )[ self p_extractUInt32FromSecAttrStruct: attrStruct error: &error ];
@@ -348,33 +343,15 @@
     return stringValue;
     }
 
-// Extract FourCharCode from the SecKeychainAttribute struct.
-- ( FourCharCode ) p_extractFourCharCodeFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
-                                                    error: ( NSError** )_Error
-    {
-    FourCharCode attributeValue = '\0\0\0\0';
-
-    if ( _SecKeychainAttrStruct.tag == kSecAuthenticationTypeItemAttr
-            || _SecKeychainAttrStruct.tag == kSecProtocolItemAttr )
-        {
-        FourCharCode* data = _SecKeychainAttrStruct.data;
-        attributeValue = *data;
-        }
-    else
-        if ( _Error )
-            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCCommonInvalidParametersError
-                                       userInfo: nil ];
-    return attributeValue;
-    }
-
 // Extract UInt32 value from the SecKeychainAttribute struct.
 - ( UInt32 ) p_extractUInt32FromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
                                         error: ( NSError** )_Error
     {
     UInt32 attributeValue = 0U;
 
-    if ( _SecKeychainAttrStruct.tag == kSecPortItemAttr )
+    if ( _SecKeychainAttrStruct.tag == kSecPortItemAttr
+            || _SecKeychainAttrStruct.tag == kSecAuthenticationTypeItemAttr
+            || _SecKeychainAttrStruct.tag == kSecProtocolItemAttr )
         {
         UInt32* data = _SecKeychainAttrStruct.data;
         attributeValue = *data;
@@ -475,10 +452,6 @@
 
             case kSecAuthenticationTypeItemAttr:
             case kSecProtocolItemAttr:
-                newAttr = [ self p_attrForFourCharCode: ( FourCharCode )_NewValue
-                                               forAttr: _AttributeTag ];
-                break;
-
             case kSecPortItemAttr:
                 newAttr = [ self p_attrForUInt32: ( UInt32 )_NewValue
                                          forAttr: _AttributeTag ];
@@ -562,22 +535,7 @@
     return attrStruct;
     }
 
-// Construct SecKeychainAttribute struct with four char code.
-- ( SecKeychainAttribute ) p_attrForFourCharCode: ( FourCharCode )_FourCharCode
-                                         forAttr: ( SecItemAttr )_Attr
-    {
-    FourCharCode* fourCharCodeBuffer = malloc( sizeof( _FourCharCode ) );
-
-    // We will free the memory occupied by the fourCharCodeBuffer
-    // using SecKeychainItemFreeAttributesAndData() function in later.
-    memcpy( fourCharCodeBuffer, &_FourCharCode, sizeof( _FourCharCode ) );
-
-    SecKeychainAttribute attrStruct = { _Attr, ( UInt32 )sizeof( FourCharCode ), ( void* )fourCharCodeBuffer };
-
-    return attrStruct;
-    }
-
-// Construct SecKeychainAttribute struct with UInt32 code.
+// Construct SecKeychainAttribute struct with UInt32 and Four Char Code.
 - ( SecKeychainAttribute ) p_attrForUInt32: ( UInt32 )_UInt32Value
                                    forAttr: ( SecItemAttr )_Attr
     {
