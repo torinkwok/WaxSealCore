@@ -510,7 +510,7 @@
 
 NSString* const WSCKeychainItemAttributeCreationDate         = @"'cdat'";
 NSString* const WSCKeychainItemAttributeModificationDate     = @"'mdat'";
-NSString* const WSCKeychainItemAttributeDescription          = @"'desc'";
+NSString* const WSCKeychainItemAttributeKindDescription      = @"'desc'";
 NSString* const WSCKeychainItemAttributeComment              = @"'icmt'";
 NSString* const WSCKeychainItemAttributeLabel                = @"'labl'";
 NSString* const WSCKeychainItemAttributeInvisible            = @"'invi'";

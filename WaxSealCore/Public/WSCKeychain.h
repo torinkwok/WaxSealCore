@@ -393,9 +393,8 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
   @return `YES` if *_AnotherKeychain* is equivalent to receiver (if they have the same URL);
           otherwise *NO*.
 
-  **Special Considerations**
-
-   When you know both objects are keychains, this method is a faster way to check equality than method `-[NSObject isEqual:]`.
+  **One more thing**
+   When you know both objects are keychains, this method is a faster way to check equality than method `isEqual:`.
   */
 - ( BOOL ) isEqualToKeychain: ( WSCKeychain* )_AnotherKeychain;
 
@@ -473,7 +472,62 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
                                                   passphrase: ( NSString* )_Passphrase
                                                        error: ( NSError** )_Error;
 
-- ( WSCKeychainItem* ) findKeychainItemBasedOnTheSearchCriteria: ( NSDictionary* )_SearchCriteria;
+/** Find the first keychain item which satisfies the given search criteria contained in *_SearchCriteria* dictionary.
+
+  @param _SearchCriteria The `NSDictionary` object containing the search criteria. The valid search keys:
+
+  `WSCKeychainItemAttributeCreationDate`
+  The corresponding value is an `NSDate` object that identifies the creation date of a keychain item.
+
+  `WSCKeychainItemAttributeModificationDate`
+  The corresponding value is an `NSDate` object that identifies the modification date of a keychain item.
+
+  `WSCKeychainItemAttributeKindDescription`
+  The corresponding value is an `NSString` object that identifies the comment of a keychain item.
+
+  `WSCKeychainItemAttributeComment`
+  The corresponding value is an `NSString` object that identifies the kind description of a keychain item.
+
+  `WSCKeychainItemAttributeLabel`
+
+  `WSCKeychainItemAttributeInvisible`
+
+  `WSCKeychainItemAttributeNegative`
+
+  `WSCKeychainItemAttributeAccount`
+
+  `WSCKeychainItemAttributeServiceName`
+
+  `WSCKeychainItemAttributeUserDefinedAttribute`
+
+  `WSCKeychainItemAttributeSecurityDomain`
+
+  `WSCKeychainItemAttributeHostName`
+
+  `WSCKeychainItemAttributeAuthenticationType`
+
+  `WSCKeychainItemAttributePort`
+
+  `WSCKeychainItemAttributeRelativeURLPath`
+
+  `WSCKeychainItemAttributeProtocol`
+
+  `WSCKeychainItemAttributeCertificateType`
+
+  `WSCKeychainItemAttributeCertificateEncoding`
+
+  `WSCKeychainItemAttributeCRLType`
+ 
+  `WSCKeychainItemAttributeCRLEncoding`
+ 
+  `WSCKeychainItemAttributeAlias`
+
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+                You may specify `nil` for this parameter if you don't want the error information.
+  */
+- ( WSCKeychainItem* ) findFirstKeychainItemWhichSatisfiesSearchCriteria: ( NSDictionary* )_SearchCriteria
+                                                                   error: ( NSError** )_Error;
 
 @end // WSCKeychain class
 
