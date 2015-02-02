@@ -119,27 +119,69 @@ NSString* _WSCPassphrases[] =
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+NSString* _WSCLabels[] = { @"Kevin Spacey", @"Robin Wright", @"Michael Kelly"
+                         , @"Kate Mara", @"Corey Stoll", @"Mahershala Ali"
+                         , @"Michel Gill", @"Gerald McRaney", @"Rachel Brosnahan"
+                         };
+
 - ( void ) testLabelProperty
     {
     NSError* error = nil;
 
     WSCKeychain* commonKeychain = _WSCRandomKeychain();
+    NSString* commonLabel = @"WaxSealCore Password";
 
-    WSCPassphraseItem* internetPasswordItem =
-        [ commonKeychain addInternetPassphraseWithServerName: @"node-los.vnet.link"
-                                             URLRelativePath: nil
-                                                 accountName: @"NSTongG"
-                                                    protocol: WSCInternetProtocolTypeHTTPSProxy
-                                                  passphrase: @"waxsealcore"
-                                                       error: &error ];
-    XCTAssertNotNil( internetPasswordItem );
-    XCTAssertNil( error );
-    _WSCPrintNSErrorForUnitTest( error );
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 0: for Internet passphrase item
+    // -------------------------------------------------------------------------------
+    for ( int _Index = 0; _Index < 20; _Index++ )
+        {
+        WSCPassphraseItem* internetPasswordItem =
+            [ commonKeychain addInternetPassphraseWithServerName: @"node-los.vnet.link"
+                                                 URLRelativePath: nil
+                                                     accountName: @"NSTongG"
+                                                        protocol: WSCInternetProtocolTypeHTTPSProxy
+                                                      passphrase: @"waxsealcore"
+                                                           error: &error ];
+        XCTAssertNotNil( internetPasswordItem );
+        XCTAssertNil( error );
+        _WSCPrintNSErrorForUnitTest( error );
 
-    NSLog( @"Label: %@", internetPasswordItem.label );
-    internetPasswordItem.label = @"HTTPS Proxy Password";
-    XCTAssertNotNil( internetPasswordItem.label );
-    NSLog( @"Label: %@", internetPasswordItem.label );
+        NSLog( @"Older Label: %@", internetPasswordItem.label );
+        internetPasswordItem.label = commonLabel;
+        XCTAssertNotNil( internetPasswordItem.label );
+        XCTAssertEqualObjects( internetPasswordItem.label, commonLabel );
+        NSLog( @"Newer Label: %@", internetPasswordItem.label );
+
+        SecKeychainItemDelete( internetPasswordItem.secKeychainItem );
+
+        XCTAssertNil( internetPasswordItem.label );
+        }
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 1: for application passphrase item
+    // -------------------------------------------------------------------------------
+    for ( int _Index = 0; _Index < 20; _Index++ )
+        {
+        WSCPassphraseItem* applicationPasswordItem =
+            [ commonKeychain addApplicationPassphraseWithServiceName: @"WaxSealCore Unit Tests"
+                                                         accountName: @"NSTongG"
+                                                          passphrase: @"waxsealcore"
+                                                               error: &error ];
+        XCTAssertNotNil( applicationPasswordItem );
+        XCTAssertNil( error );
+        _WSCPrintNSErrorForUnitTest( error );
+
+        NSLog( @"Older Label: %@", applicationPasswordItem.label );
+        applicationPasswordItem.label = commonLabel;
+        XCTAssertNotNil( applicationPasswordItem.label );
+        XCTAssertEqualObjects( applicationPasswordItem.label, commonLabel );
+        NSLog( @"Newer Label: %@", applicationPasswordItem.label );
+
+        SecKeychainItemDelete( applicationPasswordItem.secKeychainItem );
+
+        XCTAssertNil( applicationPasswordItem.label );
+        }
     }
 
 - ( void ) testIsValidProperty
