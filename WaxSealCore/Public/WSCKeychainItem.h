@@ -184,6 +184,28 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
 @end // WSCKeychainItem class
 
+NSString extern* const WSCKeychainItemAttributeCreationDate;
+NSString extern* const WSCKeychainItemAttributeModificationDate;
+NSString extern* const WSCKeychainItemAttributeDescription;
+NSString extern* const WSCKeychainItemAttributeComment;
+NSString extern* const WSCKeychainItemAttributeLabel;
+NSString extern* const WSCKeychainItemAttributeInvisible;
+NSString extern* const WSCKeychainItemAttributeNegative;
+NSString extern* const WSCKeychainItemAttributeAccount;
+NSString extern* const WSCKeychainItemAttributeServiceName;
+NSString extern* const WSCKeychainItemAttributeUserDefinedAttribute;
+NSString extern* const WSCKeychainItemAttributeSecurityDomain;
+NSString extern* const WSCKeychainItemAttributeHostName;
+NSString extern* const WSCKeychainItemAttributeAuthenticationType;
+NSString extern* const WSCKeychainItemAttributePort;
+NSString extern* const WSCKeychainItemAttributeRelativeURLPath;
+NSString extern* const WSCKeychainItemAttributeProtocol;
+NSString extern* const WSCKeychainItemAttributeCertificateType;
+NSString extern* const WSCKeychainItemAttributeCertificateEncoding;
+NSString extern* const WSCKeychainItemAttributeCRLType;
+NSString extern* const WSCKeychainItemAttributeCRLEncoding;
+NSString extern* const WSCKeychainItemAttributeAlias;
+
 //////////////////////////////////////////////////////////////////////////////
 
 /*****************************************************************************

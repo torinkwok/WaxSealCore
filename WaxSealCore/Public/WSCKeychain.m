@@ -313,7 +313,7 @@ WSCKeychain static* s_system = nil;
                 && [ self.URL isEqualTo: _AnotherKeychain.URL ];
     }
 
-#pragma mark Public Programmatic Interfaces for Creating and Managing Keychain Items
+#pragma mark Creating and Managing Keychain Items
 /* Adds a new generic passphrase to the keychain represented by receiver.
  */
 - ( WSCPassphraseItem* ) addApplicationPassphraseWithServiceName: ( NSString* )_ServiceName

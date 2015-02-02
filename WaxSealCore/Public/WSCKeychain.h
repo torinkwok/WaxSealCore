@@ -176,6 +176,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
     , WSCInternetAuthenticationTypeAny              = kSecAuthenticationTypeAny
     };
 
+@class WSCKeychainItem;
 @class WSCPassphraseItem;
 
 @class WSCAccessPermission;
@@ -398,7 +399,7 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
   */
 - ( BOOL ) isEqualToKeychain: ( WSCKeychain* )_AnotherKeychain;
 
-#pragma mark Public Programmatic Interfaces for Creating and Managing Keychain Items
+#pragma mark Creating and Managing Keychain Items
 /** @name Creating and Managing Keychain Items */
 
 /** Adds a new application passphrase to the keychain represented by receiver.
@@ -471,6 +472,8 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
                                                     protocol: ( WSCInternetProtocolType )_Protocol
                                                   passphrase: ( NSString* )_Passphrase
                                                        error: ( NSError** )_Error;
+
+- ( WSCKeychainItem* ) findKeychainItemBasedOnTheSearchCriteria: ( NSDictionary* )_SearchCriteria;
 
 @end // WSCKeychain class
 

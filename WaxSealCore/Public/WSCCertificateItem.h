@@ -58,7 +58,7 @@
   The owner of the root certificate is the root certification authority. 
   See [Security Overview](https://developer.apple.com/library/mac/documentation/Security/Conceptual/Security_Overview/Introduction/Introduction.html) for more details about the structure and contents of a certificate.
   
-  Every public key is half of a public-private key pair. 
+  Every public key is half of a public-private key pair.
   As implied by the names, the **public** key can be obtained by anyone,
   but the **private** key is kept secret by the owner of the key. 
   Data encrypted with the private key can be decrypted only with the public key, and *vice versa*.
