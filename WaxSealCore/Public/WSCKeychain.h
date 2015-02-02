@@ -324,9 +324,9 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
   @sa +keychainWithContentsOfURL:error:
   */
 + ( instancetype ) keychainWhosePassphraseWillBeObtainedFromUserWithURL: ( NSURL* )_URL
-                                                        initialAccess: ( WSCAccessPermission* )_InitalAccess
-                                                       becomesDefault: ( BOOL )_WillBecomeDefault
-                                                                error: ( NSError** )_Error;
+                                                          initialAccess: ( WSCAccessPermission* )_InitalAccess
+                                                         becomesDefault: ( BOOL )_WillBecomeDefault
+                                                                  error: ( NSError** )_Error;
 
 /** Creates and returns a `WSCKeychain` object using the given reference to the instance of `SecKeychain` opaque type.
 

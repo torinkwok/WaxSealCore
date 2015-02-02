@@ -192,9 +192,9 @@ BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
 
 /* Creates and returns a `WSCKeychain` object using the given URL, interaction prompt and inital access rights. */
 + ( instancetype ) keychainWhosePassphraseWillBeObtainedFromUserWithURL: ( NSURL* )_URL
-                                                        initialAccess: ( WSCAccessPermission* )_InitalAccess
-                                                       becomesDefault: ( BOOL )_WillBecomeDefault
-                                                                error: ( NSError** )_Error
+                                                          initialAccess: ( WSCAccessPermission* )_InitalAccess
+                                                         becomesDefault: ( BOOL )_WillBecomeDefault
+                                                                  error: ( NSError** )_Error
     {
     return [ self p_keychainWithURL: _URL
                          passphrase: nil
