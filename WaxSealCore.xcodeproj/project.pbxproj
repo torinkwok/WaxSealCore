@@ -42,6 +42,8 @@
 		837C8B8B1A6D516500FFE4FF /* WSCTrustedApplication.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C8B851A6D516500FFE4FF /* WSCTrustedApplication.h */; };
 		837C8B8C1A6D516500FFE4FF /* WSCTrustedApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C8B861A6D516500FFE4FF /* WSCTrustedApplication.m */; };
 		838221111A4C214A00EF9945 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 838221101A4C214A00EF9945 /* README.md */; };
+		839169181A7FFEAF00EE76E0 /* WSCCertificateItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 839169161A7FFEAF00EE76E0 /* WSCCertificateItem.h */; };
+		839169191A7FFEAF00EE76E0 /* WSCCertificateItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 839169171A7FFEAF00EE76E0 /* WSCCertificateItem.m */; };
 		83C7237C1A4C1AA60084221A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 83C7237A1A4C1AA60084221A /* InfoPlist.strings */; };
 		83C723871A4C1AA60084221A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723861A4C1AA60084221A /* XCTest.framework */; };
 		83C7238B1A4C1AA60084221A /* WaxSealCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C7236E1A4C1AA60084221A /* WaxSealCore.framework */; };
@@ -111,6 +113,8 @@
 		837C8B861A6D516500FFE4FF /* WSCTrustedApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WSCTrustedApplication.m; path = Public/WSCTrustedApplication.m; sourceTree = "<group>"; };
 		838221091A4C1DC400EF9945 /* DocumentationHelper.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DocumentationHelper.xcodeproj; path = DocumentationHelper/DocumentationHelper.xcodeproj; sourceTree = "<group>"; };
 		838221101A4C214A00EF9945 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
+		839169161A7FFEAF00EE76E0 /* WSCCertificateItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WSCCertificateItem.h; path = Public/WSCCertificateItem.h; sourceTree = "<group>"; };
+		839169171A7FFEAF00EE76E0 /* WSCCertificateItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WSCCertificateItem.m; path = Public/WSCCertificateItem.m; sourceTree = "<group>"; };
 		83C7236E1A4C1AA60084221A /* WaxSealCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WaxSealCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		83C723741A4C1AA60084221A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		83C723791A4C1AA60084221A /* WaxSealCore-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WaxSealCore-Info.plist"; sourceTree = "<group>"; };
@@ -180,6 +184,8 @@
 				837C8B6E1A6D50F900FFE4FF /* WSCKeychainItem.m */,
 				837C8B691A6D50F900FFE4FF /* WSCPassphraseItem.h */,
 				837C8B6A1A6D50F900FFE4FF /* WSCPassphraseItem.m */,
+				839169161A7FFEAF00EE76E0 /* WSCCertificateItem.h */,
+				839169171A7FFEAF00EE76E0 /* WSCCertificateItem.m */,
 			);
 			name = Public;
 			sourceTree = "<group>";
@@ -388,6 +394,7 @@
 				837C8B891A6D516500FFE4FF /* WSCAccessPermission.h in Headers */,
 				837C8B671A6D50CA00FFE4FF /* WSCKeychainManager.h in Headers */,
 				837C8B731A6D50F900FFE4FF /* WSCKeychainItem.h in Headers */,
+				839169181A7FFEAF00EE76E0 /* WSCCertificateItem.h in Headers */,
 				837C8B7B1A6D514600FFE4FF /* NSURL+WSCKeychainURL.h in Headers */,
 				837C8B7F1A6D514600FFE4FF /* WSCKeychainError.h in Headers */,
 				837C8B511A6D4D7700FFE4FF /* _WSCKeychainItemPrivate.h in Headers */,
@@ -525,6 +532,7 @@
 				837C8B681A6D50CA00FFE4FF /* WSCKeychainManager.m in Sources */,
 				837C8B501A6D4D7700FFE4FF /* _WSCKeychainErrorPrivate.m in Sources */,
 				837C8B7C1A6D514600FFE4FF /* NSURL+WSCKeychainURL.m in Sources */,
+				839169191A7FFEAF00EE76E0 /* WSCCertificateItem.m in Sources */,
 				837C8B5A1A6D4DD400FFE4FF /* _WSCAccess.m in Sources */,
 				837C8B621A6D4DF000FFE4FF /* _WSCCommon.m in Sources */,
 				837C8B8C1A6D516500FFE4FF /* WSCTrustedApplication.m in Sources */,
