@@ -213,102 +213,64 @@
     OSStatus resultCode = errSecSuccess;
     id attribute = nil;
 
-    CSSM_DB_RECORDTYPE itemID = 0;
+    SecKeychainAttribute theAttr = { _AttrbuteTag, 0, NULL };
+    SecKeychainAttributeList attrList = { 1, &theAttr };
 
-    // Mapping for creating the SecKeychainAttributeInfo struct.
-    switch ( self.itemClass )
+    // Retrieve the attribute value with which the given attribute tag corresponds
+    if ( ( resultCode = SecKeychainItemCopyContent( self.secKeychainItem
+                                                  , NULL
+                                                  , &attrList
+                                                  , 0
+                                                  , NULL
+                                                  ) ) == errSecSuccess )
         {
-        case WSCKeychainItemClassInternetPassphraseItem:    itemID = CSSM_DL_DB_RECORD_INTERNET_PASSWORD;   break;
-        case WSCKeychainItemClassApplicationPassphraseItem: itemID = CSSM_DL_DB_RECORD_GENERIC_PASSWORD;    break;
-        case WSCKeychainItemClassAppleSharePassphraseItem:  itemID = CSSM_DL_DB_RECORD_APPLESHARE_PASSWORD; break;
-        case WSCKeychainItemClassCertificateItem:           itemID = CSSM_DL_DB_RECORD_X509_CERTIFICATE;    break;
-        case WSCKeychainItemClassPublicKeyItem:
-        case WSCKeychainItemClassPrivateKeyItem:
-        case WSCKeychainItemClassSymmetricKeyItem:          itemID = CSSM_DL_DB_RECORD_USER_TRUST;          break;
+        BOOL supportsAttr = NO;
 
-        default: break;
-        }
+        // Get the only attr struct.
+        SecKeychainAttribute attrStruct = attrList.attr[ 0 ];
 
-    SecKeychainAttributeInfo* attributeInfo = nil;
-    SecKeychainAttributeList* attrList = nil;
-
-    // Obtains tags for all possible attributes of a given item class.
-    if ( ( resultCode = SecKeychainAttributeInfoForItemID( [ WSCKeychain login ].secKeychain, itemID, &attributeInfo ) )
-            == errSecSuccess )
-        {
-        // Retrieves the attributes stored in the given keychain item.
-        if ( ( resultCode = SecKeychainItemCopyAttributesAndData( self.secKeychainItem
-                                                                , attributeInfo
-                                                                , NULL
-                                                                , &attrList
-                                                                , 0
-                                                                , NULL
-                                                                ) ) == errSecSuccess )
+        if ( attrStruct.tag == _AttrbuteTag )
             {
-            // We have succeeded in retrieving the attributes stored in the given keychain item.
-            // Now we can obtain the attributes array.
-            SecKeychainAttribute* attrs = attrList->attr;
+            supportsAttr = YES;
 
-            BOOL supportsAttr = NO;
-            // Iterate the attribtues array, find out the matching attribute
-            for ( int _Index = 0; _Index < attrList->count; _Index++ )
+            // TODO: Waiting for the new attribute
+            switch ( _AttrbuteTag )
                 {
-                SecKeychainAttribute attrStruct = attrs[ _Index ];
-
-                if ( attrStruct.tag == _AttrbuteTag )
+                case kSecCreationDateItemAttr:  case kSecModDateItemAttr:
                     {
-                    supportsAttr = YES;
+                    // Extracts the date value from the keychain attribute struct (SecKeychainAttribute)
+                    attribute = [ self p_extractDateFromSecAttrStruct: attrStruct error: &error ];
+                    } break;
 
-                    if ( _AttrbuteTag == kSecCreationDateItemAttr || _AttrbuteTag == kSecModDateItemAttr )
-                        {
-                        attribute = [ self p_extractDateFromSecAttrStruct: attrStruct error: &error ];
-                        break;
-                        }
+                case kSecLabelItemAttr:         case kSecCommentItemAttr:   case kSecAccountItemAttr:
+                case kSecDescriptionItemAttr:   case kSecServiceItemAttr:   case kSecServerItemAttr:
+                case kSecPathItemAttr:
+                    {
+                    // Extracts the string value from the keychain attribute struct (SecKeychainAttribute)
+                    attribute = [ self p_extractStringFromSecAttrStruct: attrStruct error: &error ];
+                    } break;
 
-                    // TODO: NEW ATTR
-                    else if ( _AttrbuteTag == kSecLabelItemAttr
-                                || _AttrbuteTag == kSecCommentItemAttr
-                                || _AttrbuteTag == kSecAccountItemAttr
-                                || _AttrbuteTag == kSecDescriptionItemAttr
-                                || _AttrbuteTag == kSecServiceItemAttr
-                                || _AttrbuteTag == kSecServerItemAttr
-                                || _AttrbuteTag == kSecPathItemAttr )
-                        {
-                        attribute = [ self p_extractStringFromSecAttrStruct: attrStruct error: &error ];
-                        break;
-                        }
-
-                    else if ( _AttrbuteTag == kSecPortItemAttr
-                                || _AttrbuteTag == kSecAuthenticationTypeItemAttr
-                                || _AttrbuteTag == kSecProtocolItemAttr )
-                        {
-                        // Ignore the warning, cast the UInt32 to id explicitly.
-                        attribute = ( id )[ self p_extractUInt32FromSecAttrStruct: attrStruct error: &error ];
-                        break;
-                        }
-                    }
+                case kSecPortItemAttr:  case kSecAuthenticationTypeItemAttr:    case kSecProtocolItemAttr:
+                    {
+                    // Extracts the UInt32 value from the keychain attribute struct (SecKeychainAttribute)
+                    // Ignore the warning, cast the UInt32 to id explicitly.
+                    attribute = ( id )[ self p_extractUInt32FromSecAttrStruct: attrStruct error: &error ];
+                    } break;
                 }
-
-            if ( !supportsAttr )
-                {
-                WSCKeychainItemClass classOfReceiver = [ self itemClass ];
-                error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                             code: ( classOfReceiver == WSCKeychainItemClassApplicationPassphraseItem )
-                                                        ? WSCKeychainItemAttributeIsUniqueToInternetPassphraseError
-                                                        : WSCKeychainItemAttributeIsUniqueToApplicationPassphraseError
-                                         userInfo: nil ];
-                }
-
-            // Okay, got it! We no longer need these guys, kill them 😲🔫
-            SecKeychainFreeAttributeInfo( attributeInfo );
-            SecKeychainItemFreeAttributesAndData( attrList, NULL );
             }
-        else
-            // If we failed to retrieves the attributes.
-            _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+
+        if ( !supportsAttr )
+            {
+            WSCKeychainItemClass classOfReceiver = [ self itemClass ];
+            error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                         code: ( classOfReceiver == WSCKeychainItemClassApplicationPassphraseItem )
+                                                    ? WSCKeychainItemAttributeIsUniqueToInternetPassphraseError
+                                                    : WSCKeychainItemAttributeIsUniqueToApplicationPassphraseError
+                                     userInfo: nil ];
+            }
         }
     else
-        // If we failed to obtain tags
+        // If we failed to retrieves the attributes.
         _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
 
     if ( error )

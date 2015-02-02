@@ -119,6 +119,29 @@ NSString* _WSCPassphrases[] =
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+- ( void ) testLabelProperty
+    {
+    NSError* error = nil;
+
+    WSCKeychain* commonKeychain = _WSCRandomKeychain();
+
+    WSCPassphraseItem* internetPasswordItem =
+        [ commonKeychain addInternetPassphraseWithServerName: @"node-los.vnet.link"
+                                             URLRelativePath: nil
+                                                 accountName: @"NSTongG"
+                                                    protocol: WSCInternetProtocolTypeHTTPSProxy
+                                                  passphrase: @"waxsealcore"
+                                                       error: &error ];
+    XCTAssertNotNil( internetPasswordItem );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    NSLog( @"Label: %@", internetPasswordItem.label );
+    internetPasswordItem.label = @"HTTPS Proxy Password";
+    XCTAssertNotNil( internetPasswordItem.label );
+    NSLog( @"Label: %@", internetPasswordItem.label );
+    }
+
 - ( void ) testIsValidProperty
     {
     NSError* error = nil;

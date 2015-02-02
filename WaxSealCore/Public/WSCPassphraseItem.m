@@ -261,7 +261,7 @@
 
     if ( [ super isValid ] )
         {
-        // We are going to search for the keychain item from its resided keychain
+        // We are going to search for the keychain item from its resided keychain.
         SecKeychainRef theKeychainToBeSearched = NULL;
 
         // Get the resided keychain of the password item represented by reciever.
