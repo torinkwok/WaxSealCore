@@ -416,7 +416,7 @@
 - ( NSMutableArray* ) p_wrapInternetPasswordItemSearchCriterias
     {
     NSMutableArray* searchCriterias = [ self p_wrapCommonPasswordItemSearchCriterias ];
-    // TODO: label property
+    [ self p_addSearchCriteriaWithCStringData: searchCriterias itemAttr: kSecLabelItemAttr ];
     [ self p_addSearchCriteriaWithCStringData: searchCriterias itemAttr: kSecServerItemAttr ];
     [ self p_addSearchCriteriaWithUInt32Data: searchCriterias itemAttr: kSecPortItemAttr ];
     [ self p_addSearchCriteriaWithUInt32Data: searchCriterias itemAttr: kSecProtocolItemAttr ];

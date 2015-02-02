@@ -286,13 +286,14 @@
     {
     NSString* stringValue = nil;
 
+    // TODO: Waiting for the new attribute
     if ( _SecKeychainAttrStruct.tag == kSecLabelItemAttr
             || _SecKeychainAttrStruct.tag == kSecCommentItemAttr
             || _SecKeychainAttrStruct.tag == kSecAccountItemAttr
             || _SecKeychainAttrStruct.tag == kSecDescriptionItemAttr
             || _SecKeychainAttrStruct.tag == kSecServiceItemAttr
             || _SecKeychainAttrStruct.tag == kSecServerItemAttr
-            || _SecKeychainAttrStruct.tag == kSecPathItemAttr ) // TODO: NEW ATTR
+            || _SecKeychainAttrStruct.tag == kSecPathItemAttr )
         stringValue = [ [ [ NSString alloc ] initWithBytes: _SecKeychainAttrStruct.data
                                                     length: _SecKeychainAttrStruct.length
                                                   encoding: NSUTF8StringEncoding ] autorelease ];
@@ -395,6 +396,7 @@
         {
         SecKeychainAttribute newAttr;
 
+        // TODO: Waiting for the new attribute
         switch ( _AttributeTag )
             {
             case kSecCreationDateItemAttr:
@@ -412,8 +414,6 @@
                 newAttr = [ self p_attrForUInt32: ( UInt32 )_NewValue
                                          forAttr: _AttributeTag ];
                 break;
-
-            // TODO: NEW ATTR
             }
 
         SecKeychainAttributeList newAttributeList = { 1 /* Only one attr */, &newAttr };
