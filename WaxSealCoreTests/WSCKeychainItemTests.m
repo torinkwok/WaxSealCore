@@ -119,11 +119,6 @@ NSString* _WSCPassphrases[] =
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-NSString* _WSCLabels[] = { @"Kevin Spacey", @"Robin Wright", @"Michael Kelly"
-                         , @"Kate Mara", @"Corey Stoll", @"Mahershala Ali"
-                         , @"Michel Gill", @"Gerald McRaney", @"Rachel Brosnahan"
-                         };
-
 - ( void ) testLabelProperty
     {
     NSError* error = nil;
