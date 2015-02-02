@@ -401,20 +401,14 @@
                 newAttr = [ self p_attrForDateValue: ( NSDate* )_NewValue ];
                 break;
 
-            case kSecLabelItemAttr:
-            case kSecCommentItemAttr:
-            case kSecAccountItemAttr:
-            case kSecDescriptionItemAttr:
-            case kSecServiceItemAttr:
-            case kSecServerItemAttr:
+            case kSecLabelItemAttr:         case kSecCommentItemAttr:   case kSecAccountItemAttr:
+            case kSecDescriptionItemAttr:   case kSecServiceItemAttr:   case kSecServerItemAttr:
             case kSecPathItemAttr:
                 newAttr = [ self p_attrForStringValue: ( NSString* )_NewValue
                                               forAttr: _AttributeTag ];
                 break;
 
-            case kSecAuthenticationTypeItemAttr:
-            case kSecProtocolItemAttr:
-            case kSecPortItemAttr:
+            case kSecAuthenticationTypeItemAttr:    case kSecProtocolItemAttr:  case kSecPortItemAttr:
                 newAttr = [ self p_attrForUInt32: ( UInt32 )_NewValue
                                          forAttr: _AttributeTag ];
                 break;
