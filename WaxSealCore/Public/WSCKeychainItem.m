@@ -68,24 +68,11 @@
  */
 - ( WSCKeychainItemClass ) itemClass
     {
-    OSStatus resultCode = errSecSuccess;
     NSError* error = nil;
 
-    SecItemClass class = CSSM_DL_DB_RECORD_ALL_KEYS;
-
-    // We just need the class of receiver,
-    // so any other parameter will be ignored.
-    resultCode = SecKeychainItemCopyAttributesAndData( self.secKeychainItem
-                                                     , NULL
-                                                     , &class
-                                                     , NULL
-                                                     , 0, NULL
-                                                     );
-    if ( resultCode != errSecSuccess )
-        {
-        _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+    SecItemClass class = [ self p_itemClass: &error ];
+    if ( error )
         _WSCPrintNSErrorForLog( error );
-        }
 
     return ( WSCKeychainItemClass )class;
     }
@@ -136,25 +123,11 @@
 - ( WSCKeychain* ) keychain
     {
     NSError* error = nil;
-    OSStatus resultCode = errSecSuccess;
     WSCKeychain* keychainResidingIn = nil;
 
     _WSCDontBeABitch( &error, self, [ WSCKeychainItem class ], s_guard );
     if ( !error )
-        {
-        SecKeychainRef secKeychainResidingIn = NULL;
-
-        // Get the keychain object of given keychain item
-        resultCode = SecKeychainItemCopyKeychain( self.secKeychainItem, &secKeychainResidingIn );
-
-        if ( resultCode == errSecSuccess )
-            {
-            keychainResidingIn = [ WSCKeychain keychainWithSecKeychainRef: secKeychainResidingIn ];
-            CFRelease( secKeychainResidingIn );
-            }
-        else
-            error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
-        }
+        [ self p_keychainWithoutCheckingValidity: &error ];
 
     if ( error )
         _WSCPrintNSErrorForLog( error );
@@ -200,8 +173,28 @@
 @implementation WSCKeychainItem ( WSCKeychainItemPrivateAccessingAttributes )
 
 #pragma mark Extracting
+- ( WSCKeychainItemClass ) p_itemClass: ( NSError** )_Error
+    {
+    OSStatus resultCode = errSecSuccess;
+
+    SecItemClass class = CSSM_DL_DB_RECORD_ALL_KEYS;
+
+    // We just need the class of receiver,
+    // so any other parameter will be ignored.
+    resultCode = SecKeychainItemCopyAttributesAndData( self.secKeychainItem
+                                                     , NULL
+                                                     , &class
+                                                     , NULL
+                                                     , 0, NULL
+                                                     );
+    if ( resultCode != errSecSuccess )
+        _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+
+    return ( WSCKeychainItemClass )class;
+    }
+
 // Because of the fucking potential infinite recursion,
-// we have to separate the "Don't be a bitch" logic with the p_extractAttribute: private method.
+// we have to separate the "Don't be a bitch" logic with the p_extractAttribute:error: private method.
 - ( id ) p_extractAttributeWithCheckingParameter: ( SecItemAttr )_AttributeTag
     {
     NSError* error = nil;
@@ -209,14 +202,16 @@
     _WSCDontBeABitch( &error, self, [ WSCKeychainItem class ], s_guard );
 
     if ( !error )
-        attribute = [ self p_extractAttribute: _AttributeTag ];
-    else
+        attribute = [ self p_extractAttribute: _AttributeTag error: &error ];
+
+    if ( error )
         _WSCPrintNSErrorForLog( error );
 
     return attribute;
     }
 
 - ( id ) p_extractAttribute: ( SecItemAttr )_AttrbuteTag
+                      error: ( NSError** )_Error;
     {
     NSError* error = nil;
     OSStatus resultCode = errSecSuccess;
@@ -270,7 +265,7 @@
 
         if ( !supportsAttr )
             {
-            WSCKeychainItemClass classOfReceiver = [ self itemClass ];
+            WSCKeychainItemClass classOfReceiver = [ self p_itemClass: nil ];
             error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                          code: ( classOfReceiver == WSCKeychainItemClassApplicationPassphraseItem )
                                                     ? WSCKeychainItemAttributeIsUniqueToInternetPassphraseError
@@ -282,8 +277,8 @@
         // If we failed to retrieves the attributes.
         _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
 
-    if ( error )
-        _WSCPrintNSErrorForLog( error );
+    if ( _Error && error )
+        *_Error = [ error copy ];
 
     return attribute;
     }
@@ -393,6 +388,27 @@
     return dateWithCorrectTimeZone;
     }
 
+- ( WSCKeychain* ) p_keychainWithoutCheckingValidity: ( NSError** )_Error
+    {
+    SecKeychainRef secKeychainResidingIn = NULL;
+    WSCKeychain* keychainResidingIn = nil;
+    OSStatus resultCode = errSecSuccess;
+
+    // Get the keychain object of given keychain item
+    resultCode = SecKeychainItemCopyKeychain( self.secKeychainItem, &secKeychainResidingIn );
+
+    if ( resultCode == errSecSuccess )
+        {
+        keychainResidingIn = [ WSCKeychain keychainWithSecKeychainRef: secKeychainResidingIn ];
+        CFRelease( secKeychainResidingIn );
+        }
+    else
+        if ( _Error )
+            [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+
+    return keychainResidingIn;
+    }
+
 #pragma mark Modifying
 - ( void ) p_modifyAttribute: ( SecItemAttr )_AttributeTag
                 withNewValue: ( id )_NewValue
@@ -436,7 +452,7 @@
 
             if ( error && [ error.domain isEqualToString: NSOSStatusErrorDomain ] && error.code == errSecNoSuchAttr )
                 {
-                WSCKeychainItemClass receiverClass = [ self itemClass ];
+                WSCKeychainItemClass receiverClass = [ self p_itemClass: nil ];
                 error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                              code: ( receiverClass == WSCKeychainItemClassApplicationPassphraseItem )
                                                         ? WSCKeychainItemAttributeIsUniqueToInternetPassphraseError

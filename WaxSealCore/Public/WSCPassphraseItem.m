@@ -151,7 +151,7 @@
     {
     // The `URL` property is unique to the Internet passphrase item
     // So the receiver must be an Internet passphrase item.
-    if ( [ self itemClass ] != WSCKeychainItemClassInternetPassphraseItem )
+    if ( [ self p_itemClass: nil ] != WSCKeychainItemClassInternetPassphraseItem )
         {
         NSError* error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                               code: WSCKeychainItemAttributeIsUniqueToInternetPassphraseError
@@ -256,83 +256,36 @@
  */
 - ( BOOL ) isValid
     {
-    OSStatus resultCode = errSecSuccess;
+    NSError* error = nil;
     BOOL isReceiverValid = NO;
 
     if ( [ super isValid ] )
         {
-        // We are going to search for the keychain item from its resided keychain.
-        SecKeychainRef theKeychainToBeSearched = NULL;
+        NSDictionary* searchCriteriaDict = nil;
+        WSCKeychainItemClass classOfReceiver = [ self p_itemClass: nil ];
 
-        // Get the resided keychain of the password item represented by reciever.
-        if ( ( resultCode = SecKeychainItemCopyKeychain( self.secKeychainItem, &theKeychainToBeSearched ) )
-                == errSecSuccess )
-            {
-            NSMutableArray* searchCriteria = [ NSMutableArray array ];
-            SecKeychainSearchRef secSearch = NULL;
+        // Get the search criteria for the Internet or application password item.
+        // we need only one keychain item satisfying the given search criteria
+        // to proof the keychain item represented by receiver is still valid.
+        if ( classOfReceiver == WSCKeychainItemClassInternetPassphraseItem )
+            searchCriteriaDict = [ self p_wrapInternetPasswordItemSearchCriteria ];
 
-            // Get the search criteria for the Internet or application password item.
-            if ( [ self itemClass ] == WSCKeychainItemClassInternetPassphraseItem )
-                searchCriteria = [ self p_wrapInternetPasswordItemSearchCriteria ];
-            else
-                searchCriteria = [ self p_wrapApplicationPasswordItemSearchCriteria ];
+        else if ( classOfReceiver == WSCKeychainItemClassApplicationPassphraseItem )
+            searchCriteriaDict = [ self p_wrapApplicationPasswordItemSearchCriteria ];
 
-            // If there is not any search criteria,
-            // we can consider that the keychain item represented by receiver is already invalid,
-            // we should skip the searching;
-            // otherwise, begin to search.
-            if ( searchCriteria.count != 0 )
-                {
-                // The SecKeychainAttribute structs that will be used in the searching
-                // was encapsulated in the NSValue objects.
-                // Now let's unbox them.
-                SecKeychainAttribute* secSearchCriteria = malloc( sizeof( SecKeychainAttribute ) * searchCriteria.count );
-                for ( int _Index = 0; _Index < searchCriteria.count; _Index++ )
-                    {
-                    SecKeychainAttribute elem;
-                    [ searchCriteria[ _Index ] getValue: &elem ];
-                    secSearchCriteria[ _Index ] = elem;
-                    }
-
-                SecKeychainAttributeList attrsList = { ( UInt32 )searchCriteria.count, secSearchCriteria };
-
-                // Creates a search object matching the given list of search criteria.
-                resultCode = SecKeychainSearchCreateFromAttributes( ( CFTypeRef )theKeychainToBeSearched
-                                                                  , ( SecItemClass )self.itemClass
-                                                                  , &attrsList
-                                                                  , &secSearch
-                                                                  );
-                if ( resultCode == errSecSuccess )
-                    {
-                    SecKeychainItemRef matchedItem = NULL;
-
-                    // Finds the next keychain item matching the given search criteria.
-                    // We use the `if` statement instead of `while` because
-                    // we need only one keychain item matching the given search criteria
-                    // to proof the keychain item represented by receiver is still valid.
-                    if ( ( resultCode == SecKeychainSearchCopyNext( secSearch, &matchedItem ) ) != errSecItemNotFound )
-                        {
-                        if ( matchedItem )
-                            {
-                            isReceiverValid = YES;
-                            CFRelease( matchedItem );
-                            }
-                        }
-                    }
-
-                if ( secSearch )
-                    CFRelease( secSearch );
-
-                for ( int _Index = 0; _Index < searchCriteria.count; _Index++ )
-                    if ( secSearchCriteria[ _Index ].tag == kSecPortItemAttr
-                            || secSearchCriteria[ _Index ].tag == kSecProtocolItemAttr )
-                        free( secSearchCriteria[ _Index ].data );
-                }
-
-            if ( theKeychainToBeSearched )
-                CFRelease( theKeychainToBeSearched );
-            }
+        // If there is not any search criteria,
+        // we can consider that the keychain item represented by receiver is already invalid,
+        // we should skip the searching;
+        // otherwise, begin to search.
+        if ( searchCriteriaDict.count != 0 )
+            isReceiverValid = [ [ self p_keychainWithoutCheckingValidity: &error ]
+                findFirstKeychainItemSatisfyingSearchCriteria: searchCriteriaDict
+                                                    itemClass: [ self p_itemClass: nil ]
+                                                        error: &error ]  ? YES : NO;
         }
+
+    if ( error )
+        _WSCPrintNSErrorForLog( error );
 
     return isReceiverValid;
     }
@@ -342,86 +295,57 @@
 #pragma mark WSCPassphraseItem + WSCPasswordPrivateUtilities
 @implementation WSCPassphraseItem ( WSCPasswordPrivateUtilities )
 
-- ( BOOL ) p_addSearchCriteriaWithCStringData: ( NSMutableArray* )_SearchCriteria
-                                     itemAttr: ( SecItemAttr )_ItemAttr
+- ( NSMutableDictionary* ) p_wrapCommonPasswordItemSearchCriteria
     {
-    BOOL isSuccess = NO;
+    NSMutableDictionary* searchCriteriaDict = [ NSMutableDictionary dictionaryWithCapacity: 3 ];
 
-    // Because of the fucking potential infinite recursion,
-    // we should never invoke the p_extractAttributeWithCheckingParameter: method.
-    NSString* cocoaStringData = [ self p_extractAttribute: _ItemAttr ];
-    void* cStringData = ( void* )[ cocoaStringData cStringUsingEncoding: NSUTF8StringEncoding ];
+    NSString* account = ( NSString* )[ self p_extractAttribute: kSecAccountItemAttr error: nil ];
+    if ( account )
+        searchCriteriaDict[ WSCKeychainItemAttributeAccount ] = account;
 
-    if ( cStringData && strlen( cStringData ) )
-        {
-        SecKeychainAttribute* dynamicAttrBuffer = malloc( sizeof( SecKeychainAttribute ) );
-        dynamicAttrBuffer->tag = _ItemAttr;
-        dynamicAttrBuffer->length = ( UInt32 )strlen( cStringData );
-        dynamicAttrBuffer->data = cStringData;
+    NSString* description = ( NSString* )[ self p_extractAttribute: kSecDescriptionItemAttr error: nil ];
+    if ( description )
+        searchCriteriaDict[ WSCKeychainItemAttributeKindDescription ] = description;
 
-        NSValue* attrValue = [ NSValue valueWithBytes: dynamicAttrBuffer objCType: @encode( SecKeychainAttribute ) ];
-        [ _SearchCriteria addObject: attrValue ];
+    NSString* comment = ( NSString* )[ self p_extractAttribute: kSecCommentItemAttr error: nil ];
+    if ( comment )
+        searchCriteriaDict[ WSCKeychainItemAttributeComment ] = comment;
 
-        isSuccess = YES;
-        }
-
-    return isSuccess;
+    return searchCriteriaDict;
     }
 
-- ( BOOL ) p_addSearchCriteriaWithUInt32Data: ( NSMutableArray* )_SearchCriteria
-                                    itemAttr: ( SecItemAttr )_ItemAttr
+- ( NSMutableDictionary* ) p_wrapApplicationPasswordItemSearchCriteria
     {
-    BOOL isSuccess = NO;
+    NSMutableDictionary* searchCriteriaDict = [ self p_wrapCommonPasswordItemSearchCriteria ];
 
-    // Because of the fucking potential infinite recursion,
-    // we should never invoke the p_extractAttributeWithCheckingParameter: method.
-    UInt32 UInt32Data = ( UInt32 )[ self p_extractAttribute: _ItemAttr ];
+    NSString* serviceName = ( NSString* )[ self p_extractAttribute: kSecServiceItemAttr error: nil ];
+    if ( serviceName )
+        searchCriteriaDict[ WSCKeychainItemAttributeServiceName ] = serviceName;
 
-    if ( UInt32Data != 0 )
-        {
-        SecKeychainAttribute* dynamicAttrBuffer = malloc( sizeof( SecKeychainAttribute ) );
-        UInt32* dynamicUInt32DataBuffer = malloc( sizeof( UInt32 ) );
-        memcpy( dynamicUInt32DataBuffer, &UInt32Data, sizeof( UInt32Data ) );
-        dynamicAttrBuffer->tag = _ItemAttr;
-        dynamicAttrBuffer->length = ( UInt32 )sizeof( UInt32Data );
-        dynamicAttrBuffer->data = dynamicUInt32DataBuffer;
-
-        NSValue* attrValue = [ NSValue valueWithBytes: dynamicAttrBuffer objCType: @encode( SecKeychainAttribute ) ];
-        [ _SearchCriteria addObject: attrValue ];
-
-        isSuccess = YES;
-        }
-
-    return isSuccess;
+    return searchCriteriaDict;
     }
 
-- ( NSMutableArray* ) p_wrapCommonPasswordItemSearchCriteria
+- ( NSMutableDictionary* ) p_wrapInternetPasswordItemSearchCriteria
     {
-    NSMutableArray* searchCriteria = [ NSMutableArray array ];
-    [ self p_addSearchCriteriaWithCStringData: searchCriteria itemAttr: kSecAccountItemAttr ];
-    [ self p_addSearchCriteriaWithCStringData: searchCriteria itemAttr: kSecCommentItemAttr ];
-    [ self p_addSearchCriteriaWithCStringData: searchCriteria itemAttr: kSecDescriptionItemAttr ];
+    NSMutableDictionary* searchCriteriaDict = [ self p_wrapCommonPasswordItemSearchCriteria ];
 
-    return searchCriteria;
-    }
+    NSString* label = ( NSString* )[ self p_extractAttribute: kSecLabelItemAttr error: nil ];
+    if ( label )
+        searchCriteriaDict[ WSCKeychainItemAttributeLabel ] = label;
 
-- ( NSMutableArray* ) p_wrapApplicationPasswordItemSearchCriteria
-    {
-    NSMutableArray* searchCriteria = [ self p_wrapCommonPasswordItemSearchCriteria ];
-    [ self p_addSearchCriteriaWithCStringData: searchCriteria itemAttr: kSecServiceItemAttr ];
+    NSString* hostName = ( NSString* )[ self p_extractAttribute: kSecServerItemAttr error: nil ];
+    if ( hostName )
+        searchCriteriaDict[ WSCKeychainItemAttributeHostName ] = hostName;
 
-    return searchCriteria;
-    }
+    NSUInteger port = ( NSUInteger )[ self p_extractAttribute: kSecPortItemAttr error: nil ];
+    if ( port != 0 )
+        searchCriteriaDict[ WSCKeychainItemAttributePort ] = @( port );
 
-- ( NSMutableArray* ) p_wrapInternetPasswordItemSearchCriteria
-    {
-    NSMutableArray* searchCriteria = [ self p_wrapCommonPasswordItemSearchCriteria ];
-    [ self p_addSearchCriteriaWithCStringData: searchCriteria itemAttr: kSecLabelItemAttr ];
-    [ self p_addSearchCriteriaWithCStringData: searchCriteria itemAttr: kSecServerItemAttr ];
-    [ self p_addSearchCriteriaWithUInt32Data: searchCriteria itemAttr: kSecPortItemAttr ];
-    [ self p_addSearchCriteriaWithUInt32Data: searchCriteria itemAttr: kSecProtocolItemAttr ];
+    WSCInternetProtocolType protocolType = ( WSCInternetProtocolType )[ self p_extractAttribute: kSecProtocolItemAttr error: nil ];
+    if ( protocolType != '\0\0\0\0' )
+        searchCriteriaDict[ WSCKeychainItemAttributeProtocol ] = WSCInternetProtocolCocoaValue( protocolType );
 
-    return searchCriteria;
+    return searchCriteriaDict;
     }
 
 @end // WSCPassphraseItem + WSCPasswordPrivateUtilities
