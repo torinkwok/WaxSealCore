@@ -176,6 +176,35 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
     , WSCInternetAuthenticationTypeAny              = kSecAuthenticationTypeAny
     };
 
+/** Specifies a keychain item’s class code.
+  */
+typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
+    {
+    /// Indicates that the item is an Internet passphrase.
+      WSCKeychainItemClassInternetPassphraseItem        = kSecInternetPasswordItemClass
+
+    /// Indicates that the item is an application passphrase.
+    , WSCKeychainItemClassApplicationPassphraseItem     = kSecGenericPasswordItemClass
+
+    /// Indicates that the item is an AppleShare passphrase.
+    , WSCKeychainItemClassAppleSharePassphraseItem      = kSecAppleSharePasswordItemClass
+
+    /// Indicates that the item is an X509 certificate.
+    , WSCKeychainItemClassCertificateItem               = kSecCertificateItemClass
+
+    /// Indicates that the item is a public key of a public-private pair.
+    , WSCKeychainItemClassPublicKeyItem                 = kSecPublicKeyItemClass
+
+    /// Indicates that the item is a private key of a public-private pair.
+    , WSCKeychainItemClassPrivateKeyItem                = kSecPrivateKeyItemClass
+
+    /// Indicates that the item is a private key used for symmetric-key encryption.
+    , WSCKeychainItemClassSymmetricKeyItem              = kSecSymmetricKeyItemClass
+
+    /// The item can be any type of key; used for searches only.
+    , WSCKeychainItemClassAllKeys                       = CSSM_DL_DB_RECORD_ALL_KEYS
+    };
+
 @class WSCKeychainItem;
 @class WSCPassphraseItem;
 
@@ -333,8 +362,8 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
 
   @param _SecKeychainRef A reference to the instance of `SecKeychain` opaque type.
   
-  @return A `WSCKeychain` object initialized with the givent reference to the instance of `SecKeychain` opaque type.
-          Return `nil` if *_SecKeychainRef* is `nil`.
+  @return A `WSCKeychain` object initialized with the given reference to the instance of `SecKeychain` opaque type.
+          Return `nil` if *_SecKeychainRef* is `nil` or an error occured.
           
   @sa +keychainWithURL:passphrase:initialAccess:becomesDefault:error:
   @sa +keychainWhosePassphraseWillBeObtainedFromUserWithURL:initialAccess:becomesDefault:error:
@@ -541,15 +570,22 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
   **WSCKeychainItemAttributeCRLEncoding**
  
   **WSCKeychainItemAttributeAlias**
+  
+  @param _ItemClass The value of type WSCKeychainItemClass, 
+         it identifies the type of keychain item we want to find.
 
   @param _Error On input, a pointer to an error object.
                 If an error occurs, this pointer is set to an actual error object containing the error information.
                 You may specify `nil` for this parameter if you don't want the error information.
+                
+  @return A `WSCKeychainItem` object representing the keychain item matching the given search criteria.
+          Returns `nil` if an error occurs or there is not any keychan item matching the given search criteria.
   */
 /* TODO: Completed the documentation of WSCKeychainItemAttributeCertificateType, WSCKeychainItemAttributeCertificateEncoding
  * WSCKeychainItemAttributeCRLType, WSCKeychainItemAttributeCRLEncoding and WSCKeychainItemAttributeAlias.
  */
 - ( WSCKeychainItem* ) findFirstKeychainItemWhichSatisfiesSearchCriteria: ( NSDictionary* )_SearchCriteria
+                                                               itemClass: ( WSCKeychainItemClass )_ItemClass
                                                                    error: ( NSError** )_Error;
 
 @end // WSCKeychain class

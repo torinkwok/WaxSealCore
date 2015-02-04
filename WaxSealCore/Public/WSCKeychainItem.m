@@ -107,6 +107,12 @@
     return [ self p_extractAttributeWithCheckingParameter: kSecModDateItemAttr ];
     }
 
+#pragma mark Initialization Methods
++ ( instancetype ) keychainItemWithSecKeychainItemRef: ( SecKeychainItemRef )_SecKeychainItemRef
+    {
+    return [ [ [ self alloc ] p_initWithSecKeychainItemRef: _SecKeychainItemRef ] autorelease ];
+    }
+
 #pragma mark Managing Keychain Items
 /* Boolean value that indicates whether the receiver is currently valid. (read-only)
  */
@@ -176,9 +182,12 @@
     {
     if ( self = [ super init ] )
         {
+        // The _SecKeychainItemRef parameter must not be nil.
         if ( _SecKeychainItemRef )
             self->_secKeychainItem = ( SecKeychainItemRef )CFRetain( _SecKeychainItemRef );
-        else
+
+        // Ensure that the _SecKeychainItemRef does reference an exist keychain item.
+        if ( !self.isValid )
             return nil;
         }
 

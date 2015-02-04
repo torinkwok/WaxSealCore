@@ -415,6 +415,88 @@ WSCKeychain static* s_system = nil;
     return nil;
     }
 
+- ( NSArray* ) p_findKeychainItemsThatSatisfySearchCriteria: ( NSArray* )_SearchCriteria
+                                                  itemClass: ( WSCKeychainItemClass )_ItemClass
+                              shouldContinueAfterFindingOne: ( BOOL )_ShouldContinue
+                                                      error: ( NSError** )_Error
+    {
+    OSStatus resultCode = errSecSuccess;
+    NSMutableArray* matchedItems = [ NSMutableArray array ];
+
+    if ( self.isValid )
+        {
+        SecKeychainSearchRef secSearch = NULL;
+
+        // If there is not any search criteria,
+        // we can consider that the keychain item represented by receiver is already invalid,
+        // we should skip the searching;
+        // otherwise, begin to search.
+        if ( _SearchCriteria.count != 0 )
+            {
+            // The SecKeychainAttribute structs that will be used in the searching
+            // was encapsulated in the NSValue objects.
+            // Now let's unbox them.
+            SecKeychainAttribute* secSearchCriteria = malloc( sizeof( SecKeychainAttribute ) * _SearchCriteria.count );
+            for ( int _Index = 0; _Index < _SearchCriteria.count; _Index++ )
+                {
+                SecKeychainAttribute elem;
+                [ _SearchCriteria[ _Index ] getValue: &elem ];
+                secSearchCriteria[ _Index ] = elem;
+                }
+
+            SecKeychainAttributeList attrsList = { ( UInt32 )_SearchCriteria.count, secSearchCriteria };
+
+            // Creates a search object matching the given list of search criteria.
+            resultCode = SecKeychainSearchCreateFromAttributes( ( CFTypeRef )self.secKeychain
+                                                              , ( SecItemClass )_ItemClass
+                                                              , &attrsList
+                                                              , &secSearch
+                                                              );
+            if ( resultCode == errSecSuccess )
+                {
+                SecKeychainItemRef matchedItem = NULL;
+
+                // Finds the next keychain item matching the given search criteria.
+                // We use the `if` statement instead of `while` because
+                // we need only one keychain item matching the given search criteria
+                // to proof the keychain item represented by receiver is still valid.
+                while ( ( resultCode == SecKeychainSearchCopyNext( secSearch, &matchedItem ) ) != errSecItemNotFound )
+                    {
+                    if ( matchedItem )
+                        {
+                        WSCKeychainItem* matchedItem = [ WSCKeychainItem keychainItemWithSecKeychainItemRef: matchedItem ];
+                        CFRelease( matchedItem );
+
+                        [ matchedItems addObject: matchedItem ];
+
+                        if ( !_ShouldContinue )
+                            break;
+                        }
+                    }
+                }
+
+            if ( secSearch )
+                CFRelease( secSearch );
+
+            for ( int _Index = 0; _Index < _SearchCriteria.count; _Index++ )
+                if ( secSearchCriteria[ _Index ].tag == kSecPortItemAttr
+                        || secSearchCriteria[ _Index ].tag == kSecProtocolItemAttr )
+                    free( secSearchCriteria[ _Index ].data );
+            }
+        }
+
+    return isReceiverValid;
+    }
+
+/* Find the first keychain item which satisfies the given search criteria contained in *_SearchCriteria* dictionary.
+ */
+- ( WSCKeychainItem* ) findFirstKeychainItemWhichSatisfiesSearchCriteria: ( NSDictionary* )_SearchCriteria
+                                                               itemClass: ( WSCKeychainItemClass )_ItemClass
+                                                                   error: ( NSError** )_Error;
+    {
+
+    }
+
 #pragma mark Overrides
 - ( void ) dealloc
     {

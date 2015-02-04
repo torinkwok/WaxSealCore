@@ -35,35 +35,6 @@
 
 #import "WSCKeychain.h"
 
-/** Specifies a keychain item’s class code.
-  */
-typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
-    {
-    /// Indicates that the item is an Internet passphrase.
-      WSCKeychainItemClassInternetPassphraseItem        = kSecInternetPasswordItemClass
-
-    /// Indicates that the item is an application passphrase.
-    , WSCKeychainItemClassApplicationPassphraseItem     = kSecGenericPasswordItemClass
-
-    /// Indicates that the item is an AppleShare passphrase.
-    , WSCKeychainItemClassAppleSharePassphraseItem      = kSecAppleSharePasswordItemClass
-
-    /// Indicates that the item is an X509 certificate.
-    , WSCKeychainItemClassCertificateItem               = kSecCertificateItemClass
-
-    /// Indicates that the item is a public key of a public-private pair.
-    , WSCKeychainItemClassPublicKeyItem                 = kSecPublicKeyItemClass
-
-    /// Indicates that the item is a private key of a public-private pair.
-    , WSCKeychainItemClassPrivateKeyItem                = kSecPrivateKeyItemClass
-
-    /// Indicates that the item is a private key used for symmetric-key encryption.
-    , WSCKeychainItemClassSymmetricKeyItem              = kSecSymmetricKeyItemClass
-
-    /// The item can be any type of key; used for searches only.
-    , WSCKeychainItemClassAllKeys                       = CSSM_DL_DB_RECORD_ALL_KEYS
-    };
-
 /** The `WSCKeychainItem` defines the basic property of an keychain item.
 
   You typically do not use `WSCKeychainItem` object directly, you use objects whose
@@ -109,6 +80,18 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   use a [CSSM (Common Security Services Manager)](https://developer.apple.com/library/mac/documentation/Security/Conceptual/cryptoservices/CDSA/CDSA.html) function to do so.
   */
 @property ( retain, readonly ) NSDate* modificationDate;
+
+#pragma mark Initialization Methods
+/** @name Initialization Methods */
+
+/** Creates and returns a `WSCKeychainItem` object using the given reference to the instance of `SecKeychainItem` opaque type.
+
+  @param _SecKeychainItemRef A reference to the instance of `SecKeychainItem` opaque type.
+  
+  @return A `WSCKeychainItem` object initialized with the given reference to the instance of `SecKeychainItem` opaque type.
+          Return `nil` if *_SecKeychainItemRef* is `nil` or an error occured.
+  */
++ ( instancetype ) keychainItemWithSecKeychainItemRef: ( SecKeychainItemRef )_SecKeychainItem;
 
 #pragma mark Managing Keychain Items
 /** @name Managing Keychain Items */
