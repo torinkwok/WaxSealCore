@@ -75,30 +75,54 @@
                                                         }
                                             itemClass: WSCKeychainItemClassInternetPassphraseItem
                                                 error: &error ];
-    XCTAssertNil( error );
-    _WSCPrintNSErrorForUnitTest( error );
     XCTAssertNotNil( matchedItem_testCase0 );
+    XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
     NSArray* matchedItems_testCase0 = [ [ WSCKeychain login ]
-        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeAccount : @"TongGuo"
-                                                       , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPS )
-                                                       }
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeAuthenticationType : WSCAuthenticationTypeCocoaValue( WSCInternetAuthenticationTypeAny ) }
                                            itemClass: WSCKeychainItemClassInternetPassphraseItem
                                                error: &error ];
-    XCTAssertNil( error );
-    _WSCPrintNSErrorForUnitTest( error );
     XCTAssertNotNil( matchedItems_testCase0 );
     XCTAssert( matchedItems_testCase0.count > 1 );
+    XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
-    WSCKeychainItem* matchedItem_negayiveTestCase0 = [ [ WSCKeychain login ]
+    matchedItems_testCase0 = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeAny ) }
+                                           itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                               error: &error ];
+    XCTAssertNotNil( matchedItems_testCase0 );
+    XCTAssert( matchedItems_testCase0.count > 1 );
+    XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
+
+    matchedItems_testCase0 = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributePort : @8064 }
+                                           itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                               error: &error ];
+    XCTAssertNotNil( matchedItems_testCase0 );
+    XCTAssert( matchedItems_testCase0.count >= 1 );
+    XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
+
+    matchedItems_testCase0 = [ _WSCRandomKeychain()
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributePort : @8064 }
+                                           itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                               error: &error ];
+    XCTAssertNil( matchedItems_testCase0 );
+    XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
+
+    WSCKeychainItem* matchedItem_negativeTestCase0 = [ [ WSCKeychain login ]
         findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeAccount : @"TongGuo"
                                                         , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPS )
                                                         }
                                             itemClass: WSCKeychainItemClassApplicationPassphraseItem
                                                 error: &error ];
+    XCTAssertNil( matchedItem_negativeTestCase0 );
     XCTAssertNil( error );
-    _WSCPrintNSErrorForUnitTest( error );
-    XCTAssertNil( matchedItem_negayiveTestCase0 );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
     NSArray* matchedItems_negativeTestCase0 = [ [ WSCKeychain login ]
         findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeAccount : @"TongGuo"
@@ -106,9 +130,9 @@
                                                        }
                                            itemClass: WSCKeychainItemClassApplicationPassphraseItem
                                                error: &error ];
-    XCTAssertNil( error );
-    _WSCPrintNSErrorForUnitTest( error );
     XCTAssertNil( matchedItems_negativeTestCase0 );
+    XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
     // --------------------------------------------------------------------------------------------------------------------
     // Positive Test Case 1
@@ -117,34 +141,34 @@
         findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Vnet Link (sosueme)" }
                                             itemClass: WSCKeychainItemClassInternetPassphraseItem
                                                 error: &error ];
-    XCTAssertNil( error );
-    _WSCPrintNSErrorForUnitTest( error );
     XCTAssertNotNil( matchedItem_testCase1 );
+    XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
     NSArray* matchedItems_testCase1 = [ [ WSCKeychain login ]
         findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Vnet Link (sosueme)" }
                                            itemClass: WSCKeychainItemClassInternetPassphraseItem
                                                error: &error ];
-    XCTAssertNil( error );
-    _WSCPrintNSErrorForUnitTest( error );
     XCTAssertNotNil( matchedItems_testCase1 );
     XCTAssert( matchedItems_testCase1.count > 1 );
+    XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
     WSCKeychainItem* matchedItem_negativeTestCase1 = [ [ WSCKeychain login ]
         findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Vnet Link (sosueme)" }
                                             itemClass: WSCKeychainItemClassApplicationPassphraseItem
                                                 error: &error ];
-    XCTAssertNil( error );
-    _WSCPrintNSErrorForUnitTest( error );
     XCTAssertNil( matchedItem_negativeTestCase1 );
+    XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
     NSArray* matchedItems_negativeTestCase1 = [ [ WSCKeychain login ]
         findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Vnet Link (sosueme)" }
                                            itemClass: WSCKeychainItemClassApplicationPassphraseItem
                                                error: &error ];
-    XCTAssertNil( error );
-    _WSCPrintNSErrorForUnitTest( error );
     XCTAssertNil( matchedItems_negativeTestCase1 );
+    XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
     // --------------------------------------------------------------------------------------------------------------------
     // Negative Test Case 2
@@ -157,7 +181,7 @@
     XCTAssertNotNil( error );
     XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
-    _WSCPrintNSErrorForUnitTest( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
     // --------------------------------------------------------------------------------------------------------------------
     // Negative Test Case 3
@@ -170,7 +194,7 @@
     XCTAssertNotNil( error );
     XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
-    _WSCPrintNSErrorForUnitTest( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
     // --------------------------------------------------------------------------------------------------------------------
     // Negative Test Case 4
