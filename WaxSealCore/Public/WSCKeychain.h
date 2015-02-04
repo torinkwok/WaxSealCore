@@ -476,56 +476,79 @@ typedef NS_ENUM( FourCharCode, WSCInternetAuthenticationType )
 
   @param _SearchCriteria The `NSDictionary` object containing the search criteria. The valid search keys:
 
-  `WSCKeychainItemAttributeCreationDate`
+  **WSCKeychainItemAttributeCreationDate**
   The corresponding value is an `NSDate` object that identifies the creation date of a keychain item.
 
-  `WSCKeychainItemAttributeModificationDate`
+  **WSCKeychainItemAttributeModificationDate**
   The corresponding value is an `NSDate` object that identifies the modification date of a keychain item.
 
-  `WSCKeychainItemAttributeKindDescription`
+  **WSCKeychainItemAttributeKindDescription**
   The corresponding value is an `NSString` object that identifies the comment of a keychain item.
 
-  `WSCKeychainItemAttributeComment`
+  **WSCKeychainItemAttributeComment**
   The corresponding value is an `NSString` object that identifies the kind description of a keychain item.
 
-  `WSCKeychainItemAttributeLabel`
+  **WSCKeychainItemAttributeLabel**
+  The corresponding value is an `NSString` object that identifies the label of a keychain item.
 
-  `WSCKeychainItemAttributeInvisible`
+  **WSCKeychainItemAttributeInvisible**
+  The corresponding value is an Boolean value that indicates whether the item is invisible.
 
-  `WSCKeychainItemAttributeNegative`
+  **WSCKeychainItemAttributeNegative**
+  The corresponding value is an Boolean value that indicates whether there is a valid password associated with this keychain item.
 
-  `WSCKeychainItemAttributeAccount`
+  **WSCKeychainItemAttributeAccount**
+  The corresponding value is an `NSString` object that identifies the user account of a passphrase item.
+  It also applies to application, Internet passphrase items.
 
-  `WSCKeychainItemAttributeServiceName`
+  **WSCKeychainItemAttributeServiceName**
+  The corresponding value is an `NSString` object that identifies the value of untyped bytes that represents a user-defined data.
+  This is unique to the application passphrase item.
 
-  `WSCKeychainItemAttributeUserDefinedAttribute`
+  **WSCKeychainItemAttributeUserDefinedDataAttribute**
+  The corresponding value is an `NSData` object that identifies the service name of an application passphrase item.
+  For example, "WaxSeal". This is unique to the application passphrase item.
 
-  `WSCKeychainItemAttributeSecurityDomain`
+  **WSCKeychainItemAttributeHostName**
+  The corresponding value is an `NSString` object that identifies the Internet server’s domain name or IP address of an Internet passphrase.
+  This is unique to the Internet passphrase item.
 
-  `WSCKeychainItemAttributeHostName`
+  **WSCKeychainItemAttributeAuthenticationType**
+  The corresponding value is an `NSValue` object that encapsulates a value of type `WSCInternetAuthenticationType` 
+  that identifies the authentication type of an Internet passphrase.
+  This is unique to the Internet passphrase item.
 
-  `WSCKeychainItemAttributeAuthenticationType`
+  **WSCKeychainItemAttributePort**
+  The corresponding value is an `NSNumber` object that identifies the port number of an Internet passphrase item.
+  This is unique to the Internet passphrase item.
 
-  `WSCKeychainItemAttributePort`
+  **WSCKeychainItemAttributeRelativePath**
+  The corresponding value is an `NSString` object that identifies the relative path of a URL conforming to RFC 1808 of an Internet passphrase.
+  For example: in the URL "https://github.com/TongG/WaxSealCore", the relative URL path is "/TongG/WaxSealCore".
+  This is unique to the Internet passphrase item.
 
-  `WSCKeychainItemAttributeRelativeURLPath`
+  **WSCKeychainItemAttributeProtocol**
+  The corresponding value is an `NSValue` object that encapsulates a value of type `WSCInternetProtocolType`
+  that identifies the Internet protocol of an Internet passphrase.
+  This is unique to the Internet passphrase item.
 
-  `WSCKeychainItemAttributeProtocol`
+  **WSCKeychainItemAttributeCertificateType**
 
-  `WSCKeychainItemAttributeCertificateType`
+  **WSCKeychainItemAttributeCertificateEncoding**
 
-  `WSCKeychainItemAttributeCertificateEncoding`
-
-  `WSCKeychainItemAttributeCRLType`
+  **WSCKeychainItemAttributeCRLType**
  
-  `WSCKeychainItemAttributeCRLEncoding`
+  **WSCKeychainItemAttributeCRLEncoding**
  
-  `WSCKeychainItemAttributeAlias`
+  **WSCKeychainItemAttributeAlias**
 
   @param _Error On input, a pointer to an error object.
                 If an error occurs, this pointer is set to an actual error object containing the error information.
                 You may specify `nil` for this parameter if you don't want the error information.
   */
+/* TODO: Completed the documentation of WSCKeychainItemAttributeCertificateType, WSCKeychainItemAttributeCertificateEncoding
+ * WSCKeychainItemAttributeCRLType, WSCKeychainItemAttributeCRLEncoding and WSCKeychainItemAttributeAlias.
+ */
 - ( WSCKeychainItem* ) findFirstKeychainItemWhichSatisfiesSearchCriteria: ( NSDictionary* )_SearchCriteria
                                                                    error: ( NSError** )_Error;
 

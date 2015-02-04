@@ -190,7 +190,7 @@
     [ self p_modifyAttribute: kSecServerItemAttr withNewValue: _ServerName ];
     }
 
-/* The `NSString` object that identifies the the path of a URL conforming to RFC 1808 
+/* The `NSString` object that identifies the path of a URL conforming to RFC 1808 
  * of an Internet passphrase item represented by receiver.
  */
 - ( NSString* ) relativePath

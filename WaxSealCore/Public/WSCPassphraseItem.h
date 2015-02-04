@@ -102,7 +102,7 @@
   */
 @property ( copy, readwrite ) NSString* hostName;
 
-/** The `NSString` object that identifies the the relative path of a URL conforming to RFC 1808
+/** The `NSString` object that identifies the relative path of a URL conforming to RFC 1808
     of an Internet passphrase item represented by receiver.
 
   For example: in the URL "https://github.com/TongG/WaxSealCore", the relative URL path is "/TongG/WaxSealCore".

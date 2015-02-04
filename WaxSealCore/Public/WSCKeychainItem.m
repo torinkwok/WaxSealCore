@@ -508,27 +508,26 @@
 
 @end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes
 
-NSString* const WSCKeychainItemAttributeCreationDate         = @"'cdat'";
-NSString* const WSCKeychainItemAttributeModificationDate     = @"'mdat'";
-NSString* const WSCKeychainItemAttributeKindDescription      = @"'desc'";
-NSString* const WSCKeychainItemAttributeComment              = @"'icmt'";
-NSString* const WSCKeychainItemAttributeLabel                = @"'labl'";
-NSString* const WSCKeychainItemAttributeInvisible            = @"'invi'";
-NSString* const WSCKeychainItemAttributeNegative             = @"'nega'";
-NSString* const WSCKeychainItemAttributeAccount              = @"'acct'";
-NSString* const WSCKeychainItemAttributeServiceName          = @"'svce'";
-NSString* const WSCKeychainItemAttributeUserDefinedAttribute = @"'gena'";
-NSString* const WSCKeychainItemAttributeSecurityDomain       = @"'sdmn'";
-NSString* const WSCKeychainItemAttributeHostName             = @"'srvr'";
-NSString* const WSCKeychainItemAttributeAuthenticationType   = @"'atyp'";
-NSString* const WSCKeychainItemAttributePort                 = @"'port'";
-NSString* const WSCKeychainItemAttributeRelativeURLPath      = @"'path'";
-NSString* const WSCKeychainItemAttributeProtocol             = @"'ptcl'";
-NSString* const WSCKeychainItemAttributeCertificateType      = @"'ctyp'";
-NSString* const WSCKeychainItemAttributeCertificateEncoding  = @"'cenc'";
-NSString* const WSCKeychainItemAttributeCRLType              = @"'crtp'";
-NSString* const WSCKeychainItemAttributeCRLEncoding          = @"'crnc'";
-NSString* const WSCKeychainItemAttributeAlias                = @"'alis'";
+NSString* const WSCKeychainItemAttributeCreationDate                = @"'cdat'";
+NSString* const WSCKeychainItemAttributeModificationDate            = @"'mdat'";
+NSString* const WSCKeychainItemAttributeKindDescription             = @"'desc'";
+NSString* const WSCKeychainItemAttributeComment                     = @"'icmt'";
+NSString* const WSCKeychainItemAttributeLabel                       = @"'labl'";
+NSString* const WSCKeychainItemAttributeInvisible                   = @"'invi'";
+NSString* const WSCKeychainItemAttributeNegative                    = @"'nega'";
+NSString* const WSCKeychainItemAttributeAccount                     = @"'acct'";
+NSString* const WSCKeychainItemAttributeServiceName                 = @"'svce'";
+NSString* const WSCKeychainItemAttributeUserDefinedDataAttribute    = @"'gena'";
+NSString* const WSCKeychainItemAttributeHostName                    = @"'srvr'";
+NSString* const WSCKeychainItemAttributeAuthenticationType          = @"'atyp'";
+NSString* const WSCKeychainItemAttributePort                        = @"'port'";
+NSString* const WSCKeychainItemAttributeRelativePath                = @"'path'";
+NSString* const WSCKeychainItemAttributeProtocol                    = @"'ptcl'";
+NSString* const WSCKeychainItemAttributeCertificateType             = @"'ctyp'";
+NSString* const WSCKeychainItemAttributeCertificateEncoding         = @"'cenc'";
+NSString* const WSCKeychainItemAttributeCRLType                     = @"'crtp'";
+NSString* const WSCKeychainItemAttributeCRLEncoding                 = @"'crnc'";
+NSString* const WSCKeychainItemAttributeAlias                       = @"'alis'";
 
 //////////////////////////////////////////////////////////////////////////////
 
