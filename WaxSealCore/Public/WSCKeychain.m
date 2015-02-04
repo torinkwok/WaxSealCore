@@ -813,6 +813,11 @@ WSCKeychain static* s_system = nil;
 
 @end // WSCKeychain + WSCKeychainPrivateFindingKeychainItems
 
+inline NSValue* WSCFourCharCodeValue( FourCharCode _FourCharCode )
+    {
+    return [ NSValue valueWithBytes: &_FourCharCode objCType: @encode( FourCharCode ) ];
+    }
+
 inline NSValue* WSCInternetProtocolCocoaValue( WSCInternetProtocolType _InternetProtocolType )
     {
     return [ NSValue valueWithBytes: &_InternetProtocolType objCType: @encode( WSCInternetProtocolType ) ];

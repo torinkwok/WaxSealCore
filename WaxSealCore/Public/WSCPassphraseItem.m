@@ -295,21 +295,47 @@
 #pragma mark WSCPassphraseItem + WSCPasswordPrivateUtilities
 @implementation WSCPassphraseItem ( WSCPasswordPrivateUtilities )
 
+- ( void ) p_addSearchCriteriaWithCStringData: ( NSMutableDictionary* )_SearchCriteriaDict
+                                     itemAttr: ( SecItemAttr )_ItemAttr
+    {
+    NSString* cocoaStringData = ( NSString* )[ self p_extractAttribute: _ItemAttr error: nil ];
+
+    if ( cocoaStringData )
+        _SearchCriteriaDict[ NSFileTypeForHFSTypeCode( _ItemAttr ) ] = cocoaStringData;
+    }
+
+- ( void ) p_addSearchCriteriaWithUInt32Data: ( NSMutableDictionary* )_SearchCriteriaDict
+                                    itemAttr: ( SecItemAttr )_ItemAttr
+    {
+    UInt32 UInt32Data = ( UInt32 )[ self p_extractAttribute: _ItemAttr error: nil ];
+
+    if ( UInt32Data != 0 )
+        {
+        NSNumber* cocoaUInt32Data = @( UInt32Data );
+        _SearchCriteriaDict[ NSFileTypeForHFSTypeCode( _ItemAttr ) ] = cocoaUInt32Data;
+        }
+    }
+
+- ( void ) p_addSearchCriteriaWithFourCharCodeData: ( NSMutableDictionary* )_SearchCriteriaDict
+                                          itemAttr: ( SecItemAttr )_ItemAttr
+    {
+    FourCharCode fourCharCodeData = ( FourCharCode )[ self p_extractAttribute: _ItemAttr error: nil ];
+
+    if ( fourCharCodeData != '\0\0\0\0' )
+        {
+        NSValue* cocoaValueData = WSCFourCharCodeValue( fourCharCodeData );
+        _SearchCriteriaDict[ NSFileTypeForHFSTypeCode( _ItemAttr ) ] = cocoaValueData;
+        }
+    }
+
 - ( NSMutableDictionary* ) p_wrapCommonPasswordItemSearchCriteria
     {
     NSMutableDictionary* searchCriteriaDict = [ NSMutableDictionary dictionaryWithCapacity: 3 ];
 
-    NSString* account = ( NSString* )[ self p_extractAttribute: kSecAccountItemAttr error: nil ];
-    if ( account )
-        searchCriteriaDict[ WSCKeychainItemAttributeAccount ] = account;
-
-    NSString* description = ( NSString* )[ self p_extractAttribute: kSecDescriptionItemAttr error: nil ];
-    if ( description )
-        searchCriteriaDict[ WSCKeychainItemAttributeKindDescription ] = description;
-
-    NSString* comment = ( NSString* )[ self p_extractAttribute: kSecCommentItemAttr error: nil ];
-    if ( comment )
-        searchCriteriaDict[ WSCKeychainItemAttributeComment ] = comment;
+    [ self p_addSearchCriteriaWithCStringData: searchCriteriaDict itemAttr: kSecLabelItemAttr ];
+    [ self p_addSearchCriteriaWithCStringData: searchCriteriaDict itemAttr: kSecAccountItemAttr ];
+    [ self p_addSearchCriteriaWithCStringData: searchCriteriaDict itemAttr: kSecDescriptionItemAttr ];
+    [ self p_addSearchCriteriaWithCStringData: searchCriteriaDict itemAttr: kSecCommentItemAttr ];
 
     return searchCriteriaDict;
     }
@@ -317,10 +343,7 @@
 - ( NSMutableDictionary* ) p_wrapApplicationPasswordItemSearchCriteria
     {
     NSMutableDictionary* searchCriteriaDict = [ self p_wrapCommonPasswordItemSearchCriteria ];
-
-    NSString* serviceName = ( NSString* )[ self p_extractAttribute: kSecServiceItemAttr error: nil ];
-    if ( serviceName )
-        searchCriteriaDict[ WSCKeychainItemAttributeServiceName ] = serviceName;
+    [ self p_addSearchCriteriaWithCStringData: searchCriteriaDict itemAttr: kSecServiceItemAttr ];
 
     return searchCriteriaDict;
     }
@@ -328,22 +351,9 @@
 - ( NSMutableDictionary* ) p_wrapInternetPasswordItemSearchCriteria
     {
     NSMutableDictionary* searchCriteriaDict = [ self p_wrapCommonPasswordItemSearchCriteria ];
-
-    NSString* label = ( NSString* )[ self p_extractAttribute: kSecLabelItemAttr error: nil ];
-    if ( label )
-        searchCriteriaDict[ WSCKeychainItemAttributeLabel ] = label;
-
-    NSString* hostName = ( NSString* )[ self p_extractAttribute: kSecServerItemAttr error: nil ];
-    if ( hostName )
-        searchCriteriaDict[ WSCKeychainItemAttributeHostName ] = hostName;
-
-    NSUInteger port = ( NSUInteger )[ self p_extractAttribute: kSecPortItemAttr error: nil ];
-    if ( port != 0 )
-        searchCriteriaDict[ WSCKeychainItemAttributePort ] = @( port );
-
-    WSCInternetProtocolType protocolType = ( WSCInternetProtocolType )[ self p_extractAttribute: kSecProtocolItemAttr error: nil ];
-    if ( protocolType != '\0\0\0\0' )
-        searchCriteriaDict[ WSCKeychainItemAttributeProtocol ] = WSCInternetProtocolCocoaValue( protocolType );
+    [ self p_addSearchCriteriaWithCStringData: searchCriteriaDict itemAttr: kSecServerItemAttr ];
+    [ self p_addSearchCriteriaWithUInt32Data: searchCriteriaDict itemAttr: kSecPortItemAttr ];
+    [ self p_addSearchCriteriaWithFourCharCodeData: searchCriteriaDict itemAttr: kSecProtocolItemAttr ];
 
     return searchCriteriaDict;
     }

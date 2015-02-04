@@ -613,6 +613,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
 @end // WSCKeychain class
 
+NSValue* WSCFourCharCodeValue( FourCharCode _FourCharCode );
 NSValue* WSCInternetProtocolCocoaValue( WSCInternetProtocolType _InternetProtocolType );
 NSValue* WSCAuthenticationTypeCocoaValue( WSCInternetAuthenticationType _AuthenticationType );
 
