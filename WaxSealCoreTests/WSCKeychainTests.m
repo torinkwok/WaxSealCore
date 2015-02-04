@@ -62,6 +62,22 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+- ( void ) testFindingFirstKeychainItem
+    {
+    NSError* error = nil;
+
+    // ----------------------------------------------------------------------------------
+    // Positive Test Case 0
+    // ----------------------------------------------------------------------------------
+    WSCKeychainItem* matchedItem = [ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeAccount : @"TongGuo"
+                                                        , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPS )
+                                                        }
+                                                itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                                    error: &error ];
+    XCTAssertNotNil( matchedItem );
+    }
+
 // -----------------------------------------------------------------
     #pragma Test the Programmatic Interfaces for Creating Keychains
 // -----------------------------------------------------------------

@@ -50,11 +50,31 @@
 
 #pragma mark Private Programmatic Interfaces for Managing Keychains
 @interface WSCKeychain ( WSCKeychainPrivateManagement )
-
 /* Objective-C wrapper for SecKeychainGetStatus() function */
 - ( SecKeychainStatus ) p_keychainStatus: ( NSError** )_Error;
-
 @end // WSCKeychain + WSCKeychainPrivateManagement
+
+#pragma mark Private Programmatic Interfaces for Finding Keychain Items
+@interface WSCKeychain( WSCKeychainPrivateFindingKeychainItems )
+
+- ( NSArray* ) p_findKeychainItemsSatisfyingSearchCriteria: ( NSArray* )_SearchCriteria
+                                                 itemClass: ( WSCKeychainItemClass )_ItemClass
+                             shouldContinueAfterFindingOne: ( BOOL )_ShouldContinue
+                                                     error: ( NSError** )_Error;
+
+- ( BOOL ) p_addSearchCriteriaTo: ( NSMutableArray* )_SearchCriteria
+             withCocoaStringData: ( NSString* )_CocoaStringData
+                        itemAttr: ( SecItemAttr )_ItemAttr;
+
+- ( BOOL ) p_addSearchCriteriaTo: ( NSMutableArray* )_SearchCriteria
+              withCocoaValueData: ( NSValue* )_CocoaValueData
+                        itemAttr: ( SecItemAttr )_ItemAttr;
+
+- ( BOOL ) p_addSearchCriteriaTo: ( NSMutableArray* )_SearchCriteria
+             withCocoaNumberData: ( NSNumber* )_CocoaNumber
+                        itemAttr: ( SecItemAttr )_ItemAttr;
+
+@end // WSCKeychain + WSCKeychainPrivateFindingKeychainItems
 
 NSString* _WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain );
 BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain );

@@ -501,9 +501,9 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
                                                   passphrase: ( NSString* )_Passphrase
                                                        error: ( NSError** )_Error;
 
-/** Find the first keychain item which satisfies the given search criteria contained in *_SearchCriteria* dictionary.
+/** Find the first keychain item which satisfies the given search criteria contained in *_SearchCriteriaDict* dictionary.
 
-  @param _SearchCriteria The `NSDictionary` object containing the search criteria. The valid search keys:
+  @param _SearchCriteriaDict The `NSDictionary` object containing the search criteria. The valid search keys:
 
   **WSCKeychainItemAttributeCreationDate**
   The corresponding value is an `NSDate` object that identifies the creation date of a keychain item.
@@ -580,15 +580,41 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
                 
   @return A `WSCKeychainItem` object representing the keychain item matching the given search criteria.
           Returns `nil` if an error occurs or there is not any keychan item matching the given search criteria.
+          
+  @sa findAllKeychainItemSatisfyingSearchCriteria:itemClass:error:
   */
 /* TODO: Completed the documentation of WSCKeychainItemAttributeCertificateType, WSCKeychainItemAttributeCertificateEncoding
  * WSCKeychainItemAttributeCRLType, WSCKeychainItemAttributeCRLEncoding and WSCKeychainItemAttributeAlias.
  */
-- ( WSCKeychainItem* ) findFirstKeychainItemWhichSatisfiesSearchCriteria: ( NSDictionary* )_SearchCriteria
-                                                               itemClass: ( WSCKeychainItemClass )_ItemClass
-                                                                   error: ( NSError** )_Error;
+- ( WSCKeychainItem* ) findFirstKeychainItemSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
+                                                           itemClass: ( WSCKeychainItemClass )_ItemClass
+                                                               error: ( NSError** )_Error;
+
+/** Find all the keychain items satisfying the given search criteria contained in *_SearchCriteriaDict* dictionary.
+
+  @param _SearchCriteriaDict The `NSDictionary` object containing the search criteria. 
+                             For the valid search keys, please see the discussion of findFirstKeychainItemSatisfyingSearchCriteria:itemClass:error: method.
+                             
+  @param _ItemClass The value of type WSCKeychainItemClass, 
+         it identifies the type of keychain item we want to find.
+
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+                You may specify `nil` for this parameter if you don't want the error information.
+                
+  @return An `NSArray` object containing the keychain items matching the given search criteria.
+          Returns `nil` if an error occurs or there is not any keychan item matching the given search criteria.
+          
+  @sa findFirstKeychainItemSatisfyingSearchCriteria:itemClass:error:
+  */
+- ( NSArray* ) findAllKeychainItemSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
+                                                 itemClass: ( WSCKeychainItemClass )_ItemClass
+                                                     error: ( NSError** )_Error;
 
 @end // WSCKeychain class
+
+NSValue* WSCInternetProtocolCocoaValue( WSCInternetProtocolType _InternetProtocolType );
+NSValue* WSCAuthenticationTypeCocoaValue( WSCInternetAuthenticationType _AuthenticationType );
 
 //////////////////////////////////////////////////////////////////////////////
 
