@@ -454,18 +454,18 @@ WSCKeychain static* s_system = nil;
                                                               );
             if ( resultCode == errSecSuccess )
                 {
-                SecKeychainItemRef matchedItem = NULL;
+                SecKeychainItemRef secMatchedItem = NULL;
 
                 // Finds the next keychain item matching the given search criteria.
                 // We use the `if` statement instead of `while` because
                 // we need only one keychain item matching the given search criteria
                 // to proof the keychain item represented by receiver is still valid.
-                while ( ( resultCode == SecKeychainSearchCopyNext( secSearch, &matchedItem ) ) != errSecItemNotFound )
+                while ( ( resultCode == SecKeychainSearchCopyNext( secSearch, &secMatchedItem ) ) != errSecItemNotFound )
                     {
-                    if ( matchedItem )
+                    if ( secMatchedItem )
                         {
-                        WSCKeychainItem* matchedItem = [ WSCKeychainItem keychainItemWithSecKeychainItemRef: matchedItem ];
-                        CFRelease( matchedItem );
+                        WSCKeychainItem* matchedItem = [ WSCKeychainItem keychainItemWithSecKeychainItemRef: secMatchedItem ];
+                        CFRelease( secMatchedItem );
 
                         [ matchedItems addObject: matchedItem ];
 
@@ -485,7 +485,81 @@ WSCKeychain static* s_system = nil;
             }
         }
 
-    return isReceiverValid;
+    return [ [ matchedItems copy ] autorelease ];
+    }
+
+- ( BOOL ) p_addSearchCriteriaTo: ( NSMutableArray* )_SearchCriteria
+             withCocoaStringData: ( NSString* )_CocoaStringData
+                        itemAttr: ( SecItemAttr )_ItemAttr
+    {
+    BOOL isSuccess = NO;
+    void* cStringData = ( void* )[ _CocoaStringData cStringUsingEncoding: NSUTF8StringEncoding ];
+
+    if ( cStringData && strlen( cStringData ) )
+        {
+        SecKeychainAttribute* dynamicAttrBuffer = malloc( sizeof( SecKeychainAttribute ) );
+        dynamicAttrBuffer->tag = _ItemAttr;
+        dynamicAttrBuffer->length = ( UInt32 )strlen( cStringData );
+        dynamicAttrBuffer->data = cStringData;
+
+        NSValue* attrValue = [ NSValue valueWithBytes: dynamicAttrBuffer objCType: @encode( SecKeychainAttribute ) ];
+        [ _SearchCriteria addObject: attrValue ];
+
+        isSuccess = YES;
+        }
+
+    return isSuccess;
+    }
+
+- ( BOOL ) p_addSearchCriteriaTo: ( NSMutableArray* )_SearchCriteria
+              withCocoaValueData: ( NSValue* )_CocoaValueData
+                        itemAttr: ( SecItemAttr )_ItemAttr
+    {
+    BOOL isSuccess = NO;
+    UInt32 UInt32Data = 0U;
+    [ _CocoaValueData getValue: &UInt32Data ];
+
+    if ( UInt32Data != 0 )
+        {
+        SecKeychainAttribute* dynamicAttrBuffer = malloc( sizeof( SecKeychainAttribute ) );
+        UInt32* dynamicUInt32DataBuffer = malloc( sizeof( UInt32 ) );
+        memcpy( dynamicUInt32DataBuffer, &UInt32Data, sizeof( UInt32Data ) );
+        dynamicAttrBuffer->tag = _ItemAttr;
+        dynamicAttrBuffer->length = ( UInt32 )sizeof( UInt32Data );
+        dynamicAttrBuffer->data = dynamicUInt32DataBuffer;
+
+        NSValue* attrValue = [ NSValue valueWithBytes: dynamicAttrBuffer objCType: @encode( SecKeychainAttribute ) ];
+        [ _SearchCriteria addObject: attrValue ];
+
+        isSuccess = YES;
+        }
+
+    return isSuccess;
+    }
+
+- ( BOOL ) p_addSearchCriteriaTo: ( NSMutableArray* )_SearchCriteria
+             withCocoaNumberData: ( NSNumber* )_CocoaNumber
+                        itemAttr: ( SecItemAttr )_ItemAttr
+    {
+    BOOL isSuccess = NO;
+    UInt32 UInt32Data = ( UInt32 )[ _CocoaNumber integerValue ];
+
+    if ( UInt32Data != 0 )
+        {
+        SecKeychainAttribute* dynamicAttrBuffer = malloc( sizeof( SecKeychainAttribute ) );
+        UInt32* dynamicUInt32DataBuffer = malloc( sizeof( UInt32 ) );
+        memcpy( dynamicUInt32DataBuffer, &UInt32Data, sizeof( UInt32Data ) );
+        dynamicAttrBuffer->tag = _ItemAttr;
+        dynamicAttrBuffer->length = ( UInt32 )sizeof( UInt32Data );
+        dynamicAttrBuffer->data = dynamicUInt32DataBuffer;
+
+        NSValue* attrValue = [ NSValue valueWithBytes: dynamicAttrBuffer objCType: @encode( SecKeychainAttribute ) ];
+        [ _SearchCriteria addObject: attrValue ];
+
+        isSuccess = YES;
+        }
+
+    return isSuccess;
     }
 
 /* Find the first keychain item which satisfies the given search criteria contained in *_SearchCriteria* dictionary.
@@ -494,7 +568,27 @@ WSCKeychain static* s_system = nil;
                                                                itemClass: ( WSCKeychainItemClass )_ItemClass
                                                                    error: ( NSError** )_Error;
     {
+    NSMutableArray* searchCriteria = [ NSMutableArray array ];
 
+    [ _SearchCriteria enumerateKeysAndObjectsUsingBlock:
+        ^( NSString* _Key, id _Object, BOOL* _Stop )
+            {
+            SecItemAttr attrTag = NSHFSTypeCodeFromFileType( _Key );
+
+            if ( [ _Object isKindOfClass: [ NSString class ] ] )
+                [ self p_addSearchCriteriaTo: searchCriteria withCocoaStringData: ( NSString* )_Object itemAttr: attrTag ];
+            else if ( [ _Object isKindOfClass: [ NSValue class ] ] )
+                [ self p_addSearchCriteriaTo: searchCriteria withCocoaValueData: ( NSValue* )_Object itemAttr: attrTag ];
+            else if ( [ _Object isKindOfClass: [ NSNumber class ] ] )
+                [ self p_addSearchCriteriaTo: searchCriteria withCocoaNumberData: ( NSNumber* )_Object itemAttr: attrTag ];
+            } ];
+
+    NSError* error = nil;
+    NSArray* matchedItems = [ self p_findKeychainItemsThatSatisfySearchCriteria: searchCriteria
+                                                                      itemClass: _ItemClass
+                                                  shouldContinueAfterFindingOne: YES
+                                                                          error: &error ];
+    return matchedItems.firstObject;
     }
 
 #pragma mark Overrides
