@@ -131,46 +131,78 @@ void _WSCDontBeABitch( NSError** _Error, ... )
             /* The URL of a keychain file cannot be a directory. */
             case WSCKeychainCannotBeDirectoryError:
                 {
-                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainCannotBeDirectoryErrorDescription;
+                newUserInfo[ NSLocalizedDescriptionKey ] =
+                    _UserInfo[ NSLocalizedFailureReasonErrorKey ]
+                        ? [ NSString stringWithFormat: @"%@ %@", WSCKeychainCannotBeDirectoryErrorDescription
+                                                               , _UserInfo[ NSLocalizedFailureReasonErrorKey ] ]
+                        : WSCKeychainCannotBeDirectoryErrorDescription;
                 } break;
 
             /* Current keychain is no longer valid. */
             case WSCKeychainIsInvalidError:
                 {
-                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainIsInvalidErrorDescription;
+                newUserInfo[ NSLocalizedDescriptionKey ] =
+                    _UserInfo[ NSLocalizedFailureReasonErrorKey ]
+                        ? [ NSString stringWithFormat: @"%@ %@", WSCKeychainIsInvalidErrorDescription
+                                                               , _UserInfo[ NSLocalizedFailureReasonErrorKey ] ]
+                        : WSCKeychainIsInvalidErrorDescription;
                 } break;
 
             /* The keychain couldn't be created because a file with the same name already exists. */
             case WSCKeychainFileExistsError:
                 {
-                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainFileExistsErrorDescription;
+                newUserInfo[ NSLocalizedDescriptionKey ] =
+                    _UserInfo[ NSLocalizedFailureReasonErrorKey ]
+                        ? [ NSString stringWithFormat: @"%@ %@", WSCKeychainFileExistsErrorDescription
+                                                               , _UserInfo[ NSLocalizedFailureReasonErrorKey ] ]
+                        : WSCKeychainFileExistsErrorDescription;
                 } break;
 
             /* The keychain couldn’t be created because the URL is invalid. */
             case WSCKeychainURLIsInvalidError:
                 {
-                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainURLIsInvalidErrorDescription;
+                newUserInfo[ NSLocalizedDescriptionKey ] =
+                    _UserInfo[ NSLocalizedFailureReasonErrorKey ]
+                        ? [ NSString stringWithFormat: @"%@ %@", WSCKeychainURLIsInvalidErrorDescription
+                                                               , _UserInfo[ NSLocalizedFailureReasonErrorKey ] ]
+                        : WSCKeychainURLIsInvalidErrorDescription;
                 } break;
 
             /* One or more parameters passed to the method were not valid. */
             case WSCCommonInvalidParametersError:
                 {
-                newUserInfo[ NSLocalizedDescriptionKey ] = WSCCommonInvalidParametersErrorDescription;
+                newUserInfo[ NSLocalizedDescriptionKey ] =
+                    _UserInfo[ NSLocalizedFailureReasonErrorKey ]
+                        ? [ NSString stringWithFormat: @"%@ %@", WSCCommonInvalidParametersErrorDescription
+                                                               , _UserInfo[ NSLocalizedFailureReasonErrorKey ] ]
+                        : WSCCommonInvalidParametersErrorDescription;
                 } break;
 
             case WSCKeychainItemIsInvalidError:
                 {
-                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainItemIsInvalidErrorDescription;
+                newUserInfo[ NSLocalizedDescriptionKey ] =
+                    _UserInfo[ NSLocalizedFailureReasonErrorKey ]
+                        ? [ NSString stringWithFormat: @"%@ %@", WSCKeychainItemIsInvalidErrorDescription
+                                                               , _UserInfo[ NSLocalizedFailureReasonErrorKey ] ]
+                        : WSCKeychainItemIsInvalidErrorDescription;
                 } break;
 
             case WSCKeychainItemAttributeIsUniqueToInternetPassphraseError:
                 {
-                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainItemAttributeIsUniqueToInternetPassphraseErrorDescription;
+                newUserInfo[ NSLocalizedDescriptionKey ] =
+                    _UserInfo[ NSLocalizedFailureReasonErrorKey ]
+                        ? [ NSString stringWithFormat: @"%@ %@", WSCKeychainItemAttributeIsUniqueToInternetPassphraseErrorDescription
+                                                               , _UserInfo[ NSLocalizedFailureReasonErrorKey ] ]
+                        : WSCKeychainItemAttributeIsUniqueToInternetPassphraseErrorDescription;
                 } break;
 
             case WSCKeychainItemAttributeIsUniqueToApplicationPassphraseError:
                 {
-                newUserInfo[ NSLocalizedDescriptionKey ] = WSCKeychainItemAttributeIsUniqueToApplicationPassphraseErrorDescription;
+                newUserInfo[ NSLocalizedDescriptionKey ] =
+                    _UserInfo[ NSLocalizedFailureReasonErrorKey ]
+                        ? [ NSString stringWithFormat: @"%@ %@", WSCKeychainItemAttributeIsUniqueToApplicationPassphraseErrorDescription
+                                                               , _UserInfo[ NSLocalizedFailureReasonErrorKey ] ]
+                        : WSCKeychainItemAttributeIsUniqueToApplicationPassphraseErrorDescription;
                 } break;
             }
         }

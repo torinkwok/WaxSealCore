@@ -578,10 +578,10 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
                 If an error occurs, this pointer is set to an actual error object containing the error information.
                 You may specify `nil` for this parameter if you don't want the error information.
                 
-  @return A `WSCKeychainItem` object representing the keychain item matching the given search criteria.
+  @return A `WSCKeychainItem` object representing the keychain item satisfying the given search criteria.
           Returns `nil` if an error occurs or there is not any keychan item matching the given search criteria.
           
-  @sa findAllKeychainItemSatisfyingSearchCriteria:itemClass:error:
+  @sa findAllKeychainItemsSatisfyingSearchCriteria:itemClass:error:
   */
 /* TODO: Completed the documentation of WSCKeychainItemAttributeCertificateType, WSCKeychainItemAttributeCertificateEncoding
  * WSCKeychainItemAttributeCRLType, WSCKeychainItemAttributeCRLEncoding and WSCKeychainItemAttributeAlias.
@@ -602,14 +602,14 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
                 If an error occurs, this pointer is set to an actual error object containing the error information.
                 You may specify `nil` for this parameter if you don't want the error information.
                 
-  @return An `NSArray` object containing the keychain items matching the given search criteria.
+  @return An `NSArray` object containing the keychain items satisfying the given search criteria.
           Returns `nil` if an error occurs or there is not any keychan item matching the given search criteria.
           
   @sa findFirstKeychainItemSatisfyingSearchCriteria:itemClass:error:
   */
-- ( NSArray* ) findAllKeychainItemSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
-                                                 itemClass: ( WSCKeychainItemClass )_ItemClass
-                                                     error: ( NSError** )_Error;
+- ( NSArray* ) findAllKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
+                                                  itemClass: ( WSCKeychainItemClass )_ItemClass
+                                                      error: ( NSError** )_Error;
 
 @end // WSCKeychain class
 

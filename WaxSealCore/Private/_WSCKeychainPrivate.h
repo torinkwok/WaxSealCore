@@ -57,7 +57,7 @@
 #pragma mark Private Programmatic Interfaces for Finding Keychain Items
 @interface WSCKeychain( WSCKeychainPrivateFindingKeychainItems )
 
-- ( NSArray* ) p_findKeychainItemsSatisfyingSearchCriteria: ( NSArray* )_SearchCriteria
+- ( NSArray* ) p_findKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
                                                  itemClass: ( WSCKeychainItemClass )_ItemClass
                              shouldContinueAfterFindingOne: ( BOOL )_ShouldContinue
                                                      error: ( NSError** )_Error;

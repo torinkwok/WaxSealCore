@@ -439,33 +439,28 @@ WSCKeychain static* s_system = nil;
 
 /* Find the first keychain item which satisfies the given search criteria contained in *_SearchCriteriaDict* dictionary.
  */
-- ( WSCKeychainItem* ) findFirstKeychainItemSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteria
+- ( WSCKeychainItem* ) findFirstKeychainItemSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
                                                            itemClass: ( WSCKeychainItemClass )_ItemClass
                                                                error: ( NSError** )_Error;
     {
-    if ( !_SearchCriteria || ( _SearchCriteria.count == 0 ) )
-        {
-        *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                       code: WSCCommonInvalidParametersError
-                                   userInfo: @{ NSLocalizedFailureReasonErrorKey : @"The search criteria must not be empty or nil" } ];
-        return nil;
-        }
-
-    NSMutableArray* searchCriteria = [ self p_convertSearchCriteriaDictionaryToMutableArray: _SearchCriteria ];
-    NSArray* matchedItems = [ self p_findKeychainItemsSatisfyingSearchCriteria: searchCriteria
+    NSArray* matchedItems = [ self p_findKeychainItemsSatisfyingSearchCriteria: _SearchCriteriaDict
                                                                      itemClass: _ItemClass
-                                                 shouldContinueAfterFindingOne: YES
+                                                 shouldContinueAfterFindingOne: NO
                                                                          error: _Error ];
     return matchedItems.firstObject;
     }
 
 /* Find all the keychain items satisfying the given search criteria contained in *_SearchCriteriaDict* dictionary.
  */
-- ( NSArray* ) findAllKeychainItemSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
-                                                 itemClass: ( WSCKeychainItemClass )_ItemClass
-                                                     error: ( NSError** )_Error
+- ( NSArray* ) findAllKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
+                                                  itemClass: ( WSCKeychainItemClass )_ItemClass
+                                                      error: ( NSError** )_Error
     {
-
+    NSArray* matchedItems = [ self p_findKeychainItemsSatisfyingSearchCriteria: _SearchCriteriaDict
+                                                                     itemClass: _ItemClass
+                                                 shouldContinueAfterFindingOne: YES
+                                                                         error: _Error ];
+    return matchedItems;
     }
 
 #pragma mark Overrides
@@ -664,12 +659,22 @@ WSCKeychain static* s_system = nil;
 #pragma mark Private Programmatic Interfaces for Finding Keychain Items
 @implementation WSCKeychain( WSCKeychainPrivateFindingKeychainItems )
 
-- ( NSArray* ) p_findKeychainItemsSatisfyingSearchCriteria: ( NSArray* )_SearchCriteria
+- ( NSArray* ) p_findKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
                                                  itemClass: ( WSCKeychainItemClass )_ItemClass
                              shouldContinueAfterFindingOne: ( BOOL )_ShouldContinue
                                                      error: ( NSError** )_Error
     {
     OSStatus resultCode = errSecSuccess;
+
+    if ( !_SearchCriteriaDict || ( _SearchCriteriaDict.count == 0 ) )
+        {
+        *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                       code: WSCCommonInvalidParametersError
+                                   userInfo: @{ NSLocalizedFailureReasonErrorKey : @"The search criteria must not be empty or nil." } ];
+        return nil;
+        }
+
+    NSMutableArray* searchCriteria = [ self p_convertSearchCriteriaDictionaryToMutableArray: _SearchCriteriaDict ];
     NSMutableArray* matchedItems = nil;
 
     // The keychain represented by receiver must not be invalid
@@ -681,15 +686,15 @@ WSCKeychain static* s_system = nil;
         // The SecKeychainAttribute structs that will be used in the searching
         // was encapsulated in the NSValue objects.
         // Now let's unbox them.
-        SecKeychainAttribute* secSearchCriteria = malloc( sizeof( SecKeychainAttribute ) * _SearchCriteria.count );
-        for ( int _Index = 0; _Index < _SearchCriteria.count; _Index++ )
+        SecKeychainAttribute* secSearchCriteria = malloc( sizeof( SecKeychainAttribute ) * searchCriteria.count );
+        for ( int _Index = 0; _Index < searchCriteria.count; _Index++ )
             {
             SecKeychainAttribute elem;
-            [ _SearchCriteria[ _Index ] getValue: &elem ];
+            [ searchCriteria[ _Index ] getValue: &elem ];
             secSearchCriteria[ _Index ] = elem;
             }
 
-        SecKeychainAttributeList attrsList = { ( UInt32 )_SearchCriteria.count, secSearchCriteria };
+        SecKeychainAttributeList attrsList = { ( UInt32 )searchCriteria.count, secSearchCriteria };
 
         // Creates a search object matching the given list of search criteria.
         resultCode = SecKeychainSearchCreateFromAttributes( ( CFTypeRef )self.secKeychain
@@ -720,7 +725,7 @@ WSCKeychain static* s_system = nil;
         if ( secSearch )
             CFRelease( secSearch );
 
-        for ( int _Index = 0; _Index < _SearchCriteria.count; _Index++ )
+        for ( int _Index = 0; _Index < searchCriteria.count; _Index++ )
             if ( secSearchCriteria[ _Index ].tag == kSecPortItemAttr
                     || secSearchCriteria[ _Index ].tag == kSecProtocolItemAttr )
                 free( secSearchCriteria[ _Index ].data );
@@ -729,7 +734,7 @@ WSCKeychain static* s_system = nil;
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCKeychainIsInvalidError userInfo: nil ];
 
-    return [ [ matchedItems copy ] autorelease ];
+    return ( matchedItems.count != 0 ) ? [ [ matchedItems copy ] autorelease ] : nil;
     }
 
 - ( BOOL ) p_addSearchCriteriaTo: ( NSMutableArray* )_SearchCriteria
