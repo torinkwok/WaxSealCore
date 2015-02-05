@@ -115,6 +115,16 @@
     XCTAssertNil( error );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
+    matchedItems_testCase0 = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Lingo Passphrase"
+//                                                       , WSCKeychainItemAttributeComment : @"Lingo Lingo!"
+                                                       }
+                                           itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                               error: &error ];
+    XCTAssertNotNil( matchedItems_testCase0 );
+    XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
+
     matchedItems_testCase0 = [ _WSCRandomKeychain()
         findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributePort : @8064 }
                                            itemClass: WSCKeychainItemClassInternetPassphraseItem

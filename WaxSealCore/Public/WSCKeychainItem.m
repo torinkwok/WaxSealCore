@@ -127,7 +127,7 @@
 
     _WSCDontBeABitch( &error, self, [ WSCKeychainItem class ], s_guard );
     if ( !error )
-        [ self p_keychainWithoutCheckingValidity: &error ];
+        keychainResidingIn = [ self p_keychainWithoutCheckingValidity: &error ];
 
     if ( error )
         _WSCPrintNSErrorForLog( error );

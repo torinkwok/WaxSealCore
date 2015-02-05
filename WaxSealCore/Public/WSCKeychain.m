@@ -765,6 +765,7 @@ WSCKeychain static* s_system = nil;
             {
             SecKeychainAttribute elem;
             [ searchCriteria[ _Index ] getValue: &elem ];
+            NSLog( @"Data (elem): %s", elem.data );
             secSearchCriteria[ _Index ] = elem;
             }
 
@@ -824,6 +825,14 @@ WSCKeychain static* s_system = nil;
         dynamicAttrBuffer->tag = _ItemAttr;
         dynamicAttrBuffer->length = ( UInt32 )strlen( cStringData );
         dynamicAttrBuffer->data = cStringData;
+
+        // DEBUG
+        fprintf( stdout, "\n------------------\n" );
+        NSLog( @"Attr: %@", NSFileTypeForHFSTypeCode( _ItemAttr ) );
+        NSLog( @"Length of Cocoa String: %lu", _CocoaStringData.length );
+        NSLog( @"Length of C-String: %u", dynamicAttrBuffer->length );
+        NSLog( @"Data: %s", dynamicAttrBuffer->data );
+        fprintf( stdout, "\n------------------\n" );
 
         NSValue* attrValue = [ NSValue valueWithBytes: dynamicAttrBuffer objCType: @encode( SecKeychainAttribute ) ];
         [ _SearchCriteria addObject: attrValue ];
