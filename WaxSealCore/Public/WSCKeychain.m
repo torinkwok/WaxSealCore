@@ -82,6 +82,12 @@ BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     }
 
 @implementation WSCKeychain
+    {
+    // TODO: Waiting for the other item class, Certificates, Keys, etc.
+    NSArray* p_commonAttributesSearchKeys;
+    NSArray* p_uniqueToInternetPassphraseItemAttributesSearchKeys;
+    NSArray* p_uniqueToAppPassphraseItemAttributesSearchKeys;
+    }
 
 @synthesize secKeychain = _secKeychain;
 
@@ -464,10 +470,28 @@ WSCKeychain static* s_system = nil;
     }
 
 #pragma mark Overrides
+- ( instancetype ) init
+    {
+    if ( self = [ super init ] )
+        {
+        }
+
+    return self;
+    }
+
 - ( void ) dealloc
     {
     if ( self->_secKeychain )
         CFRelease( self->_secKeychain );
+
+    if ( self->p_commonAttributesSearchKeys )
+        [ self->p_commonAttributesSearchKeys release ];
+
+    if ( self->p_uniqueToInternetPassphraseItemAttributesSearchKeys )
+        [ self->p_uniqueToInternetPassphraseItemAttributesSearchKeys release ];
+
+    if ( self->p_uniqueToAppPassphraseItemAttributesSearchKeys )
+        [ self->p_uniqueToAppPassphraseItemAttributesSearchKeys release ];
 
     [ super dealloc ];
     }
@@ -540,7 +564,25 @@ WSCKeychain static* s_system = nil;
         {
         /* Ensure that the _SecKeychainRef does reference an exist keychain file */
         if ( _SecKeychainRef && _WSCKeychainIsSecKeychainValid( _SecKeychainRef ) )
+            {
             self->_secKeychain = ( SecKeychainRef )CFRetain( _SecKeychainRef );
+
+            // TODO: Waiting for the other item class, Certificates, Keys, etc.
+            self->p_commonAttributesSearchKeys =
+                [ @[ WSCKeychainItemAttributeCreationDate, WSCKeychainItemAttributeModificationDate
+                   , WSCKeychainItemAttributeKindDescription, WSCKeychainItemAttributeComment
+                   , WSCKeychainItemAttributeLabel, WSCKeychainItemAttributeInvisible
+                   , WSCKeychainItemAttributeNegative, WSCKeychainItemAttributeAccount ] retain ];
+
+            self->p_uniqueToInternetPassphraseItemAttributesSearchKeys =
+                [ [ @[ WSCKeychainItemAttributeHostName, WSCKeychainItemAttributeAuthenticationType
+                     , WSCKeychainItemAttributePort, WSCKeychainItemAttributeRelativePath
+                     , WSCKeychainItemAttributeProtocol ] arrayByAddingObjectsFromArray: self->p_commonAttributesSearchKeys ] retain ];
+
+            self->p_uniqueToAppPassphraseItemAttributesSearchKeys =
+                [ [ @[ WSCKeychainItemAttributeServiceName, WSCKeychainItemAttributeUserDefinedDataAttribute ]
+                    arrayByAddingObjectsFromArray: self->p_commonAttributesSearchKeys ] retain ];
+            }
         else
             return nil;
         }
@@ -659,6 +701,34 @@ WSCKeychain static* s_system = nil;
 #pragma mark Private Programmatic Interfaces for Finding Keychain Items
 @implementation WSCKeychain( WSCKeychainPrivateFindingKeychainItems )
 
+- ( BOOL ) p_doesItemAttributeSearchKey: ( NSString* )_SearchKey
+                       blongToItemClass: ( WSCKeychainItemClass )_ItemClass
+                                  error: ( NSError** )_Error
+    {
+    NSArray* samples = nil;
+
+    if ( _ItemClass == WSCKeychainItemClassInternetPassphraseItem )
+        samples = self->p_uniqueToInternetPassphraseItemAttributesSearchKeys;
+    else if ( _ItemClass == WSCKeychainItemClassApplicationPassphraseItem )
+        samples = self->p_uniqueToAppPassphraseItemAttributesSearchKeys;
+    // TODO: Waiting for the other item class, Certificates, Keys, etc.
+
+    BOOL doesBlong = [ samples containsObject: _SearchKey ];
+
+    if ( !doesBlong )
+        {
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                           code: WSCCommonInvalidParametersError
+                                       userInfo: @{ NSLocalizedFailureReasonErrorKey
+                                                        : @"The given search criteria dictionary "
+                                                           "containing at least one key "
+                                                           "which does not blong to the given item class." } ];
+        }
+
+    return doesBlong;
+    }
+
 - ( NSArray* ) p_findKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
                                                  itemClass: ( WSCKeychainItemClass )_ItemClass
                              shouldContinueAfterFindingOne: ( BOOL )_ShouldContinue
@@ -673,6 +743,10 @@ WSCKeychain static* s_system = nil;
                                    userInfo: @{ NSLocalizedFailureReasonErrorKey : @"The search criteria must not be empty or nil." } ];
         return nil;
         }
+
+    for ( NSString* _Key in _SearchCriteriaDict )
+        if ( ![ self p_doesItemAttributeSearchKey: _Key blongToItemClass: _ItemClass error: _Error ] )
+            return nil;
 
     NSMutableArray* searchCriteria = [ self p_convertSearchCriteriaDictionaryToMutableArray: _SearchCriteriaDict ];
     NSMutableArray* matchedItems = nil;

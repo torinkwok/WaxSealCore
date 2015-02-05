@@ -603,11 +603,11 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
 /** Find all the keychain items satisfying the given search criteria contained in *_SearchCriteriaDict* dictionary.
 
-  @param _SearchCriteriaDict The `NSDictionary` object containing the search criteria. 
-                             For the valid search keys, please see the discussion of findFirstKeychainItemSatisfyingSearchCriteria:itemClass:error: method.
+  @param _SearchCriteriaDict The `NSDictionary` object containing the search criteria.
+                             For the valid search keys, please see the discussion section of findFirstKeychainItemSatisfyingSearchCriteria:itemClass:error: method.
                              
-  @param _ItemClass The value of type WSCKeychainItemClass, 
-         it identifies the type of keychain item we want to find.
+  @param _ItemClass The value of type WSCKeychainItemClass,
+                    it identifies the type of keychain item we want to find.
 
   @param _Error On input, a pointer to an error object.
                 If an error occurs, this pointer is set to an actual error object containing the error information.
@@ -621,7 +621,6 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 - ( NSArray* ) findAllKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
                                                   itemClass: ( WSCKeychainItemClass )_ItemClass
                                                       error: ( NSError** )_Error;
-
 @end // WSCKeychain class
 
 NSValue* WSCFourCharCodeValue( FourCharCode _FourCharCode );

@@ -130,7 +130,9 @@
                                             itemClass: WSCKeychainItemClassApplicationPassphraseItem
                                                 error: &error ];
     XCTAssertNil( matchedItem_negativeTestCase0 );
-    XCTAssertNil( error );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
     NSArray* matchedItems_negativeTestCase0 = [ [ WSCKeychain login ]
@@ -140,7 +142,9 @@
                                            itemClass: WSCKeychainItemClassApplicationPassphraseItem
                                                error: &error ];
     XCTAssertNil( matchedItems_negativeTestCase0 );
-    XCTAssertNil( error );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
     // --------------------------------------------------------------------------------------------------------------------
@@ -177,6 +181,16 @@
                                                error: &error ];
     XCTAssertNil( matchedItems_negativeTestCase1 );
     XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
+
+    matchedItems_negativeTestCase1 = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeServiceName : @"Vnet Link (sosueme)" }
+                                           itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                               error: &error ];
+    XCTAssertNil( matchedItems_negativeTestCase1 );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
     // --------------------------------------------------------------------------------------------------------------------
