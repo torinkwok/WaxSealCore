@@ -106,6 +106,15 @@
     XCTAssertNil( error );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
+    matchedItems_testCase0 = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"github.com" }
+                                           itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                               error: &error ];
+    XCTAssertNotNil( matchedItems_testCase0 );
+    XCTAssert( matchedItems_testCase0.count > 1 );
+    XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
+
     matchedItems_testCase0 = [ _WSCRandomKeychain()
         findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributePort : @8064 }
                                            itemClass: WSCKeychainItemClassInternetPassphraseItem
