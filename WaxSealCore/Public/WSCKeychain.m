@@ -779,26 +779,6 @@ WSCKeychain static* s_system = nil;
     return doesBlong;
     }
 
-- ( NSMutableArray* ) p_convertSearchCriteriaDictionaryToMutableArray: ( NSDictionary* )_SearchCriteriaDict
-    {
-    NSMutableArray* searchCriteria = [ NSMutableArray array ];
-
-    [ _SearchCriteriaDict enumerateKeysAndObjectsUsingBlock:
-        ^( NSString* _Key, id _Object, BOOL* _Stop )
-            {
-            SecItemAttr attrTag = NSHFSTypeCodeFromFileType( _Key );
-
-            if ( [ _Object isKindOfClass: [ NSString class ] ] )
-                [ self p_addSearchCriteriaTo: searchCriteria withCocoaStringData: ( NSString* )_Object itemAttr: attrTag ];
-            else if ( [ _Object isKindOfClass: [ NSValue class ] ] )
-                [ self p_addSearchCriteriaTo: searchCriteria withCocoaValueData: ( NSValue* )_Object itemAttr: attrTag ];
-            else if ( [ _Object isKindOfClass: [ NSNumber class ] ] )
-                [ self p_addSearchCriteriaTo: searchCriteria withCocoaNumberData: ( NSNumber* )_Object itemAttr: attrTag ];
-            } ];
-
-    return searchCriteria;
-    }
-
 - ( NSArray* ) p_findKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
                                                  itemClass: ( WSCKeychainItemClass )_ItemClass
                                                      error: ( NSError** )_Error
@@ -826,6 +806,7 @@ WSCKeychain static* s_system = nil;
         return nil;
         }
 
+    // Suppose that all the passphrase items conforming the given item class are the matched items
     NSMutableArray* matchedItems = [ [ allItems mutableCopy ] autorelease ];
 
     if ( self.isValid )
@@ -834,14 +815,17 @@ WSCKeychain static* s_system = nil;
             {
             SecItemAttr attrTag = NSHFSTypeCodeFromFileType( _SearchKey );
 
-            // TODO: Waiting for the search keys for Certificates, Keys, etc.
             for ( WSCPassphraseItem* _Item in allItems )
                 {
+                // If the give passphrase item's attribute is not equal to the search value
+                // remove it from the mathcedItems array
                 switch ( attrTag )
                     {
+                    // TODO: Waiting for the search keys for Certificates, Keys, etc.
                     case kSecCreationDateItemAttr:  case kSecModDateItemAttr:
                         {
                         NSDate* cocoaDateData = ( NSDate* )[ _Item p_extractAttribute: attrTag error: nil ];
+
                         if ( ![ cocoaDateData isEqualToDate: _SearchCriteriaDict[ _SearchKey ] ] )
                             [ matchedItems removeObject: _Item ];
                         } break;
@@ -874,6 +858,8 @@ WSCKeychain static* s_system = nil;
                     }
                 }
 
+            // At last, all the remaining passphrase items are considered satisfying the current search criteria,
+            // any item that does not satisfy the current search criteria has been removed.
             allItems = [ [ matchedItems copy ] autorelease ];
             }
         }
@@ -882,7 +868,9 @@ WSCKeychain static* s_system = nil;
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                            code: WSCKeychainIsInvalidError
                                        userInfo: nil ];
-#if 0
+
+#if 0 // Lost to the incompatibility of character encoding
+    // This should be a more graceful solution
     OSStatus resultCode = errSecSuccess;
 
     NSMutableArray* searchCriteria = [ self p_convertSearchCriteriaDictionaryToMutableArray: _SearchCriteriaDict ];
@@ -946,6 +934,27 @@ WSCKeychain static* s_system = nil;
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCKeychainIsInvalidError userInfo: nil ];
 #endif
     return ( matchedItems.count != 0 ) ? [ [ matchedItems copy ] autorelease ] : nil;
+    }
+
+#if 0
+- ( NSMutableArray* ) p_convertSearchCriteriaDictionaryToMutableArray: ( NSDictionary* )_SearchCriteriaDict
+    {
+    NSMutableArray* searchCriteria = [ NSMutableArray array ];
+
+    [ _SearchCriteriaDict enumerateKeysAndObjectsUsingBlock:
+        ^( NSString* _Key, id _Object, BOOL* _Stop )
+            {
+            SecItemAttr attrTag = NSHFSTypeCodeFromFileType( _Key );
+
+            if ( [ _Object isKindOfClass: [ NSString class ] ] )
+                [ self p_addSearchCriteriaTo: searchCriteria withCocoaStringData: ( NSString* )_Object itemAttr: attrTag ];
+            else if ( [ _Object isKindOfClass: [ NSValue class ] ] )
+                [ self p_addSearchCriteriaTo: searchCriteria withCocoaValueData: ( NSValue* )_Object itemAttr: attrTag ];
+            else if ( [ _Object isKindOfClass: [ NSNumber class ] ] )
+                [ self p_addSearchCriteriaTo: searchCriteria withCocoaNumberData: ( NSNumber* )_Object itemAttr: attrTag ];
+            } ];
+
+    return searchCriteria;
     }
 
 - ( BOOL ) p_addSearchCriteriaTo: ( NSMutableArray* )_SearchCriteria
@@ -1021,6 +1030,7 @@ WSCKeychain static* s_system = nil;
 
     return isSuccess;
     }
+#endif
 
 @end // WSCKeychain + WSCKeychainPrivateFindingKeychainItems
 

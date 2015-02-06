@@ -64,11 +64,11 @@
                        blongToItemClass: ( WSCKeychainItemClass )_ItemClass
                                   error: ( NSError** )_Error;
 
-- ( NSMutableArray* ) p_convertSearchCriteriaDictionaryToMutableArray: ( NSDictionary* )_SearchCriteriaDict;
-
 - ( NSArray* ) p_findKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
                                                  itemClass: ( WSCKeychainItemClass )_ItemClass
                                                      error: ( NSError** )_Error;
+#if 0
+- ( NSMutableArray* ) p_convertSearchCriteriaDictionaryToMutableArray: ( NSDictionary* )_SearchCriteriaDict;
 
 - ( BOOL ) p_addSearchCriteriaTo: ( NSMutableArray* )_SearchCriteria
              withCocoaStringData: ( NSString* )_CocoaStringData
@@ -81,7 +81,7 @@
 - ( BOOL ) p_addSearchCriteriaTo: ( NSMutableArray* )_SearchCriteria
              withCocoaNumberData: ( NSNumber* )_CocoaNumber
                         itemAttr: ( SecItemAttr )_ItemAttr;
-
+#endif
 @end // WSCKeychain + WSCKeychainPrivateFindingKeychainItems
 
 NSString* _WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain );
