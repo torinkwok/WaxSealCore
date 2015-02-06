@@ -463,7 +463,6 @@ WSCKeychain static* s_system = nil;
     {
     NSArray* matchedItems = [ self p_findKeychainItemsSatisfyingSearchCriteria: _SearchCriteriaDict
                                                                      itemClass: _ItemClass
-                                                 shouldContinueAfterFindingOne: NO
                                                                          error: _Error ];
     return matchedItems.firstObject;
     }
@@ -476,7 +475,6 @@ WSCKeychain static* s_system = nil;
     {
     NSArray* matchedItems = [ self p_findKeychainItemsSatisfyingSearchCriteria: _SearchCriteriaDict
                                                                      itemClass: _ItemClass
-                                                 shouldContinueAfterFindingOne: YES
                                                                          error: _Error ];
     return matchedItems;
     }
@@ -745,7 +743,9 @@ WSCKeychain static* s_system = nil;
     else
         {
         if ( _Error )
-            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCKeychainItemIsInvalidError userInfo: nil ];
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                           code: WSCKeychainIsInvalidError
+                                       userInfo: nil ];
         }
 
     return allItems ? [ [ allItems copy ] autorelease ] : nil;
@@ -801,7 +801,6 @@ WSCKeychain static* s_system = nil;
 
 - ( NSArray* ) p_findKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
                                                  itemClass: ( WSCKeychainItemClass )_ItemClass
-                             shouldContinueAfterFindingOne: ( BOOL )_ShouldContinue
                                                      error: ( NSError** )_Error
     {
     if ( !_SearchCriteriaDict || ( _SearchCriteriaDict.count == 0 ) )
@@ -818,102 +817,64 @@ WSCKeychain static* s_system = nil;
 
     NSError* error = nil;
     NSArray* allItems = [ self p_allItemsConformsTheClass: _ItemClass error: &error ];
+
+    if ( error )
+        {
+        if ( _Error )
+            *_Error = [ error copy ];
+
+        return nil;
+        }
+
     NSMutableArray* matchedItems = [ [ allItems mutableCopy ] autorelease ];
 
     if ( self.isValid )
         {
         for ( NSString* _SearchKey in _SearchCriteriaDict )
             {
-            SEL propertySelector = nil;
             SecItemAttr attrTag = NSHFSTypeCodeFromFileType( _SearchKey );
 
-            if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeCreationDate ] )
-                propertySelector = @selector( creationDate );
-
-            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeModificationDate ] )
-                propertySelector = @selector( modificationDate );
-
-            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeKindDescription ] )
-                propertySelector = @selector( kindDescription );
-
-            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeComment ] )
-                propertySelector = @selector( comment );
-
-            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeLabel ] )
-                propertySelector = @selector( label );
-        #if 0
-            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeInvisible ] )
-                propertySelector = @selector( invisible );
-
-            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeNegative ] )
-                propertySelector = @selector( negative );
-
-            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeUserDefinedDataAttribute ] )
-                propertySelector = @selector( userDefinedData );
-        #endif
-            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeAccount ] )
-                propertySelector = @selector( account );
-
-            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeServiceName ] )
-                propertySelector = @selector( serviceName );
-
-            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeHostName ] )
-                propertySelector = @selector( hostName );
-
-            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeAuthenticationType ] )
-                propertySelector = @selector( authenticationType );
-
-            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributePort ] )
-                propertySelector = @selector( port );
-
-            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeProtocol ] )
-                propertySelector = @selector( protocol );
-
-            // TODO: Certificates Search Key
-
+            // TODO: Waiting for the search keys for Certificates, Keys, etc.
             for ( WSCPassphraseItem* _Item in allItems )
                 {
-                if ( propertySelector == @selector( creationDate )
-                        || propertySelector == @selector( modificationDate ) )
+                switch ( attrTag )
                     {
-                    NSDate* cocoaDateData = [ _Item performSelector: propertySelector ];
-                    if ( ![ cocoaDateData isEqualToDate: _SearchCriteriaDict[ _SearchKey ] ] )
-                        [ matchedItems removeObject: _Item ];
-                    }
+                    case kSecCreationDateItemAttr:  case kSecModDateItemAttr:
+                        {
+                        NSDate* cocoaDateData = ( NSDate* )[ _Item p_extractAttribute: attrTag error: nil ];
+                        if ( ![ cocoaDateData isEqualToDate: _SearchCriteriaDict[ _SearchKey ] ] )
+                            [ matchedItems removeObject: _Item ];
+                        } break;
 
-                else if ( propertySelector == @selector( kindDescription )
-                            || propertySelector == @selector( comment )
-                            || propertySelector == @selector( label )
-                            || propertySelector == @selector( account )
-                            || propertySelector == @selector( serviceName )
-                            || propertySelector == @selector( hostName ) )
-                    {
-                    NSString* cocoaStringData = ( NSString* )[ _Item p_extractAttribute: attrTag error: nil ];
-                    if ( ![ cocoaStringData isEqualToString: _SearchCriteriaDict[ _SearchKey ] ] )
-                        [ matchedItems removeObject: _Item ];
-                    }
+                    case kSecDescriptionItemAttr:   case kSecCommentItemAttr:   case kSecLabelItemAttr:
+                    case kSecAccountItemAttr:       case kSecServiceItemAttr:   case kSecServerItemAttr:
+                        {
+                        NSString* cocoaStringData = ( NSString* )[ _Item p_extractAttribute: attrTag error: nil ];
+                        if ( ![ cocoaStringData isEqualToString: _SearchCriteriaDict[ _SearchKey ] ] )
+                            [ matchedItems removeObject: _Item ];
+                        } break;
 
-                else if ( propertySelector == @selector( authenticationType )
-                            || propertySelector == @selector( protocol ) )
-                    {
-                    FourCharCode fourCharCodeData = ( FourCharCode )[ _Item p_extractAttribute: attrTag error: nil ];
-                    FourCharCode searchValue = '\0\0\0\0';
+                    case kSecAuthenticationTypeItemAttr:    case kSecProtocolItemAttr:
+                        {
+                        FourCharCode fourCharCodeData = ( FourCharCode )[ _Item p_extractAttribute: attrTag error: nil ];
+                        FourCharCode searchValue = '\0\0\0\0';
 
-                    [ _SearchCriteriaDict[ _SearchKey ] getValue: &searchValue ];
-                    if ( fourCharCodeData != searchValue )
-                        [ matchedItems removeObject: _Item ];
-                    }
+                        [ _SearchCriteriaDict[ _SearchKey ] getValue: &searchValue ];
+                        if ( fourCharCodeData != searchValue )
+                            [ matchedItems removeObject: _Item ];
+                        } break;
 
-                else if ( propertySelector == @selector( port ) )
-                    {
-                    NSUInteger unsignedIntegerData = ( NSUInteger )[ _Item p_extractAttribute: attrTag error: nil ];
+                    case kSecPortItemAttr:
+                        {
+                        NSUInteger unsignedIntegerData = ( NSUInteger )[ _Item p_extractAttribute: attrTag error: nil ];
 
-                    if ( unsignedIntegerData != [ _SearchCriteriaDict[ _SearchKey ] unsignedIntegerValue ] )
-                        [ matchedItems removeObject: _Item ];
+                        if ( unsignedIntegerData != [ _SearchCriteriaDict[ _SearchKey ] unsignedIntegerValue ] )
+                            [ matchedItems removeObject: _Item ];
+                        } break;
                     }
                 }
 
-            allItems = [ [ matchedItems mutableCopy ] autorelease ];
+            allItems = [ [ matchedItems copy ] autorelease ];
             }
         }
     else

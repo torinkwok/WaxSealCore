@@ -68,7 +68,6 @@
 
 - ( NSArray* ) p_findKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
                                                  itemClass: ( WSCKeychainItemClass )_ItemClass
-                             shouldContinueAfterFindingOne: ( BOOL )_ShouldContinue
                                                      error: ( NSError** )_Error;
 
 - ( BOOL ) p_addSearchCriteriaTo: ( NSMutableArray* )_SearchCriteria
