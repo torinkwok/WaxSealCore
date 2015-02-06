@@ -199,7 +199,7 @@
     {
     NSError* error = nil;
     id attribute = nil;
-//    _WSCDontBeABitch( &error, self, [ WSCKeychainItem class ], s_guard );
+    _WSCDontBeABitch( &error, self, [ WSCKeychainItem class ], s_guard );
 
     if ( !error )
         attribute = [ self p_extractAttribute: _AttributeTag error: &error ];
@@ -321,7 +321,9 @@
             || _SecKeychainAttrStruct.tag == kSecProtocolItemAttr )
         {
         UInt32* data = _SecKeychainAttrStruct.data;
-        attributeValue = *data;
+
+        if ( data )
+            attributeValue = *data;
         }
     else
         if ( _Error )
@@ -416,7 +418,7 @@
     NSError* error = nil;
     OSStatus resultCode = errSecSuccess;
 
-//    _WSCDontBeABitch( &error, self, [ WSCKeychainItem class ], s_guard );
+    _WSCDontBeABitch( &error, self, [ WSCKeychainItem class ], s_guard );
     if ( !error )
         {
         SecKeychainAttribute newAttr;

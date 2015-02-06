@@ -582,8 +582,8 @@ NSString* _WSCPassphrases[] =
 
     NSString* commentOne = @"A keychain is an encrypted container that holds passphrases for multiple applications and secure services."
                             "Keychains are secure storage containers, which means that when the keychain is locked, no one can access "
-                            "its protected contents. In OS X, users can unlock a keychain—thus providing trusted applications access to "
-                            "the contents—by entering a single master passphrase."
+                            "its protected contents. In OS X, users can unlock a keychain－thus providing trusted applications access to "
+                            "the contents－by entering a single master passphrase."
                             "The above encrypted container which is called “keychain” is represented by WSCKeychain object in WaxSealCore "
                             "framework and SecKeychainRef in Keychain Services APIs.";
 

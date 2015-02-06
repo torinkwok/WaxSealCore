@@ -340,6 +340,14 @@
     XCTAssertNil( error );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
+    matchedItems_testCase0 = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Safari 表单自动填充😂" }
+                                           itemClass: WSCKeychainItemClassApplicationPassphraseItem
+                                               error: &error ];
+    XCTAssertNotNil( matchedItems_testCase0 );
+    XCTAssert( matchedItems_testCase0.count >= 0 );
+    XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
     matchedItems_testCase0 = [ _WSCRandomKeychain()
         findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributePort : @8064 }

@@ -1,4 +1,4 @@
-///:
+ ///:
 /*****************************************************************************
  **                                                                         **
  **                               .======.                                  **
@@ -804,8 +804,6 @@ WSCKeychain static* s_system = nil;
                              shouldContinueAfterFindingOne: ( BOOL )_ShouldContinue
                                                      error: ( NSError** )_Error
     {
-    OSStatus resultCode = errSecSuccess;
-
     if ( !_SearchCriteriaDict || ( _SearchCriteriaDict.count == 0 ) )
         {
         *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
@@ -817,6 +815,114 @@ WSCKeychain static* s_system = nil;
     for ( NSString* _Key in _SearchCriteriaDict )
         if ( ![ self p_doesItemAttributeSearchKey: _Key blongToItemClass: _ItemClass error: _Error ] )
             return nil;
+
+    NSError* error = nil;
+    NSArray* allItems = [ self p_allItemsConformsTheClass: _ItemClass error: &error ];
+    NSMutableArray* matchedItems = [ [ allItems mutableCopy ] autorelease ];
+
+    if ( self.isValid )
+        {
+        for ( NSString* _SearchKey in _SearchCriteriaDict )
+            {
+            SEL propertySelector = nil;
+            SecItemAttr attrTag = NSHFSTypeCodeFromFileType( _SearchKey );
+
+            if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeCreationDate ] )
+                propertySelector = @selector( creationDate );
+
+            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeModificationDate ] )
+                propertySelector = @selector( modificationDate );
+
+            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeKindDescription ] )
+                propertySelector = @selector( kindDescription );
+
+            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeComment ] )
+                propertySelector = @selector( comment );
+
+            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeLabel ] )
+                propertySelector = @selector( label );
+        #if 0
+            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeInvisible ] )
+                propertySelector = @selector( invisible );
+
+            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeNegative ] )
+                propertySelector = @selector( negative );
+
+            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeUserDefinedDataAttribute ] )
+                propertySelector = @selector( userDefinedData );
+        #endif
+            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeAccount ] )
+                propertySelector = @selector( account );
+
+            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeServiceName ] )
+                propertySelector = @selector( serviceName );
+
+            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeHostName ] )
+                propertySelector = @selector( hostName );
+
+            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeAuthenticationType ] )
+                propertySelector = @selector( authenticationType );
+
+            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributePort ] )
+                propertySelector = @selector( port );
+
+            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeProtocol ] )
+                propertySelector = @selector( protocol );
+
+            // TODO: Certificates Search Key
+
+            for ( WSCPassphraseItem* _Item in allItems )
+                {
+                if ( propertySelector == @selector( creationDate )
+                        || propertySelector == @selector( modificationDate ) )
+                    {
+                    NSDate* cocoaDateData = [ _Item performSelector: propertySelector ];
+                    if ( ![ cocoaDateData isEqualToDate: _SearchCriteriaDict[ _SearchKey ] ] )
+                        [ matchedItems removeObject: _Item ];
+                    }
+
+                else if ( propertySelector == @selector( kindDescription )
+                            || propertySelector == @selector( comment )
+                            || propertySelector == @selector( label )
+                            || propertySelector == @selector( account )
+                            || propertySelector == @selector( serviceName )
+                            || propertySelector == @selector( hostName ) )
+                    {
+                    NSString* cocoaStringData = ( NSString* )[ _Item p_extractAttribute: attrTag error: nil ];
+                    if ( ![ cocoaStringData isEqualToString: _SearchCriteriaDict[ _SearchKey ] ] )
+                        [ matchedItems removeObject: _Item ];
+                    }
+
+                else if ( propertySelector == @selector( authenticationType )
+                            || propertySelector == @selector( protocol ) )
+                    {
+                    FourCharCode fourCharCodeData = ( FourCharCode )[ _Item p_extractAttribute: attrTag error: nil ];
+                    FourCharCode searchValue = '\0\0\0\0';
+
+                    [ _SearchCriteriaDict[ _SearchKey ] getValue: &searchValue ];
+                    if ( fourCharCodeData != searchValue )
+                        [ matchedItems removeObject: _Item ];
+                    }
+
+                else if ( propertySelector == @selector( port ) )
+                    {
+                    NSUInteger unsignedIntegerData = ( NSUInteger )[ _Item p_extractAttribute: attrTag error: nil ];
+
+                    if ( unsignedIntegerData != [ _SearchCriteriaDict[ _SearchKey ] unsignedIntegerValue ] )
+                        [ matchedItems removeObject: _Item ];
+                    }
+                }
+
+            allItems = [ [ matchedItems mutableCopy ] autorelease ];
+            }
+        }
+    else
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                           code: WSCKeychainIsInvalidError
+                                       userInfo: nil ];
+#if 0
+    OSStatus resultCode = errSecSuccess;
 
     NSMutableArray* searchCriteria = [ self p_convertSearchCriteriaDictionaryToMutableArray: _SearchCriteriaDict ];
     NSMutableArray* matchedItems = nil;
@@ -877,7 +983,7 @@ WSCKeychain static* s_system = nil;
     else
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCKeychainIsInvalidError userInfo: nil ];
-
+#endif
     return ( matchedItems.count != 0 ) ? [ [ matchedItems copy ] autorelease ] : nil;
     }
 
