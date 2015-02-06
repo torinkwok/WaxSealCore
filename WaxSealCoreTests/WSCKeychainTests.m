@@ -62,6 +62,100 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+- ( void ) testAllApplicationPassphraseItems
+    {
+    NSError* error = nil;
+
+    fprintf( stdout, "\n========================================================================"
+                     "========================================================================\n" );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 0: For login keychain
+    // --------------------------------------------------------------------------------------------------------------------
+    NSArray* allApplicationPassphraseItems_testCase0 = [ [ WSCKeychain login ] allApplicationPassphraseItems ];
+
+    XCTAssertNotNil( allApplicationPassphraseItems_testCase0 );
+    XCTAssert( allApplicationPassphraseItems_testCase0.count > 1 );
+
+    for ( WSCPassphraseItem* _Item in allApplicationPassphraseItems_testCase0 )
+        NSLog( @"Service $login: %@", _Item.label );
+
+    for ( WSCPassphraseItem* _Item in allApplicationPassphraseItems_testCase0 )
+        NSLog( @"Comment $login: %@", _Item.comment );
+
+    fprintf( stdout, "\n========================================================================"
+                     "========================================================================\n" );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 1: For system keychain
+    // --------------------------------------------------------------------------------------------------------------------
+    NSArray* allApplicationPassphraseItems_testCase1 = [ [ WSCKeychain system ] allApplicationPassphraseItems ];
+
+    XCTAssertNotNil( allApplicationPassphraseItems_testCase1 );
+    XCTAssert( allApplicationPassphraseItems_testCase1.count > 1 );
+
+    for ( WSCPassphraseItem* _Item in allApplicationPassphraseItems_testCase1 )
+        NSLog( @"Service $System: %@", _Item.label );
+
+    for ( WSCPassphraseItem* _Item in allApplicationPassphraseItems_testCase1 )
+        NSLog( @"Comment $System: %@", _Item.comment );
+
+    fprintf( stdout, "\n========================================================================"
+                     "========================================================================\n" );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 2: For my own keychain
+    // --------------------------------------------------------------------------------------------------------------------
+    WSCKeychain* randomKeychain_testCase2 = _WSCRandomKeychain();
+    for ( int _Index = 0; _Index < 20; _Index++ )
+        {
+        WSCPassphraseItem* passphrase =
+            [ randomKeychain_testCase2 addApplicationPassphraseWithServiceName: [ NSString stringWithFormat: @"WaxSealCore Test Case %d", _Index ]
+                                                                   accountName: @"NSTongG"
+                                                                    passphrase: @"waxsealcore"
+                                                                         error: &error ];
+        XCTAssertNotNil( passphrase );
+        XCTAssertNil( error );
+        _WSCPrintNSErrorForUnitTest( error );
+        }
+
+    NSArray* allApplicationPassphraseItems_testCase2 = [ randomKeychain_testCase2 allApplicationPassphraseItems ];
+    XCTAssertNotNil( allApplicationPassphraseItems_testCase2 );
+    XCTAssertEqual( allApplicationPassphraseItems_testCase2.count, 20 );
+
+    for ( WSCPassphraseItem* _Item in allApplicationPassphraseItems_testCase2 )
+        _Item.comment = @"Big Brother Is WATCHING YOU! 👺👺👺";
+
+    for ( WSCPassphraseItem* _Item in allApplicationPassphraseItems_testCase2 )
+        NSLog( @"Service $randomKeychain: %@", _Item.label );
+
+    for ( WSCPassphraseItem* _Item in allApplicationPassphraseItems_testCase2 )
+        NSLog( @"Comment $randomKeychain: %@", _Item.comment );
+
+    fprintf( stdout, "\n========================================================================"
+                     "========================================================================\n" );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Negative Test Case 0
+    // --------------------------------------------------------------------------------------------------------------------
+    for ( WSCPassphraseItem* _Item in allApplicationPassphraseItems_testCase2 )
+        SecKeychainItemDelete( _Item.secKeychainItem );
+
+    NSArray* allApplicationPassphraseItems_negaitveTestCase0 = [ randomKeychain_testCase2 allApplicationPassphraseItems ];
+    XCTAssertNotNil( allApplicationPassphraseItems_negaitveTestCase0 );
+    XCTAssertEqual( allApplicationPassphraseItems_negaitveTestCase0.count, 0 );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Negative Test Case 1
+    // --------------------------------------------------------------------------------------------------------------------
+    [ [ WSCKeychainManager defaultManager ] deleteKeychain: randomKeychain_testCase2 error: &error ];
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    NSArray* allApplicationPassphraseItems_negaitveTestCase1 = [ randomKeychain_testCase2 allApplicationPassphraseItems ];
+    XCTAssertNil( allApplicationPassphraseItems_negaitveTestCase1 );
+    }
+
 - ( void ) testFindingFirstKeychainItem
     {
     NSError* error = nil;
@@ -115,15 +209,6 @@
     XCTAssertNil( error );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
-    matchedItems_testCase0 = [ [ WSCKeychain login ]
-        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Lingo Passphrase"
-//                                                       , WSCKeychainItemAttributeComment : @"Lingo Lingo!"
-                                                       }
-                                           itemClass: WSCKeychainItemClassInternetPassphraseItem
-                                               error: &error ];
-    XCTAssertNotNil( matchedItems_testCase0 );
-    XCTAssertNil( error );
-    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
     matchedItems_testCase0 = [ _WSCRandomKeychain()
         findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributePort : @8064 }

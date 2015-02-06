@@ -160,8 +160,8 @@
             self->_secKeychainItem = ( SecKeychainItemRef )CFRetain( _SecKeychainItemRef );
 
         // Ensure that the _SecKeychainItemRef does reference an exist keychain item.
-        if ( !self.isValid )
-            return nil;
+//        if ( !self.isValid )
+//            return nil;
         }
 
     return self;
@@ -199,7 +199,7 @@
     {
     NSError* error = nil;
     id attribute = nil;
-    _WSCDontBeABitch( &error, self, [ WSCKeychainItem class ], s_guard );
+//    _WSCDontBeABitch( &error, self, [ WSCKeychainItem class ], s_guard );
 
     if ( !error )
         attribute = [ self p_extractAttribute: _AttributeTag error: &error ];

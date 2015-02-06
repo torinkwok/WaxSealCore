@@ -380,7 +380,13 @@ WSCKeychain static* s_system = nil;
     NSError* error = nil;
 
     // Little params, don't be a bitch 👿
-    _WSCDontBeABitch( &error, self, [ WSCKeychain class ], s_guard );
+    _WSCDontBeABitch( &error
+                    , self, [ WSCKeychain class ]
+                    , _ServerName, [ NSString class ]
+                    , _URLRelativePath, [ NSString class ]
+                    , _AccountName, [ NSString class ]
+                    , _Passphrase, [ NSString class ]
+                    , s_guard );
     if ( !error )
         {
         // As described in documentation:
@@ -421,26 +427,50 @@ WSCKeychain static* s_system = nil;
     return nil;
     }
 
-/* Find the first keychain item which satisfies the given search criteria contained in *_SearchCriteria* dictionary.
+/* Retrieve all the application passphrase items stored in the keychain represented by receiver.
  */
-- ( NSMutableArray* ) p_convertSearchCriteriaDictionaryToMutableArray: ( NSDictionary* )_SearchCriteriaDict
+- ( NSArray* ) allApplicationPassphraseItems
     {
-    NSMutableArray* searchCriteria = [ NSMutableArray array ];
+    OSStatus resultCode = errSecSuccess;
+    NSError* error = nil;
+    NSMutableArray* allItems = nil;
 
-    [ _SearchCriteriaDict enumerateKeysAndObjectsUsingBlock:
-        ^( NSString* _Key, id _Object, BOOL* _Stop )
+    if ( self.isValid )
+        {
+        SecKeychainSearchRef secSearch = NULL;
+        resultCode =
+            SecKeychainSearchCreateFromAttributes( self.secKeychain
+                                                 , ( SecItemClass )WSCKeychainItemClassApplicationPassphraseItem
+                                                 , NULL
+                                                 , &secSearch
+                                                 );
+        if ( resultCode == errSecSuccess )
             {
-            SecItemAttr attrTag = NSHFSTypeCodeFromFileType( _Key );
+            SecKeychainItemRef secMatchedItem = NULL;
+            allItems = [ NSMutableArray array ];
 
-            if ( [ _Object isKindOfClass: [ NSString class ] ] )
-                [ self p_addSearchCriteriaTo: searchCriteria withCocoaStringData: ( NSString* )_Object itemAttr: attrTag ];
-            else if ( [ _Object isKindOfClass: [ NSValue class ] ] )
-                [ self p_addSearchCriteriaTo: searchCriteria withCocoaValueData: ( NSValue* )_Object itemAttr: attrTag ];
-            else if ( [ _Object isKindOfClass: [ NSNumber class ] ] )
-                [ self p_addSearchCriteriaTo: searchCriteria withCocoaNumberData: ( NSNumber* )_Object itemAttr: attrTag ];
-            } ];
+            // Match any keychain attribute
+            while ( ( resultCode = SecKeychainSearchCopyNext( secSearch, &secMatchedItem ) ) != errSecItemNotFound )
+                {
+                WSCPassphraseItem* matchedItem = [ WSCPassphraseItem keychainItemWithSecKeychainItemRef: secMatchedItem ];
+                CFRelease( secMatchedItem );
 
-    return searchCriteria;
+                [ allItems addObject: matchedItem ];
+                }
+
+            if ( secSearch )
+                CFRelease( secSearch );
+            }
+        else
+            error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+        }
+    else
+        error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCKeychainItemIsInvalidError userInfo: nil ];
+
+    if ( error )
+        _WSCPrintNSErrorForLog( error );
+
+    return allItems ? [ [ allItems copy ] autorelease ] : nil;
     }
 
 /* Find the first keychain item which satisfies the given search criteria contained in *_SearchCriteriaDict* dictionary.
@@ -470,15 +500,6 @@ WSCKeychain static* s_system = nil;
     }
 
 #pragma mark Overrides
-- ( instancetype ) init
-    {
-    if ( self = [ super init ] )
-        {
-        }
-
-    return self;
-    }
-
 - ( void ) dealloc
     {
     if ( self->_secKeychain )
@@ -727,6 +748,26 @@ WSCKeychain static* s_system = nil;
         }
 
     return doesBlong;
+    }
+
+- ( NSMutableArray* ) p_convertSearchCriteriaDictionaryToMutableArray: ( NSDictionary* )_SearchCriteriaDict
+    {
+    NSMutableArray* searchCriteria = [ NSMutableArray array ];
+
+    [ _SearchCriteriaDict enumerateKeysAndObjectsUsingBlock:
+        ^( NSString* _Key, id _Object, BOOL* _Stop )
+            {
+            SecItemAttr attrTag = NSHFSTypeCodeFromFileType( _Key );
+
+            if ( [ _Object isKindOfClass: [ NSString class ] ] )
+                [ self p_addSearchCriteriaTo: searchCriteria withCocoaStringData: ( NSString* )_Object itemAttr: attrTag ];
+            else if ( [ _Object isKindOfClass: [ NSValue class ] ] )
+                [ self p_addSearchCriteriaTo: searchCriteria withCocoaValueData: ( NSValue* )_Object itemAttr: attrTag ];
+            else if ( [ _Object isKindOfClass: [ NSNumber class ] ] )
+                [ self p_addSearchCriteriaTo: searchCriteria withCocoaNumberData: ( NSNumber* )_Object itemAttr: attrTag ];
+            } ];
+
+    return searchCriteria;
     }
 
 - ( NSArray* ) p_findKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict

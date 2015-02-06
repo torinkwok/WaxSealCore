@@ -501,6 +501,17 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
                                                   passphrase: ( NSString* )_Passphrase
                                                        error: ( NSError** )_Error;
 
+/** Retrieve all the application passphrase items stored in the keychain represented by receiver.
+
+  @warning The passphrase item stored in the returned array may be invalid (perhaps it has been deleted or modified),
+           you should check the validity of each passphrase item before using it.
+
+  @return An `NSArray` object containing all the application passphrase items stored in the keychain represented by receiver.
+          Returns an empty array if there is not any application passphrase item in the keychain.
+          Returns `nil` if an error occured.
+  */
+- ( NSArray* ) allApplicationPassphraseItems;
+
 /** Find the first keychain item which satisfies the given search criteria contained in *_SearchCriteriaDict* dictionary.
  
   The valid search keys: 
