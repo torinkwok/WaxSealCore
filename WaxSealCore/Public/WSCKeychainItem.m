@@ -416,7 +416,7 @@
     NSError* error = nil;
     OSStatus resultCode = errSecSuccess;
 
-    _WSCDontBeABitch( &error, self, [ WSCKeychainItem class ], s_guard );
+//    _WSCDontBeABitch( &error, self, [ WSCKeychainItem class ], s_guard );
     if ( !error )
         {
         SecKeychainAttribute newAttr;

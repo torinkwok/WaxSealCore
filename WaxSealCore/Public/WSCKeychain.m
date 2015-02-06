@@ -431,46 +431,28 @@ WSCKeychain static* s_system = nil;
  */
 - ( NSArray* ) allApplicationPassphraseItems
     {
-    OSStatus resultCode = errSecSuccess;
     NSError* error = nil;
-    NSMutableArray* allItems = nil;
-
-    if ( self.isValid )
-        {
-        SecKeychainSearchRef secSearch = NULL;
-        resultCode =
-            SecKeychainSearchCreateFromAttributes( self.secKeychain
-                                                 , ( SecItemClass )WSCKeychainItemClassApplicationPassphraseItem
-                                                 , NULL
-                                                 , &secSearch
-                                                 );
-        if ( resultCode == errSecSuccess )
-            {
-            SecKeychainItemRef secMatchedItem = NULL;
-            allItems = [ NSMutableArray array ];
-
-            // Match any keychain attribute
-            while ( ( resultCode = SecKeychainSearchCopyNext( secSearch, &secMatchedItem ) ) != errSecItemNotFound )
-                {
-                WSCPassphraseItem* matchedItem = [ WSCPassphraseItem keychainItemWithSecKeychainItemRef: secMatchedItem ];
-                CFRelease( secMatchedItem );
-
-                [ allItems addObject: matchedItem ];
-                }
-
-            if ( secSearch )
-                CFRelease( secSearch );
-            }
-        else
-            error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
-        }
-    else
-        error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCKeychainItemIsInvalidError userInfo: nil ];
+    NSArray* allAppPassphraseItems =
+        [ self p_allItemsConformsTheClass: WSCKeychainItemClassApplicationPassphraseItem error: &error ];
 
     if ( error )
         _WSCPrintNSErrorForLog( error );
 
-    return allItems ? [ [ allItems copy ] autorelease ] : nil;
+    return allAppPassphraseItems;
+    }
+
+/* Retrieve all the Internet passphrase items stored in the keychain represented by receiver.
+ */
+- ( NSArray* ) allInternetPassphraseItems
+    {
+    NSError* error = nil;
+    NSArray* allInternetPassphraseItems =
+        [ self p_allItemsConformsTheClass: WSCKeychainItemClassInternetPassphraseItem error: &error ];
+
+    if ( error )
+        _WSCPrintNSErrorForLog( error );
+
+    return allInternetPassphraseItems;
     }
 
 /* Find the first keychain item which satisfies the given search criteria contained in *_SearchCriteriaDict* dictionary.
@@ -721,6 +703,53 @@ WSCKeychain static* s_system = nil;
 
 #pragma mark Private Programmatic Interfaces for Finding Keychain Items
 @implementation WSCKeychain( WSCKeychainPrivateFindingKeychainItems )
+
+- ( NSArray* ) p_allItemsConformsTheClass: ( WSCKeychainItemClass )_ItemClass
+                                    error: ( NSError** )_Error
+    {
+    OSStatus resultCode = errSecSuccess;
+    NSMutableArray* allItems = nil;
+
+    if ( self.isValid )
+        {
+        SecKeychainSearchRef secSearch = NULL;
+        resultCode =
+            SecKeychainSearchCreateFromAttributes( self.secKeychain
+                                                 , ( SecItemClass )_ItemClass
+                                                 , NULL
+                                                 , &secSearch
+                                                 );
+        if ( resultCode == errSecSuccess )
+            {
+            SecKeychainItemRef secMatchedItem = NULL;
+            allItems = [ NSMutableArray array ];
+
+            // Match any keychain attribute
+            while ( ( resultCode = SecKeychainSearchCopyNext( secSearch, &secMatchedItem ) ) != errSecItemNotFound )
+                {
+                WSCPassphraseItem* matchedItem = [ WSCPassphraseItem keychainItemWithSecKeychainItemRef: secMatchedItem ];
+                CFRelease( secMatchedItem );
+
+                [ allItems addObject: matchedItem ];
+                }
+
+            if ( secSearch )
+                CFRelease( secSearch );
+            }
+        else
+            {
+            if ( _Error )
+                *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+            }
+        }
+    else
+        {
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCKeychainItemIsInvalidError userInfo: nil ];
+        }
+
+    return allItems ? [ [ allItems copy ] autorelease ] : nil;
+    }
 
 - ( BOOL ) p_doesItemAttributeSearchKey: ( NSString* )_SearchKey
                        blongToItemClass: ( WSCKeychainItemClass )_ItemClass

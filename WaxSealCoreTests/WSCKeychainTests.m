@@ -109,12 +109,23 @@
     WSCKeychain* randomKeychain_testCase2 = _WSCRandomKeychain();
     for ( int _Index = 0; _Index < 20; _Index++ )
         {
-        WSCPassphraseItem* passphrase =
+        WSCPassphraseItem* appPassphrase =
             [ randomKeychain_testCase2 addApplicationPassphraseWithServiceName: [ NSString stringWithFormat: @"WaxSealCore Test Case %d", _Index ]
                                                                    accountName: @"NSTongG"
                                                                     passphrase: @"waxsealcore"
                                                                          error: &error ];
-        XCTAssertNotNil( passphrase );
+        XCTAssertNotNil( appPassphrase );
+        XCTAssertNil( error );
+        _WSCPrintNSErrorForUnitTest( error );
+
+        WSCPassphraseItem* internetPassphrase =
+            [ randomKeychain_testCase2 addInternetPassphraseWithServerName: @"waxsealcore.io"
+                                                           URLRelativePath: [ NSString stringWithFormat: @"/test/case/%d", _Index ]
+                                                               accountName: @"NSTongG"
+                                                                  protocol: WSCInternetProtocolTypeHTTPS
+                                                                passphrase: @"waxsealcore"
+                                                                     error: &error ];
+        XCTAssertNotNil( internetPassphrase );
         XCTAssertNil( error );
         _WSCPrintNSErrorForUnitTest( error );
         }
@@ -154,6 +165,126 @@
 
     NSArray* allApplicationPassphraseItems_negaitveTestCase1 = [ randomKeychain_testCase2 allApplicationPassphraseItems ];
     XCTAssertNil( allApplicationPassphraseItems_negaitveTestCase1 );
+    }
+
+- ( void ) testAllInternetPassphraseItems
+    {
+    NSError* error = nil;
+
+    fprintf( stdout, "\n========================================================================"
+                     "========================================================================\n" );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 0: For login keychain
+    // --------------------------------------------------------------------------------------------------------------------
+    NSArray* allInternetPassphraseItems_testCase0 = [ [ WSCKeychain login ] allInternetPassphraseItems ];
+
+    XCTAssertNotNil( allInternetPassphraseItems_testCase0 );
+    XCTAssert( allInternetPassphraseItems_testCase0.count > 1 );
+
+    for ( WSCPassphraseItem* _Item in allInternetPassphraseItems_testCase0 )
+        {
+        NSLog( @"Service $randomKeychain: %@", _Item.label );
+        NSLog( @"Comment $randomKeychain: %@", _Item.comment );
+        NSLog( @"Kind Description $randomKeychain: %@", _Item.kindDescription );
+        NSLog( @"Comment $randomKeychain: %@", _Item.comment );
+
+        fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
+        }
+
+    fprintf( stdout, "\n========================================================================"
+                     "========================================================================\n" );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 1: For system keychain
+    // --------------------------------------------------------------------------------------------------------------------
+    NSArray* allInternetPassphraseItems_testCase1 = [ [ WSCKeychain system ] allInternetPassphraseItems ];
+
+    XCTAssertNotNil( allInternetPassphraseItems_testCase1 );
+    XCTAssert( allInternetPassphraseItems_testCase1.count >= 0 );
+
+    for ( WSCPassphraseItem* _Item in allInternetPassphraseItems_testCase1 )
+        {
+        NSLog( @"Service $randomKeychain: %@", _Item.label );
+        NSLog( @"Comment $randomKeychain: %@", _Item.comment );
+        NSLog( @"Kind Description $randomKeychain: %@", _Item.kindDescription );
+        NSLog( @"Comment $randomKeychain: %@", _Item.comment );
+
+        fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
+        }
+
+    fprintf( stdout, "\n========================================================================"
+                     "========================================================================\n" );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 2: For my own keychain
+    // --------------------------------------------------------------------------------------------------------------------
+    WSCKeychain* randomKeychain_testCase2 = _WSCRandomKeychain();
+    for ( int _Index = 0; _Index < 20; _Index++ )
+        {
+        WSCPassphraseItem* appPassphrase =
+            [ randomKeychain_testCase2 addApplicationPassphraseWithServiceName: [ NSString stringWithFormat: @"WaxSealCore Test Case %d", _Index ]
+                                                                   accountName: @"NSTongG"
+                                                                    passphrase: @"waxsealcore"
+                                                                         error: &error ];
+        XCTAssertNotNil( appPassphrase );
+        XCTAssertNil( error );
+        _WSCPrintNSErrorForUnitTest( error );
+
+        WSCPassphraseItem* internetPassphrase =
+            [ randomKeychain_testCase2 addInternetPassphraseWithServerName: @"waxsealcore.io"
+                                                           URLRelativePath: [ NSString stringWithFormat: @"/test/case/%d", _Index ]
+                                                               accountName: @"NSTongG"
+                                                                  protocol: WSCInternetProtocolTypeHTTPS
+                                                                passphrase: @"waxsealcore"
+                                                                     error: &error ];
+        XCTAssertNotNil( internetPassphrase );
+        XCTAssertNil( error );
+        _WSCPrintNSErrorForUnitTest( error );
+        }
+
+    NSArray* allInternetPassphraseItems_testCase2 = [ randomKeychain_testCase2 allInternetPassphraseItems ];
+    XCTAssertNotNil( allInternetPassphraseItems_testCase2 );
+    XCTAssertEqual( allInternetPassphraseItems_testCase2.count, 20 );
+
+    for ( WSCPassphraseItem* _Item in allInternetPassphraseItems_testCase2 )
+        {
+        _Item.comment = @"Big Brother Is WATCHING YOU! 👺👺👺";
+        _Item.kindDescription = @"WaxSealCore Account Passphrase";
+        }
+
+    for ( WSCPassphraseItem* _Item in allInternetPassphraseItems_testCase2 )
+        {
+        NSLog( @"Service $randomKeychain: %@", _Item.label );
+        NSLog( @"Comment $randomKeychain: %@", _Item.comment );
+        NSLog( @"Kind Description $randomKeychain: %@", _Item.kindDescription );
+        NSLog( @"Comment $randomKeychain: %@", _Item.comment );
+
+        fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
+        }
+
+    fprintf( stdout, "\n========================================================================"
+                     "========================================================================\n" );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Negative Test Case 0
+    // --------------------------------------------------------------------------------------------------------------------
+    for ( WSCPassphraseItem* _Item in allInternetPassphraseItems_testCase2 )
+        SecKeychainItemDelete( _Item.secKeychainItem );
+
+    NSArray* allInternetPassphraseItems_negaitveTestCase0 = [ randomKeychain_testCase2 allInternetPassphraseItems ];
+    XCTAssertNotNil( allInternetPassphraseItems_negaitveTestCase0 );
+    XCTAssertEqual( allInternetPassphraseItems_negaitveTestCase0.count, 0 );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Negative Test Case 1
+    // --------------------------------------------------------------------------------------------------------------------
+    [ [ WSCKeychainManager defaultManager ] deleteKeychain: randomKeychain_testCase2 error: &error ];
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    NSArray* allInternetPassphraseItems_negaitveTestCase1 = [ randomKeychain_testCase2 allInternetPassphraseItems ];
+    XCTAssertNil( allInternetPassphraseItems_negaitveTestCase1 );
     }
 
 - ( void ) testFindingFirstKeychainItem
