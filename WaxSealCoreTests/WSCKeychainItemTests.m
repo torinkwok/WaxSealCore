@@ -150,7 +150,7 @@ NSString* _WSCPassphrases[] =
             XCTAssertEqualObjects( internetPasswordItem.label, commonLabel );
             NSLog( @"Newer Label: %@", internetPasswordItem.label );
 
-            [ commonKeychain deleteKeychainItem: internetPasswordItem error: &error ];
+            [ commonKeychain deleteKeychainItem: internetPasswordItem error: nil ];
             XCTAssertNil( internetPasswordItem.label );
             }
         }
@@ -164,7 +164,7 @@ NSString* _WSCPassphrases[] =
             {
             WSCPassphraseItem* applicationPasswordItem =
                 [ commonKeychain addApplicationPassphraseWithServiceName: @"WaxSealCore Unit Tests"
-                                                             accountName: [ NSString stringWithFormat: @"NSTongG %d", _Index ]
+                                                             accountName: @"NSTongG"
                                                               passphrase: @"waxsealcore"
                                                                    error: &error ];
             XCTAssertNotNil( applicationPasswordItem );
@@ -177,7 +177,7 @@ NSString* _WSCPassphrases[] =
             XCTAssertEqualObjects( applicationPasswordItem.label, commonLabel );
             NSLog( @"Newer Label: %@", applicationPasswordItem.label );
 
-            SecKeychainItemDelete( applicationPasswordItem.secKeychainItem );
+            [ applicationPasswordItem.keychain deleteKeychainItem: applicationPasswordItem error: nil ];
 
             XCTAssertNil( applicationPasswordItem.label );
             }

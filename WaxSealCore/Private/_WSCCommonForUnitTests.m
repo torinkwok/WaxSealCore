@@ -145,9 +145,8 @@ static void s_commonTearDownForUnitTestModules()
     for ( WSCKeychain* _Keychain in s_keychainAutodeletePool )
         [ [ WSCKeychainManager defaultManager ] deleteKeychain: _Keychain error: nil ];
 
-    // TODO: Waiting for me to reimplement it by making advantage of the deleting API of WSCKeychainItem class
     for ( WSCKeychainItem* _KeychainItem in s_keychainItemAutodeletePool )
-        SecKeychainItemDelete( _KeychainItem.secKeychainItem );
+        [ _KeychainItem.keychain deleteKeychainItem: _KeychainItem error: nil ];
 
     [ [ WSCKeychainManager defaultManager ] setDefaultKeychain: [ WSCKeychain login ] error: nil ];
 
@@ -227,9 +226,11 @@ WSCPassphraseItem* _WSC_www_waxsealcore_org_InternetKeychainItem( NSError** _Err
 WSCPassphraseItem* _WSC_WaxSealCoreTests_ApplicationKeychainItem( NSError** _Error )
     {
     NSError* error = nil;
+
+    srand( ( unsigned int )time( NULL ) );
     WSCPassphraseItem* applicationPassphrase_testCase0 =
         [ [ [ WSCKeychain login ] addApplicationPassphraseWithServiceName: @"WaxSealCore: Common Test"
-                                                              accountName: @"NSTongG"
+                                                              accountName: [ NSString stringWithFormat: @"NSTongG %lu", random() ]
                                                                passphrase: @"waxsealcore"
                                                                     error: &error ] autodelete ];
     if ( _Error )

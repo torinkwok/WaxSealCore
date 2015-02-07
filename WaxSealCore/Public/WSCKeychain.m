@@ -482,6 +482,12 @@ WSCKeychain static* s_system = nil;
     OSStatus resultCode = errSecSuccess;
     BOOL isSuccess = NO;
 
+    NSString* errorDomain = nil;
+    NSUInteger errorCode = 0;
+    NSDictionary* userInfo = nil;
+
+    #define SET_ERROR_DOMAIN_AND_CODE( _Domain, _Code ) { errorDomain = _Domain; errorCode = _Code; }
+
     // The keychain represented by receiver must not be invalid
     if ( self.isValid )
         {
@@ -509,23 +515,25 @@ WSCKeychain static* s_system = nil;
                     isSuccess = YES;
                     }
                 else // If we failed to delete the given keychain item...
-                    if ( _Error )
-                        *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+                    SET_ERROR_DOMAIN_AND_CODE( NSOSStatusErrorDomain, resultCode );
                 }
             else
-                if ( _Error )
-                    *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                                   code: WSCCommonInvalidParametersError
-                                               userInfo: @{ NSLocalizedFailureReasonErrorKey
-                                                            : @"The given keychain item was not stored in the keychain represented by receiver." } ];
+                // If the given keychain item was not stored in the keychain represented by receiver...
+                SET_ERROR_DOMAIN_AND_CODE( WaxSealCoreErrorDomain, WSCCommonInvalidParametersError );
             }
         else // If the keychain item represented by parameter _KeychainItem is already invalid...
-            if ( _Error )
-                *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCKeychainItemIsInvalidError userInfo: nil ];
+            SET_ERROR_DOMAIN_AND_CODE( WaxSealCoreErrorDomain, WSCKeychainItemIsInvalidError );
         }
     else  // If the keychain represented by receiver is already invalid...
-        if ( _Error )
-            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCKeychainIsInvalidError userInfo: nil ];
+        SET_ERROR_DOMAIN_AND_CODE( WaxSealCoreErrorDomain, WSCKeychainIsInvalidError );
+
+    if ( !isSuccess && _Error )
+        {
+        if ( [ errorDomain isEqualToString: WaxSealCoreErrorDomain ] && ( errorCode == WSCCommonInvalidParametersError ) )
+            userInfo = @{ NSLocalizedFailureReasonErrorKey : @"The given keychain item was not stored in the keychain represented by receiver." };
+
+        *_Error = [ NSError errorWithDomain: errorDomain code: errorCode userInfo: userInfo ];
+        }
 
     return isSuccess;
     }

@@ -67,6 +67,9 @@
     NSError* error = nil;
     BOOL isSuccess = NO;
 
+    _WSC_WaxSealCoreTests_ApplicationKeychainItem( nil );
+    _WSC_WaxSealCoreTests_ApplicationKeychainItem( nil );
+
     // --------------------------------------------------------------------------------------------------------------------
     // Positive Test Case 0: For Internet Passphrase Item
     // --------------------------------------------------------------------------------------------------------------------
