@@ -209,9 +209,11 @@ NSURL* _WSCURLForTestCase( SEL _TestCase, NSString* _TestCaseDesc, BOOL _DoesPro
 WSCPassphraseItem* _WSC_www_waxsealcore_org_InternetKeychainItem( NSError** _Error )
     {
     NSError* error = nil;
+
+    srand( ( unsigned int )time( NULL ) );
     WSCPassphraseItem* www_waxsealcore_org =
         [ [ [ WSCKeychain login ] addInternetPassphraseWithServerName: @"www.waxsealcore.org"
-                                                      URLRelativePath: @"common/test/internet/keychain/item"
+                                                      URLRelativePath: [ NSString stringWithFormat: @"common/test/internet/keychain/item/%lu", random() ]
                                                           accountName: @"waxsealcore"
                                                              protocol: WSCInternetProtocolTypeHTTPS
                                                            passphrase: @"waxsealcore"

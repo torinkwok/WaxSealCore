@@ -1471,27 +1471,28 @@
     // ----------------------------------------------------------------------------------
     // Negative Test Case 0
     // ----------------------------------------------------------------------------------
-    WSCPassphraseItem* internetPassphrase_negativeTestCase0 =
+    WSCPassphraseItem* internetPassphrase_negativeTestCase0 = nil;
+    XCTAssertThrows( internetPassphrase_negativeTestCase0 =
         [ _WSCCommonValidKeychainForUnitTests addInternetPassphraseWithServerName: nil
                                                                   URLRelativePath: ( NSString* )@24324
                                                                       accountName: nil
                                                                          protocol: WSCInternetProtocolTypeHTTP
                                                                        passphrase: _WSCTestPassphrase
-                                                                            error: &error ];
+                                                                            error: &error ] );
     XCTAssertNil( internetPassphrase_negativeTestCase0 );
-    XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
-    XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
+    XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    internetPassphrase_negativeTestCase0 =
+    XCTAssertThrows( internetPassphrase_negativeTestCase0 =
         [ _WSCCommonValidKeychainForUnitTests addInternetPassphraseWithServerName: nil
                                                                   URLRelativePath: ( NSString* )@24324
                                                                       accountName: nil
                                                                          protocol: WSCInternetProtocolTypeHTTP
                                                                        passphrase: _WSCTestPassphrase
-                                                                            error: nil ];
+                                                                            error: nil ] );
+    XCTAssertNil( internetPassphrase_negativeTestCase0 );
     XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
 
     // ----------------------------------------------------------------------------------
     // Negative Test Case 1

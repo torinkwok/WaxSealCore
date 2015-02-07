@@ -131,26 +131,29 @@ NSString* _WSCPassphrases[] =
     // -------------------------------------------------------------------------------
     for ( int _Index = 0; _Index < 20; _Index++ )
         {
-        WSCPassphraseItem* internetPasswordItem =
-            [ commonKeychain addInternetPassphraseWithServerName: @"node-los.vnet.link"
-                                                 URLRelativePath: nil
-                                                     accountName: @"NSTongG"
-                                                        protocol: WSCInternetProtocolTypeHTTPSProxy
-                                                      passphrase: @"waxsealcore"
-                                                           error: &error ];
-        XCTAssertNotNil( internetPasswordItem );
-        XCTAssertNil( error );
-        _WSCPrintNSErrorForUnitTest( error );
+        @autoreleasepool
+            {
+            WSCPassphraseItem* internetPasswordItem =
+                [ commonKeychain addInternetPassphraseWithServerName: @"node-los.vnet.link"
+                                                     URLRelativePath: nil
+                                                         accountName: [ NSString stringWithFormat: @"NSTongG %d", _Index ]
+                                                            protocol: WSCInternetProtocolTypeHTTPSProxy
+                                                          passphrase: @"waxsealcore"
+                                                               error: &error ];
+            XCTAssertNotNil( internetPasswordItem );
+            XCTAssertNil( error );
+            _WSCPrintNSErrorForUnitTest( error );
 
-        NSLog( @"Older Label: %@", internetPasswordItem.label );
-        internetPasswordItem.label = commonLabel;
-        XCTAssertNotNil( internetPasswordItem.label );
-        XCTAssertEqualObjects( internetPasswordItem.label, commonLabel );
-        NSLog( @"Newer Label: %@", internetPasswordItem.label );
+            NSLog( @"Older Label: %@", internetPasswordItem.label );
+            internetPasswordItem.label = commonLabel;
+            XCTAssertNotNil( internetPasswordItem.label );
+            XCTAssertEqualObjects( internetPasswordItem.label, commonLabel );
+            NSLog( @"Newer Label: %@", internetPasswordItem.label );
 
-        SecKeychainItemDelete( internetPasswordItem.secKeychainItem );
+            SecKeychainItemDelete( internetPasswordItem.secKeychainItem );
 
-        XCTAssertNil( internetPasswordItem.label );
+            XCTAssertNil( internetPasswordItem.label );
+            }
         }
 
     // -------------------------------------------------------------------------------
@@ -158,24 +161,27 @@ NSString* _WSCPassphrases[] =
     // -------------------------------------------------------------------------------
     for ( int _Index = 0; _Index < 20; _Index++ )
         {
-        WSCPassphraseItem* applicationPasswordItem =
-            [ commonKeychain addApplicationPassphraseWithServiceName: @"WaxSealCore Unit Tests"
-                                                         accountName: @"NSTongG"
-                                                          passphrase: @"waxsealcore"
-                                                               error: &error ];
-        XCTAssertNotNil( applicationPasswordItem );
-        XCTAssertNil( error );
-        _WSCPrintNSErrorForUnitTest( error );
+        @autoreleasepool
+            {
+            WSCPassphraseItem* applicationPasswordItem =
+                [ commonKeychain addApplicationPassphraseWithServiceName: @"WaxSealCore Unit Tests"
+                                                             accountName: [ NSString stringWithFormat: @"NSTongG %d", _Index ]
+                                                              passphrase: @"waxsealcore"
+                                                                   error: &error ];
+            XCTAssertNotNil( applicationPasswordItem );
+            XCTAssertNil( error );
+            _WSCPrintNSErrorForUnitTest( error );
 
-        NSLog( @"Older Label: %@", applicationPasswordItem.label );
-        applicationPasswordItem.label = commonLabel;
-        XCTAssertNotNil( applicationPasswordItem.label );
-        XCTAssertEqualObjects( applicationPasswordItem.label, commonLabel );
-        NSLog( @"Newer Label: %@", applicationPasswordItem.label );
+            NSLog( @"Older Label: %@", applicationPasswordItem.label );
+            applicationPasswordItem.label = commonLabel;
+            XCTAssertNotNil( applicationPasswordItem.label );
+            XCTAssertEqualObjects( applicationPasswordItem.label, commonLabel );
+            NSLog( @"Newer Label: %@", applicationPasswordItem.label );
 
-        SecKeychainItemDelete( applicationPasswordItem.secKeychainItem );
+            SecKeychainItemDelete( applicationPasswordItem.secKeychainItem );
 
-        XCTAssertNil( applicationPasswordItem.label );
+            XCTAssertNil( applicationPasswordItem.label );
+            }
         }
     }
 

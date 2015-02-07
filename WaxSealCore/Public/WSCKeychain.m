@@ -380,13 +380,7 @@ WSCKeychain static* s_system = nil;
     NSError* error = nil;
 
     // Little params, don't be a bitch 👿
-    _WSCDontBeABitch( &error
-                    , self, [ WSCKeychain class ]
-                    , _ServerName, [ NSString class ]
-                    , _URLRelativePath, [ NSString class ]
-                    , _AccountName, [ NSString class ]
-                    , _Passphrase, [ NSString class ]
-                    , s_guard );
+    _WSCDontBeABitch( &error, self, [ WSCKeychain class ], s_guard );
     if ( !error )
         {
         // As described in documentation:

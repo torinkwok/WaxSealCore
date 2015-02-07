@@ -273,6 +273,9 @@
         // If we failed to retrieves the attributes.
         _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
 
+    if ( attrList.attr->data )
+        SecKeychainItemFreeContent( &attrList, NULL );
+
     if ( _Error && error )
         *_Error = [ error copy ];
 
