@@ -481,6 +481,8 @@ WSCKeychain static* s_system = nil;
     {
     OSStatus resultCode = errSecSuccess;
 
+    // If the given keychain item was not stored in the keychain represented by receiver
+    // we shouldn't delete it; instead, populate the _Error pointer then return NO.
     if ( _KeychainItem.isValid && ![ _KeychainItem.keychain isEqualToKeychain: self ] )
         {
         if ( _Error )
@@ -500,6 +502,12 @@ WSCKeychain static* s_system = nil;
     resultCode = SecKeychainItemDelete( _KeychainItem.secKeychainItem );
 
     if ( resultCode == errSecSuccess )
+        // Keychain Services API caches SecKeychainItemRef object every time
+        // one of SecKeychainFindInternetPassword(), SecKeychainFindGenericPassword()
+        // and SecKeychainItemCopyContent() functions is called.
+        // So, whenever we have called any of these two methods be sure to clear the API cache
+        // using the method SecKeychainItemFreeAttributesAndData() or SecKeychainItemFreeContent().
+        // Also release the SecKeychainItemRef object using CFRelease().
         CFRelease( _KeychainItem.secKeychainItem );
     else
         if ( _Error )
