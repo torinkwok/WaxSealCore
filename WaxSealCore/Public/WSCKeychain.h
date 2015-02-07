@@ -613,7 +613,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
                 
   @return A `WSCKeychainItem` object representing the keychain item satisfying the given search criteria.
           Returns `nil` if an error occurs or there is not any keychan item satisfying the given search criteria.
-          
+
   @sa findAllKeychainItemsSatisfyingSearchCriteria:itemClass:error:
   */
 /* TODO: Completed the documentation of WSCKeychainItemAttributeCertificateType, WSCKeychainItemAttributeCertificateEncoding
@@ -644,6 +644,36 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 - ( NSArray* ) findAllKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
                                                   itemClass: ( WSCKeychainItemClass )_ItemClass
                                                       error: ( NSError** )_Error;
+
+/** Find the first Internet passphrase item which has the given host name.
+ 
+  @param _HostName The host name which will be used for searching.
+
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+                You may specify `nil` for this parameter if you don't want the error information.
+
+  @return A `WSCPassphraseItem` object representing the Internet passphrase item which has the given host name.
+          Returns `nil` if an error occurs or there is not any Internet item has the given host name.
+  */
+- ( WSCPassphraseItem* ) findFirstInternetPassphraseItemHasHostName: ( NSString* )_HostName
+                                                              error: ( NSError** )_Error;
+
+/** Find all the Internet passphrase items has the given host name.
+
+  @param _HostName The host name which will be used for searching.
+
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+                You may specify `nil` for this parameter if you don't want the error information.
+
+  @return An `NSArray` object containing the Internet passphrase items have the given host name.
+          Returns an empty array if there is not any Internet passphrase item has the given search criteria.
+          Returns `nil` if an error occurs.
+  */
+- ( NSArray* ) findAllInternetPassphraseItemsHaveHostName: ( NSString* )_HostName
+                                                    error: ( NSError** )_Error;
+
 @end // WSCKeychain class
 
 NSValue* WSCFourCharCodeValue( FourCharCode _FourCharCode );

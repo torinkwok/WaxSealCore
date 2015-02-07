@@ -480,6 +480,28 @@ WSCKeychain static* s_system = nil;
     return matchedItems;
     }
 
+/* Find the first Internet passphrase item which has the given host name.
+ */
+- ( WSCPassphraseItem* ) findFirstInternetPassphraseItemHasHostName: ( NSString* )_HostName
+                                                              error: ( NSError** )_Error
+    {
+    NSArray* matchedItems = [ self p_findKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeHostName : _HostName }
+                                                                     itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                                                         error: _Error ];
+    return matchedItems.firstObject;
+    }
+
+/* Find all the Internet passphrase items has the given host name.
+ */
+- ( NSArray* ) findAllInternetPassphraseItemsHaveHostName: ( NSString* )_HostName
+                                                    error: ( NSError** )_Error
+    {
+    NSArray* matchedItems = [ self p_findKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeHostName : _HostName }
+                                                                     itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                                                         error: _Error ];
+    return matchedItems;
+    }
+
 #pragma mark Overrides
 - ( void ) dealloc
     {

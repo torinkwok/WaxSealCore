@@ -300,7 +300,6 @@
                                                         }
                                             itemClass: WSCKeychainItemClassInternetPassphraseItem
                                                 error: &error ];
-    NSLog( @"Desc: %@", matchedItem_testCase0 );
     XCTAssertNotNil( matchedItem_testCase0 );
     XCTAssertNil( error );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
@@ -511,6 +510,91 @@
     XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainIsInvalidError );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
+    }
+
+- ( void ) testFindingInternetPassphraseItemHasGivenHostName
+    {
+    NSError* error = nil;
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 0
+    // --------------------------------------------------------------------------------------------------------------------
+    NSString* hostName_testCase0 = @"twitter.com😂";
+    WSCPassphraseItem* internetPassphrase_testCase0 = [ [ WSCKeychain login ]
+        findFirstInternetPassphraseItemHasHostName: hostName_testCase0 error: &error ];
+
+    XCTAssertNotNil( internetPassphrase_testCase0 );
+    XCTAssertEqualObjects( internetPassphrase_testCase0.hostName, hostName_testCase0 );
+    XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
+
+    NSArray* internetPassphrases_testCase0 = [ [ WSCKeychain login ]
+        findAllInternetPassphraseItemsHaveHostName: hostName_testCase0 error: &error ];
+
+    XCTAssertNotNil( internetPassphrases_testCase0 );
+    XCTAssert( internetPassphrases_testCase0.count >= 0 );
+    XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 1
+    // --------------------------------------------------------------------------------------------------------------------
+    NSString* hostName_testCase1 = @"node-cnx.vnet.link";
+    WSCPassphraseItem* internetPassphrase_testCase1 = [ [ WSCKeychain system ]
+        findFirstInternetPassphraseItemHasHostName: hostName_testCase1 error: &error ];
+
+    XCTAssertNil( internetPassphrase_testCase1 );
+    XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
+
+    NSArray* internetPassphrases_testCase1 = [ [ WSCKeychain system ]
+        findAllInternetPassphraseItemsHaveHostName: hostName_testCase1 error: &error ];
+
+    XCTAssertNotNil( internetPassphrases_testCase1 );
+    XCTAssert( internetPassphrases_testCase1.count == 0 );
+    XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 2
+    // --------------------------------------------------------------------------------------------------------------------
+    WSCKeychain* randomKeychain_testCase2 = _WSCRandomKeychain();
+    NSString* hostName_testCase2 = @"node-cnx.vnet.link";
+    WSCPassphraseItem* internetPassphrase_testCase2 = [ randomKeychain_testCase2
+        findFirstInternetPassphraseItemHasHostName: hostName_testCase2 error: &error ];
+
+    XCTAssertNil( internetPassphrase_testCase2 );
+    XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
+
+    NSArray* internetPassphrases_testCase2 = [ randomKeychain_testCase2
+        findAllInternetPassphraseItemsHaveHostName: hostName_testCase2 error: &error ];
+
+    XCTAssertNotNil( internetPassphrases_testCase2 );
+    XCTAssert( internetPassphrases_testCase2.count == 0 );
+    XCTAssertNil( error );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Negative Test Case 0
+    // --------------------------------------------------------------------------------------------------------------------
+    [ [ WSCKeychainManager defaultManager ] deleteKeychain: randomKeychain_testCase2 error: nil ];
+
+    WSCPassphraseItem* internetPassphrase_negativeTestCase0 = [ randomKeychain_testCase2
+        findFirstInternetPassphraseItemHasHostName: hostName_testCase2 error: &error ];
+
+    XCTAssertNil( internetPassphrase_negativeTestCase0 );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainIsInvalidError );
+
+    NSArray* internetPassphrases_negativeTestCase0 = [ randomKeychain_testCase2
+        findAllInternetPassphraseItemsHaveHostName: hostName_testCase2 error: &error ];
+
+    XCTAssertNil( internetPassphrases_negativeTestCase0 );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainIsInvalidError );
     }
 
 // -----------------------------------------------------------------
