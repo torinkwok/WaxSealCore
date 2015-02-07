@@ -503,7 +503,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
 /** Retrieve all the application passphrase items stored in the keychain represented by receiver.
 
-  @warning The passphrase item stored in the returned array may be invalid (perhaps it has been deleted or modified),
+  @warning After invoking this method, the passphrase item stored in the returned array may become invalid (perhaps it has been deleted or modified),
            you should check the validity of each passphrase item before using it.
 
   @return An `NSArray` object containing all the application passphrase items stored in the keychain represented by receiver.
@@ -514,7 +514,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
 /** Retrieve all the Internet passphrase items stored in the keychain represented by receiver.
 
-  @warning The passphrase item stored in the returned array may be invalid (perhaps it has been deleted or modified),
+  @warning After invoking this method, the passphrase item stored in the returned array may become invalid (perhaps it has been deleted or modified),
            you should check the validity of each passphrase item before using it.
 
   @return An `NSArray` object containing all the Internet passphrase items stored in the keychain represented by receiver.
@@ -558,36 +558,40 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
   + `WSCKeychainItemAttributeHostName`
   The corresponding value is an `NSString` object that identifies the Internet server’s domain name or IP address of an Internet passphrase.
-  This is unique to the Internet passphrase item.
+  This search key is unique to the Internet passphrase item.
 
   + `WSCKeychainItemAttributeAuthenticationType`
   The corresponding value is an `NSValue` object that encapsulates a value of type `WSCInternetAuthenticationType` 
   that identifies the authentication type of an Internet passphrase.
-  This is unique to the Internet passphrase item.
+  You can get the correct `NSValue` object that encapsulates the given value of type `WSCInternetAuthenticationType`
+  by invoking `WSCAuthenticationTypeCocoaValue()`.
+  This search key is unique to the Internet passphrase item.
 
   + `WSCKeychainItemAttributePort`
   The corresponding value is an `NSNumber` object that identifies the port number of an Internet passphrase item.
-  This is unique to the Internet passphrase item.
+  This search key is unique to the Internet passphrase item.
 
   + `WSCKeychainItemAttributeRelativePath`
   The corresponding value is an `NSString` object that identifies the relative path of a URL conforming to RFC 1808 of an Internet passphrase.
   For example: in the URL "https://github.com/TongG/WaxSealCore", the relative URL path is "/TongG/WaxSealCore".
-  This is unique to the Internet passphrase item.
+  This search key is unique to the Internet passphrase item.
 
   + `WSCKeychainItemAttributeProtocol`
   The corresponding value is an `NSValue` object that encapsulates a value of type `WSCInternetProtocolType`
-  that identifies the Internet protocol of an Internet passphrase.
-  This is unique to the Internet passphrase item.
+  that identifies the Internet protocol of an Internet passphrase. 
+  You can get the correct `NSValue` object that encapsulates the given value of type `WSCInternetProtocolType`
+  by invoking `WSCInternetProtocolCocoaValue()`.
+  This search key is unique to the Internet passphrase item.
   
   *Unique to the Application Passphrase Items:*
 
   + `WSCKeychainItemAttributeServiceName`
   The corresponding value is an `NSString` object that identifies the value of untyped bytes that represents a user-defined data.
-  This is unique to the application passphrase item.
+  This search key is unique to the application passphrase item.
 
   + `WSCKeychainItemAttributeUserDefinedDataAttribute`
   The corresponding value is an `NSData` object that identifies the service name of an application passphrase item.
-  For example, "WaxSeal". This is unique to the application passphrase item.
+  For example, "WaxSeal". This search key is unique to the application passphrase item.
 
   *Unique to the Certificate Items:*
 
@@ -600,6 +604,9 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   + `WSCKeychainItemAttributeCRLEncoding`
  
   + `WSCKeychainItemAttributeAlias`
+  
+  @warning After invoking this method, the passphrase item returned by this method may become invalid (perhaps it has been deleted or modified),
+           you should check the validity of it before using it.
 
   @param _SearchCriteriaDict The `NSDictionary` object containing the search criteria. 
                              For the valid search keys, see the discussion section.
@@ -624,6 +631,9 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
                                                                error: ( NSError** )_Error;
 
 /** Find all the keychain items satisfying the given search criteria contained in *_SearchCriteriaDict* dictionary.
+
+  @warning After invoking this method, the passphrase item stored in the returned array may become invalid (perhaps it has been deleted or modified),
+           you should check the validity of each passphrase item before using it.
 
   @param _SearchCriteriaDict The `NSDictionary` object containing the search criteria.
                              For the valid search keys, please see the discussion section of findFirstKeychainItemSatisfyingSearchCriteria:itemClass:error: method.
