@@ -136,11 +136,6 @@
     }
 
 #pragma mark Overrides
-- ( NSString* ) description
-    {
-    return [ [ self p_descDictForCommonAttribute ] description ];
-    }
-
 - ( void ) dealloc
     {
     if ( self->_secKeychainItem )
@@ -163,10 +158,6 @@
         // The _SecKeychainItemRef parameter must not be nil.
         if ( _SecKeychainItemRef )
             self->_secKeychainItem = ( SecKeychainItemRef )CFRetain( _SecKeychainItemRef );
-
-        // Ensure that the _SecKeychainItemRef does reference an exist keychain item.
-//        if ( !self.isValid )
-//            return nil;
         }
 
     return self;
@@ -176,14 +167,6 @@
 
 #pragma mark Private Programmatic Interfaces for Accessing Attributes
 @implementation WSCKeychainItem ( WSCKeychainItemPrivateAccessingAttributes )
-
-- ( NSDictionary* ) p_descDictForCommonAttribute
-    {
-    return @{ @"Label" : self.label ? self.label : [ NSNull null ]
-            , @"CreationDate" : self.creationDate ? self.creationDate : [ NSNull null ]
-            , @"ModificationDate" : self.modificationDate ? self.creationDate : [ NSNull null ]
-            };
-    }
 
 #pragma mark Extracting
 - ( WSCKeychainItemClass ) p_itemClass: ( NSError** )_Error
