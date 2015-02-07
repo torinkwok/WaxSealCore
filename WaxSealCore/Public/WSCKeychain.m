@@ -464,6 +464,7 @@ WSCKeychain static* s_system = nil;
     NSArray* matchedItems = [ self p_findKeychainItemsSatisfyingSearchCriteria: _SearchCriteriaDict
                                                                      itemClass: _ItemClass
                                                                          error: _Error ];
+    // If the matchedItems is empty, returns nil.
     return matchedItems.firstObject;
     }
 
@@ -773,7 +774,7 @@ WSCKeychain static* s_system = nil;
                                        userInfo: @{ NSLocalizedFailureReasonErrorKey
                                                         : @"The given search criteria dictionary "
                                                            "containing at least one key "
-                                                           "which does not blong to the given item class." } ];
+                                                           "which does not belong to the given item class." } ];
         }
 
     return doesBlong;
@@ -933,7 +934,7 @@ WSCKeychain static* s_system = nil;
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCKeychainIsInvalidError userInfo: nil ];
 #endif
-    return ( matchedItems.count != 0 ) ? [ [ matchedItems copy ] autorelease ] : nil;
+    return [ [ matchedItems copy ] autorelease ];
     }
 
 #if 0

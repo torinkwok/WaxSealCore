@@ -43,6 +43,8 @@
 #pragma mark Private Programmatic Interfaces for Accessing Attributes
 @interface WSCKeychainItem ( WSCKeychainItemPrivateAccessingAttributes )
 
+- ( NSDictionary* ) p_descDictForCommonAttribute;
+
 #pragma mark Extracting
 - ( WSCKeychainItemClass ) p_itemClass: ( NSError** )_Error;
 

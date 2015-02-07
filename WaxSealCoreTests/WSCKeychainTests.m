@@ -300,6 +300,7 @@
                                                         }
                                             itemClass: WSCKeychainItemClassInternetPassphraseItem
                                                 error: &error ];
+    NSLog( @"Desc: %@", matchedItem_testCase0 );
     XCTAssertNotNil( matchedItem_testCase0 );
     XCTAssertNil( error );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
@@ -349,11 +350,24 @@
     XCTAssertNil( error );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
+    matchedItems_testCase0 = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributePort : @8064 }
+                                           itemClass: WSCKeychainItemClassApplicationPassphraseItem
+                                               error: &error ];
+    XCTAssertNil( matchedItems_testCase0 );
+    XCTAssert( matchedItems_testCase0.count >= 0 );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
+    /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
+
     matchedItems_testCase0 = [ _WSCRandomKeychain()
         findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributePort : @8064 }
                                            itemClass: WSCKeychainItemClassInternetPassphraseItem
                                                error: &error ];
-    XCTAssertNil( matchedItems_testCase0 );
+    XCTAssertNotNil( matchedItems_testCase0 );
+    XCTAssertEqual( matchedItems_testCase0.count, 0 );
+    XCTAssert( matchedItems_testCase0.count >= 0 );
     XCTAssertNil( error );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
@@ -413,7 +427,8 @@
         findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Vnet Link (sosueme)" }
                                            itemClass: WSCKeychainItemClassApplicationPassphraseItem
                                                error: &error ];
-    XCTAssertNil( matchedItems_negativeTestCase1 );
+    XCTAssertNotNil( matchedItems_negativeTestCase1 );
+    XCTAssertEqual( matchedItems_negativeTestCase1.count, 0 );
     XCTAssertNil( error );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 

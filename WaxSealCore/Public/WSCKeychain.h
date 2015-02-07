@@ -612,7 +612,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
                 You may specify `nil` for this parameter if you don't want the error information.
                 
   @return A `WSCKeychainItem` object representing the keychain item satisfying the given search criteria.
-          Returns `nil` if an error occurs or there is not any keychan item matching the given search criteria.
+          Returns `nil` if an error occurs or there is not any keychan item satisfying the given search criteria.
           
   @sa findAllKeychainItemsSatisfyingSearchCriteria:itemClass:error:
   */
@@ -636,8 +636,9 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
                 You may specify `nil` for this parameter if you don't want the error information.
                 
   @return An `NSArray` object containing the keychain items satisfying the given search criteria.
-          Returns `nil` if an error occurs or there is not any keychan item matching the given search criteria.
-          
+          Returns an empty array if there is not any keychan item satisfying the given search criteria.
+          Returns `nil` if an error occurs.
+
   @sa findFirstKeychainItemSatisfyingSearchCriteria:itemClass:error:
   */
 - ( NSArray* ) findAllKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict

@@ -251,6 +251,34 @@
     }
 
 #pragma mark Overrides
+- ( NSDictionary* ) p_descDictForPassphraseItemAttr
+    {
+    NSMutableDictionary* dictForPassphraseItem = [ NSMutableDictionary dictionaryWithDictionary: [ super p_descDictForCommonAttribute ] ];
+
+    if ( self.itemClass == WSCKeychainItemClassInternetPassphraseItem )
+        {
+        dictForPassphraseItem[ @"URL" ] = self.URL ? self.URL : [ NSNull null ];
+        dictForPassphraseItem[ @"Host" ] = self.hostName ? self.hostName : [ NSNull null ];
+        dictForPassphraseItem[ @"RelativePath" ] = self.relativePath ? self.relativePath : [ NSNull null ];
+        dictForPassphraseItem[ @"AuthenticationType" ] = NSFileTypeForHFSTypeCode( self.authenticationType );
+        dictForPassphraseItem[ @"Protocol" ] = NSFileTypeForHFSTypeCode( self.protocol );
+        dictForPassphraseItem[ @"Port" ] = @( self.port );
+        }
+    else if ( self.itemClass == WSCKeychainItemClassApplicationPassphraseItem )
+        dictForPassphraseItem[ @"ServiceName" ] = self.serviceName ? self.serviceName : [ NSNull null ];
+
+    dictForPassphraseItem[ @"Account" ] = self.account ? self.account : [ NSNull null ];
+    dictForPassphraseItem[ @"Comment" ] = self.comment ? self.comment : [ NSNull null ];
+    dictForPassphraseItem[ @"KindDescription" ] = self.kindDescription ? self.kindDescription : [ NSNull null ];
+
+    return dictForPassphraseItem;
+    }
+
+- ( NSString* ) description
+    {
+    return [ [ self p_descDictForPassphraseItemAttr ] description ];
+    }
+
 /* Overrides the implementation in WSCKeychainItem class.
  * Boolean value that indicates whether the receiver is currently valid. (read-only)
  */
