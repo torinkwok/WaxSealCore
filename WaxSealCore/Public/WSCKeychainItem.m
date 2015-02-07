@@ -165,6 +165,16 @@
 
 @end // WSCKeychainItem + WSCKeychainItemPrivateInitialization
 
+#pragma mark Private Programmatic Interfaces for Zeroing Keychain Items
+@implementation WSCKeychainItem ( WSCKeychainItemPrivateZeroing)
+
+- ( void ) p_zeroingKeychainItem
+    {
+    self->_secKeychainItem = NULL;
+    }
+
+@end // WSCKeychainItem + WSCKeychainItemPrivateZeroing
+
 #pragma mark Private Programmatic Interfaces for Accessing Attributes
 @implementation WSCKeychainItem ( WSCKeychainItemPrivateAccessingAttributes )
 

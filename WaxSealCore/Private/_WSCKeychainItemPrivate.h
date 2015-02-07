@@ -33,12 +33,15 @@
 
 #import <Foundation/Foundation.h>
 
-
-
 #pragma mark Private Programmatic Interfaces for Creating Keychain Items
 @interface WSCKeychainItem ( WSCKeychainItemPrivateInitialization )
 - ( instancetype ) p_initWithSecKeychainItemRef: ( SecKeychainItemRef )_SecKeychainItemRef;
 @end // WSCKeychainItem + WSCKeychainItemPrivateInitialization
+
+#pragma mark Private Programmatic Interfaces for Zeroing Keychain Items
+@interface WSCKeychainItem ( WSCKeychainItemPrivateZeroing)
+- ( void ) p_zeroingKeychainItem;
+@end // WSCKeychainItem + WSCKeychainItemPrivateZeroing
 
 #pragma mark Private Programmatic Interfaces for Accessing Attributes
 @interface WSCKeychainItem ( WSCKeychainItemPrivateAccessingAttributes )

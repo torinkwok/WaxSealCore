@@ -474,6 +474,40 @@ WSCKeychain static* s_system = nil;
     return matchedItems;
     }
 
+/* Deletes a keychain item from the permanent data store of the keychain represented by receiver.
+ */
+- ( BOOL ) deleteKeychainItem: ( WSCKeychainItem* )_KeychainItem
+                        error: ( NSError** )_Error
+    {
+    OSStatus resultCode = errSecSuccess;
+
+    if ( _KeychainItem.isValid && ![ _KeychainItem.keychain isEqualToKeychain: self ] )
+        {
+        if ( _Error )
+            {
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                           code: WSCCommonInvalidParametersError
+                                       userInfo: @{ NSLocalizedFailureReasonErrorKey
+                                                    : @"The given keychain item was not stored in the keychain represented by receiver." } ];
+            }
+
+        return NO;
+        }
+
+    // Delete the underlying SecKeychainRef that was wrapped in receiver
+    // if the keychain item has not previously been added to the keychain,
+    // this function does nothing and returns errSecSuccess.
+    resultCode = SecKeychainItemDelete( _KeychainItem.secKeychainItem );
+
+    if ( resultCode == errSecSuccess )
+        CFRelease( _KeychainItem.secKeychainItem );
+    else
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+
+    return ( resultCode == errSecSuccess );
+    }
+
 #pragma mark Overrides
 - ( void ) dealloc
     {

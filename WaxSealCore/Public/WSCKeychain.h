@@ -503,7 +503,8 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
 /** Retrieve all the application passphrase items stored in the keychain represented by receiver.
 
-  @warning After invoking this method, the passphrase item stored in the returned array may become invalid (perhaps it has been deleted or modified),
+  @warning After invoking this method, the passphrase item stored in the returned array may become invalid 
+          (perhaps it has been deleted or modified by user or by other applications),
            you should check the validity of each passphrase item before using it.
 
   @return An `NSArray` object containing all the application passphrase items stored in the keychain represented by receiver.
@@ -514,7 +515,8 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
 /** Retrieve all the Internet passphrase items stored in the keychain represented by receiver.
 
-  @warning After invoking this method, the passphrase item stored in the returned array may become invalid (perhaps it has been deleted or modified),
+  @warning After invoking this method, the passphrase item stored in the returned array may become invalid 
+          (perhaps it has been deleted or modified by user or by other applications),
            you should check the validity of each passphrase item before using it.
 
   @return An `NSArray` object containing all the Internet passphrase items stored in the keychain represented by receiver.
@@ -605,7 +607,8 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
  
   + `WSCKeychainItemAttributeAlias`
   
-  @warning After invoking this method, the passphrase item returned by this method may become invalid (perhaps it has been deleted or modified),
+  @warning After invoking this method, the passphrase item returned by this method may become invalid
+           (perhaps it has been deleted or modified by user or by other applications),
            you should check the validity of it before using it.
 
   @param _SearchCriteriaDict The `NSDictionary` object containing the search criteria. 
@@ -632,7 +635,8 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
 /** Find all the keychain items satisfying the given search criteria contained in *_SearchCriteriaDict* dictionary.
 
-  @warning After invoking this method, the passphrase item stored in the returned array may become invalid (perhaps it has been deleted or modified),
+  @warning After invoking this method, the passphrase item stored in the returned array may become invalid 
+          (perhaps it has been deleted or modified by user or by other applications),
            you should check the validity of each passphrase item before using it.
 
   @param _SearchCriteriaDict The `NSDictionary` object containing the search criteria.
@@ -654,6 +658,27 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 - ( NSArray* ) findAllKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
                                                   itemClass: ( WSCKeychainItemClass )_ItemClass
                                                       error: ( NSError** )_Error;
+
+/** Deletes a keychain item from the permanent data store of the keychain represented by receiver.
+
+  If the keychain item has not previously been added to the keychain, this method does nothing and returns `YES`.
+  
+  Do not delete a keychain item and recreate it in order to modify it; 
+  instead, use the read-write properties to modify an existing keychain item. 
+  When you delete a keychain item, you lose any access controls and trust settings 
+  added by the user or by other applications.
+
+  @param _KeychainItem The keychain item to be deleted. 
+                       After the delete operation, this keychain item will become invalid.
+                       
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+                You may specify `nil` for this parameter if you don't want the error information.
+
+  @return `YES` if the delete operation is successful; otherwise, `NO`.
+  */
+- ( BOOL ) deleteKeychainItem: ( WSCKeychainItem* )_KeychainItem
+                        error: ( NSError** )_Error;
 
 @end // WSCKeychain class
 

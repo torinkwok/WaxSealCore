@@ -136,7 +136,7 @@ NSString* _WSCPassphrases[] =
             WSCPassphraseItem* internetPasswordItem =
                 [ commonKeychain addInternetPassphraseWithServerName: @"node-los.vnet.link"
                                                      URLRelativePath: nil
-                                                         accountName: [ NSString stringWithFormat: @"NSTongG %d", _Index ]
+                                                         accountName: @"NSTongG"
                                                             protocol: WSCInternetProtocolTypeHTTPSProxy
                                                           passphrase: @"waxsealcore"
                                                                error: &error ];
@@ -150,8 +150,7 @@ NSString* _WSCPassphrases[] =
             XCTAssertEqualObjects( internetPasswordItem.label, commonLabel );
             NSLog( @"Newer Label: %@", internetPasswordItem.label );
 
-            SecKeychainItemDelete( internetPasswordItem.secKeychainItem );
-
+            [ commonKeychain deleteKeychainItem: internetPasswordItem error: &error ];
             XCTAssertNil( internetPasswordItem.label );
             }
         }
