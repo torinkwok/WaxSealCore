@@ -62,6 +62,114 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+- ( void ) testDeletingKeychainItem
+    {
+    NSError* error = nil;
+    BOOL isSuccess = NO;
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 0: For Internet Passphrase Item
+    // --------------------------------------------------------------------------------------------------------------------
+    WSCKeychain* randomKeychain_testCase0 = _WSCRandomKeychain();
+    WSCPassphraseItem* internetPassphrasesItem_testCase0 =
+        [ randomKeychain_testCase0 addInternetPassphraseWithServerName: @"waxsealcore.org"
+                                                   URLRelativePath: @"/test/deleting/keychain/item/testcase0"
+                                                       accountName: @"NSTongG"
+                                                          protocol: WSCInternetProtocolTypeHTTPS
+                                                        passphrase: @"waxsealcore"
+                                                             error: &error ];
+    XCTAssertTrue( internetPassphrasesItem_testCase0.isValid );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ [ WSCKeychain system ] deleteKeychainItem: internetPassphrasesItem_testCase0 error: &error ];
+    XCTAssertTrue( internetPassphrasesItem_testCase0.isValid );
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ [ WSCKeychain login ] deleteKeychainItem: internetPassphrasesItem_testCase0 error: &error ];
+    XCTAssertTrue( internetPassphrasesItem_testCase0.isValid );
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ randomKeychain_testCase0 deleteKeychainItem: internetPassphrasesItem_testCase0 error: &error ];
+    XCTAssertFalse( internetPassphrasesItem_testCase0.isValid );
+    XCTAssertTrue( isSuccess );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ randomKeychain_testCase0 deleteKeychainItem: internetPassphrasesItem_testCase0 error: &error ];
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainItemIsInvalidError );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    [ [ WSCKeychainManager defaultManager ] deleteKeychain: randomKeychain_testCase0 error: &error ];
+    isSuccess = [ randomKeychain_testCase0 deleteKeychainItem: internetPassphrasesItem_testCase0 error: &error ];
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainIsInvalidError );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 1: For Application Passphrase Item
+    // --------------------------------------------------------------------------------------------------------------------
+    WSCKeychain* randomKeychain_testCase1 = _WSCRandomKeychain();
+    WSCPassphraseItem* applicationPassphrasesItem_testCase1 =
+        [ randomKeychain_testCase1 addApplicationPassphraseWithServiceName: @"WaxSealCore TestDeletingKeychainItem"
+                                                               accountName: @"NSTongG"
+                                                                passphrase: @"waxsealcore"
+                                                                     error: &error ];
+    XCTAssertTrue( applicationPassphrasesItem_testCase1.isValid );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ [ WSCKeychain system ] deleteKeychainItem: applicationPassphrasesItem_testCase1 error: &error ];
+    XCTAssertTrue( applicationPassphrasesItem_testCase1.isValid );
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ [ WSCKeychain login ] deleteKeychainItem: applicationPassphrasesItem_testCase1 error: &error ];
+    XCTAssertTrue( applicationPassphrasesItem_testCase1.isValid );
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ randomKeychain_testCase1 deleteKeychainItem: applicationPassphrasesItem_testCase1 error: &error ];
+    XCTAssertFalse( applicationPassphrasesItem_testCase1.isValid );
+    XCTAssertTrue( isSuccess );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    isSuccess = [ randomKeychain_testCase1 deleteKeychainItem: applicationPassphrasesItem_testCase1 error: &error ];
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainItemIsInvalidError );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    [ [ WSCKeychainManager defaultManager ] deleteKeychain: randomKeychain_testCase1 error: &error ];
+    isSuccess = [ randomKeychain_testCase1 deleteKeychainItem: applicationPassphrasesItem_testCase1 error: &error ];
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainIsInvalidError );
+    _WSCPrintNSErrorForUnitTest( error );
+    }
+
 - ( void ) testAllApplicationPassphraseItems
     {
     NSError* error = nil;

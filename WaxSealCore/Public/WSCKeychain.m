@@ -480,40 +480,54 @@ WSCKeychain static* s_system = nil;
                         error: ( NSError** )_Error
     {
     OSStatus resultCode = errSecSuccess;
+    BOOL isSuccess = NO;
 
-    // If the given keychain item was not stored in the keychain represented by receiver
-    // we shouldn't delete it; instead, populate the _Error pointer then return NO.
-    if ( _KeychainItem.isValid && ![ _KeychainItem.keychain isEqualToKeychain: self ] )
+    // The keychain represented by receiver must not be invalid
+    if ( self.isValid )
         {
-        if ( _Error )
+        // The keychain item represented by parameter _KeychainItem must not be invalid
+        if ( _KeychainItem.isValid )
             {
-            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCCommonInvalidParametersError
-                                       userInfo: @{ NSLocalizedFailureReasonErrorKey
-                                                    : @"The given keychain item was not stored in the keychain represented by receiver." } ];
+            // If the given keychain item was not stored in the keychain represented by receiver
+            // we shouldn't delete it; instead, populate the _Error pointer then return NO.
+            if ( [ _KeychainItem.keychain isEqualToKeychain: self ] )
+                {
+                // Delete the underlying SecKeychainRef that was wrapped in receiver
+                // if the keychain item has not previously been added to the keychain,
+                // this function does nothing and returns errSecSuccess.
+                resultCode = SecKeychainItemDelete( _KeychainItem.secKeychainItem );
+
+                if ( resultCode == errSecSuccess )
+                    {
+                    // Keychain Services API caches SecKeychainItemRef object every time
+                    // one of SecKeychainFindInternetPassword(), SecKeychainFindGenericPassword()
+                    // and SecKeychainItemCopyContent() functions is called.
+                    // So, whenever we have called any of these two methods be sure to clear the API cache
+                    // using the method SecKeychainItemFreeAttributesAndData() or SecKeychainItemFreeContent().
+                    // Also release the SecKeychainItemRef object using CFRelease().
+                    CFRelease( _KeychainItem.secKeychainItem );
+                    isSuccess = YES;
+                    }
+                else // If we failed to delete the given keychain item...
+                    if ( _Error )
+                        *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+                }
+            else
+                if ( _Error )
+                    *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                                   code: WSCCommonInvalidParametersError
+                                               userInfo: @{ NSLocalizedFailureReasonErrorKey
+                                                            : @"The given keychain item was not stored in the keychain represented by receiver." } ];
             }
-
-        return NO;
+        else // If the keychain item represented by parameter _KeychainItem is already invalid...
+            if ( _Error )
+                *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCKeychainItemIsInvalidError userInfo: nil ];
         }
-
-    // Delete the underlying SecKeychainRef that was wrapped in receiver
-    // if the keychain item has not previously been added to the keychain,
-    // this function does nothing and returns errSecSuccess.
-    resultCode = SecKeychainItemDelete( _KeychainItem.secKeychainItem );
-
-    if ( resultCode == errSecSuccess )
-        // Keychain Services API caches SecKeychainItemRef object every time
-        // one of SecKeychainFindInternetPassword(), SecKeychainFindGenericPassword()
-        // and SecKeychainItemCopyContent() functions is called.
-        // So, whenever we have called any of these two methods be sure to clear the API cache
-        // using the method SecKeychainItemFreeAttributesAndData() or SecKeychainItemFreeContent().
-        // Also release the SecKeychainItemRef object using CFRelease().
-        CFRelease( _KeychainItem.secKeychainItem );
-    else
+    else  // If the keychain represented by receiver is already invalid...
         if ( _Error )
-            *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCKeychainIsInvalidError userInfo: nil ];
 
-    return ( resultCode == errSecSuccess );
+    return isSuccess;
     }
 
 #pragma mark Overrides
