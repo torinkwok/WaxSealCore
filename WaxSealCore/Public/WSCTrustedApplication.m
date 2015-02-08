@@ -123,7 +123,6 @@
         OSStatus resultCode = errSecSuccess;
 
         SecTrustedApplicationRef secTrustedApplication = NULL;
-        NSLog( @"Path: %@", [ _URL path ] );
         resultCode = SecTrustedApplicationCreateFromPath( [ _URL.path UTF8String ], &secTrustedApplication );
 
         if ( resultCode == errSecSuccess )

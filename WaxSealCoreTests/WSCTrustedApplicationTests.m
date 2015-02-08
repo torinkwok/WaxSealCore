@@ -70,9 +70,7 @@
     // Test Case 0
     // ----------------------------------------------------------------------------------
     NSURL* URL_testCase0 = [ NSURL URLWithString: @"file:///Applications/Oh%20My%20Cal!.app" ];
-    WSCTrustedApplication* trustedApp_testCase0 =
-        [ WSCTrustedApplication trustedApplicationWithContentsOfURL: URL_testCase0
-                                                              error: &error ];
+    WSCTrustedApplication* trustedApp_testCase0 = [ WSCTrustedApplication trustedApplicationWithContentsOfURL: URL_testCase0 error: &error ];
     XCTAssertNotNil( trustedApp_testCase0 );
 
     NSData* uniqueID_testCase0 = trustedApp_testCase0.uniqueIdentification;
@@ -94,6 +92,18 @@
 
     NSURL* URL_testCase1 = [ [ NSURL URLForTemporaryDirectory ] URLByAppendingPathComponent: @"/test_txt.txt" ];
     isSuccess = [ [ NSFileManager defaultManager ] createFileAtPath: URL_testCase1.path contents: content_testCase1 attributes: nil ];
+
+    WSCTrustedApplication* trustedApp_testCase1 = [ WSCTrustedApplication trustedApplicationWithContentsOfURL: URL_testCase1 error: &error ];
+    XCTAssertNotNil( trustedApp_testCase1 );
+
+    XCTAssertNotEqualObjects( trustedApp_testCase1.uniqueIdentification, uniqueID_testCase0 );
+    trustedApp_testCase1.uniqueIdentification = uniqueID_testCase0;
+    XCTAssertEqualObjects( trustedApp_testCase1.uniqueIdentification, uniqueID_testCase0 );
+
+    trustedApp_testCase1.uniqueIdentification = ( NSData* )@"wrong type";
+    XCTAssertEqualObjects( trustedApp_testCase1.uniqueIdentification, uniqueID_testCase0 );
+
+    [ [ NSFileManager defaultManager ] removeItemAtURL: URL_testCase1 error: nil ];
     }
 
 - ( void ) testCreatingTrustedApplicationWithSecTrustedApplicationRef
