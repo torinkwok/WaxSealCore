@@ -55,7 +55,8 @@
               You can use the read property to extract this data from the trusted application object
               for storage or for transmittal to another location (such as over a network). 
               Use the write property to insert the data back into a trusted application object. 
-              Note that this data is in a private format; there is no supported way to read or interpret it.
+              
+  @warning Note that this data is in a private format; there is no supported way to read or interpret it.
   */
 @property ( retain, readwrite ) NSData* uniqueIdentification;
 
