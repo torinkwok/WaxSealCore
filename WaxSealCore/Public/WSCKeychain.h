@@ -268,8 +268,8 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
 /** The reference of the `SecKeychain` opaque object, which wrapped by `WSCKeychain` object.
   
-  If you are familiar with the underlying *Keychain Services* APIs,
-  you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this property.
+  @discussion If you are familiar with the underlying *Keychain Services* APIs,
+              you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this property.
   */
 @property ( unsafe_unretained, readonly ) SecKeychainRef secKeychain;
 
