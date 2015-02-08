@@ -32,13 +32,62 @@
  ****************************************************************************/
 
 #import "WSCTrustedApplication.h"
+#import "WSCKeychainError.h"
 
 #import "_WSCTrustedApplicationPrivate.h"
+#import "_WSCKeychainErrorPrivate.h"
 
 @implementation WSCTrustedApplication
 
-#pragma mark Public Programmatic Interfaces for Creating Trusted Application
+@dynamic uniqueIdentification;
 
+#pragma mark Properties
+/* Retrieves and sets the unique identification of the trusted application represented by receiver.
+ */
+- ( NSData* ) uniqueIdentification
+    {
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
+
+    NSData* cocoaPrivateData = nil;
+    CFDataRef secPrivateData = NULL;
+
+    resultCode = SecTrustedApplicationCopyData( self.secTrustedApplication, &secPrivateData );
+
+    if ( resultCode == errSecSuccess )
+        {
+        cocoaPrivateData = [ NSData dataWithData: ( __bridge NSData* )secPrivateData ];
+        CFRelease( secPrivateData );
+        }
+    else
+        {
+        error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+        _WSCPrintNSErrorForUnitTest( error );
+        }
+
+    return cocoaPrivateData;
+    }
+
+- ( void ) setUniqueIdentification: ( NSData* )_UniqueIdentification
+    {
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
+
+    _WSCDontBeABitch( &error, _UniqueIdentification, [ NSData class ], s_guard );
+
+    if ( !error )
+        {
+        resultCode = SecTrustedApplicationSetData( self.secTrustedApplication, ( __bridge CFDataRef )_UniqueIdentification );
+
+        if ( resultCode != errSecSuccess )
+            error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+        }
+
+    if ( error )
+        _WSCPrintNSErrorForUnitTest( error );
+    }
+
+#pragma mark Creating Trusted Application
 /* Creates a trusted application object based on the application specified by an URL. */
 + ( instancetype ) trustedApplicationWithContentsOfURL: ( NSURL* )_ApplicationURL
                                                  error: ( NSError** )_Error
@@ -64,7 +113,7 @@
 
 @end // WSCTrustedApplication class
 
-#pragma mark Private Programmatic Interfaces for Creating Trusted Application
+#pragma mark WSCTrustedApplication + _WSCTrustedApplicationPrivateInitialization
 @implementation WSCTrustedApplication ( _WSCTrustedApplicationPrivateInitialization )
 
 - ( instancetype ) p_initWithContentsOfURL: ( NSURL* )_URL error: ( NSError** )_Error
@@ -74,6 +123,7 @@
         OSStatus resultCode = errSecSuccess;
 
         SecTrustedApplicationRef secTrustedApplication = NULL;
+        NSLog( @"Path: %@", [ _URL path ] );
         resultCode = SecTrustedApplicationCreateFromPath( [ _URL.path UTF8String ], &secTrustedApplication );
 
         if ( resultCode == errSecSuccess )

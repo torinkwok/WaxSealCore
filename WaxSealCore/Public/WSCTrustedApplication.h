@@ -41,7 +41,25 @@
     SecTrustedApplicationRef _secTrustedApplication;
     }
 
-#pragma mark Public Programmatic Interfaces for Creating Trusted Application
+#pragma mark Properties
+/** @name Properties */
+
+/** Retrieves and sets the unique identification of the trusted application represented by receiver.
+    
+  @discussion The trusted application represented by receiver includes data 
+              that uniquely identifies the application (aka. **unique identification**), 
+              such as a cryptographic hash of the application.
+              The operating system can use this data to verify that the application has not been altered since the trusted application object was created.
+              When an application requests access to an item in the keychain for which it is designated as a trusted application, 
+              for example, the operating system checks this data before granting access. 
+              You can use the read property to extract this data from the trusted application object
+              for storage or for transmittal to another location (such as over a network). 
+              Use the write property to insert the data back into a trusted application object. 
+              Note that this data is in a private format; there is no supported way to read or interpret it.
+  */
+@property ( retain, readwrite ) NSData* uniqueIdentification;
+
+#pragma mark Creating Trusted Application
 /** @name Creating Trusted Application */
 
 /** Creates a trusted application object based on the application specified by an URL.

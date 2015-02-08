@@ -35,6 +35,7 @@
 
 #import "WSCKeychain.h"
 #import "WSCTrustedApplication.h"
+#import "NSURL+WSCKeychainURL.h"
 
 #import "_WSCTrustedApplicationPrivate.h"
 
@@ -58,6 +59,41 @@
 - ( void ) tearDown
     {
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
+    }
+
+- ( void ) testUniqueIdentificationProperty
+    {
+    NSError* error = nil;
+    BOOL isSuccess = NO;
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 0
+    // ----------------------------------------------------------------------------------
+    NSURL* URL_testCase0 = [ NSURL URLWithString: @"file:///Applications/Oh%20My%20Cal!.app" ];
+    WSCTrustedApplication* trustedApp_testCase0 =
+        [ WSCTrustedApplication trustedApplicationWithContentsOfURL: URL_testCase0
+                                                              error: &error ];
+    XCTAssertNotNil( trustedApp_testCase0 );
+
+    NSData* uniqueID_testCase0 = trustedApp_testCase0.uniqueIdentification;
+    CFDataRef secUniqueID_testCase0 = NULL;
+    SecTrustedApplicationCopyData( trustedApp_testCase0.secTrustedApplication, &secUniqueID_testCase0 );
+    XCTAssertNotNil( uniqueID_testCase0 );
+    XCTAssertNotNil( ( __bridge NSData* )secUniqueID_testCase0 );
+    XCTAssertEqualObjects( ( __bridge NSData* )secUniqueID_testCase0, uniqueID_testCase0 );
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 1
+    // ----------------------------------------------------------------------------------
+    NSData* content_testCase1 =
+        [ @"A keychain is an encrypted container that holds passphrases for multiple applications and secure services."
+           "Keychains are secure storage containers, which means that when the keychain is locked, no one can access its protected contents. "
+           "In OS X, users can unlock a keychain—thus providing trusted applications access to the contents—by entering a single master passphrase."
+           "The above encrypted container which is called “keychain” is represented by WSCKeychain object in WaxSealCore framework and SecKeychainRef in Keychain Services APIs."
+           dataUsingEncoding: NSUTF8StringEncoding ];
+
+    NSURL* URL_testCase1 = [ [ NSURL URLForTemporaryDirectory ] URLByAppendingPathComponent: @"/test_txt.txt" ];
+    isSuccess = [ [ NSFileManager defaultManager ] createFileAtPath: URL_testCase1.path contents: content_testCase1 attributes: nil ];
     }
 
 - ( void ) testCreatingTrustedApplicationWithSecTrustedApplicationRef
