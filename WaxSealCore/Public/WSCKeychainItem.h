@@ -86,12 +86,23 @@
 
 /** Creates and returns a `WSCKeychainItem` object using the given reference to the instance of `SecKeychainItem` opaque type.
 
+  If you are familiar with the underlying *Keychain Services* APIs,
+  you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this class method.
+
+  @warning This method is just used for bridge between *WaxSealCore* framework and *Keychain Services* APIs.
+  
+  Instead of invoking this method, you should construct a `WSCKeychainItem` object by invoking:
+
+  + [– addApplicationPassphraseWithServiceName:accountName:passphrase:error:](-[WSCKeychain addApplicationPassphraseWithServiceName:accountName:passphrase:error:])
+  + [– addInternetPassphraseWithServerName:URLRelativePath:accountName:protocol:passphrase:error:](-[WSCKeychain addInternetPassphraseWithServerName:URLRelativePath:accountName:protocol:passphrase:error:])
+
   @param _SecKeychainItemRef A reference to the instance of `SecKeychainItem` opaque type.
   
   @return A `WSCKeychainItem` object initialized with the given reference to the instance of `SecKeychainItem` opaque type.
           Return `nil` if *_SecKeychainItemRef* is `nil` or an error occured.
   */
-+ ( instancetype ) keychainItemWithSecKeychainItemRef: ( SecKeychainItemRef )_SecKeychainItem;
+// TODO: Waiting for the other item class, Certificates, Keys, etc.
++ ( instancetype ) keychainItemWithSecKeychainItemRef: ( SecKeychainItemRef )_SecKeychainItemRef;
 
 #pragma mark Managing Keychain Items
 /** @name Managing Keychain Items */

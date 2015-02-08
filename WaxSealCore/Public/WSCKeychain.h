@@ -360,11 +360,22 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
 /** Creates and returns a `WSCKeychain` object using the given reference to the instance of `SecKeychain` opaque type.
 
+  If you are familiar with the underlying *Keychain Services* APIs,
+  you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this class method.
+
+  @warning This method is just used for bridge between *WaxSealCore* framework and *Keychain Services* APIs.
+  
+  Instead of invoking this method, you should construct a `WSCKeychain` object by invoking:
+
+  + [+ keychainWithURL:passphrase:initialAccess:becomesDefault:error:](+[WSCKeychain keychainWithURL:passphrase:initialAccess:becomesDefault:error:])
+  + [+ keychainWhosePassphraseWillBeObtainedFromUserWithURL:initialAccess:becomesDefault:error:](+[WSCKeychain keychainWhosePassphraseWillBeObtainedFromUserWithURL:initialAccess:becomesDefault:error:])
+  + [+ keychainWithContentsOfURL:error:](+[WSCKeychain keychainWithContentsOfURL:error:])
+
   @param _SecKeychainRef A reference to the instance of `SecKeychain` opaque type.
   
   @return A `WSCKeychain` object initialized with the given reference to the instance of `SecKeychain` opaque type.
           Return `nil` if *_SecKeychainRef* is `nil` or an error occured.
-          
+
   @sa +keychainWithURL:passphrase:initialAccess:becomesDefault:error:
   @sa +keychainWhosePassphraseWillBeObtainedFromUserWithURL:initialAccess:becomesDefault:error:
   @sa +keychainWithContentsOfURL:error:

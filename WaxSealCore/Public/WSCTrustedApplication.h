@@ -81,6 +81,15 @@
   The trusted application object is used as input to the `SecAccessCreate` function, which creates an access object.
   The access object, in turn, is used as input to the `SecKeychainItemSetAccess` function
   to specify the set of applications that are trusted to access a specific keychain item.
+  
+  If you are familiar with the underlying *Keychain Services* APIs,
+  you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this class method.
+
+  @warning This method is just used for bridge between *WaxSealCore* framework and *Keychain Services* APIs.
+  
+  Instead of invoking this method, you should construct a `WSCTrustedApplication` object by invoking:
+
+  + [+ trustedApplicationWithContentsOfURL:error:](+[WSCTrustedApplication trustedApplicationWithContentsOfURL:error:])
 
   @param _SecTrustedAppRef A reference to the instance of `SecTrustedApplication` opaque type.
   
