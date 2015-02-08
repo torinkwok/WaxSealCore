@@ -44,17 +44,6 @@
     SecAccessRef _secAccess;
     }
 
-
-#pragma mark Keychain Services Bridge
-/** @name Keychain Services Bridge */
-
-/** The reference of the `SecAccess` opaque object, which wrapped by `WSCAccessPermission` object.
-  
-  @discussion If you are familiar with the underlying *Keychain Services* APIs,
-              you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this property.
-  */
-@property ( unsafe_unretained, readonly ) SecAccessRef secAccess;
-
 #pragma mark Public Programmatic Interfaces for Creating Access Permission
 /** @name Creating Access Permission */
 
@@ -78,6 +67,16 @@
           Return `nil` if *_SecAccessRef* is `nil`.
   */
 + ( instancetype ) accessPermissionWithSecAccessRef: ( SecAccessRef )_SecAccessRef;
+
+#pragma mark Keychain Services Bridge
+/** @name Keychain Services Bridge */
+
+/** The reference of the `SecAccess` opaque object, which wrapped by `WSCAccessPermission` object.
+  
+  @discussion If you are familiar with the underlying *Keychain Services* APIs,
+              you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this property.
+  */
+@property ( unsafe_unretained, readonly ) SecAccessRef secAccess;
 
 @end // WSCAccessPermission class
 

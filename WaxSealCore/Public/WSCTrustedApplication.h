@@ -33,20 +33,13 @@
 
 #import <Foundation/Foundation.h>
 
-/** Identifies the trusted application in an access permission
+/** Identifies the trusted application in an access permission.
   */
 @interface WSCTrustedApplication : NSObject
     {
 @private
     SecTrustedApplicationRef _secTrustedApplication;
     }
-
-/** The reference of the `secTrustedApplication` opaque object, which wrapped by `WSCTrustedApplication` object.
-  
-  @discussion If you are familiar with the underlying *Keychain Services* APIs,
-              you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this property.
-  */
-@property ( unsafe_unretained, readonly ) SecTrustedApplicationRef secTrustedApplication;
 
 #pragma mark Public Programmatic Interfaces for Creating Trusted Application
 /** @name Creating Trusted Application */
@@ -97,6 +90,16 @@
           Return `nil` if *_SecTrustedAppRef* is `nil`.
   */
 + ( instancetype ) trustedApplicationWithSecTrustedApplicationRef: ( SecTrustedApplicationRef )_SecTrustedAppRef;
+
+#pragma mark Keychain Services Bridge
+/** @name Keychain Services Bridge */
+
+/** The reference of the `secTrustedApplication` opaque object, which wrapped by `WSCTrustedApplication` object.
+  
+  @discussion If you are familiar with the underlying *Keychain Services* APIs,
+              you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this property.
+  */
+@property ( unsafe_unretained, readonly ) SecTrustedApplicationRef secTrustedApplication;
 
 @end // WSCTrustedApplication class
 

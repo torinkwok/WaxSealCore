@@ -50,6 +50,9 @@
     id <WSCKeychainManagerDelegate> _delegate;
     }
 
+#pragma mark Getting and Setting the Delegate
+/** @name Getting and Setting the Delegate */
+
 /** The `WSCKeychainManager` object's delegate. */
 @property ( nonatomic, unsafe_unretained ) id <WSCKeychainManagerDelegate> delegate;
 

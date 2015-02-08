@@ -224,6 +224,9 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
     SecKeychainRef  _secKeychain;
     }
 
+#pragma mark Properties
+/** @name Properties */
+
 /** The URL for the receiver. (read-only)
   
   @return The URL for the receiver.
@@ -262,16 +265,6 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   `YES` if the receiver is writable, otherwise, `NO`.
   */
 @property ( assign, readonly ) BOOL isWritable;
-
-#pragma mark Keychain Services Bridge
-/** @name Keychain Services Bridge */
-
-/** The reference of the `SecKeychain` opaque object, which wrapped by `WSCKeychain` object.
-  
-  @discussion If you are familiar with the underlying *Keychain Services* APIs,
-              you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this property.
-  */
-@property ( unsafe_unretained, readonly ) SecKeychainRef secKeychain;
 
 #pragma mark Public Programmatic Interfaces for Creating Keychains
 /** @name Creating Keychains */
@@ -690,6 +683,16 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   */
 - ( BOOL ) deleteKeychainItem: ( WSCKeychainItem* )_KeychainItem
                         error: ( NSError** )_Error;
+
+#pragma mark Keychain Services Bridge
+/** @name Keychain Services Bridge */
+
+/** The reference of the `SecKeychain` opaque object, which wrapped by `WSCKeychain` object.
+  
+  @discussion If you are familiar with the underlying *Keychain Services* APIs,
+              you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this property.
+  */
+@property ( unsafe_unretained, readonly ) SecKeychainRef secKeychain;
 
 @end // WSCKeychain class
 
