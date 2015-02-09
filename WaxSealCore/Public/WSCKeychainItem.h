@@ -38,12 +38,12 @@
 /** The `WSCKeychainItem` defines the basic property of an keychain item.
 
   You typically do not use `WSCKeychainItem` object directly, you use objects whose
-  classes descend from `WSCKeychainItem`:
-  
-  * WSCPassphraseItem
-  * WSCCertificate
-  * WSCKey
-  * WSCIdentity
+  classes descend from this class and WSCProtectedKeychainItem:
+
+  + WSCPassphraseItem
+  + WSCCertificate
+  + WSCKey
+  + WSCIdentity
   */
 @interface WSCKeychainItem : NSObject
     {
