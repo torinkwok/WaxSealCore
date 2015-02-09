@@ -900,9 +900,10 @@ WSCKeychain static* s_system = nil;
                     case kSecAuthenticationTypeItemAttr:    case kSecProtocolItemAttr:
                         {
                         FourCharCode fourCharCodeData = ( FourCharCode )[ _Item p_extractAttribute: attrTag error: nil ];
-                        FourCharCode searchValue = '\0\0\0\0';
 
+                        FourCharCode searchValue = '\0\0\0\0';
                         [ _SearchCriteriaDict[ _SearchKey ] getValue: &searchValue ];
+
                         if ( fourCharCodeData != searchValue )
                             [ matchedItems removeObject: _Item ];
                         } break;

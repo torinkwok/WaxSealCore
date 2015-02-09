@@ -46,6 +46,7 @@ NSString* const WSCCommonInvalidParametersErrorDescription          = @"One or m
 NSString* const WSCKeychainItemIsInvalidErrorDescription            = @"Current keychain item is no longer valid, it may has been deleted, or the keychain in which it residing may has been deleted, moved or renamed.";
 NSString* const WSCKeychainItemAttributeIsUniqueToInternetPassphraseErrorDescription    = @"The specified attribute was not be supported since this attribute is unique to the Internet passphrase.";
 NSString* const WSCKeychainItemAttributeIsUniqueToApplicationPassphraseErrorDescription = @"The specified attribute was not be supported since this attribute is unique to the application passphrase.";
+NSString* const WSCKeychainItemPermissionDeniedErrorDescription     = @"Do not have permission to access the secret data of keychain item.";
 
 id const s_guard = ( id )'sgrd';
 void _WSCDontBeABitch( NSError** _Error, ... )
@@ -203,6 +204,15 @@ void _WSCDontBeABitch( NSError** _Error, ... )
                         ? [ NSString stringWithFormat: @"%@ %@", WSCKeychainItemAttributeIsUniqueToApplicationPassphraseErrorDescription
                                                                , _UserInfo[ NSLocalizedFailureReasonErrorKey ] ]
                         : WSCKeychainItemAttributeIsUniqueToApplicationPassphraseErrorDescription;
+                } break;
+
+            case WSCKeychainItemPermissionDeniedError:
+                {
+                newUserInfo[ NSLocalizedDescriptionKey ] =
+                    _UserInfo[ NSLocalizedFailureReasonErrorKey ]
+                        ? [ NSString stringWithFormat: @"%@ %@", WSCKeychainItemPermissionDeniedErrorDescription
+                                                               , _UserInfo[ NSLocalizedFailureReasonErrorKey ] ]
+                        : WSCKeychainItemPermissionDeniedErrorDescription;
                 } break;
             }
         }

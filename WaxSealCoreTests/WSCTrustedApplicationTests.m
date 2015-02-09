@@ -34,6 +34,8 @@
 #import <XCTest/XCTest.h>
 
 #import "WSCKeychain.h"
+#import "WSCKeychainItem.h"
+#import "WSCPassphraseItem.h"
 #import "WSCTrustedApplication.h"
 #import "NSURL+WSCKeychainURL.h"
 
@@ -59,6 +61,21 @@
 - ( void ) tearDown
     {
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
+    }
+
+- ( void ) testACL
+    {
+    NSError* error = nil;
+
+    WSCPassphraseItem* proxyKeychainItem = ( WSCPassphraseItem* )
+        [ [ WSCKeychain login ] findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeModificationDate : [ NSDate dateWithString: @"2015-2-4 09:08:01 +0800" ]
+                                                                                , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPProxy )
+                                                                                }
+                                                                    itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                                                        error: &error ];
+    XCTAssertNotNil( proxyKeychainItem );
+    _WSCPrintNSErrorForUnitTest( error );
+    NSLog( @"Passphrase for test case 0: %@", [ [ [ NSString alloc ] initWithData: proxyKeychainItem.passphrase encoding: NSUTF8StringEncoding ] autorelease ] );
     }
 
 - ( void ) testUniqueIdentificationProperty

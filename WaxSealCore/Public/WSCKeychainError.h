@@ -73,6 +73,10 @@ typedef NS_ENUM( NSUInteger, WaxSealCoreErrorCode )
     /** The attribute does not exist in an application passphrase.
       */
     , WSCKeychainItemAttributeIsUniqueToApplicationPassphraseError = 8U
+
+    /** Do not have permission to access the secret data of keychain item.
+      */
+    , WSCKeychainItemPermissionDeniedError = 9U
     };
 
 //////////////////////////////////////////////////////////////////////////////

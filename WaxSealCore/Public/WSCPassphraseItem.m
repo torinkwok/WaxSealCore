@@ -87,7 +87,8 @@
     [ self p_modifyAttribute: kSecDescriptionItemAttr withNewValue: _KindDescription ];
     }
 
-/* The `NSString` object that identifies the passphrase of the keychain item represented by receiver. */
+/* The `NSData` object that contains the passphrase data of the keychain item represented by receiver.
+ */
 - ( NSData* ) passphrase
     {
     NSError* error = nil;
@@ -111,12 +112,20 @@
             SecKeychainItemFreeAttributesAndData( NULL, secretData );
             }
         else
-            error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+            {
+            NSError* underlyingError = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+            error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                         code: WSCKeychainItemPermissionDeniedError
+                                     userInfo: @{ NSUnderlyingErrorKey : underlyingError } ];
+            }
         }
     else
         error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                      code: WSCKeychainItemIsInvalidError
                                  userInfo: nil ];
+
+    if ( error )
+        _WSCPrintNSErrorForLog( error );
 
     return passphraseData;
     }
