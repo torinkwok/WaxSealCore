@@ -158,6 +158,8 @@
         // The _SecKeychainItemRef parameter must not be nil.
         if ( _SecKeychainItemRef )
             self->_secKeychainItem = ( SecKeychainItemRef )CFRetain( _SecKeychainItemRef );
+        else
+            return nil;
         }
 
     return self;

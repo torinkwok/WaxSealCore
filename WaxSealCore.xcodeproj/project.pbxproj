@@ -23,7 +23,7 @@
 		837C8B541A6D4DA000FFE4FF /* _WSCKeychainErrorPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C8B531A6D4DA000FFE4FF /* _WSCKeychainErrorPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		837C8B591A6D4DD400FFE4FF /* _WSCAccess.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C8B551A6D4DD400FFE4FF /* _WSCAccess.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		837C8B5A1A6D4DD400FFE4FF /* _WSCAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C8B561A6D4DD400FFE4FF /* _WSCAccess.m */; };
-		837C8B5B1A6D4DD400FFE4FF /* _WSCAccessPermissionPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C8B571A6D4DD400FFE4FF /* _WSCAccessPermissionPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		837C8B5B1A6D4DD400FFE4FF /* _WSCPermittedOperationPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C8B571A6D4DD400FFE4FF /* _WSCPermittedOperationPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		837C8B5C1A6D4DD400FFE4FF /* _WSCTrustedApplicationPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C8B581A6D4DD400FFE4FF /* _WSCTrustedApplicationPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		837C8B611A6D4DF000FFE4FF /* _WSCCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C8B5D1A6D4DF000FFE4FF /* _WSCCommon.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		837C8B621A6D4DF000FFE4FF /* _WSCCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C8B5E1A6D4DF000FFE4FF /* _WSCCommon.m */; };
@@ -41,8 +41,6 @@
 		837C8B7E1A6D514600FFE4FF /* WSCKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C8B781A6D514600FFE4FF /* WSCKeychain.m */; };
 		837C8B7F1A6D514600FFE4FF /* WSCKeychainError.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C8B791A6D514600FFE4FF /* WSCKeychainError.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		837C8B801A6D514600FFE4FF /* WSCKeychainError.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C8B7A1A6D514600FFE4FF /* WSCKeychainError.m */; };
-		837C8B891A6D516500FFE4FF /* WSCAccessPermission.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C8B831A6D516500FFE4FF /* WSCAccessPermission.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		837C8B8A1A6D516500FFE4FF /* WSCAccessPermission.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C8B841A6D516500FFE4FF /* WSCAccessPermission.m */; };
 		837C8B8B1A6D516500FFE4FF /* WSCTrustedApplication.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C8B851A6D516500FFE4FF /* WSCTrustedApplication.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		837C8B8C1A6D516500FFE4FF /* WSCTrustedApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C8B861A6D516500FFE4FF /* WSCTrustedApplication.m */; };
 		838221111A4C214A00EF9945 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 838221101A4C214A00EF9945 /* README.md */; };
@@ -97,7 +95,7 @@
 		837C8B531A6D4DA000FFE4FF /* _WSCKeychainErrorPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _WSCKeychainErrorPrivate.h; path = Private/_WSCKeychainErrorPrivate.h; sourceTree = "<group>"; };
 		837C8B551A6D4DD400FFE4FF /* _WSCAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _WSCAccess.h; path = Private/_WSCAccess.h; sourceTree = "<group>"; };
 		837C8B561A6D4DD400FFE4FF /* _WSCAccess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _WSCAccess.m; path = Private/_WSCAccess.m; sourceTree = "<group>"; };
-		837C8B571A6D4DD400FFE4FF /* _WSCAccessPermissionPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _WSCAccessPermissionPrivate.h; path = Private/_WSCAccessPermissionPrivate.h; sourceTree = "<group>"; };
+		837C8B571A6D4DD400FFE4FF /* _WSCPermittedOperationPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _WSCPermittedOperationPrivate.h; path = Private/_WSCPermittedOperationPrivate.h; sourceTree = "<group>"; };
 		837C8B581A6D4DD400FFE4FF /* _WSCTrustedApplicationPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _WSCTrustedApplicationPrivate.h; path = Private/_WSCTrustedApplicationPrivate.h; sourceTree = "<group>"; };
 		837C8B5D1A6D4DF000FFE4FF /* _WSCCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _WSCCommon.h; path = WaxSealCore/Private/_WSCCommon.h; sourceTree = "<group>"; };
 		837C8B5E1A6D4DF000FFE4FF /* _WSCCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _WSCCommon.m; path = WaxSealCore/Private/_WSCCommon.m; sourceTree = "<group>"; };
@@ -115,8 +113,6 @@
 		837C8B781A6D514600FFE4FF /* WSCKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WSCKeychain.m; path = Public/WSCKeychain.m; sourceTree = "<group>"; };
 		837C8B791A6D514600FFE4FF /* WSCKeychainError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WSCKeychainError.h; path = Public/WSCKeychainError.h; sourceTree = "<group>"; };
 		837C8B7A1A6D514600FFE4FF /* WSCKeychainError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WSCKeychainError.m; path = Public/WSCKeychainError.m; sourceTree = "<group>"; };
-		837C8B831A6D516500FFE4FF /* WSCAccessPermission.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WSCAccessPermission.h; path = Public/WSCAccessPermission.h; sourceTree = "<group>"; };
-		837C8B841A6D516500FFE4FF /* WSCAccessPermission.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WSCAccessPermission.m; path = Public/WSCAccessPermission.m; sourceTree = "<group>"; };
 		837C8B851A6D516500FFE4FF /* WSCTrustedApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WSCTrustedApplication.h; path = Public/WSCTrustedApplication.h; sourceTree = "<group>"; };
 		837C8B861A6D516500FFE4FF /* WSCTrustedApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WSCTrustedApplication.m; path = Public/WSCTrustedApplication.m; sourceTree = "<group>"; };
 		838221091A4C1DC400EF9945 /* DocumentationHelper.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DocumentationHelper.xcodeproj; path = DocumentationHelper/DocumentationHelper.xcodeproj; sourceTree = "<group>"; };
@@ -283,8 +279,6 @@
 		839FE2F21A5E0BD600DCED3C /* Public */ = {
 			isa = PBXGroup;
 			children = (
-				837C8B831A6D516500FFE4FF /* WSCAccessPermission.h */,
-				837C8B841A6D516500FFE4FF /* WSCAccessPermission.m */,
 				83663D681A88B79B005CE439 /* WSCPermittedOperation.h */,
 				83663D691A88B79B005CE439 /* WSCPermittedOperation.m */,
 				837C8B851A6D516500FFE4FF /* WSCTrustedApplication.h */,
@@ -387,7 +381,7 @@
 			children = (
 				837C8B551A6D4DD400FFE4FF /* _WSCAccess.h */,
 				837C8B561A6D4DD400FFE4FF /* _WSCAccess.m */,
-				837C8B571A6D4DD400FFE4FF /* _WSCAccessPermissionPrivate.h */,
+				837C8B571A6D4DD400FFE4FF /* _WSCPermittedOperationPrivate.h */,
 				837C8B581A6D4DD400FFE4FF /* _WSCTrustedApplicationPrivate.h */,
 			);
 			name = Private;
@@ -400,7 +394,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				837C8B891A6D516500FFE4FF /* WSCAccessPermission.h in Headers */,
 				837C8B671A6D50CA00FFE4FF /* WSCKeychainManager.h in Headers */,
 				83663D651A88A9C7005CE439 /* WSCProtectedKeychainItem.h in Headers */,
 				837C8B731A6D50F900FFE4FF /* WSCKeychainItem.h in Headers */,
@@ -416,7 +409,7 @@
 				837C8B521A6D4D7700FFE4FF /* _WSCKeychainPrivate.h in Headers */,
 				837C8B631A6D4DF000FFE4FF /* _WSCCommonForUnitTests.h in Headers */,
 				837C8B511A6D4D7700FFE4FF /* _WSCKeychainItemPrivate.h in Headers */,
-				837C8B5B1A6D4DD400FFE4FF /* _WSCAccessPermissionPrivate.h in Headers */,
+				837C8B5B1A6D4DD400FFE4FF /* _WSCPermittedOperationPrivate.h in Headers */,
 				837C8B591A6D4DD400FFE4FF /* _WSCAccess.h in Headers */,
 				837C8B5C1A6D4DD400FFE4FF /* _WSCTrustedApplicationPrivate.h in Headers */,
 				83D70F0D1A7CBD0200329504 /* _WSCPassphraseItemPrivate.h in Headers */,
@@ -542,7 +535,6 @@
 				837C8B641A6D4DF000FFE4FF /* _WSCCommonForUnitTests.m in Sources */,
 				837C8B741A6D50F900FFE4FF /* WSCKeychainItem.m in Sources */,
 				837C8B801A6D514600FFE4FF /* WSCKeychainError.m in Sources */,
-				837C8B8A1A6D516500FFE4FF /* WSCAccessPermission.m in Sources */,
 				83663D661A88A9C7005CE439 /* WSCProtectedKeychainItem.m in Sources */,
 				837C8B681A6D50CA00FFE4FF /* WSCKeychainManager.m in Sources */,
 				837C8B501A6D4D7700FFE4FF /* _WSCKeychainErrorPrivate.m in Sources */,

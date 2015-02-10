@@ -84,6 +84,15 @@
   */
 + ( instancetype ) trustedApplicationWithContentsOfURL: ( NSURL* )_ApplicationURL
                                                  error: ( NSError** )_Error;
+#pragma mark Keychain Services Bridge
+/** @name Keychain Services Bridge */
+
+/** The reference of the `secTrustedApplication` opaque object, which wrapped by `WSCTrustedApplication` object.
+  
+  @discussion If you are familiar with the underlying *Keychain Services* API,
+              you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* API with this property.
+  */
+@property ( unsafe_unretained, readonly ) SecTrustedApplicationRef secTrustedApplication;
 
 /** Creates and returns a `WSCTrustedApplication` object using the given reference to the instance of `SecTrustedApplication` opaque type.
 
@@ -109,16 +118,6 @@
           Return `nil` if *_SecTrustedAppRef* is `nil`.
   */
 + ( instancetype ) trustedApplicationWithSecTrustedApplicationRef: ( SecTrustedApplicationRef )_SecTrustedAppRef;
-
-#pragma mark Keychain Services Bridge
-/** @name Keychain Services Bridge */
-
-/** The reference of the `secTrustedApplication` opaque object, which wrapped by `WSCTrustedApplication` object.
-  
-  @discussion If you are familiar with the underlying *Keychain Services* API,
-              you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* API with this property.
-  */
-@property ( unsafe_unretained, readonly ) SecTrustedApplicationRef secTrustedApplication;
 
 @end // WSCTrustedApplication class
 
