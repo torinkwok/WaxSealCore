@@ -32,6 +32,7 @@
  ****************************************************************************/
 
 #import "WSCKeychainItem.h"
+#import "WSCPermittedOperation.h"
 
 /** The `WSCProtectedKeychainItem` class is a subclass of `WSCKeychainItem`
     representing the keychain item that involves the secret data (keys, passphrase, etc.)
@@ -45,6 +46,43 @@
   + WSCIdentity
   */
 @interface WSCProtectedKeychainItem : WSCKeychainItem
+
+#pragma mark Creating Permitted Operations
+/** @name Creating Permitted Operations */
+
+/** Creates a new permitted operation entry from the description, trusted application list, and prompt context provided
+    and adds it to the protected keychain item represented by receiver.
+  
+  @discussion The permitted operation returned by this method is a reference to an **permitted operation entry**. 
+              The permitted operation entry includes the name of the protected keychain item as it appears in user prompts,
+              a list of trusted applications (represented by `WSCTrustedApplication`), 
+              the prompt context masks, and a list of one or more operations tags to which this permitted operation entry applies. 
+              By default, a new permitted operation entry applies to all operations. 
+              Use the operationTags read-write property to set the list of operations for an permitted operation object.
+
+  @warning The system allows exactly one owner permitted operation entry in each protected keychain item.
+           This method fails if you attempt to add a second owner permitted operaton entry.
+
+  @param _Description The human readable name to be used to refer to this item when the user is prompted.
+  
+  @param _TrustedApplications An array of trusted application objects (that is, `WSCTrustedApplication` instances) 
+                              identifying applications that are allowed access to the protected keychain item without user confirmation.
+                              If you set this parameter to `nil`, then any application can use this item. 
+                              If you pass an empty array, then there are no trusted applications.
+                              
+  @param _PromptContext A set of prompt context masks. See `WSCPermittedOperationPromptContext` for possible values.
+  
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+                You may specify `nil` for this parameter if you don't want the error information.
+                
+  @return A `WSCPermittedOperation` object that has been added to the list of permitted operations of an protected keychain item.
+          Return `nil` if an error occurs.
+  */
++ ( WSCPermittedOperation* ) addPermittedOperationWithDescription: ( NSString* )_Description
+                                              trustedApplications: ( NSArray* )_TrustedApplications
+                                                    promptContext: ( WSCPermittedOperationPromptContext* )_PromptContext
+                                                            error: ( NSError** )_Error;
 
 /** Huh
   */

@@ -154,32 +154,6 @@ typedef NS_ENUM( NSUInteger, WSCPermittedOperationPromptContext )
     SecACLRef _secACL;
     }
 
-#pragma mark Creating Permitted Operations
-/** @name Creating Permitted Operations */
-
-/** Creates a new permitted operation entry from the description, trusted application list, and prompt context provided.
-    
-  Then the returned `WSCPermittedOperation` object should be added to the list of permitted operations of an protected keychain item.
-  
-  @param _Description The human readable name to be used to refer to this item when the user is prompted.
-  
-  @param _TrustedApplications An array of trusted application objects (that is, `WSCTrustedApplication` instances) 
-                              identifying applications that are allowed access to the protected keychain item without user confirmation.
-                              If you set this parameter to `nil`, then any application can use this item. 
-                              If you pass an empty array, then there are no trusted applications.
-                              
-  @param _PromptContext A set of prompt context masks. See `WSCPermittedOperationPromptContext` for possible values.
-  
-  @param _Error On input, a pointer to an error object.
-                If an error occurs, this pointer is set to an actual error object containing the error information.
-                You may specify `nil` for this parameter if you don't want the error information.
-
-  */
-+ ( instancetype ) permittedOperationWithDescription: ( NSString* )_Description
-                                 trustedApplications: ( NSArray* )_TrustedApplications
-                                       promptContext: ( WSCPermittedOperationPromptContext )_PromptContext
-                                               error: ( NSError** )_Error;
-
 #pragma mark Keychain Services Bridge
 /** @name Keychain Services Bridge */
 

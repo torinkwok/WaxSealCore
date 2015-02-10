@@ -31,43 +31,40 @@
  **                                                                         **
  ****************************************************************************/
 
+#import <XCTest/XCTest.h>
+
 #import "WSCProtectedKeychainItem.h"
+#import "WSCPassphraseItem.h"
 
-@implementation WSCProtectedKeychainItem
+@interface WSCProtectedKeychainItemTests : XCTestCase
 
-#pragma mark Creating Permitted Operations
-/* Creates a new permitted operation entry from the description, trusted application list, and prompt context provided
- * and adds it to the protected keychain item represented by receiver.
- */
-//+ ( WSCPermittedOperation* ) addPermittedOperationWithDescription: ( NSString* )_Description
-//                                              trustedApplications: ( NSArray* )_TrustedApplications
-//                                                    promptContext: ( WSCPermittedOperationPromptContext* )_PromptContext
-//                                                            error: ( NSError** )_Error
-//    {
-//    OSStatus resultCode = errSecSuccess;
-//
-//    resultCode = SecACLCreateWithSimpleContents(
-//    }
+@end
 
-#pragma mark Overrides
-SecAccessRef static s_secAccess;
-+ ( instancetype ) keychainItemWithSecKeychainItemRef: ( SecKeychainItemRef )_SecKeychainItemRef
+@implementation WSCProtectedKeychainItemTests
+
+- ( void ) setUp
     {
-    WSCProtectedKeychainItem* newProtectedKeychainItem = [ super keychainItemWithSecKeychainItemRef: _SecKeychainItemRef ];
-
-    if ( newProtectedKeychainItem )
-        {
-        OSStatus resultCode = errSecSuccess;
-        resultCode = SecKeychainItemCopyAccess( newProtectedKeychainItem.secKeychainItem, &s_secAccess );
-
-        if ( resultCode != errSecSuccess )
-            return nil;
-        }
-
-    return newProtectedKeychainItem;
+    // TODO: Put setup code here. This method is called before the invocation of each test method in the class.
     }
 
-@end // WSCProtectedKeychainItem
+- ( void ) tearDown
+    {
+    // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
+    }
+
+- ( void ) testOverridesKeychainItemWithSecKeychainItemRef
+    {
+    // --------------------------------------------------------------------------------------------------------------------
+    // Test Case 0
+    // --------------------------------------------------------------------------------------------------------------------
+//    OSStatus resultCode = errSecSuccess;
+//    SecKeychainItemRef commonKeychainItemRef
+//
+//    WSCProtectedKeychainItem* protectedKeychainItem_testCase0 =
+//        [ WSCProtectedKeychainItem keychainItemWithsecKeychainItemRef:
+    }
+
+@end
 
 //////////////////////////////////////////////////////////////////////////////
 
