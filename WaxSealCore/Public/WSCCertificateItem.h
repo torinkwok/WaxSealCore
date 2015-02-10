@@ -65,14 +65,14 @@
   In order to both encrypt and decrypt data, therefore, a given user must have both a public key 
   (normally embedded in a certificate) and a private key. 
   The combination of a certificate and its associated private key is known as an **identity**.
-  *WaxSealCore* framework and the underlying *Certificate, Key, and Trust Services* includes APIs to find the certificate
+  *WaxSealCore* framework and the underlying *Certificate, Key, and Trust Services* includes API to find the certificate
   or key associated with an identity and to find an identity when given search criteria. 
   The search criteria include the permitted uses for the key.
 
   In OS X, keys and certificates are stored on a **keychain** (represented by the WSCKeychain in *WaxSealCore* framework),
   a database that provides secure (that is, encrypted) storage for private keys and other secrets 
   as well as unencrypted storage for other security-related data. 
-  The *WaxSealCore* APIs that search for keys, certificates, and identities all use the keychain for this purpose.
+  The *WaxSealCore* API that search for keys, certificates, and identities all use the keychain for this purpose.
   On an OS X system, you can use the **Keychain Access** utility which has friendly GUI to see the contents of the keychain and
   to examine the contents of certificates.
   */

@@ -37,7 +37,7 @@
     representing the keychain item that involves the secret data (keys, passphrase, etc.)
     
   You typically do not use `WSCProtectedKeychainItem` object directly,
-  you use objects whose classes descend from this class:
+  you use objects whose classes descend from this class or its superclass:
   
   + WSCPassphraseItem
   + WSCCertificate
@@ -45,6 +45,10 @@
   + WSCIdentity
   */
 @interface WSCProtectedKeychainItem : WSCKeychainItem
+
+/** Huh
+  */
+- ( NSArray* ) permittedOperations;
 
 @end // WSCKeychainItem class
 

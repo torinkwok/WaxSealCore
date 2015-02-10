@@ -94,10 +94,10 @@
   The access object, in turn, is used as input to the `SecKeychainItemSetAccess` function
   to specify the set of applications that are trusted to access a specific keychain item.
   
-  If you are familiar with the underlying *Keychain Services* APIs,
-  you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this class method.
+  If you are familiar with the underlying *Keychain Services* API,
+  you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* API with this class method.
 
-  @warning This method is just used for bridge between *WaxSealCore* framework and *Keychain Services* APIs.
+  @warning This method is just used for bridge between *WaxSealCore* framework and *Keychain Services* API.
   
   Instead of invoking this method, you should construct a `WSCTrustedApplication` object by invoking:
 
@@ -115,8 +115,8 @@
 
 /** The reference of the `secTrustedApplication` opaque object, which wrapped by `WSCTrustedApplication` object.
   
-  @discussion If you are familiar with the underlying *Keychain Services* APIs,
-              you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this property.
+  @discussion If you are familiar with the underlying *Keychain Services* API,
+              you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* API with this property.
   */
 @property ( unsafe_unretained, readonly ) SecTrustedApplicationRef secTrustedApplication;
 

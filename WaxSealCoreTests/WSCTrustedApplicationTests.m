@@ -63,18 +63,73 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+void _WSCPrintAccess( SecAccessRef _Access )
+    {
+    CFArrayRef allACLs = NULL;
+    SecAccessCopyACLList( _Access, &allACLs );
+
+    [ ( __bridge NSArray* )allACLs enumerateObjectsUsingBlock:
+        ^( id _ACL, NSUInteger _Index, BOOL* _Stop )
+            {
+            CFArrayRef trustedApps = NULL;
+            CFStringRef descriptor = NULL;
+            SecKeychainPromptSelector promptSelector = 0;
+            CFArrayRef authTags = SecACLCopyAuthorizations( ( __bridge SecACLRef )_ACL );
+            SecACLCopyContents( ( __bridge SecACLRef )_ACL, &trustedApps, &descriptor, &promptSelector );
+
+            NSString* allowedSelectorString[] =
+                { @"kSecKeychainPromptRequirePassphase", @"kSecKeychainPromptUnsigned"
+                , @"kSecKeychainPromptUnsignedAct", @"kSecKeychainPromptInvalid"
+                , @"kSecKeychainPromptInvalidAct"
+                };
+
+            SecKeychainPromptSelector allowedSelector[] =
+                { kSecKeychainPromptRequirePassphase, kSecKeychainPromptUnsigned
+                , kSecKeychainPromptUnsignedAct, kSecKeychainPromptInvalid
+                , kSecKeychainPromptInvalidAct
+                };
+
+            NSMutableArray* promptSelctors = [ NSMutableArray array ];
+            for ( int _Index = 0; _Index < sizeof( allowedSelector ) / sizeof( allowedSelector[ 0 ] ); _Index++ )
+                if ( (  promptSelector & allowedSelector[ _Index ] ) != 0 )
+                    [ promptSelctors addObject: allowedSelectorString[ _Index ] ];
+
+            fprintf( stdout, "\n======================== %lu ========================\n", _Index );
+            NSLog( @"\nTrusted Application: %@\n"
+                    "\nDescriptor: %@\n"
+                    "\nAuth tags of ACL #%lu: %@\n"
+                    "\nPrompt Selectors: %@\n"
+                 , ( __bridge NSArray* )trustedApps
+                 , ( __bridge NSString* )descriptor
+                 , _Index, ( __bridge NSArray* )authTags
+                 , promptSelctors
+                 );
+            } ];
+    }
+
 - ( void ) testACL
     {
     NSError* error = nil;
 
     WSCPassphraseItem* proxyKeychainItem = ( WSCPassphraseItem* )
         [ [ WSCKeychain login ] findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeModificationDate : [ NSDate dateWithString: @"2015-2-4 09:08:01 +0800" ]
-                                                                                , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPProxy )
+                                                                                , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPSProxy )
                                                                                 }
                                                                     itemClass: WSCKeychainItemClassInternetPassphraseItem
                                                                         error: &error ];
     XCTAssertNotNil( proxyKeychainItem );
     _WSCPrintNSErrorForUnitTest( error );
+
+    SecAccessRef access = NULL;
+    SecKeychainItemCopyAccess( proxyKeychainItem.secKeychainItem, &access );
+
+    CFArrayRef matchingACLs = SecAccessCopyMatchingACLList( access, kSecACLAuthorizationDecrypt );
+    SecACLRef ACL = ( __bridge SecACLRef )[ ( __bridge NSArray* )matchingACLs firstObject ];
+
+    SecACLSetContents( ACL, ( __bridge CFArrayRef )@[], CFSTR( "FuckFuckGo" ), kSecKeychainPromptRequirePassphase | kSecKeychainPromptUnsigned );
+    SecKeychainItemSetAccess( proxyKeychainItem.secKeychainItem, access );
+    _WSCPrintAccess( access );
+
     NSLog( @"Passphrase for test case 0: %@", [ [ [ NSString alloc ] initWithData: proxyKeychainItem.passphrase encoding: NSUTF8StringEncoding ] autorelease ] );
     }
 
@@ -104,7 +159,7 @@
         [ @"A keychain is an encrypted container that holds passphrases for multiple applications and secure services."
            "Keychains are secure storage containers, which means that when the keychain is locked, no one can access its protected contents. "
            "In OS X, users can unlock a keychain—thus providing trusted applications access to the contents—by entering a single master passphrase."
-           "The above encrypted container which is called “keychain” is represented by WSCKeychain object in WaxSealCore framework and SecKeychainRef in Keychain Services APIs."
+           "The above encrypted container which is called “keychain” is represented by WSCKeychain object in WaxSealCore framework and SecKeychainRef in Keychain Services API."
            dataUsingEncoding: NSUTF8StringEncoding ];
 
     NSURL* URL_testCase1 = [ [ NSURL URLForTemporaryDirectory ] URLByAppendingPathComponent: @"/test_txt.txt" ];

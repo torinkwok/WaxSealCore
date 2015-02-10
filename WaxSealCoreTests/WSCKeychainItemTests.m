@@ -249,7 +249,7 @@ NSString* _WSCPassphrases[] =
                                                                  error: &error ];
     internetPassphraseItem_testCase3.port = 3234;
     internetPassphraseItem_testCase3.comment = @"Core of WaxSeal, a modern and full feature Objective-C wrapper"
-                                                "for Keychain Services, Certificate, Key, and Trust Services APIs.";
+                                                "for Keychain Services, Certificate, Key, and Trust Services API.";
     internetPassphraseItem_testCase3.kindDescription = @"WaxSealCore Account Passphrase";
     XCTAssertNotNil( internetPassphraseItem_testCase3 );
     XCTAssertTrue( internetPassphraseItem_testCase3.isValid );
@@ -590,7 +590,7 @@ NSString* _WSCPassphrases[] =
                             "its protected contents. In OS X, users can unlock a keychain－thus providing trusted applications access to "
                             "the contents－by entering a single master passphrase."
                             "The above encrypted container which is called “keychain” is represented by WSCKeychain object in WaxSealCore "
-                            "framework and SecKeychainRef in Keychain Services APIs.";
+                            "framework and SecKeychainRef in Keychain Services API.";
 
     NSString* commentTwo = @"Goodbye, WaxSealCore!";
 

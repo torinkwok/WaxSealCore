@@ -238,7 +238,7 @@
   [keychainManager:shouldProceedAfterError:unlockingKeychain:withPassphrase:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:unlockingKeychain:withPassphrase:]) method to determine how to proceed.
 
   In most cases, your application does not need to invoke this method directly, 
-  since most *WaxSealCore* APIs and the underlying *Keychain Services* functions that require an unlocked keychain do so for you.
+  since most *WaxSealCore* API and the underlying *Keychain Services* functions that require an unlocked keychain do so for you.
   If your application needs to verify that a keychain is unlocked, inspect the [isLocked]([WSCKeychain isLocked]) property.
 
   @param _Keychain The keychain you wish to unlock.
@@ -270,7 +270,7 @@
   [keychainManager:shouldUnlockKeychainWithUserInteraction:](-[WSCKeychainManagerDelegate keychainManager:shouldUnlockKeychainWithUserInteraction:]) method to determine how to proceed.
 
   In most cases, your application does not need to invoke this method directly, 
-  since most *WaxSealCore* APIs and underlying *Keychain Services* functions that require an unlocked keychain do so for you.
+  since most *WaxSealCore* API and underlying *Keychain Services* functions that require an unlocked keychain do so for you.
   If your application needs to verify that a keychain is unlocked, inspect the [isLocked]([WSCKeychain isLocked]) property.
 
   @param _Keychain The keychain you wish to unlock.
@@ -313,9 +313,9 @@
   If there is an error updating search list, the keychain manager may also call the delegate's
   [keychainManager:shouldProceedAfterError:updatingKeychainSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:updatingKeychainSearchList:]) method to determine how to proceed.
 
-  The default keychain search list is displayed as the keychain list in the Keychain Access utility.
+  The default keychain search list is displayed as the keychain list in the **Keychain Access** utility.
 
-  If you use this method to change the keychain search list, the list displayed in Keychain Access changes accordingly.
+  If you use this method to change the keychain search list, the list displayed in **Keychain Access** changes accordingly.
   
   To obtain the current default keychain search list, use the keychainSearchList method.
 

@@ -73,7 +73,7 @@
 /** The `NSDate` object that identifies the modification date of the keychain item represented by receiver. (read-only)
 
   This is a read-only property, you cannot modify the modification date of an keychain item 
-  in *WaxSealCore* framework and *Keychain Services* APIs, as the value you specify will be overwritten with the current time.
+  in *WaxSealCore* framework and *Keychain Services* API, as the value you specify will be overwritten with the current time.
 
   **One more thing**
   If you want to change the modification date to something other than the current time,
@@ -86,10 +86,10 @@
 
 /** Creates and returns a `WSCKeychainItem` object using the given reference to the instance of `SecKeychainItem` opaque type.
 
-  If you are familiar with the underlying *Keychain Services* APIs,
-  you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this class method.
+  If you are familiar with the underlying *Keychain Services* API,
+  you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* API with this class method.
 
-  @warning This method is just used for bridge between *WaxSealCore* framework and *Keychain Services* APIs.
+  @warning This method is just used for bridge between *WaxSealCore* framework and *Keychain Services* API.
   
   Instead of invoking this method, you should construct a `WSCKeychainItem` object by invoking:
 
@@ -122,8 +122,8 @@
 
 /** The reference of the `SecKeychainItem` opaque object, which wrapped by `WSCKeychainItem` object. (read-only)
   
-  @discussion If you are familiar with the underlying *Keychain Services* APIs,
-              you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this property.
+  @discussion If you are familiar with the underlying *Keychain Services* API,
+              you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* API with this property.
   */
 @property ( unsafe_unretained, readonly ) SecKeychainItemRef secKeychainItem;
 

@@ -216,7 +216,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   In OS X, users can unlock a keychain—thus providing trusted applications access to the contents—by entering a single master passphrase.
   
   The above encrypted container which is called "keychain" is represented by `WSCKeychain` object in *WaxSealCore* framework
-  and `SecKeychainRef` in *Keychain Services* APIs.
+  and `SecKeychainRef` in *Keychain Services* API.
   */
 @interface WSCKeychain : NSObject
     {
@@ -353,10 +353,10 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
 /** Creates and returns a `WSCKeychain` object using the given reference to the instance of `SecKeychain` opaque type.
 
-  If you are familiar with the underlying *Keychain Services* APIs,
-  you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this class method.
+  If you are familiar with the underlying *Keychain Services* API,
+  you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* API with this class method.
 
-  @warning This method is just used for bridge between *WaxSealCore* framework and *Keychain Services* APIs.
+  @warning This method is just used for bridge between *WaxSealCore* framework and *Keychain Services* API.
   
   Instead of invoking this method, you should construct a `WSCKeychain` object by invoking:
 
@@ -689,8 +689,8 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
 /** The reference of the `SecKeychain` opaque object, which wrapped by `WSCKeychain` object.
   
-  @discussion If you are familiar with the underlying *Keychain Services* APIs,
-              you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* APIs with this property.
+  @discussion If you are familiar with the underlying *Keychain Services* API,
+              you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* API with this property.
   */
 @property ( unsafe_unretained, readonly ) SecKeychainRef secKeychain;
 
