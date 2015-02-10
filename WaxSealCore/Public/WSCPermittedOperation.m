@@ -39,6 +39,24 @@
 
 @synthesize secACL = _secACL;
 
+#pragma mark Keychain Services Bridge
+/* Creates and returns a `WSCPermittedOperation` object 
+ * using the given reference to the instance of `SecACL` opaque type.
+ */
++ ( instancetype ) permittedOperationWithSecACLRef: ( SecACLRef )_SecACLRef
+    {
+    return [ [ [ self alloc ] p_initWithSecACLRef: _SecACLRef ] autorelease ];
+    }
+
+#pragma mark Overrides
+- ( void ) dealloc
+    {
+    if ( self->_secACL )
+        CFRelease( self->_secACL );
+
+    [ super dealloc ];
+    }
+
 @end // WSCPermittedOperation class
 
 #pragma mark Private Programmatic Interfaces for Creating Permitted Operation

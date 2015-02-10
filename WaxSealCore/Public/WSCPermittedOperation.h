@@ -36,57 +36,83 @@
 /** Defines constants that specify operations that can be done with that protected item, 
     such as decrypting, encrypting, sign or authenticating.
   */
-typedef NS_ENUM( CSSM_ACL_AUTHORIZATION_TAG, WSCPermittedOperationTag )
+typedef NS_ENUM( NSUInteger, WSCPermittedOperationTag )
     {
-    /// No restrictions. This permitted operation entry applies to all operations available to the caller.
-      WSCPermittedOperationTagAnyOperation = 0
-
     /// Use for a CSP (smart card) login.
-    , WSCPermittedOperationTagLogin = 1
+      WSCPermittedOperationTagLogin = 1
 
     /// Use for generating a key.
-    , WSCPermittedOperationTagGenerateKey = 2
+    , WSCPermittedOperationTagGenerateKey = 1 << 2
 
     /// Use for deleting this protected keychain item.
-    , WSCPermittedOperationTagDelete = 3
+    , WSCPermittedOperationTagDelete = 1 << 3
 
     /// Use for encrypting data.
-    , WSCPermittedOperationTagEncrypt = 4
+    , WSCPermittedOperationTagEncrypt = 1 << 4
 
     /// Use for decrypting data.
-    , WSCPermittedOperationTagDecrypt = 5
+    , WSCPermittedOperationTagDecrypt = 1 << 5
 
     /// Use for exporting an encrypted key.
     /// This tag is checked on the key being exported;
     /// in addition, the `WSCPermittedOperationTagEncrypt` tag is checked for any key used in the encrypting operation.
-    , WSCPermittedOperationTagExportEncryptedKey = 6
+    , WSCPermittedOperationTagExportEncryptedKey = 1 << 6
 
     /// Use for exporting an unencrypted key.
-    , WSCPermittedOperationTagExportUnencryptedKey = 7
+    , WSCPermittedOperationTagExportUnencryptedKey = 1 << 7
 
     /// Import an encrypted key.
     /// This tag is checked on the key being imported;
     /// in addition, the `WSCPermittedOperationTagDecrypt` tag is checked for any key used in the decrypting operation.
-    , WSCPermittedOperationTagImportEncryptedKey = 8
+    , WSCPermittedOperationTagImportEncryptedKey = 1 << 8
 
     /// Use for importing an unencrypted key.
-    , WSCPermittedOperationTagImportUnencryptedKey = 9
+    , WSCPermittedOperationTagImportUnencryptedKey = 1 << 9
 
     /// Use for digitally signing data.
-    , WSCPermittedOperationTagSign = 10
+    , WSCPermittedOperationTagSign = 1 << 10
 
     /// Use for creating or verifying a message authentication code.
-    , WSCPermittedOperationTagCreateOrVerifyMessageAuthCode = 11
+    , WSCPermittedOperationTagCreateOrVerifyMessageAuthCode = 1 << 11
 
     /// Use for deriving a new key from another key.
-    , WSCPermittedOperationTagDerive = 12
+    , WSCPermittedOperationTagDerive = 1 << 12
 
     /// Use for changing the permitted operation itself.
-    , WSCPermittedOperationTagChangeSelf = 13
+    , WSCPermittedOperationTagChangeSelf = 1 << 13
 
     /// For internal system use only.
     /// Use the `WSCPermittedOperationTagChangeSelf` tag for changes to owner permitted operation entries.
-    , WSCPermittedOperationTagChangeOwner = 14
+    , WSCPermittedOperationTagChangeOwner = 1 << 14
+
+    /// No restrictions. This permitted operation entry applies to all operations available to the caller.
+    , WSCPermittedOperationTagAnyOperation = 0xffffffffU
+    };
+
+/** Masks that define when using a keychain or a protected keychain item should require a passphrase.
+  */
+typedef NS_ENUM( NSUInteger, WSCPermittedOperationPromptContext )
+    {
+    /// Indicates that a passphrase should be required for every access action.
+      WSCPermittedOperationPromptContextRequirePassphraseEveryAccess = kSecKeychainPromptRequirePassphase
+
+    /// Indicates that a passphrase should be required
+    /// when an unsigned application attempts to use a keychain or a protected keychain item,
+    /// overriding the system default.
+    , WSCPermittedOperationPromptContextWhenUnsigned = kSecKeychainPromptUnsigned
+
+    /// Indicates that a passphrase should be required
+    /// when an unsigned application attempts to use a keychain or a protected keychain item.
+    , WSCPermittedOperationPromptContextWhenUnsignedAct = kSecKeychainPromptUnsignedAct
+
+    /// Indicates that a passphrase should be required
+    /// when an application with an invalid signature attempts to use a the keychain or a protected keychain item,
+    /// overriding the system default.
+    , WSCPermittedOperationPromptContextInvalidSigned = kSecKeychainPromptInvalid
+
+    /// Indicates that a passphrase should be required
+    /// when an application with an invalid signature attempts to use a the keychain or a protected keychain item.
+    , WSCPermittedOperationPromptContextInvalidSignedAct = kSecKeychainPromptInvalidAct
     };
 
 /** The `WSCPermittedOperation` represents information about an permitted operation of a protected keychain item.
@@ -127,6 +153,32 @@ typedef NS_ENUM( CSSM_ACL_AUTHORIZATION_TAG, WSCPermittedOperationTag )
 @private
     SecACLRef _secACL;
     }
+
+#pragma mark Creating Permitted Operations
+/** @name Creating Permitted Operations */
+
+/** Creates a new permitted operation entry from the description, trusted application list, and prompt context provided.
+    
+  Then the returned `WSCPermittedOperation` object should be added to the list of permitted operations of an protected keychain item.
+  
+  @param _Description The human readable name to be used to refer to this item when the user is prompted.
+  
+  @param _TrustedApplications An array of trusted application objects (that is, `WSCTrustedApplication` instances) 
+                              identifying applications that are allowed access to the protected keychain item without user confirmation.
+                              If you set this parameter to `nil`, then any application can use this item. 
+                              If you pass an empty array, then there are no trusted applications.
+                              
+  @param _PromptContext A set of prompt context masks. See `WSCPermittedOperationPromptContext` for possible values.
+  
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+                You may specify `nil` for this parameter if you don't want the error information.
+
+  */
++ ( instancetype ) permittedOperationWithDescription: ( NSString* )_Description
+                                 trustedApplications: ( NSArray* )_TrustedApplications
+                                       promptContext: ( WSCPermittedOperationPromptContext )_PromptContext
+                                               error: ( NSError** )_Error;
 
 #pragma mark Keychain Services Bridge
 /** @name Keychain Services Bridge */
