@@ -63,50 +63,6 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-void _WSCPrintAccess( SecAccessRef _Access )
-    {
-    CFArrayRef allACLs = NULL;
-    SecAccessCopyACLList( _Access, &allACLs );
-
-    [ ( __bridge NSArray* )allACLs enumerateObjectsUsingBlock:
-        ^( id _ACL, NSUInteger _Index, BOOL* _Stop )
-            {
-            CFArrayRef trustedApps = NULL;
-            CFStringRef descriptor = NULL;
-            SecKeychainPromptSelector promptSelector = 0;
-            CFArrayRef authTags = SecACLCopyAuthorizations( ( __bridge SecACLRef )_ACL );
-            SecACLCopyContents( ( __bridge SecACLRef )_ACL, &trustedApps, &descriptor, &promptSelector );
-
-            NSString* allowedSelectorString[] =
-                { @"kSecKeychainPromptRequirePassphase", @"kSecKeychainPromptUnsigned"
-                , @"kSecKeychainPromptUnsignedAct", @"kSecKeychainPromptInvalid"
-                , @"kSecKeychainPromptInvalidAct"
-                };
-
-            SecKeychainPromptSelector allowedSelector[] =
-                { kSecKeychainPromptRequirePassphase, kSecKeychainPromptUnsigned
-                , kSecKeychainPromptUnsignedAct, kSecKeychainPromptInvalid
-                , kSecKeychainPromptInvalidAct
-                };
-
-            NSMutableArray* promptSelctors = [ NSMutableArray array ];
-            for ( int _Index = 0; _Index < sizeof( allowedSelector ) / sizeof( allowedSelector[ 0 ] ); _Index++ )
-                if ( (  promptSelector & allowedSelector[ _Index ] ) != 0 )
-                    [ promptSelctors addObject: allowedSelectorString[ _Index ] ];
-
-            fprintf( stdout, "\n======================== %lu ========================\n", _Index );
-            NSLog( @"\nTrusted Application: %@\n"
-                    "\nDescriptor: %@\n"
-                    "\nAuth tags of ACL #%lu: %@\n"
-                    "\nPrompt Selectors: %@\n"
-                 , ( __bridge NSArray* )trustedApps
-                 , ( __bridge NSString* )descriptor
-                 , _Index, ( __bridge NSArray* )authTags
-                 , promptSelctors
-                 );
-            } ];
-    }
-
 - ( void ) testACL
     {
     NSError* error = nil;

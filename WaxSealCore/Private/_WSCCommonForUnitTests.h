@@ -50,6 +50,7 @@ NSURL* _WSCURLForTestCase( SEL _TestCase, NSString* _TestCaseDesc, BOOL _DoesPro
 
 WSCPassphraseItem* _WSC_www_waxsealcore_org_InternetKeychainItem( NSError** _Error );
 WSCPassphraseItem* _WSC_WaxSealCoreTests_ApplicationKeychainItem( NSError** _Error );
+void _WSCPrintAccess( SecAccessRef _Access );
 
 #pragma mark Private Programmatic Interfaces for Ease of Unit Tests
 @interface WSCKeychain ( _WSCKeychainEaseOfUnitTests )

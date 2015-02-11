@@ -86,7 +86,7 @@ typedef NS_ENUM( NSUInteger, WSCPermittedOperationTag )
     , WSCPermittedOperationTagChangeOwner = 1 << 14
 
     /// No restrictions. This permitted operation entry applies to all operations available to the caller.
-    , WSCPermittedOperationTagAnyOperation = 0xffffffffU
+    , WSCPermittedOperationTagAnyOperation = 1 << 15
     };
 
 /** Masks that define when using a keychain or a protected keychain item should require a passphrase.

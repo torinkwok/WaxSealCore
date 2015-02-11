@@ -82,14 +82,36 @@
 - ( void ) testAddNewPermittedOperation
     {
     NSError* error = nil;
+    SecAccessRef commonSecAccess = NULL;
 
+    // ----------------------------------------------------------------------------------
+    // Test Case 0
+    // ----------------------------------------------------------------------------------
     WSCPassphraseItem* internetPassphraseItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    SecKeychainItemCopyAccess( internetPassphraseItem.secKeychainItem, &commonSecAccess );
+    NSLog( @"Before Modifying - Test Case 0 - Internet Passphrase Item:" );
+
+    _WSCPrintAccess( commonSecAccess );
     WSCPermittedOperation* permittedOperation_testCase0 =
         [ internetPassphraseItem addPermittedOperationWithDescription: @"Test Case 0"
                                                   trustedApplications: nil
-                                                        forOperations: WSCPermittedOperationTagDecrypt
+                                                        forOperations: WSCPermittedOperationTagAnyOperation | WSCPermittedOperationTagDecrypt
                                                         promptContext: WSCPermittedOperationPromptContextRequirePassphraseEveryAccess
                                                                 error: &error ];
+    XCTAssertNotNil( permittedOperation_testCase0 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    SecKeychainItemCopyAccess( internetPassphraseItem.secKeychainItem, &commonSecAccess );
+    NSLog( @"After Modifying - Test Case 0 - Internet Passphrase Item:" );
+    _WSCPrintAccess( commonSecAccess );
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 1
+    // ----------------------------------------------------------------------------------
     }
 
 @end

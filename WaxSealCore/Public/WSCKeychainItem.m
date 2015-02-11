@@ -141,6 +141,9 @@
     if ( self->_secKeychainItem )
         CFRelease( self->_secKeychainItem );
 
+    if ( self->_secAccess )
+        CFRelease( self->_secAccess );
+
     [ super dealloc ];
     }
 

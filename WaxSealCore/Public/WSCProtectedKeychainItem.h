@@ -70,6 +70,8 @@
                               If you set this parameter to `nil`, then any application can use this item. 
                               If you pass an empty array, then there are no trusted applications.
                               
+  @param _Operations An unsigned integer bit field containing any of the operation tag masks described in ["WSCPermittedOperationTag Constants Reference"](WSCPermittedOperationTag).
+                              
   @param _PromptContext A set of prompt context masks. See `WSCPermittedOperationPromptContext` for possible values.
   
   @param _Error On input, a pointer to an error object.
@@ -81,7 +83,7 @@
   */
 - ( WSCPermittedOperation* ) addPermittedOperationWithDescription: ( NSString* )_Description
                                               trustedApplications: ( NSArray* )_TrustedApplications
-                                                    forOperations: ( WSCPermittedOperationTag )_Operation
+                                                    forOperations: ( WSCPermittedOperationTag )_Operations
                                                     promptContext: ( WSCPermittedOperationPromptContext )_PromptContext
                                                             error: ( NSError** )_Error;
 /** Huh
