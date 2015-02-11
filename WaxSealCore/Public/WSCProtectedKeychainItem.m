@@ -64,7 +64,6 @@
         }
 
     WSCPermittedOperation* newPermitted = nil;
-
     NSMutableArray* secTrustedApps = nil;
 
     // Convert the given Cocoa-array of WSCTrustedApplication
@@ -82,8 +81,8 @@
     OSStatus resultCode = errSecSuccess;
     SecACLRef secNewACL = NULL;
 
-    SecAccessRef secCurrentAccess = NULL;
-    if ( ( resultCode = SecKeychainItemCopyAccess( self.secKeychainItem, &secCurrentAccess ) ) == errSecSuccess )
+    SecAccessRef secCurrentAccess = [ self p_secCurrentAccess: _Error ];
+    if ( secCurrentAccess )
         {
         // Create the an ALC (Access Control List)
         if ( ( resultCode = SecACLCreateWithSimpleContents( secCurrentAccess
@@ -174,6 +173,21 @@ NSUInteger p_permittedOperationTags[] =
         }
 
     return [ [ authorizations copy ] autorelease ];
+    }
+
+/* Objective-C wrapper of SecKeychainItemCopyAccess() function in Keychain Services
+ * Use for copying the access of the protected keychain item represented by receiver.
+ */
+- ( SecAccessRef ) p_secCurrentAccess: ( NSError** )_Error
+    {
+    OSStatus resultCode = errSecSuccess;
+    SecAccessRef secCurrentAccess = NULL;
+
+    if ( ( resultCode = SecKeychainItemCopyAccess( self.secKeychainItem, &secCurrentAccess ) ) != errSecSuccess )
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+
+    return secCurrentAccess;
     }
 
 @end // WSCProtectedKeychainItem + WSCProtectedKeychainItemPrivateManagingPermittedOperations
