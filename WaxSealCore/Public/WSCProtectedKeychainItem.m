@@ -82,30 +82,36 @@
     OSStatus resultCode = errSecSuccess;
     SecACLRef secNewACL = NULL;
 
-    // Create the an ALC (Access Control List)
-    if ( ( resultCode = SecACLCreateWithSimpleContents( self->_secAccess
-                                                      , ( __bridge CFArrayRef )secTrustedApps
-                                                      , ( __bridge CFStringRef )_Description
-                                                      , ( SecKeychainPromptSelector )_PromptContext
-                                                      , &secNewACL
-                                                      ) ) == errSecSuccess )
+    SecAccessRef secCurrentAccess = NULL;
+    if ( ( resultCode = SecKeychainItemCopyAccess( self.secKeychainItem, &secCurrentAccess ) ) == errSecSuccess )
         {
-        // Extract operation tags from the given bits field
-        // to construct a list of authorizations that will be used for the secNewACL.
-        NSArray* authorizations = [ self p_authorizationsFromPermittedOperationMasks: _Operations ];
+        // Create the an ALC (Access Control List)
+        if ( ( resultCode = SecACLCreateWithSimpleContents( secCurrentAccess
+                                                          , ( __bridge CFArrayRef )secTrustedApps
+                                                          , ( __bridge CFStringRef )_Description
+                                                          , ( SecKeychainPromptSelector )_PromptContext
+                                                          , &secNewACL
+                                                          ) ) == errSecSuccess )
+            {
+            // Extract operation tags from the given bits field
+            // to construct a list of authorizations that will be used for the secNewACL.
+            NSArray* authorizations = [ self p_authorizationsFromPermittedOperationMasks: _Operations ];
 
-        // Update the authorizations of the secNewACL.
-        // Because an ACL object is always associated with an access object,
-        // when we modify an ACL entry, we are modifying the access object as well.
-        // There is no need for a separate function to write a modified ACL object back into the self->_secAccess object.
-        if ( ( resultCode = SecACLUpdateAuthorizations( secNewACL, ( __bridge CFArrayRef )authorizations ) ) == errSecSuccess )
-            // Write the modified access object that carries the newACL back into the protected keychain item represented by receiver.
-            if ( ( resultCode = SecKeychainItemSetAccess( self.secKeychainItem, self->_secAccess ) ) == errSecSuccess )
-                // Everything is OK, create the wrapper of the newACL that has been added to
-                // the list of permitted operations of the protected keychain item.
-                newPermitted = [ [ [ WSCPermittedOperation alloc ] p_initWithSecACLRef: secNewACL ] autorelease ];
+            // Update the authorizations of the secNewACL.
+            // Because an ACL object is always associated with an access object,
+            // when we modify an ACL entry, we are modifying the access object as well.
+            // There is no need for a separate function to write a modified ACL object back into the self->_secAccess object.
+            if ( ( resultCode = SecACLUpdateAuthorizations( secNewACL, ( __bridge CFArrayRef )authorizations ) ) == errSecSuccess )
+                // Write the modified access object that carries the secNewACL back into the protected keychain item represented by receiver.
+                if ( ( resultCode = SecKeychainItemSetAccess( self.secKeychainItem, secCurrentAccess ) ) == errSecSuccess )
+                    // Everything is OK, create the wrapper of the secNewACL that has been added to
+                    // the list of permitted operations of the protected keychain item.
+                    newPermitted = [ [ [ WSCPermittedOperation alloc ] p_initWithSecACLRef: secNewACL ] autorelease ];
 
-        CFRelease( secNewACL );
+            CFRelease( secNewACL );
+            }
+
+        CFRelease( secCurrentAccess );
         }
 
     if ( resultCode != errSecSuccess )
