@@ -38,7 +38,6 @@
 #import "WSCKeychainItem.h"
 
 #import "_WSCAccess.h"
-#import "_WSCAccessPermissionPrivate.h"
 #import "_WSCKeychainItemPrivate.h"
 
 // --------------------------------------------------------

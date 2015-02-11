@@ -33,6 +33,7 @@
 
 #import <XCTest/XCTest.h>
 
+#import "WSCPermittedOperation.h"
 #import "WSCProtectedKeychainItem.h"
 #import "WSCPassphraseItem.h"
 
@@ -54,14 +55,41 @@
 
 - ( void ) testOverridesKeychainItemWithSecKeychainItemRef
     {
+    NSError* error = nil;
+
+    WSCPassphraseItem* commonInternetPassphraseItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
+    XCTAssertNotNil( commonInternetPassphraseItem );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    WSCPassphraseItem* commonApplicationPassphraseItem = _WSC_WaxSealCoreTests_ApplicationKeychainItem( &error );
+    XCTAssertNotNil( commonApplicationPassphraseItem );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
     // --------------------------------------------------------------------------------------------------------------------
     // Test Case 0
     // --------------------------------------------------------------------------------------------------------------------
-//    OSStatus resultCode = errSecSuccess;
-//    SecKeychainItemRef commonKeychainItemRef
-//
-//    WSCProtectedKeychainItem* protectedKeychainItem_testCase0 =
-//        [ WSCProtectedKeychainItem keychainItemWithsecKeychainItemRef:
+    WSCKeychainItem* commonKeychainItem =
+        [ WSCKeychainItem keychainItemWithSecKeychainItemRef: commonInternetPassphraseItem.secKeychainItem ];
+    XCTAssertNotNil( commonKeychainItem );
+
+    WSCProtectedKeychainItem* protectedKeychainItem_testCase0 =
+        [ WSCProtectedKeychainItem keychainItemWithSecKeychainItemRef: commonInternetPassphraseItem.secKeychainItem ];
+    XCTAssertNotNil( protectedKeychainItem_testCase0 );
+    }
+
+- ( void ) testAddNewPermittedOperation
+    {
+    NSError* error = nil;
+
+    WSCPassphraseItem* internetPassphraseItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
+    WSCPermittedOperation* permittedOperation_testCase0 =
+        [ internetPassphraseItem addPermittedOperationWithDescription: @"Test Case 0"
+                                                  trustedApplications: nil
+                                                        forOperations: WSCPermittedOperationTagDecrypt
+                                                        promptContext: WSCPermittedOperationPromptContextRequirePassphraseEveryAccess
+                                                                error: &error ];
     }
 
 @end

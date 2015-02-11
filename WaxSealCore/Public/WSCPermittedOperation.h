@@ -91,7 +91,7 @@ typedef NS_ENUM( NSUInteger, WSCPermittedOperationTag )
 
 /** Masks that define when using a keychain or a protected keychain item should require a passphrase.
   */
-typedef NS_ENUM( NSUInteger, WSCPermittedOperationPromptContext )
+typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
     {
     /// Indicates that a passphrase should be required for every access action.
       WSCPermittedOperationPromptContextRequirePassphraseEveryAccess = kSecKeychainPromptRequirePassphase

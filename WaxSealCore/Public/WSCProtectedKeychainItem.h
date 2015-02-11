@@ -79,11 +79,11 @@
   @return A `WSCPermittedOperation` object that has been added to the list of permitted operations of an protected keychain item.
           Return `nil` if an error occurs.
   */
-+ ( WSCPermittedOperation* ) addPermittedOperationWithDescription: ( NSString* )_Description
+- ( WSCPermittedOperation* ) addPermittedOperationWithDescription: ( NSString* )_Description
                                               trustedApplications: ( NSArray* )_TrustedApplications
-                                                    promptContext: ( WSCPermittedOperationPromptContext* )_PromptContext
+                                                    forOperations: ( WSCPermittedOperationTag )_Operation
+                                                    promptContext: ( WSCPermittedOperationPromptContext )_PromptContext
                                                             error: ( NSError** )_Error;
-
 /** Huh
   */
 - ( NSArray* ) permittedOperations;

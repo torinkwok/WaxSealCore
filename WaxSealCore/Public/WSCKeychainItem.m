@@ -157,7 +157,25 @@
         {
         // The _SecKeychainItemRef parameter must not be nil.
         if ( _SecKeychainItemRef )
+            {
             self->_secKeychainItem = ( SecKeychainItemRef )CFRetain( _SecKeychainItemRef );
+
+            // Each protected keychain item (such as a password or private key) has an associated access object.
+            if ( self.itemClass == WSCKeychainItemClassApplicationPassphraseItem
+                    || self.itemClass == WSCKeychainItemClassInternetPassphraseItem
+                    || self.itemClass == WSCKeychainItemClassPrivateKeyItem )
+                {
+                OSStatus resultCode = errSecSuccess;
+                resultCode = SecKeychainItemCopyAccess( self->_secKeychainItem, &( self->_secAccess ) );
+
+                if ( resultCode != errSecSuccess )
+                    {
+                    NSError* error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+                    _WSCPrintNSErrorForLog( error );
+                    return nil;
+                    }
+                }
+            }
         else
             return nil;
         }
