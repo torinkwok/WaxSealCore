@@ -43,7 +43,7 @@
 
 @implementation WSCProtectedKeychainItem
 
-#pragma mark Creating Permitted Operations
+#pragma mark Managing Permitted Operations
 /* Creates a new permitted operation entry from the description, trusted application list, and prompt context provided
  * and adds it to the protected keychain item represented by receiver.
  */
@@ -118,6 +118,59 @@
             *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
 
     return newPermitted;
+    }
+
+/* Retrieves all the permitted operation entries of the protected keychain item represented by receiver.
+ */
+- ( NSArray* ) permittedOperations
+    {
+    NSError* error = nil;
+    _WSCDontBeABitch( &error, self, [ WSCProtectedKeychainItem class ], s_guard );
+    if ( error )
+        {
+        _WSCPrintNSErrorForLog( error );
+        return nil;
+        }
+
+    OSStatus resultCode = errSecSuccess;
+    NSMutableArray* mutablePermittedOperations = nil;
+
+    SecAccessRef secCurrentAccess = [ self p_secCurrentAccess: &error ];
+    if ( secCurrentAccess )
+        {
+        CFArrayRef secACLList = NULL;
+
+        // Retrieves all the access control list entries of a given access object.
+        if ( ( resultCode = SecAccessCopyACLList( secCurrentAccess, &secACLList ) ) == errSecSuccess )
+            {
+            mutablePermittedOperations = [ NSMutableArray array ];
+
+            // Convert the given CoreFoundation-array of SecACLRef
+            // to the Cocoa-array of WSCPermittedOperation by wrapping them into the WSCPermittedOperation class
+            // and adding the wrapper to the mutable array.
+            [ ( __bridge NSArray* )secACLList enumerateObjectsUsingBlock:
+                ^( id _SecACL, NSUInteger _Index, BOOL* _Stop )
+                    {
+                    WSCPermittedOperation* newPermittedOperation =
+                        [ WSCPermittedOperation permittedOperationWithSecACLRef: ( __bridge SecACLRef )_SecACL ];
+
+                    if ( newPermittedOperation )
+                        [ mutablePermittedOperations addObject: newPermittedOperation ];
+                    } ];
+
+            CFRelease( secACLList );
+            }
+
+        CFRelease( secCurrentAccess );
+        }
+
+    if ( resultCode != errSecSuccess )
+        {
+        error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+        _WSCPrintNSErrorForLog( error );
+        }
+
+    return [ [ mutablePermittedOperations copy ] autorelease ];
     }
 
 @end // WSCProtectedKeychainItem

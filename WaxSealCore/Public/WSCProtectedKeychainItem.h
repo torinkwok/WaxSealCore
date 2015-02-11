@@ -47,8 +47,8 @@
   */
 @interface WSCProtectedKeychainItem : WSCKeychainItem
 
-#pragma mark Creating Permitted Operations
-/** @name Creating Permitted Operations */
+#pragma mark Managing Permitted Operations
+/** @name Managing Permitted Operations */
 
 /** Creates a new permitted operation entry from the description, trusted application list, and prompt context provided
     and adds it to the protected keychain item represented by receiver.
@@ -79,14 +79,21 @@
                 You may specify `nil` for this parameter if you don't want the error information.
                 
   @return A `WSCPermittedOperation` object that has been added to the list of permitted operations of an protected keychain item.
-          Return `nil` if an error occurs.
+          Returns `nil` if an error occurs.
   */
 - ( WSCPermittedOperation* ) addPermittedOperationWithDescription: ( NSString* )_Description
                                               trustedApplications: ( NSArray* )_TrustedApplications
                                                     forOperations: ( WSCPermittedOperationTag )_Operations
                                                     promptContext: ( WSCPermittedOperationPromptContext )_PromptContext
                                                             error: ( NSError** )_Error;
-/** Huh
+
+/** Retrieves all the permitted operation entries of the protected keychain item represented by receiver.
+
+  @discussion A protected keychain item can have any number of **permitted operation** entries 
+              for specific operations or sets of operations.
+
+  @return An array representing the list of permitted operation entries.
+          Returns `nil` if an error occurs.
   */
 - ( NSArray* ) permittedOperations;
 
