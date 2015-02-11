@@ -37,6 +37,11 @@
                BlueprintName = "WaxSealCoreTests"
                ReferencedContainer = "container:WaxSealCore.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "_WSCAccessTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>
