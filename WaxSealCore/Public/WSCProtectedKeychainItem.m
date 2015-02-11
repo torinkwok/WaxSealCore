@@ -34,11 +34,91 @@
 #import "WSCProtectedKeychainItem.h"
 #import "WSCTrustedApplication.h"
 #import "WSCPermittedOperation.h"
+#import "WSCKeychainError.h"
 
+#import "_WSCKeychainErrorPrivate.h"
 #import "_WSCKeychainItemPrivate.h"
+#import "_WSCProtectedKeychainItemPrivate.h"
 #import "_WSCPermittedOperationPrivate.h"
 
 @implementation WSCProtectedKeychainItem
+
+#pragma mark Creating Permitted Operations
+/* Creates a new permitted operation entry from the description, trusted application list, and prompt context provided
+ * and adds it to the protected keychain item represented by receiver.
+ */
+- ( WSCPermittedOperation* ) addPermittedOperationWithDescription: ( NSString* )_Description
+                                              trustedApplications: ( NSArray* )_TrustedApplications
+                                                    forOperations: ( WSCPermittedOperationTag )_Operations
+                                                    promptContext: ( WSCPermittedOperationPromptContext )_PromptContext
+                                                            error: ( NSError** )_Error
+    {
+    NSError* error = nil;
+    _WSCDontBeABitch( &error, self, [ WSCProtectedKeychainItem class ], s_guard );
+    if ( error )
+        {
+        if ( _Error )
+            *_Error = [ error copy ];
+
+        return nil;
+        }
+
+    WSCPermittedOperation* newPermitted = nil;
+
+    NSMutableArray* secTrustedApps = nil;
+
+    // Convert the given Cocoa-array of WSCTrustedApplication
+    // to the CoreFoundation-array of secTrustedApplicationRef
+    if ( _TrustedApplications )
+        {
+        secTrustedApps = [ NSMutableArray arrayWithCapacity: _TrustedApplications.count ];
+        [ _TrustedApplications enumerateObjectsUsingBlock:
+            ^( WSCTrustedApplication* _TrustedApp, NSUInteger _Index, BOOL* _Stop )
+                {
+                [ secTrustedApps addObject: ( __bridge id )_TrustedApp.secTrustedApplication ];
+                } ];
+        }
+
+    OSStatus resultCode = errSecSuccess;
+    SecACLRef secNewACL = NULL;
+
+    // Create the an ALC (Access Control List)
+    if ( ( resultCode = SecACLCreateWithSimpleContents( self->_secAccess
+                                                      , ( __bridge CFArrayRef )secTrustedApps
+                                                      , ( __bridge CFStringRef )_Description
+                                                      , ( SecKeychainPromptSelector )_PromptContext
+                                                      , &secNewACL
+                                                      ) ) == errSecSuccess )
+        {
+        // Extract operation tags from the given bits field
+        // to construct a list of authorizations that will be used for the secNewACL.
+        NSArray* authorizations = [ self p_authorizationsFromPermittedOperationMasks: _Operations ];
+
+        // Update the authorizations of the secNewACL.
+        // Because an ACL object is always associated with an access object,
+        // when we modify an ACL entry, we are modifying the access object as well.
+        // There is no need for a separate function to write a modified ACL object back into the self->_secAccess object.
+        if ( ( resultCode = SecACLUpdateAuthorizations( secNewACL, ( __bridge CFArrayRef )authorizations ) ) == errSecSuccess )
+            // Write the modified access object that carries the newACL back into the protected keychain item represented by receiver.
+            if ( ( resultCode = SecKeychainItemSetAccess( self.secKeychainItem, self->_secAccess ) ) == errSecSuccess )
+                // Everything is OK, create the wrapper of the newACL that has been added to
+                // the list of permitted operations of the protected keychain item.
+                newPermitted = [ [ [ WSCPermittedOperation alloc ] p_initWithSecACLRef: secNewACL ] autorelease ];
+
+        CFRelease( secNewACL );
+        }
+
+    if ( resultCode != errSecSuccess )
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+
+    return newPermitted;
+    }
+
+@end // WSCProtectedKeychainItem
+
+#pragma mark WSCProtectedKeychainItem + WSCProtectedKeychainItemPrivateManagingPermittedOperations
+@implementation WSCProtectedKeychainItem ( WSCProtectedKeychainItemPrivateManagingPermittedOperations )
 
 NSUInteger p_permittedOperationTags[] =
     { WSCPermittedOperationTagLogin, WSCPermittedOperationTagGenerateKey, WSCPermittedOperationTagDelete
@@ -46,10 +126,13 @@ NSUInteger p_permittedOperationTags[] =
     , WSCPermittedOperationTagExportEncryptedKey, WSCPermittedOperationTagExportUnencryptedKey
     , WSCPermittedOperationTagImportEncryptedKey, WSCPermittedOperationTagImportUnencryptedKey
     , WSCPermittedOperationTagSign, WSCPermittedOperationTagCreateOrVerifyMessageAuthCode
-    , WSCPermittedOperationTagDerive, WSCPermittedOperationTagChangeSelf
+    , WSCPermittedOperationTagDerive, WSCPermittedOperationTagChangePermittedOperationItself
     , WSCPermittedOperationTagChangeOwner, WSCPermittedOperationTagAnyOperation
     };
 
+/* Convert the given Cocoa-array of WSCTrustedApplication
+ * to the CoreFoundation-array of secTrustedApplicationRef
+ */
 - ( NSArray* ) p_authorizationsFromPermittedOperationMasks: ( WSCPermittedOperationTag )_Operations
     {
     NSMutableArray* authorizations = [ NSMutableArray array ];
@@ -77,7 +160,7 @@ NSUInteger p_permittedOperationTags[] =
                     case WSCPermittedOperationTagSign: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationSign ]; break;
                     case WSCPermittedOperationTagCreateOrVerifyMessageAuthCode: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationMAC ]; break;
                     case WSCPermittedOperationTagDerive: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationDerive ]; break;
-                    case WSCPermittedOperationTagChangeSelf: [ authorizations addObject: ( __bridge id )( CFTypeRef )( CFSTR( "ACLAuthorizationChangeACL" ) ) ]; break;
+                    case WSCPermittedOperationTagChangePermittedOperationItself: [ authorizations addObject: ( __bridge id )( CFTypeRef )( CFSTR( "ACLAuthorizationChangeACL" ) ) ]; break;
                     case WSCPermittedOperationTagChangeOwner: [ authorizations addObject: ( __bridge id )( CFTypeRef )( CFSTR( "ACLAuthorizationChangeOwner" ) ) ]; break;
                     }
                 }
@@ -87,55 +170,7 @@ NSUInteger p_permittedOperationTags[] =
     return [ [ authorizations copy ] autorelease ];
     }
 
-#pragma mark Creating Permitted Operations
-/* Creates a new permitted operation entry from the description, trusted application list, and prompt context provided
- * and adds it to the protected keychain item represented by receiver.
- */
-- ( WSCPermittedOperation* ) addPermittedOperationWithDescription: ( NSString* )_Description
-                                              trustedApplications: ( NSArray* )_TrustedApplications
-                                                    forOperations: ( WSCPermittedOperationTag )_Operations
-                                                    promptContext: ( WSCPermittedOperationPromptContext )_PromptContext
-                                                            error: ( NSError** )_Error
-    {
-    WSCPermittedOperation* newPermitted = nil;
-
-    NSMutableArray* secTrustedApps = nil;
-    if ( _TrustedApplications )
-        {
-        secTrustedApps = [ NSMutableArray arrayWithCapacity: _TrustedApplications.count ];
-        [ _TrustedApplications enumerateObjectsUsingBlock:
-            ^( WSCTrustedApplication* _TrustedApp, NSUInteger _Index, BOOL* _Stop )
-                {
-                [ secTrustedApps addObject: ( __bridge id )_TrustedApp.secTrustedApplication ];
-                } ];
-        }
-
-    OSStatus resultCode = errSecSuccess;
-    SecACLRef newACL = NULL;
-    if ( ( resultCode = SecACLCreateWithSimpleContents( self->_secAccess
-                                                      , ( __bridge CFArrayRef )secTrustedApps
-                                                      , ( __bridge CFStringRef )_Description
-                                                      , ( SecKeychainPromptSelector )_PromptContext
-                                                      , &newACL
-                                                      ) ) == errSecSuccess )
-        {
-        NSArray* authorizations = [ self p_authorizationsFromPermittedOperationMasks: _Operations ];
-        if ( ( resultCode = SecACLUpdateAuthorizations( newACL, ( __bridge CFArrayRef )authorizations ) ) == errSecSuccess )
-            if ( ( resultCode = SecKeychainItemSetAccess( self.secKeychainItem, self->_secAccess ) ) == errSecSuccess )
-                newPermitted = [ [ [ WSCPermittedOperation alloc ] p_initWithSecACLRef: newACL ] autorelease ];
-        }
-
-    if ( newACL )
-        CFRelease( newACL );
-
-    if ( resultCode != errSecSuccess )
-        if ( _Error )
-            *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
-
-    return newPermitted;
-    }
-
-@end // WSCProtectedKeychainItem
+@end // WSCProtectedKeychainItem + WSCProtectedKeychainItemPrivateManagingPermittedOperations
 
 //////////////////////////////////////////////////////////////////////////////
 

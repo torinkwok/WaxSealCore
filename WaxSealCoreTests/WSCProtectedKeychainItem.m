@@ -33,9 +33,11 @@
 
 #import <XCTest/XCTest.h>
 
+#import "WSCTrustedApplication.h"
 #import "WSCPermittedOperation.h"
 #import "WSCProtectedKeychainItem.h"
 #import "WSCPassphraseItem.h"
+#import "WSCKeychainError.h"
 
 @interface WSCProtectedKeychainItemTests : XCTestCase
 
@@ -83,35 +85,122 @@
     {
     NSError* error = nil;
     SecAccessRef commonSecAccess = NULL;
+    BOOL isSuccess = NO;
+
+    WSCTrustedApplication* trustedApp_AppleContacts =
+        [ WSCTrustedApplication trustedApplicationWithContentsOfURL: [ NSURL URLWithString: @"/Applications/Contacts.app" ]
+                                                              error: &error ];
+
+    WSCTrustedApplication* trustedApp_iPhoto =
+        [ WSCTrustedApplication trustedApplicationWithContentsOfURL: [ NSURL URLWithString: @"/Applications/iPhoto.app" ]
+                                                              error: &error ];
 
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-    WSCPassphraseItem* internetPassphraseItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
+    WSCPassphraseItem* internetPassphraseItem_testCase0 = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    SecKeychainItemCopyAccess( internetPassphraseItem.secKeychainItem, &commonSecAccess );
-    NSLog( @"Before Modifying - Test Case 0 - Internet Passphrase Item:" );
-
+    SecKeychainItemCopyAccess( internetPassphraseItem_testCase0.secKeychainItem, &commonSecAccess );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ Before Modifying - Test Case 0 - Internet Passphrase Item +++++++++ +++++++++ +++++++++\n" );
     _WSCPrintAccess( commonSecAccess );
+
     WSCPermittedOperation* permittedOperation_testCase0 =
-        [ internetPassphraseItem addPermittedOperationWithDescription: @"Test Case 0"
-                                                  trustedApplications: nil
-                                                        forOperations: WSCPermittedOperationTagAnyOperation | WSCPermittedOperationTagDecrypt
-                                                        promptContext: WSCPermittedOperationPromptContextRequirePassphraseEveryAccess
-                                                                error: &error ];
+        [ internetPassphraseItem_testCase0 addPermittedOperationWithDescription: @"Test Case 0"
+                                                            trustedApplications: nil
+                                                                  forOperations: WSCPermittedOperationTagAnyOperation | WSCPermittedOperationTagDecrypt
+                                                                  promptContext: WSCPermittedOperationPromptContextRequirePassphraseEveryAccess
+                                                                          error: &error ];
     XCTAssertNotNil( permittedOperation_testCase0 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    SecKeychainItemCopyAccess( internetPassphraseItem.secKeychainItem, &commonSecAccess );
-    NSLog( @"After Modifying - Test Case 0 - Internet Passphrase Item:" );
+    SecKeychainItemCopyAccess( internetPassphraseItem_testCase0.secKeychainItem, &commonSecAccess );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 0 - Internet Passphrase Item +++++++++ +++++++++ +++++++++\n" );
     _WSCPrintAccess( commonSecAccess );
 
     // ----------------------------------------------------------------------------------
     // Test Case 1
     // ----------------------------------------------------------------------------------
+    WSCPassphraseItem* applicationPassphraseItem_testCase1 = _WSC_WaxSealCoreTests_ApplicationKeychainItem( &error );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    SecKeychainItemCopyAccess( applicationPassphraseItem_testCase1.secKeychainItem, &commonSecAccess );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ Before Modifying - Test Case 1 - Application Passphrase Item +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( commonSecAccess );
+
+    WSCPermittedOperation* permittedOperation_testCase1 =
+        [ applicationPassphraseItem_testCase1 addPermittedOperationWithDescription: @"Test Case 1"
+                                                               trustedApplications: @[ trustedApp_AppleContacts, trustedApp_iPhoto ]
+                                                                     forOperations: WSCPermittedOperationTagChangePermittedOperationItself
+                                                                     promptContext: WSCPermittedOperationPromptContextRequirePassphraseEveryAccess
+                                                                             error: &error ];
+    XCTAssertNotNil( permittedOperation_testCase1 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    SecKeychainItemCopyAccess( applicationPassphraseItem_testCase1.secKeychainItem, &commonSecAccess );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 1 - Application Passphrase Item +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( commonSecAccess );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 0
+    // ----------------------------------------------------------------------------------
+    WSCPassphraseItem* applicationPassphraseItem_negativeTestCase0 = _WSC_WaxSealCoreTests_ApplicationKeychainItem( &error );
+    XCTAssertNotNil( applicationPassphraseItem_negativeTestCase0 );
+    XCTAssertTrue( applicationPassphraseItem_negativeTestCase0.isValid );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    SecKeychainItemCopyAccess( applicationPassphraseItem_negativeTestCase0.secKeychainItem, &commonSecAccess );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ Before Modifying - Negative Test Case 0 - Application Passphrase Item +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( commonSecAccess );
+
+    WSCPermittedOperation* permittedOperation_negativeTestCase0 =
+        [ applicationPassphraseItem_negativeTestCase0 addPermittedOperationWithDescription: @"Negative Test Case 0"
+                                                                       trustedApplications: @[]
+                                                                             forOperations: WSCPermittedOperationTagChangeOwner
+                                                                             promptContext: 0
+                                                                                     error: &error ];
+    XCTAssertNotNil( permittedOperation_negativeTestCase0 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    SecKeychainItemCopyAccess( applicationPassphraseItem_negativeTestCase0.secKeychainItem, &commonSecAccess );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying #0 - Negative Test Case 0 - Application Passphrase Item +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( commonSecAccess );
+
+    permittedOperation_negativeTestCase0 =
+        [ applicationPassphraseItem_negativeTestCase0 addPermittedOperationWithDescription: @"Negative Test Case 0"
+                                                                       trustedApplications: @[ trustedApp_AppleContacts ]
+                                                                             forOperations: WSCPermittedOperationTagDecrypt | WSCPermittedOperationTagDelete
+                                                                             promptContext: WSCPermittedOperationPromptContextRequirePassphraseEveryAccess
+                                                                                     error: &error ];
+
+    SecKeychainItemCopyAccess( applicationPassphraseItem_negativeTestCase0.secKeychainItem, &commonSecAccess );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying #1 - Negative Test Case 0 - Application Passphrase Item +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( commonSecAccess );
+
+
+    isSuccess = [ applicationPassphraseItem_negativeTestCase0.keychain deleteKeychainItem: applicationPassphraseItem_negativeTestCase0 error: &error ];
+    XCTAssertTrue( isSuccess );
+    XCTAssertFalse( applicationPassphraseItem_negativeTestCase0.isValid );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    permittedOperation_negativeTestCase0 =
+        [ applicationPassphraseItem_negativeTestCase0 addPermittedOperationWithDescription: @"Negative Test Case 0"
+                                                                       trustedApplications: @[ trustedApp_AppleContacts ]
+                                                                             forOperations: WSCPermittedOperationTagDecrypt | WSCPermittedOperationTagDelete
+                                                                             promptContext: WSCPermittedOperationPromptContextRequirePassphraseEveryAccess
+                                                                                     error: &error ];
+    XCTAssertNil( permittedOperation_negativeTestCase0 );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainItemIsInvalidError );
+    _WSCPrintNSErrorForUnitTest( error );
     }
 
 @end

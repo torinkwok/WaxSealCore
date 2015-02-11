@@ -79,10 +79,10 @@ typedef NS_ENUM( NSUInteger, WSCPermittedOperationTag )
     , WSCPermittedOperationTagDerive = 1 << 12
 
     /// Use for changing the permitted operation itself.
-    , WSCPermittedOperationTagChangeSelf = 1 << 13
+    , WSCPermittedOperationTagChangePermittedOperationItself = 1 << 13
 
     /// For internal system use only.
-    /// Use the `WSCPermittedOperationTagChangeSelf` tag for changes to owner permitted operation entries.
+    /// Use the `WSCPermittedOperationTagChangePermittedOperationItself` tag for changes to owner permitted operation entries.
     , WSCPermittedOperationTagChangeOwner = 1 << 14
 
     /// No restrictions. This permitted operation entry applies to all operations available to the caller.

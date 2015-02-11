@@ -47,6 +47,7 @@
 		838221111A4C214A00EF9945 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 838221101A4C214A00EF9945 /* README.md */; };
 		839169181A7FFEAF00EE76E0 /* WSCCertificateItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 839169161A7FFEAF00EE76E0 /* WSCCertificateItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		839169191A7FFEAF00EE76E0 /* WSCCertificateItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 839169171A7FFEAF00EE76E0 /* WSCCertificateItem.m */; };
+		83A71E271A8B98440082CFF9 /* _WSCProtectedKeychainItemPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 83A71E261A8B98440082CFF9 /* _WSCProtectedKeychainItemPrivate.h */; };
 		83C7237C1A4C1AA60084221A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 83C7237A1A4C1AA60084221A /* InfoPlist.strings */; };
 		83C723871A4C1AA60084221A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723861A4C1AA60084221A /* XCTest.framework */; };
 		83C7238B1A4C1AA60084221A /* WaxSealCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C7236E1A4C1AA60084221A /* WaxSealCore.framework */; };
@@ -121,6 +122,7 @@
 		838221101A4C214A00EF9945 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
 		839169161A7FFEAF00EE76E0 /* WSCCertificateItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WSCCertificateItem.h; path = Public/WSCCertificateItem.h; sourceTree = "<group>"; };
 		839169171A7FFEAF00EE76E0 /* WSCCertificateItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WSCCertificateItem.m; path = Public/WSCCertificateItem.m; sourceTree = "<group>"; };
+		83A71E261A8B98440082CFF9 /* _WSCProtectedKeychainItemPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _WSCProtectedKeychainItemPrivate.h; path = Private/_WSCProtectedKeychainItemPrivate.h; sourceTree = "<group>"; };
 		83C7236E1A4C1AA60084221A /* WaxSealCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WaxSealCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		83C723741A4C1AA60084221A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		83C723791A4C1AA60084221A /* WaxSealCore-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WaxSealCore-Info.plist"; sourceTree = "<group>"; };
@@ -202,6 +204,7 @@
 			isa = PBXGroup;
 			children = (
 				837C8B4E1A6D4D7700FFE4FF /* _WSCKeychainItemPrivate.h */,
+				83A71E261A8B98440082CFF9 /* _WSCProtectedKeychainItemPrivate.h */,
 			);
 			name = Private;
 			sourceTree = "<group>";
@@ -409,6 +412,7 @@
 				837C8B7D1A6D514600FFE4FF /* WSCKeychain.h in Headers */,
 				837C8B541A6D4DA000FFE4FF /* _WSCKeychainErrorPrivate.h in Headers */,
 				83663D6A1A88B79B005CE439 /* WSCPermittedOperation.h in Headers */,
+				83A71E271A8B98440082CFF9 /* _WSCProtectedKeychainItemPrivate.h in Headers */,
 				837C8B521A6D4D7700FFE4FF /* _WSCKeychainPrivate.h in Headers */,
 				837C8B631A6D4DF000FFE4FF /* _WSCCommonForUnitTests.h in Headers */,
 				837C8B511A6D4D7700FFE4FF /* _WSCKeychainItemPrivate.h in Headers */,
