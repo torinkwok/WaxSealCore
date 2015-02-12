@@ -37,7 +37,7 @@
   */
 @interface WSCTrustedApplication : NSObject
     {
-@private
+@protected
     SecTrustedApplicationRef _secTrustedApplication;
     }
 

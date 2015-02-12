@@ -46,7 +46,7 @@
   */
 @interface WSCKeychainManager : NSObject
     {
-@private
+@protected
     id <WSCKeychainManagerDelegate> _delegate;
     }
 

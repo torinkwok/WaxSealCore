@@ -220,7 +220,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   */
 @interface WSCKeychain : NSObject
     {
-@private
+@protected
     SecKeychainRef  _secKeychain;
     }
 

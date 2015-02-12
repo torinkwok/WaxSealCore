@@ -150,9 +150,17 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
   */
 @interface WSCPermittedOperation : NSObject
     {
-@private
+@protected
     SecACLRef _secACL;
     }
+
+#pragma mark Attributes of Permitted Operations
+/** @name Attributes of Permitted Operations */
+
+/** The description of the permitted operation represented by receiver. 
+    It will appear in the dialog box when the user is prompted for permission to use the item.
+  */
+@property ( copy, readwrite ) NSString* description;
 
 #pragma mark Keychain Services Bridge
 /** @name Keychain Services Bridge */
@@ -178,7 +186,7 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
   
   Instead of invoking this method, you should construct a `WSCPermittedOperation` object by invoking:
 
-  + [+ trustedApplicationWithContentsOfURL:error:](+[WSCTrustedApplication trustedApplicationWithContentsOfURL:error:])
+  + [- addPermittedOperationWithDescription:trustedApplications:forOperations:promptContext:error:](-[WSCProtectedKeychainItem addPermittedOperationWithDescription:trustedApplications:forOperations:promptContext:error:])
 
   @param _SecACLRef A reference to the instance of `SecACL` opaque type.
   

@@ -52,7 +52,7 @@
 // --------------------------------------------------------
 @interface WSCKeychainManagerTests : XCTestCase <NSFileManagerDelegate>
     {
-@private
+@protected
     WSCKeychainManager* _testManager1;
     WSCKeychainManager* _testManager2;
     WSCKeychainManager* _testManager3;
