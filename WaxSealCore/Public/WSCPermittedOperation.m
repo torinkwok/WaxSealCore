@@ -50,15 +50,20 @@
     OSStatus resultCode = errSecSuccess;
     NSString* cocoaDesc = nil;
 
-    CFStringRef cfDesc = NULL;
-    SecKeychainPromptSelector secPromptSel = 0;
+    CFStringRef secDesc = NULL;
     CFArrayRef secTrustedApps = NULL;
+    SecKeychainPromptSelector secPromptSel = 0;
 
     // Get the description for a given access control list entry which was wrapped in receiver.
-    if ( ( resultCode = SecACLCopyContents( self->_secACL, &secTrustedApps, &cfDesc, &secPromptSel ) ) == errSecSuccess )
+    if ( ( resultCode = SecACLCopyContents( self->_secACL, &secTrustedApps, &secDesc, &secPromptSel ) ) == errSecSuccess )
         {
-        cocoaDesc = [ [ ( __bridge NSString* )cfDesc copy ] autorelease ];
-        CFRelease( cfDesc );
+        cocoaDesc = [ [ ( __bridge NSString* )secDesc copy ] autorelease ];
+
+        if ( secDesc )
+            CFRelease( secDesc );
+
+        if ( secTrustedApps )
+            CFRelease( secTrustedApps );
         }
 
     if ( resultCode != errSecSuccess )
@@ -75,16 +80,24 @@
     NSError* error = nil;
     OSStatus resultCode = errSecSuccess;
 
-    CFArrayRef olderTrustedApps = NULL;
-    CFStringRef olderDesc = NULL;
-    SecKeychainPromptSelector olderPromptSel = 0;
+    CFArrayRef secOlderTrustedApps = NULL;
+    CFStringRef secOlderDesc = NULL;
+    SecKeychainPromptSelector secOlderPromptSel = 0;
     if ( ( resultCode = SecACLCopyContents( self->_secACL
-                                          , &olderTrustedApps
-                                          , &olderDesc
-                                          , &olderPromptSel ) ) == errSecSuccess )
-        if ( ![ ( __bridge NSString* )olderDesc isEqualToString: _Descriptor ] )
+                                          , &secOlderTrustedApps
+                                          , &secOlderDesc
+                                          , &secOlderPromptSel ) ) == errSecSuccess )
+        {
+        if ( ![ ( __bridge NSString* )secOlderDesc isEqualToString: _Descriptor ] )
             // Set the description for the given access control list entry which was wrapped in receiver.
-            resultCode = SecACLSetContents( self->_secACL, olderTrustedApps, ( __bridge CFStringRef )_Descriptor, olderPromptSel );
+            resultCode = SecACLSetContents( self->_secACL, secOlderTrustedApps, ( __bridge CFStringRef )_Descriptor, secOlderPromptSel );
+
+        if ( secOlderTrustedApps )
+            CFRelease( secOlderTrustedApps );
+
+        if ( secOlderDesc )
+            CFRelease( secOlderDesc );
+        }
 
     if ( resultCode != errSecSuccess )
         {
