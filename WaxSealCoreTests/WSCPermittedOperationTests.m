@@ -72,14 +72,13 @@
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
+    NSArray* permittedOperations_testCase0 = nil;
     WSCPassphraseItem* proxyKeychainItem_testCase0 = ( WSCPassphraseItem* )
         [ [ WSCKeychain login ] findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeModificationDate : [ NSDate dateWithString: @"2015-2-4 09:08:01 +0800" ]
                                                                                 , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPSProxy )
                                                                                 }
                                                                     itemClass: WSCKeychainItemClassInternetPassphraseItem
                                                                         error: &error ];
-
-    NSArray* permittedOperations_testCase0 = nil;
 
     permittedOperations_testCase0 = [ proxyKeychainItem_testCase0 permittedOperations ];
     for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
@@ -92,9 +91,10 @@
     for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
         _PermittedOperation.descriptor = @"Tong Guo";
 
-    NSArray* olderPermittedOperations = [ proxyKeychainItem_testCase0 setPermittedOperations: permittedOperations_testCase0 error: &error ];
+    NSArray* olderPermittedOperations_testCase0 =
+        [ proxyKeychainItem_testCase0 setPermittedOperations: permittedOperations_testCase0 error: &error ];
     XCTAssertNil( error );
-    XCTAssertNotNil( olderPermittedOperations );
+    XCTAssertNotNil( olderPermittedOperations_testCase0 );
     _WSCPrintNSErrorForUnitTest( error );
 
     permittedOperations_testCase0 = [ proxyKeychainItem_testCase0 permittedOperations ];
@@ -102,7 +102,7 @@
         {
         NSString* descriptor = _PermittedOperation.descriptor;
         XCTAssertNotNil( descriptor );
-        NSLog( @"Descripto #2: %@", descriptor );
+        NSLog( @"Descriptor #2: %@", descriptor );
         }
     }
 

@@ -63,6 +63,32 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+- ( void ) testACL
+    {
+    NSError* error = nil;
+
+    WSCPassphraseItem* proxyKeychainItem = ( WSCPassphraseItem* )
+        [ [ WSCKeychain login ] findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeModificationDate : [ NSDate dateWithString: @"2015-2-4 09:08:01 +0800" ]
+                                                                                , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPSProxy )
+                                                                                }
+                                                                    itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                                                        error: &error ];
+    XCTAssertNotNil( proxyKeychainItem );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    SecAccessRef access = NULL;
+    SecKeychainItemCopyAccess( proxyKeychainItem.secKeychainItem, &access );
+
+    CFArrayRef matchingACLs = SecAccessCopyMatchingACLList( access, kSecACLAuthorizationDecrypt );
+    SecACLRef ACL = ( __bridge SecACLRef )[ ( __bridge NSArray* )matchingACLs firstObject ];
+
+    SecACLSetContents( ACL, ( __bridge CFArrayRef )@[], CFSTR( "Microsoft" ), kSecKeychainPromptRequirePassphase | kSecKeychainPromptUnsigned );
+    SecKeychainItemSetAccess( proxyKeychainItem.secKeychainItem, access );
+    _WSCPrintAccess( access );
+
+    NSLog( @"Passphrase for test case 0: %@", [ [ [ NSString alloc ] initWithData: proxyKeychainItem.passphrase encoding: NSUTF8StringEncoding ] autorelease ] );
+    }
+
 - ( void ) testUniqueIdentificationProperty
     {
     NSError* error = nil;
