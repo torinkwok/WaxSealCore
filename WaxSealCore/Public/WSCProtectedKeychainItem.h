@@ -97,6 +97,17 @@
   */
 - ( NSArray* ) permittedOperations;
 
+/** Set all the permitted operation entries of the protected keychain item represented by receiver.
+
+  @discussion A protected keychain item can have any number of **permitted operation** entries 
+              for specific operations or sets of operations.
+
+  @return An array representing the list of permitted operation entries.
+          Returns `nil` if an error occurs.
+  */
+- ( NSArray* ) setPermittedOperations: ( NSArray* )_PermittedOperations
+                                error: ( NSError** )_Error;
+
 @end // WSCKeychainItem class
 
 //////////////////////////////////////////////////////////////////////////////

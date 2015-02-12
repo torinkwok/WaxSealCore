@@ -67,6 +67,7 @@
 - ( void ) testDescriptorProperty
     {
     NSError* error = nil;
+    SecAccessRef commonSecAccess = NULL;
 
     // ----------------------------------------------------------------------------------
     // Test Case 0
@@ -78,17 +79,31 @@
                                                                     itemClass: WSCKeychainItemClassInternetPassphraseItem
                                                                         error: &error ];
 
-    NSArray* permittedOperations_testCase0 = [ proxyKeychainItem_testCase0 permittedOperations ];
+    NSArray* permittedOperations_testCase0 = nil;
 
+    permittedOperations_testCase0 = [ proxyKeychainItem_testCase0 permittedOperations ];
     for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
         {
         NSString* descriptor = _PermittedOperation.descriptor;
         XCTAssertNotNil( descriptor );
-        NSLog( @"Descriptor: %@", descriptor );
+        NSLog( @"Descriptor #1: %@", descriptor );
         }
 
     for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
         _PermittedOperation.descriptor = @"Tong Guo";
+
+    NSArray* olderPermittedOperations = [ proxyKeychainItem_testCase0 setPermittedOperations: permittedOperations_testCase0 error: &error ];
+    XCTAssertNil( error );
+    XCTAssertNotNil( olderPermittedOperations );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    permittedOperations_testCase0 = [ proxyKeychainItem_testCase0 permittedOperations ];
+    for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
+        {
+        NSString* descriptor = _PermittedOperation.descriptor;
+        XCTAssertNotNil( descriptor );
+        NSLog( @"Descripto #2: %@", descriptor );
+        }
     }
 
 @end // WSCAccessPermissionTests test case

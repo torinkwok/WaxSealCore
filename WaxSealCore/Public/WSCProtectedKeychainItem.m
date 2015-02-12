@@ -172,6 +172,52 @@
     return [ [ mutablePermittedOperations copy ] autorelease ];
     }
 
+- ( NSArray* ) setPermittedOperations: ( NSArray* )_PermittedOperations
+                                error: ( NSError** )_Error;
+    {
+    for ( WSCPermittedOperation* _PermittedOperation in _PermittedOperations )
+        {
+        NSString* descriptor = _PermittedOperation.descriptor;
+        NSLog( @"Fucking: %@", descriptor );
+        }
+
+    OSStatus resultCode = errSecSuccess;
+    NSArray* olderPermittedOperations = [ self permittedOperations ];
+
+    NSMutableArray* secACLList = [ NSMutableArray array ];
+    for ( WSCPermittedOperation* _PermittedOperation in _PermittedOperations )
+        [ secACLList addObject: ( __bridge id )( _PermittedOperation.secACL ) ];
+
+    uid_t userID = getuid();
+    gid_t groupID = getgid();
+
+    SecAccessRef secNewAccess = NULL;
+    CFErrorRef secError = NULL;
+    secNewAccess = SecAccessCreateWithOwnerAndACL( userID
+                                                 , groupID
+                                                 , kSecMatchBits
+                                                 , ( __bridge CFArrayRef )secACLList
+                                                 , &secError );
+    if ( !secError )
+        {
+        resultCode = SecKeychainItemSetAccess( self->_secKeychainItem, secNewAccess );
+
+        fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ secNewAccess +++++++++ +++++++++ +++++++++\n" );
+        _WSCPrintAccess( secNewAccess );
+
+        CFRelease( secNewAccess );
+        }
+    else
+        if ( _Error )
+            *_Error = [ [ ( __bridge NSError* )secError copy ] autorelease ];
+
+    if ( resultCode != errSecSuccess )
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+
+    return olderPermittedOperations;
+    }
+
 @end // WSCProtectedKeychainItem
 
 #pragma mark WSCProtectedKeychainItem + WSCProtectedKeychainItemPrivateManagingPermittedOperations
