@@ -34,22 +34,25 @@
 #import <XCTest/XCTest.h>
 
 #import "WSCKeychain.h"
-#import "WSCTrustedApplication.h"
 #import "WSCKeychainItem.h"
+#import "WSCPassphraseItem.h"
+#import "WSCTrustedApplication.h"
+#import "WSCPermittedOperation.h"
 
-#import "_WSCKeychainItemPrivate.h"
+#import "_WSCTrustedApplicationPrivate.h"
+#import "_WSCPermittedOperationPrivate.h"
 
 // --------------------------------------------------------
 #pragma mark Interface of WSCAccessPermissionTests case
 // --------------------------------------------------------
-@interface _WSCAccessTests : XCTestCase
+@interface WSCPermittedOperationTests : XCTestCase
 
 @end
 
 // --------------------------------------------------------
 #pragma mark Implementation of WSCAccessPermissionTests case
 // --------------------------------------------------------
-@implementation _WSCAccessTests
+@implementation WSCPermittedOperationTests
 
 - ( void ) setUp
     {
@@ -59,6 +62,11 @@
 - ( void ) tearDown
     {
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
+    }
+
+- ( void ) testDescriptionProperty
+    {
+    
     }
 
 @end // WSCAccessPermissionTests test case

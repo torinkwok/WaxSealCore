@@ -59,7 +59,7 @@
 		83D8E7801A67696D00F77E28 /* WSCPrivateUtilitiesForEaseOfUnitTestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83D8E77F1A67696D00F77E28 /* WSCPrivateUtilitiesForEaseOfUnitTestTests.m */; };
 		83D9C8791A6A685700B31F25 /* WSCTrustedApplicationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83D9C8781A6A685700B31F25 /* WSCTrustedApplicationTests.m */; };
 		83DBD7E01A6E25E800D0D107 /* WSCKeychainItemTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83DBD7DF1A6E25E800D0D107 /* WSCKeychainItemTests.m */; };
-		83F8E10E1A69FE4A00201BF6 /* _WSCAccessTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F8E10D1A69FE4A00201BF6 /* _WSCAccessTests.m */; };
+		83F8E10E1A69FE4A00201BF6 /* WSCPermittedOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F8E10D1A69FE4A00201BF6 /* WSCPermittedOperationTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -136,7 +136,7 @@
 		83D8E77F1A67696D00F77E28 /* WSCPrivateUtilitiesForEaseOfUnitTestTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCPrivateUtilitiesForEaseOfUnitTestTests.m; sourceTree = "<group>"; };
 		83D9C8781A6A685700B31F25 /* WSCTrustedApplicationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCTrustedApplicationTests.m; sourceTree = "<group>"; };
 		83DBD7DF1A6E25E800D0D107 /* WSCKeychainItemTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCKeychainItemTests.m; sourceTree = "<group>"; };
-		83F8E10D1A69FE4A00201BF6 /* _WSCAccessTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _WSCAccessTests.m; sourceTree = "<group>"; };
+		83F8E10D1A69FE4A00201BF6 /* WSCPermittedOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCPermittedOperationTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -363,7 +363,7 @@
 				8368A0001A58FE90000CF7ED /* WSCKeychainManagerTests.m */,
 				8339FA571A54457000240AD0 /* WSCKeychainErrorTests.m */,
 				834D20ED1A4EEF7900539F49 /* NSURL+WSCKeychainURLTests.m */,
-				83F8E10D1A69FE4A00201BF6 /* _WSCAccessTests.m */,
+				83F8E10D1A69FE4A00201BF6 /* WSCPermittedOperationTests.m */,
 				83C7238D1A4C1AA60084221A /* Supporting Files */,
 			);
 			path = WaxSealCoreTests;
@@ -554,7 +554,7 @@
 				83663D6F1A8A64C6005CE439 /* WSCProtectedKeychainItem.m in Sources */,
 				83D9C8791A6A685700B31F25 /* WSCTrustedApplicationTests.m in Sources */,
 				834D20EE1A4EEF7900539F49 /* NSURL+WSCKeychainURLTests.m in Sources */,
-				83F8E10E1A69FE4A00201BF6 /* _WSCAccessTests.m in Sources */,
+				83F8E10E1A69FE4A00201BF6 /* WSCPermittedOperationTests.m in Sources */,
 				83DBD7E01A6E25E800D0D107 /* WSCKeychainItemTests.m in Sources */,
 				83C723931A4C1AA60084221A /* WSCKeychainTests.m in Sources */,
 				8368A0011A58FE90000CF7ED /* WSCKeychainManagerTests.m in Sources */,

@@ -158,7 +158,11 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
 /** @name Attributes of Permitted Operations */
 
 /** The description of the permitted operation represented by receiver. 
-    It will appear in the dialog box when the user is prompted for permission to use the item.
+
+  @discussion You can use this read-write property to set/get the name of the protected keychain item
+              that appears in the dialog box when the user is prompted for permission to use the item. 
+              Note that this description is not necessarily the same as the one displayed for the item
+              by the **Keychain Access** application.
   */
 @property ( copy, readwrite ) NSString* description;
 

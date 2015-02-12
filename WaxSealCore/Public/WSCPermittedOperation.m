@@ -39,6 +39,53 @@
 
 @synthesize secACL = _secACL;
 
+@dynamic description;
+
+#pragma mark Attributes of Permitted Operations
+
+/* The description of the permitted operation represented by receiver.
+ */
+- ( NSString* ) description
+    {
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
+
+    CFStringRef cfDesc = NULL;
+    NSString* cocoaDesc = nil;
+
+    // Get the description for a given access control list entry which was wrapped in receiver.
+    if ( ( resultCode = SecACLCopyContents( self->_secACL, NULL, &cfDesc, NULL ) ) == errSecSuccess )
+        {
+        cocoaDesc = [ [ ( __bridge NSString* )cfDesc copy ] autorelease ];
+        CFRelease( cfDesc );
+        }
+
+    if ( resultCode != errSecSuccess )
+        {
+        error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+        _WSCPrintNSErrorForLog( error );
+        }
+
+    return cocoaDesc;
+    }
+
+- ( void ) setDescription: ( NSString* )_Description
+    {
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
+
+    // Set the description for the given access control list entry which was wrapped in receiver.
+    if ( ( resultCode = SecACLSetContents( self->_secACL
+                                         , NULL
+                                         , ( __bridge CFStringRef )_Description
+                                         , 0
+                                         ) ) != errSecSuccess )
+        {
+        error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+        _WSCPrintNSErrorForLog( error );
+        }
+    }
+
 #pragma mark Keychain Services Bridge
 /* Creates and returns a `WSCPermittedOperation` object 
  * using the given reference to the instance of `SecACL` opaque type.
