@@ -37,24 +37,25 @@
 
 @implementation WSCPermittedOperation
 
+@dynamic descriptor;
 @synthesize secACL = _secACL;
-
-@dynamic description;
 
 #pragma mark Attributes of Permitted Operations
 
-/* The description of the permitted operation represented by receiver.
+/* The descriptor of the permitted operation represented by receiver.
  */
-- ( NSString* ) description
+- ( NSString* ) descriptor
     {
     NSError* error = nil;
     OSStatus resultCode = errSecSuccess;
-
-    CFStringRef cfDesc = NULL;
     NSString* cocoaDesc = nil;
 
+    CFStringRef cfDesc = NULL;
+    SecKeychainPromptSelector secPromptSel = 0;
+    CFArrayRef secTrustedApps = NULL;
+
     // Get the description for a given access control list entry which was wrapped in receiver.
-    if ( ( resultCode = SecACLCopyContents( self->_secACL, NULL, &cfDesc, NULL ) ) == errSecSuccess )
+    if ( ( resultCode = SecACLCopyContents( self->_secACL, &secTrustedApps, &cfDesc, &secPromptSel ) ) == errSecSuccess )
         {
         cocoaDesc = [ [ ( __bridge NSString* )cfDesc copy ] autorelease ];
         CFRelease( cfDesc );
@@ -69,17 +70,23 @@
     return cocoaDesc;
     }
 
-- ( void ) setDescription: ( NSString* )_Description
+- ( void ) setDescriptor: ( NSString* )_Descriptor
     {
     NSError* error = nil;
     OSStatus resultCode = errSecSuccess;
 
-    // Set the description for the given access control list entry which was wrapped in receiver.
-    if ( ( resultCode = SecACLSetContents( self->_secACL
-                                         , NULL
-                                         , ( __bridge CFStringRef )_Description
-                                         , 0
-                                         ) ) != errSecSuccess )
+    CFArrayRef olderTrustedApps = NULL;
+    CFStringRef olderDesc = NULL;
+    SecKeychainPromptSelector olderPromptSel = 0;
+    if ( ( resultCode = SecACLCopyContents( self->_secACL
+                                          , &olderTrustedApps
+                                          , &olderDesc
+                                          , &olderPromptSel ) ) == errSecSuccess )
+        if ( ![ ( __bridge NSString* )olderDesc isEqualToString: _Descriptor ] )
+            // Set the description for the given access control list entry which was wrapped in receiver.
+            resultCode = SecACLSetContents( self->_secACL, olderTrustedApps, ( __bridge CFStringRef )_Descriptor, olderPromptSel );
+
+    if ( resultCode != errSecSuccess )
         {
         error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
         _WSCPrintNSErrorForLog( error );

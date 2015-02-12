@@ -148,15 +148,14 @@
             // Convert the given CoreFoundation-array of SecACLRef
             // to the Cocoa-array of WSCPermittedOperation by wrapping them into the WSCPermittedOperation class
             // and adding the wrapper to the mutable array.
-            [ ( __bridge NSArray* )secACLList enumerateObjectsUsingBlock:
-                ^( id _SecACL, NSUInteger _Index, BOOL* _Stop )
-                    {
-                    WSCPermittedOperation* newPermittedOperation =
-                        [ WSCPermittedOperation permittedOperationWithSecACLRef: ( __bridge SecACLRef )_SecACL ];
+            for ( id _SecACL in ( __bridge NSArray* )secACLList )
+                {
+                WSCPermittedOperation* newPermittedOperation =
+                    [ WSCPermittedOperation permittedOperationWithSecACLRef: ( __bridge SecACLRef )_SecACL ];
 
-                    if ( newPermittedOperation )
-                        [ mutablePermittedOperations addObject: newPermittedOperation ];
-                    } ];
+                if ( newPermittedOperation )
+                    [ mutablePermittedOperations addObject: newPermittedOperation ];
+                }
 
             CFRelease( secACLList );
             }

@@ -64,9 +64,31 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-- ( void ) testDescriptionProperty
+- ( void ) testDescriptorProperty
     {
-    
+    NSError* error = nil;
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 0
+    // ----------------------------------------------------------------------------------
+    WSCPassphraseItem* proxyKeychainItem_testCase0 = ( WSCPassphraseItem* )
+        [ [ WSCKeychain login ] findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeModificationDate : [ NSDate dateWithString: @"2015-2-4 09:08:01 +0800" ]
+                                                                                , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPSProxy )
+                                                                                }
+                                                                    itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                                                        error: &error ];
+
+    NSArray* permittedOperations_testCase0 = [ proxyKeychainItem_testCase0 permittedOperations ];
+
+    for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
+        {
+        NSString* descriptor = _PermittedOperation.descriptor;
+        XCTAssertNotNil( descriptor );
+        NSLog( @"Descriptor: %@", descriptor );
+        }
+
+    for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
+        _PermittedOperation.descriptor = @"Tong Guo";
     }
 
 @end // WSCAccessPermissionTests test case
