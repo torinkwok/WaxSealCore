@@ -67,17 +67,15 @@
 - ( void ) testDescriptorProperty
     {
     NSError* error = nil;
-//    SecAccessRef commonSecAccess = NULL;
 
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
     NSArray* permittedOperations_testCase0 = nil;
     WSCPassphraseItem* proxyKeychainItem_testCase0 = ( WSCPassphraseItem* )
-        [ [ WSCKeychain login ] findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeModificationDate : [ NSDate dateWithString: @"2015-2-4 09:08:01 +0800" ]
-                                                                                , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPSProxy )
+        [ [ WSCKeychain login ] findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeModificationDate : [ NSDate dateWithString: @"2014-4-28 2:05:45 +0800" ]
                                                                                 }
-                                                                    itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                                                    itemClass: WSCKeychainItemClassApplicationPassphraseItem
                                                                         error: &error ];
 
     permittedOperations_testCase0 = [ proxyKeychainItem_testCase0 permittedOperations ];
