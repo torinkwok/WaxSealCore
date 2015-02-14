@@ -73,7 +73,7 @@
     // ----------------------------------------------------------------------------------
     NSArray* permittedOperations_testCase0 = nil;
     WSCPassphraseItem* proxyKeychainItem_testCase0 = ( WSCPassphraseItem* )
-        [ [ WSCKeychain login ] findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeModificationDate : [ NSDate dateWithString: @"2014-4-28 2:05:45 +0800" ]
+        [ [ WSCKeychain login ] findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeModificationDate : [ NSDate dateWithString: @"2014-5-2 22:31:50 +0800" ]
                                                                                 }
                                                                     itemClass: WSCKeychainItemClassApplicationPassphraseItem
                                                                         error: &error ];
@@ -87,7 +87,7 @@
         }
 
     for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
-        _PermittedOperation.descriptor = @"Tong Guo";
+        _PermittedOperation.descriptor = @"NSTongG";
 
     for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
         {

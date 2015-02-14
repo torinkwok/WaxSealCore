@@ -227,27 +227,20 @@
                     }
                 }
             else
-                {
-                for ( WSCPermittedOperation* _PermittedOperation in _PermittedOperations )
-                    {
-                    authorizations = ( __bridge NSArray* )SecACLCopyAuthorizations( _PermittedOperation.secACL );
-                    if ( authorizations.count == 1
-                            && [ authorizations isEqualToArray: authorizations ] )
-                        {
-                        CFArrayRef newTrustedApps = NULL;
-                        CFStringRef newDescription = NULL;
-                        SecKeychainPromptSelector newPromptSel = 0;
-                        SecACLCopyContents( ( __bridge SecACLRef )_ACL, &newTrustedApps, &newDescription, &newPromptSel );
-
-                        SecACLRef newACL = NULL;
-                        SecACLCreateWithSimpleContents( secCurrentAccess, newTrustedApps, ( __bridge CFStringRef )_PermittedOperation.descriptor, newPromptSel, &newACL );
-                        }
-                    }
-
                 resultCode = SecACLRemove( ( __bridge SecACLRef )_ACL );
-                }
 
             CFRelease( _ACL );
+            }
+
+        for ( WSCPermittedOperation* _PermittedOperation in _PermittedOperations )
+            {
+            CFArrayRef newTrustedApps = NULL;
+            CFStringRef newDescription = NULL;
+            SecKeychainPromptSelector newPromptSel = 0;
+            SecACLCopyContents( _PermittedOperation.secACL, &newTrustedApps, &newDescription, &newPromptSel );
+
+            SecACLRef newACL = NULL;
+            SecACLCreateWithSimpleContents( secCurrentAccess, newTrustedApps, newDescription, newPromptSel, &newACL );
             }
 
         SecKeychainItemSetAccess( self.secKeychainItem, secCurrentAccess );
