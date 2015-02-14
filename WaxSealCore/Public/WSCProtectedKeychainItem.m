@@ -137,9 +137,9 @@
 
     // DEBUG
     SecAccessRef secCurrentAccess = [ self p_secCurrentAccess: &error ];
-    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ HEAD %s +++++++++ +++++++++ +++++++++\n", __PRETTY_FUNCTION__ );
-    _WSCPrintAccess( secCurrentAccess );
-    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ END %s +++++++++ +++++++++ +++++++++\n", __PRETTY_FUNCTION__ );
+//    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ HEAD %s +++++++++ +++++++++ +++++++++\n", __PRETTY_FUNCTION__ );
+//    _WSCPrintAccess( secCurrentAccess );
+//    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ END %s +++++++++ +++++++++ +++++++++\n", __PRETTY_FUNCTION__ );
     if ( secCurrentAccess )
         {
         CFArrayRef secACLList = NULL;
@@ -183,7 +183,7 @@
     for ( WSCPermittedOperation* _PermittedOperation in _PermittedOperations )
         {
         NSString* descriptor = _PermittedOperation.descriptor;
-        NSLog( @"Testing printing: %@", descriptor );
+        NSLog( @"In %s: #1: %@", __PRETTY_FUNCTION__, descriptor );
         }
 
     OSStatus resultCode = errSecSuccess;
@@ -191,31 +191,34 @@
 
     NSMutableArray* secACLList = [ NSMutableArray array ];
     for ( WSCPermittedOperation* _PermittedOperation in _PermittedOperations )
-        {
+//        {
         [ secACLList addObject: ( __bridge id )( _PermittedOperation.secACL ) ];
 
-        CFArrayRef testingArray = NULL;
-        CFStringRef testingDesc = NULL;
-        SecKeychainPromptSelector testingSel = 0;
-        SecACLCopyContents( _PermittedOperation.secACL, &testingArray, &testingDesc, &testingSel );
-        }
+//        CFArrayRef testingArray = NULL;
+//        CFStringRef testingDesc = NULL;
+//        SecKeychainPromptSelector testingSel = 0;
+//        SecACLCopyContents( _PermittedOperation.secACL, &testingArray, &testingDesc, &testingSel );
+//        }
 
     // DEBUG
-    for ( id _ACLRef in secACLList )
-        {
-        CFArrayRef testingTrustApps = NULL;
-        CFStringRef testingDesc = NULL;
-        SecKeychainPromptSelector testingSel = 0;
-        SecACLCopyContents( ( __bridge SecACLRef )_ACLRef, &testingTrustApps, &testingDesc, &testingSel );
-        NSLog( @"Lalalalal: %@", ( __bridge NSString* )testingDesc );
-        }
+//    for ( id _ACLRef in secACLList )
+//        {
+//        CFArrayRef testingTrustApps = NULL;
+//        CFStringRef testingDesc = NULL;
+//        SecKeychainPromptSelector testingSel = 0;
+//        SecACLCopyContents( ( __bridge SecACLRef )_ACLRef, &testingTrustApps, &testingDesc, &testingSel );
+//        NSLog( @"Lalalalal: %@", ( __bridge NSString* )testingDesc );
+//        }
 
     uid_t userID = getuid();
     gid_t groupID = getgid();
+    SecAccessOwnerType ownerType = 0;
+    CFArrayRef olderACLList = NULL;
+    resultCode = SecAccessCopyOwnerAndACL( [ self p_secCurrentAccess: nil ], &userID, &groupID, &ownerType, &olderACLList );
 
     CFErrorRef secError = NULL;
     SecAccessRef secNewAccess =
-        SecAccessCreateWithOwnerAndACL( userID, groupID, kSecMatchBits, ( __bridge CFArrayRef )secACLList, &secError );
+        SecAccessCreateWithOwnerAndACL( userID, groupID, kSecMatchBits, ( __bridge CFArrayRef )olderACLList, &secError );
 
     // DEBUG
     CFArrayRef lalalalArray = NULL;
@@ -232,16 +235,16 @@
     if ( !secError )
         {
         // DEBUG
-        fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ HEAD 0 %s +++++++++ +++++++++ +++++++++\n", __PRETTY_FUNCTION__ );
-        _WSCPrintAccess( secNewAccess );
-        fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ END 0 %s +++++++++ +++++++++ +++++++++\n", __PRETTY_FUNCTION__ );
+//        fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ HEAD 0 %s +++++++++ +++++++++ +++++++++\n", __PRETTY_FUNCTION__ );
+//        _WSCPrintAccess( secNewAccess );
+//        fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ END 0 %s +++++++++ +++++++++ +++++++++\n", __PRETTY_FUNCTION__ );
 
         resultCode = SecKeychainItemSetAccess( self.secKeychainItem, secNewAccess );
 
         // DEBUG
-        fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ HEAD 1 %s +++++++++ +++++++++ +++++++++\n", __PRETTY_FUNCTION__ );
-        _WSCPrintAccess( secNewAccess );
-        fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ END 1 %s +++++++++ +++++++++ +++++++++\n", __PRETTY_FUNCTION__ );
+//        fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ HEAD 1 %s +++++++++ +++++++++ +++++++++\n", __PRETTY_FUNCTION__ );
+//        _WSCPrintAccess( secNewAccess );
+//        fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ END 1 %s +++++++++ +++++++++ +++++++++\n", __PRETTY_FUNCTION__ );
 
         CFRelease( secNewAccess );
         }

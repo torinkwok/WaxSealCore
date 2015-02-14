@@ -66,6 +66,7 @@
 - ( void ) testACL
     {
     NSError* error = nil;
+    OSStatus resultCode = resultCode;
 
     WSCPassphraseItem* proxyKeychainItem = ( WSCPassphraseItem* )
         [ [ WSCKeychain login ] findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeModificationDate : [ NSDate dateWithString: @"2015-2-4 09:08:01 +0800" ]
@@ -79,12 +80,37 @@
     SecAccessRef access = NULL;
     SecKeychainItemCopyAccess( proxyKeychainItem.secKeychainItem, &access );
 
+    // -------
+
     CFArrayRef matchingACLs = SecAccessCopyMatchingACLList( access, kSecACLAuthorizationDecrypt );
     SecACLRef ACL = ( __bridge SecACLRef )[ ( __bridge NSArray* )matchingACLs firstObject ];
 
     SecACLSetContents( ACL, ( __bridge CFArrayRef )@[], CFSTR( "Microsoft" ), kSecKeychainPromptRequirePassphase | kSecKeychainPromptUnsigned );
     SecKeychainItemSetAccess( proxyKeychainItem.secKeychainItem, access );
     _WSCPrintAccess( access );
+
+    // -------
+
+    matchingACLs = SecAccessCopyMatchingACLList( access, kSecACLAuthorizationEncrypt );
+    ACL = ( __bridge SecACLRef )[ ( __bridge NSArray* )matchingACLs firstObject ];
+
+    SecACLSetContents( ACL, ( __bridge CFArrayRef )@[], CFSTR( "Shift" ), kSecKeychainPromptRequirePassphase | kSecKeychainPromptUnsigned );
+    SecKeychainItemSetAccess( proxyKeychainItem.secKeychainItem, access );
+    _WSCPrintAccess( access );
+
+    // -------
+
+    matchingACLs = SecAccessCopyMatchingACLList( access, ( CFTypeRef )CFSTR( "ACLAuthorizationChangeACL" ) );
+    ACL = ( __bridge SecACLRef )[ ( __bridge NSArray* )matchingACLs firstObject ];
+
+    SecACLSetContents( ACL, ( __bridge CFArrayRef )@[], CFSTR( "Oh My God!" ), kSecKeychainPromptRequirePassphase | kSecKeychainPromptUnsigned );
+    SecKeychainItemSetAccess( proxyKeychainItem.secKeychainItem, access );
+    _WSCPrintAccess( access );
+
+    resultCode = SecACLRemove( ACL );
+    XCTAssertEqual( resultCode, errSecSuccess );
+
+    // -------
 
     NSLog( @"Passphrase for test case 0: %@", [ [ [ NSString alloc ] initWithData: proxyKeychainItem.passphrase encoding: NSUTF8StringEncoding ] autorelease ] );
     }

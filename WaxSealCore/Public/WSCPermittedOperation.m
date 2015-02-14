@@ -93,11 +93,11 @@
             // Set the description for the given access control list entry which was wrapped in receiver.
             resultCode = SecACLSetContents( self->_secACL, secOlderTrustedApps, ( __bridge CFStringRef )_Descriptor, secOlderPromptSel );
 
-            SecACLCopyContents( self->_secACL
-                              , &secOlderTrustedApps
-                              , &secOlderDesc
-                              , &secOlderPromptSel );
-            NSLog( @"New fucking: %@", ( __bridge NSString* )secOlderDesc );
+//            SecACLCopyContents( self->_secACL
+//                              , &secOlderTrustedApps
+//                              , &secOlderDesc
+//                              , &secOlderPromptSel );
+//            NSLog( @"New fucking: %@", ( __bridge NSString* )secOlderDesc );
             }
 
         if ( secOlderTrustedApps )

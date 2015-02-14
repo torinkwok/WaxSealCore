@@ -67,7 +67,7 @@
 - ( void ) testDescriptorProperty
     {
     NSError* error = nil;
-    SecAccessRef commonSecAccess = NULL;
+//    SecAccessRef commonSecAccess = NULL;
 
     // ----------------------------------------------------------------------------------
     // Test Case 0
@@ -85,11 +85,18 @@
         {
         NSString* descriptor = _PermittedOperation.descriptor;
         XCTAssertNotNil( descriptor );
-        NSLog( @"Descriptor #1: %@", descriptor );
+        NSLog( @"Before Modifying: #1: %@", descriptor );
         }
 
     for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
         _PermittedOperation.descriptor = @"Tong Guo";
+
+    for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
+        {
+        NSString* descriptor = _PermittedOperation.descriptor;
+        XCTAssertNotNil( descriptor );
+        NSLog( @"Before Modifying (medium): #1: %@", descriptor );
+        }
 
     NSArray* olderPermittedOperations_testCase0 =
         [ proxyKeychainItem_testCase0 setPermittedOperations: permittedOperations_testCase0 error: &error ];
@@ -102,7 +109,7 @@
         {
         NSString* descriptor = _PermittedOperation.descriptor;
         XCTAssertNotNil( descriptor );
-        NSLog( @"Descriptor #2: %@", descriptor );
+        NSLog( @"After Modifying: #2: %@", descriptor );
         }
     }
 
