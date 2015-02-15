@@ -85,7 +85,6 @@
 - ( void ) testAddNewPermittedOperation
     {
     NSError* error = nil;
-    SecAccessRef commonSecAccess = NULL;
     BOOL isSuccess = NO;
     NSArray* commonPermittedOperations = nil;
 
@@ -108,9 +107,8 @@
     XCTAssertNotNil( commonPermittedOperations );
     XCTAssertEqual( commonPermittedOperations.count, 3 );
 
-    SecKeychainItemCopyAccess( internetPassphraseItem_testCase0.secKeychainItem, &commonSecAccess );
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ Before Modifying - Test Case 0 - Internet Passphrase Item +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( commonSecAccess );
+    _WSCPrintAccess( internetPassphraseItem_testCase0.secAccess );
 
     WSCPermittedOperation* permittedOperation_testCase0 =
         [ internetPassphraseItem_testCase0 addPermittedOperationWithDescription: @"Test Case 0"
@@ -127,9 +125,8 @@
     XCTAssertNotNil( commonPermittedOperations );
     XCTAssertEqual( commonPermittedOperations.count, 4 );
 
-    SecKeychainItemCopyAccess( internetPassphraseItem_testCase0.secKeychainItem, &commonSecAccess );
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 0 - Internet Passphrase Item +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( commonSecAccess );
+    _WSCPrintAccess( internetPassphraseItem_testCase0.secAccess );
 
     // ----------------------------------------------------------------------------------
     // Test Case 1
@@ -142,9 +139,8 @@
     XCTAssertNotNil( commonPermittedOperations );
     XCTAssertEqual( commonPermittedOperations.count, 3 );
 
-    SecKeychainItemCopyAccess( applicationPassphraseItem_testCase1.secKeychainItem, &commonSecAccess );
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ Before Modifying - Test Case 1 - Application Passphrase Item +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( commonSecAccess );
+    _WSCPrintAccess( applicationPassphraseItem_testCase1.secAccess );
 
     WSCPermittedOperation* permittedOperation_testCase1 =
         [ applicationPassphraseItem_testCase1 addPermittedOperationWithDescription: @"Test Case 1"
@@ -162,9 +158,8 @@
     XCTAssertNotNil( commonPermittedOperations );
     XCTAssertEqual( commonPermittedOperations.count, 4 );
 
-    SecKeychainItemCopyAccess( applicationPassphraseItem_testCase1.secKeychainItem, &commonSecAccess );
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 1 - Application Passphrase Item +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( commonSecAccess );
+    _WSCPrintAccess( applicationPassphraseItem_testCase1.secAccess );
 
     // ----------------------------------------------------------------------------------
     // Negative Test Case 0
@@ -179,12 +174,11 @@
     XCTAssertNotNil( commonPermittedOperations );
     XCTAssertEqual( commonPermittedOperations.count, 3 );
 
-    SecKeychainItemCopyAccess( applicationPassphraseItem_negativeTestCase0.secKeychainItem, &commonSecAccess );
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ Before Modifying - Negative Test Case 0 - Application Passphrase Item +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( commonSecAccess );
+    _WSCPrintAccess( applicationPassphraseItem_negativeTestCase0.secAccess );
 
     WSCPermittedOperation* permittedOperation_negativeTestCase0 =
-        [ applicationPassphraseItem_negativeTestCase0 addPermittedOperationWithDescription: @"Negative Test Case 0"
+        [ applicationPassphraseItem_negativeTestCase0 addPermittedOperationWithDescription: @"HaHaHa"
                                                                        trustedApplications: @[]
                                                                              forOperations: WSCPermittedOperationTagChangeOwner
                                                                              promptContext: 0
@@ -198,25 +192,31 @@
     XCTAssertNotNil( commonPermittedOperations );
     XCTAssertEqual( commonPermittedOperations.count, 4 );
 
-    SecKeychainItemCopyAccess( applicationPassphraseItem_negativeTestCase0.secKeychainItem, &commonSecAccess );
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying #0 - Negative Test Case 0 - Application Passphrase Item +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( commonSecAccess );
+    _WSCPrintAccess( applicationPassphraseItem_negativeTestCase0.secAccess );
 
     permittedOperation_negativeTestCase0 =
-        [ applicationPassphraseItem_negativeTestCase0 addPermittedOperationWithDescription: @"Negative Test Case 0"
+        [ applicationPassphraseItem_negativeTestCase0 addPermittedOperationWithDescription: @"PiaPiaPia"
                                                                        trustedApplications: @[ trustedApp_AppleContacts ]
                                                                              forOperations: WSCPermittedOperationTagDecrypt | WSCPermittedOperationTagDelete
                                                                              promptContext: WSCPermittedOperationPromptContextRequirePassphraseEveryAccess
                                                                                      error: &error ];
 
+    permittedOperation_negativeTestCase0 =
+        [ applicationPassphraseItem_negativeTestCase0 addPermittedOperationWithDescription: @"PengPengPeng"
+                                                                       trustedApplications: @[ trustedApp_AppleContacts ]
+                                                                             forOperations: WSCPermittedOperationTagDerive | WSCPermittedOperationTagDelete
+                                                                             promptContext: 0
+                                                                                     error: &error ];
+
     commonPermittedOperations = [ applicationPassphraseItem_negativeTestCase0 permittedOperations ];
+
     XCTAssertNotNil( commonPermittedOperations );
-    XCTAssertEqual( commonPermittedOperations.count, 5 );
+    XCTAssertEqual( commonPermittedOperations.count, 6 );
     XCTAssertEqual( permittedOperation_negativeTestCase0.hostProtectedKeychainItem, applicationPassphraseItem_negativeTestCase0 );
 
-    SecKeychainItemCopyAccess( applicationPassphraseItem_negativeTestCase0.secKeychainItem, &commonSecAccess );
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying #1 - Negative Test Case 0 - Application Passphrase Item +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( commonSecAccess );
+    _WSCPrintAccess( applicationPassphraseItem_negativeTestCase0.secAccess );
 
     isSuccess = [ applicationPassphraseItem_negativeTestCase0.keychain deleteKeychainItem: applicationPassphraseItem_negativeTestCase0 error: &error ];
     XCTAssertTrue( isSuccess );
