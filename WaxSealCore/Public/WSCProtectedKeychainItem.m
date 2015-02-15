@@ -43,6 +43,8 @@
 
 @implementation WSCProtectedKeychainItem
 
+@dynamic secAccess;
+
 #pragma mark Managing Permitted Operations
 /* Creates a new permitted operation entry from the description, trusted application list, and prompt context provided
  * and adds it to the protected keychain item represented by receiver.
@@ -81,11 +83,11 @@
     OSStatus resultCode = errSecSuccess;
     SecACLRef secNewACL = NULL;
 
-    SecAccessRef secCurrentAccess = [ self p_secCurrentAccess: _Error ];
-    if ( secCurrentAccess )
+    self->_secAccess = [ self p_secCurrentAccess: _Error ];
+    if ( self->_secAccess )
         {
         // Create the an ALC (Access Control List)
-        if ( ( resultCode = SecACLCreateWithSimpleContents( secCurrentAccess
+        if ( ( resultCode = SecACLCreateWithSimpleContents( self->_secAccess
                                                           , ( __bridge CFArrayRef )secTrustedApps
                                                           , ( __bridge CFStringRef )_Description
                                                           , ( SecKeychainPromptSelector )_PromptContext
@@ -102,17 +104,14 @@
             // There is no need for a separate function to write a modified ACL object back into the secCurrentAccess object.
             if ( ( resultCode = SecACLUpdateAuthorizations( secNewACL, ( __bridge CFArrayRef )authorizations ) ) == errSecSuccess )
                 // Write the modified access object (secCurrentAccess) that carries the secNewACL back into the protected keychain item represented by receiver.
-                if ( ( resultCode = SecKeychainItemSetAccess( self.secKeychainItem, secCurrentAccess ) ) == errSecSuccess )
+                if ( ( resultCode = SecKeychainItemSetAccess( self.secKeychainItem, self->_secAccess ) ) == errSecSuccess )
                     // Everything is OK, create the wrapper of the secNewACL that has been added to
                     // the list of permitted operations of the protected keychain item.
                     newPermitted = [ [ [ WSCPermittedOperation alloc ] p_initWithSecACLRef: secNewACL
                                                                                  appliesTo: self
                                                                                      error: _Error ] autorelease ];
-
             CFRelease( secNewACL );
             }
-
-        CFRelease( secCurrentAccess );
         }
 
     if ( resultCode != errSecSuccess )
@@ -137,13 +136,13 @@
     OSStatus resultCode = errSecSuccess;
     NSMutableArray* mutablePermittedOperations = nil;
 
-    SecAccessRef secCurrentAccess = [ self p_secCurrentAccess: &error ];
-    if ( secCurrentAccess )
+    self->_secAccess = [ self p_secCurrentAccess: &error ];
+    if ( self->_secAccess )
         {
         CFArrayRef secACLList = NULL;
 
         // Retrieves all the access control list entries of a given access object.
-        if ( ( resultCode = SecAccessCopyACLList( secCurrentAccess, &secACLList ) ) == errSecSuccess )
+        if ( ( resultCode = SecAccessCopyACLList( self->_secAccess, &secACLList ) ) == errSecSuccess )
             {
             mutablePermittedOperations = [ NSMutableArray array ];
 
@@ -162,8 +161,6 @@
 
             CFRelease( secACLList );
             }
-
-        CFRelease( secCurrentAccess );
         }
 
     if ( resultCode != errSecSuccess )
@@ -243,6 +240,12 @@ NSUInteger p_permittedOperationTags[] =
             *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
 
     return secCurrentAccess;
+    }
+
+#pragma mark Keychain Services Bridge
+- ( SecAccessRef ) secAccess
+    {
+    return self->_secAccess;
     }
 
 @end // WSCProtectedKeychainItem + WSCProtectedKeychainItemPrivateManagingPermittedOperations

@@ -97,6 +97,10 @@
   */
 - ( NSArray* ) permittedOperations;
 
+#pragma mark Keychain Services Bridge
+/** @name Keychain Services Bridge */
+@property ( unsafe_unretained, readonly ) SecAccessRef secAccess;
+
 @end // WSCKeychainItem class
 
 //////////////////////////////////////////////////////////////////////////////
