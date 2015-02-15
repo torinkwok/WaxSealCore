@@ -33,6 +33,7 @@
 
 #import <XCTest/XCTest.h>
 
+#import "WSCKeychainManager.h"
 #import "WSCTrustedApplication.h"
 #import "WSCPermittedOperation.h"
 #import "WSCProtectedKeychainItem.h"
@@ -118,6 +119,7 @@
                                                                   promptContext: WSCPermittedOperationPromptContextRequirePassphraseEveryAccess
                                                                           error: &error ];
     XCTAssertNotNil( permittedOperation_testCase0 );
+    XCTAssertEqual( permittedOperation_testCase0.hostProtectedKeychainItem, internetPassphraseItem_testCase0 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -151,6 +153,8 @@
                                                                      promptContext: WSCPermittedOperationPromptContextRequirePassphraseEveryAccess
                                                                              error: &error ];
     XCTAssertNotNil( permittedOperation_testCase1 );
+    XCTAssertEqual( permittedOperation_testCase1.hostProtectedKeychainItem, applicationPassphraseItem_testCase1 );
+    XCTAssertNotEqual( permittedOperation_testCase1.hostProtectedKeychainItem, internetPassphraseItem_testCase0 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -186,6 +190,7 @@
                                                                              promptContext: 0
                                                                                      error: &error ];
     XCTAssertNotNil( permittedOperation_negativeTestCase0 );
+    XCTAssertEqual( permittedOperation_negativeTestCase0.hostProtectedKeychainItem, applicationPassphraseItem_negativeTestCase0 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -207,6 +212,7 @@
     commonPermittedOperations = [ applicationPassphraseItem_negativeTestCase0 permittedOperations ];
     XCTAssertNotNil( commonPermittedOperations );
     XCTAssertEqual( commonPermittedOperations.count, 5 );
+    XCTAssertEqual( permittedOperation_negativeTestCase0.hostProtectedKeychainItem, applicationPassphraseItem_negativeTestCase0 );
 
     SecKeychainItemCopyAccess( applicationPassphraseItem_negativeTestCase0.secKeychainItem, &commonSecAccess );
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying #1 - Negative Test Case 0 - Application Passphrase Item +++++++++ +++++++++ +++++++++\n" );
@@ -227,11 +233,46 @@
                                                                              forOperations: WSCPermittedOperationTagDecrypt | WSCPermittedOperationTagDelete
                                                                              promptContext: WSCPermittedOperationPromptContextRequirePassphraseEveryAccess
                                                                                      error: &error ];
+
+    commonPermittedOperations = [ applicationPassphraseItem_negativeTestCase0 permittedOperations ];
+    XCTAssertNil( commonPermittedOperations );
+    XCTAssertFalse( applicationPassphraseItem_negativeTestCase0.isValid );
+    XCTAssertNotEqual( permittedOperation_negativeTestCase0.hostProtectedKeychainItem, applicationPassphraseItem_negativeTestCase0 );
+
     XCTAssertNil( permittedOperation_negativeTestCase0 );
+    XCTAssertNotEqual( permittedOperation_negativeTestCase0.hostProtectedKeychainItem, applicationPassphraseItem_negativeTestCase0 );
     XCTAssertNotNil( error );
     XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCKeychainItemIsInvalidError );
     _WSCPrintNSErrorForUnitTest( error );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 1
+    // ----------------------------------------------------------------------------------
+    WSCPassphraseItem* applicationPassphraseItem_negativeTestCase1 = _WSC_WaxSealCoreTests_ApplicationKeychainItem( &error );
+    commonPermittedOperations = [ applicationPassphraseItem_negativeTestCase1 permittedOperations ];
+    XCTAssertNotNil( commonPermittedOperations );
+    XCTAssertEqual( commonPermittedOperations.count, 3 );
+
+    WSCPermittedOperation* permittedOperation_negativeTestCase1 =
+        [ applicationPassphraseItem_negativeTestCase1 addPermittedOperationWithDescription: @"Negative Test Case 1"
+                                                                       trustedApplications: @[ trustedApp_AppleContacts ]
+                                                                             forOperations: WSCPermittedOperationTagDecrypt | WSCPermittedOperationTagDelete
+                                                                             promptContext: WSCPermittedOperationPromptContextRequirePassphraseEveryAccess
+                                                                                     error: &error ];
+
+    commonPermittedOperations = [ applicationPassphraseItem_negativeTestCase1 permittedOperations ];
+    XCTAssertNotNil( commonPermittedOperations );
+    XCTAssertEqual( commonPermittedOperations.count, 4 );
+    XCTAssertEqual( permittedOperation_negativeTestCase1.hostProtectedKeychainItem, applicationPassphraseItem_negativeTestCase1 );
+
+    [ applicationPassphraseItem_negativeTestCase1.keychain deleteKeychainItem: applicationPassphraseItem_negativeTestCase1 error: nil ];
+
+    commonPermittedOperations = [ applicationPassphraseItem_negativeTestCase1 permittedOperations ];
+    XCTAssertNil( commonPermittedOperations );
+    XCTAssertFalse( applicationPassphraseItem_negativeTestCase1.isValid );
+    XCTAssertNotEqual( permittedOperation_negativeTestCase1.hostProtectedKeychainItem, applicationPassphraseItem_negativeTestCase1 );
+    XCTAssertEqual( permittedOperation_negativeTestCase1.hostProtectedKeychainItem, nil );
     }
 
 @end

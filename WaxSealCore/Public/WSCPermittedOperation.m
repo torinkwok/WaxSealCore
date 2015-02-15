@@ -44,7 +44,7 @@
 @dynamic descriptor;
 
 @synthesize secACL = _secACL;
-@synthesize hostProtectedKeychainItem = _hostProtectedKeychainItem;
+@dynamic hostProtectedKeychainItem;
 
 #pragma mark Attributes of Permitted Operations
 
@@ -112,6 +112,16 @@
         }
     }
 
+/* The protected keychain item that the permitted operation represented by receiver applying to.
+ */
+- ( WSCProtectedKeychainItem* ) hostProtectedKeychainItem
+    {
+    if ( self->_hostProtectedKeychainItem && self->_hostProtectedKeychainItem.isValid )
+        return self->_hostProtectedKeychainItem;
+    else
+        return nil;
+    }
+
 #pragma mark Keychain Services Bridge
 /* Creates and returns a `WSCPermittedOperation` object 
  * using the given reference to the instance of `SecACL` opaque type.
@@ -147,7 +157,7 @@
 
     if ( self = [ super init ] )
         {
-        _WSCDontBeABitch( &error, _ProtectedKeychainItem, [ WSCProtectedKeychainItem class ] );
+        _WSCDontBeABitch( &error, _ProtectedKeychainItem, [ WSCProtectedKeychainItem class ], s_guard );
 
         if ( !error )
             {
