@@ -105,7 +105,7 @@
   @return An array representing the list of permitted operation entries.
           Returns `nil` if an error occurs.
   */
-- ( NSArray* ) setPermittedOperations: ( NSArray* )_PermittedOperations
+- ( NSArray* ) setPermittedOperations: ( NSArray* )_NewPermittedOperations
                                 error: ( NSError** )_Error;
 
 @end // WSCKeychainItem class

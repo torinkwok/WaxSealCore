@@ -71,14 +71,33 @@
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-    NSArray* permittedOperations_testCase0 = nil;
-    WSCPassphraseItem* proxyKeychainItem_testCase0 = ( WSCPassphraseItem* )
-        [ [ WSCKeychain login ] findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeModificationDate : [ NSDate dateWithString: @"2014-5-2 22:31:50 +0800" ]
-                                                                                }
-                                                                    itemClass: WSCKeychainItemClassApplicationPassphraseItem
-                                                                        error: &error ];
+    WSCPassphraseItem* httpsPassword_testCase0;
+    NSString* serverName_testcase0 = @"secure.imdb.com";
+    NSString* relativePath_testCase0 = @"/register-imdb/changepassword/testcase";
+    NSString* accountName_testCase0 = @"Tong-G@outlook.com";
 
-    permittedOperations_testCase0 = [ proxyKeychainItem_testCase0 permittedOperations ];
+    httpsPassword_testCase0 =
+        ( WSCPassphraseItem* )[ [ WSCKeychain login ]
+            findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeHostName : serverName_testcase0
+                                                            , WSCKeychainItemAttributeRelativePath : relativePath_testCase0
+                                                            , WSCKeychainItemAttributeAccount : accountName_testCase0
+                                                            }
+                                                itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                                    error: &error ];
+    if ( !httpsPassword_testCase0 )
+        httpsPassword_testCase0 =
+            [ [ WSCKeychain login ] addInternetPassphraseWithServerName: serverName_testcase0
+                                                        URLRelativePath: relativePath_testCase0
+                                                            accountName: accountName_testCase0
+                                                               protocol: WSCInternetProtocolTypeHTTPS
+                                                             passphrase: @"waxsealcore"
+                                                                  error: &error ];
+    XCTAssertNotNil( httpsPassword_testCase0 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    NSArray* permittedOperations_testCase0 = nil;
+    permittedOperations_testCase0 = [ httpsPassword_testCase0 permittedOperations ];
     for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
         {
         NSString* descriptor = _PermittedOperation.descriptor;
@@ -97,12 +116,12 @@
         }
 
     NSArray* olderPermittedOperations_testCase0 =
-        [ proxyKeychainItem_testCase0 setPermittedOperations: permittedOperations_testCase0 error: &error ];
+        [ httpsPassword_testCase0 setPermittedOperations: permittedOperations_testCase0 error: &error ];
     XCTAssertNil( error );
     XCTAssertNotNil( olderPermittedOperations_testCase0 );
     _WSCPrintNSErrorForUnitTest( error );
 
-    permittedOperations_testCase0 = [ proxyKeychainItem_testCase0 permittedOperations ];
+    permittedOperations_testCase0 = [ httpsPassword_testCase0 permittedOperations ];
     for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
         {
         NSString* descriptor = _PermittedOperation.descriptor;

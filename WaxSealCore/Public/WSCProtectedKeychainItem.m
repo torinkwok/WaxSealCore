@@ -135,11 +135,7 @@
     OSStatus resultCode = errSecSuccess;
     NSMutableArray* mutablePermittedOperations = nil;
 
-    // DEBUG
     SecAccessRef secCurrentAccess = [ self p_secCurrentAccess: &error ];
-//    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ HEAD %s +++++++++ +++++++++ +++++++++\n", __PRETTY_FUNCTION__ );
-//    _WSCPrintAccess( secCurrentAccess );
-//    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ END %s +++++++++ +++++++++ +++++++++\n", __PRETTY_FUNCTION__ );
     if ( secCurrentAccess )
         {
         CFArrayRef secACLList = NULL;
@@ -176,87 +172,105 @@
     return [ [ mutablePermittedOperations copy ] autorelease ];
     }
 
-- ( NSArray* ) setPermittedOperations: ( NSArray* )_PermittedOperations
+- ( BOOL ) p_isChangeSelfACL: ( SecACLRef )_ACLRef
+    {
+    BOOL isChangeSelfACL = NO;
+
+    CFArrayRef cfAuthorizations = SecACLCopyAuthorizations( ( __bridge SecACLRef )_ACLRef );
+    if ( ( ( __bridge NSArray* )cfAuthorizations ).count == 1
+            && [ ( ( __bridge NSArray* )cfAuthorizations ).firstObject isEqualToString: @"ACLAuthorizationChangeACL" ] )
+        isChangeSelfACL = YES;
+
+    if ( cfAuthorizations )
+        CFRelease( cfAuthorizations );
+
+    return isChangeSelfACL;
+    }
+
+- ( SecACLRef ) p_extractChangeSelfACL: ( CFArrayRef )_ArrayOfACLs
+    {
+    SecACLRef secChangeSelfACL = NULL;
+
+    for ( id _ACLRef in ( __bridge NSArray* )_ArrayOfACLs )
+        {
+        if ( [ self p_isChangeSelfACL: ( __bridge SecACLRef )_ACLRef ] )
+            {
+            secChangeSelfACL = ( __bridge SecACLRef )_ACLRef;
+            break;
+            }
+        }
+
+    return secChangeSelfACL;
+    }
+
+- ( CFArrayRef ) p_convertACLListFromCFArrayToCocoaArray: ( NSArray* )_PermittedOperations
+    {
+    NSMutableArray* cfACLList = [ NSMutableArray array ];
+    for ( WSCPermittedOperation* _PermittedOperation in _PermittedOperations )
+        if ( _PermittedOperation.secACL )
+            [ cfACLList addObject: ( __bridge id )_PermittedOperation.secACL ];
+
+    return ( __bridge CFArrayRef )cfACLList;
+    }
+
+- ( NSArray* ) setPermittedOperations: ( NSArray* )_NewPermittedOperations
                                 error: ( NSError** )_Error;
     {
     OSStatus resultCode = errSecSuccess;
     NSError* error = nil;
     NSArray* olderPermittedOperations = [ self permittedOperations ];
 
-    NSMutableArray* secACLList = [ NSMutableArray array ];
-    for ( WSCPermittedOperation* _PermittedOperation in _PermittedOperations )
-        [ secACLList addObject: ( __bridge id )( _PermittedOperation.secACL )];
-
-    CFArrayRef secOlderACLList = NULL;
-    SecAccessRef secCurrentAccess = [ self p_secCurrentAccess: nil ];
-
-    // DEBUG
-    if ( ( resultCode = SecAccessCopyACLList( secCurrentAccess, &secOlderACLList ) ) == errSecSuccess )
+    SecAccessRef currentAccess = [ self p_secCurrentAccess: &error ];
+    if ( !error )
         {
-        // DEBUG
-        for ( id _ACLRef in ( __bridge NSArray* )secOlderACLList )
-            {
-            CFArrayRef testingTrustApps = NULL;
-            CFStringRef testingDesc = NULL;
-            SecKeychainPromptSelector testingSel = 0;
-            SecACLCopyContents( ( __bridge SecACLRef )_ACLRef, &testingTrustApps, &testingDesc, &testingSel );
-            NSLog( @"piapiapia: %@", ( __bridge NSString* )testingDesc );
-            }
+        CFArrayRef secCurrentACLList = NULL;
 
-        for ( id _ACL in ( __bridge NSArray* )secOlderACLList )
+        if ( ( resultCode = SecAccessCopyACLList( currentAccess, &secCurrentACLList ) ) == errSecSuccess )
             {
-            NSArray* authorizations = nil;
+            NSArray* cocoaCurrentACLList = ( __bridge NSArray* )secCurrentACLList;
 
-            authorizations = ( __bridge NSArray* )SecACLCopyAuthorizations( ( __bridge SecACLRef )_ACL );
-            if ( authorizations.count == 1
-                    && [ authorizations.firstObject isEqualToString: @"ACLAuthorizationChangeACL" ] )
+            for ( id _ACLRef in cocoaCurrentACLList )
                 {
-                for ( WSCPermittedOperation* _PermittedOperation in _PermittedOperations )
+                // If indeed there is a change self ACL
+                if ( [ self p_isChangeSelfACL: ( __bridge SecACLRef )_ACLRef ] )
                     {
-                    authorizations = ( __bridge NSArray* )SecACLCopyAuthorizations( _PermittedOperation.secACL );
-                    if ( authorizations.count == 1
-                            && [ authorizations.firstObject isEqualToString: @"ACLAuthorizationChangeACL" ] )
-                        {
-                        CFArrayRef newTrustedApps = NULL;
-                        CFStringRef newDescription = NULL;
-                        SecKeychainPromptSelector newPromptSel = 0;
-                        SecACLCopyContents( _PermittedOperation.secACL, &newTrustedApps, &newDescription, &newPromptSel );
+                    CFArrayRef cfACLList = [ self p_convertACLListFromCFArrayToCocoaArray: _NewPermittedOperations ];
+                    SecACLRef changeSelfACLInNewOperations = [ self p_extractChangeSelfACL: cfACLList ];
 
-                        SecACLSetContents( ( __bridge SecACLRef )_ACL, newTrustedApps, newDescription, newPromptSel );
+                    if ( changeSelfACLInNewOperations )
+                        {
+                        CFStringRef cfDescription = NULL;
+                        CFArrayRef cfTrustedApps = NULL;
+                        SecKeychainPromptSelector secPromptSel = 0;
+                        if ( ( resultCode = SecACLCopyContents( changeSelfACLInNewOperations, &cfTrustedApps, &cfDescription, &secPromptSel ) ) == errSecSuccess )
+                            resultCode = SecACLSetContents( ( __bridge SecACLRef )_ACLRef, cfTrustedApps, cfDescription, secPromptSel );
                         }
                     }
+                else
+                    SecACLRemove( ( __bridge SecACLRef )_ACLRef );
                 }
-            else
-                resultCode = SecACLRemove( ( __bridge SecACLRef )_ACL );
 
-            CFRelease( _ACL );
+            for ( WSCPermittedOperation* _NewPermittedOperation in _NewPermittedOperations )
+                {
+                if ( ![ self p_isChangeSelfACL: _NewPermittedOperation.secACL ] )
+                    {
+                    CFStringRef cfDescription = NULL;
+                    CFArrayRef cfTrustedApps = NULL;
+                    SecKeychainPromptSelector secPromptSel = 0;
+                    if ( ( resultCode = SecACLCopyContents( _NewPermittedOperation.secACL, &cfTrustedApps, &cfDescription, &secPromptSel ) ) == errSecSuccess )
+                        resultCode = SecACLCreateWithSimpleContents( currentAccess, cfTrustedApps, cfDescription, secPromptSel, NULL );
+                    }
+                }
+
+            CFRelease( secCurrentACLList );
             }
 
-        for ( WSCPermittedOperation* _PermittedOperation in _PermittedOperations )
-            {
-            CFArrayRef newTrustedApps = NULL;
-            CFStringRef newDescription = NULL;
-            SecKeychainPromptSelector newPromptSel = 0;
-            SecACLCopyContents( _PermittedOperation.secACL, &newTrustedApps, &newDescription, &newPromptSel );
+        resultCode = SecKeychainItemSetAccess( self.secKeychainItem, currentAccess );
 
-            SecACLRef newACL = NULL;
-            SecACLCreateWithSimpleContents( secCurrentAccess, newTrustedApps, newDescription, newPromptSel, &newACL );
-            }
-
-        SecKeychainItemSetAccess( self.secKeychainItem, secCurrentAccess );
-
-        // DEBUG
-        CFArrayRef hahaArray = NULL;
-        resultCode = SecAccessCopyACLList( [ self p_secCurrentAccess: nil ], &hahaArray );
-        for ( id _ACLRef in ( __bridge NSArray* )hahaArray )
-            {
-            CFArrayRef testingTrustApps = NULL;
-            CFStringRef testingDesc = NULL;
-            SecKeychainPromptSelector testingSel = 0;
-            SecACLCopyContents( ( __bridge SecACLRef )_ACLRef, &testingTrustApps, &testingDesc, &testingSel );
-            NSLog( @"pupupu: %@", ( __bridge NSString* )testingDesc );
-            }
+        CFRelease( currentAccess );
         }
+    else
+        *_Error = [ [ error copy ] autorelease ];
 
     if ( resultCode != errSecSuccess )
         if ( _Error )
