@@ -95,8 +95,14 @@
                                           , &secOlderPromptSel ) ) == errSecSuccess )
         {
         if ( ![ ( __bridge NSString* )secOlderDesc isEqualToString: _Descriptor ] )
+            {
             // Set the description for the given access control list entry which was wrapped in receiver.
             resultCode = SecACLSetContents( self->_secACL, secOlderTrustedApps, ( __bridge CFStringRef )_Descriptor, secOlderPromptSel );
+
+            SecAccessRef currentAccess = [ self->_hostProtectedKeychainItem p_secCurrentAccess: &error ];
+            if ( !error )
+                resultCode = SecKeychainItemSetAccess( self->_hostProtectedKeychainItem.secKeychainItem, currentAccess );
+            }
 
         if ( secOlderTrustedApps )
             CFRelease( secOlderTrustedApps );

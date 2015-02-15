@@ -102,7 +102,7 @@
         {
         NSString* descriptor = _PermittedOperation.descriptor;
         XCTAssertNotNil( descriptor );
-        NSLog( @"Before Modifying: #1: %@", descriptor );
+        NSLog( @"Before Modifying - Positive Test Case 0: %@", descriptor );
         }
 
     for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
@@ -112,21 +112,7 @@
         {
         NSString* descriptor = _PermittedOperation.descriptor;
         XCTAssertNotNil( descriptor );
-        NSLog( @"Before Modifying (medium): #1: %@", descriptor );
-        }
-
-    NSArray* olderPermittedOperations_testCase0 =
-        [ httpsPassword_testCase0 setPermittedOperations: permittedOperations_testCase0 error: &error ];
-    XCTAssertNil( error );
-    XCTAssertNotNil( olderPermittedOperations_testCase0 );
-    _WSCPrintNSErrorForUnitTest( error );
-
-    permittedOperations_testCase0 = [ httpsPassword_testCase0 permittedOperations ];
-    for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
-        {
-        NSString* descriptor = _PermittedOperation.descriptor;
-        XCTAssertNotNil( descriptor );
-        NSLog( @"After Modifying: #2: %@", descriptor );
+        NSLog( @"After Modifying - Positive Test Case 0: %@", descriptor );
         }
     }
 
