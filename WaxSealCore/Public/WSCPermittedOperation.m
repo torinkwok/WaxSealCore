@@ -32,13 +32,19 @@
  ****************************************************************************/
 
 #import "WSCPermittedOperation.h"
+#import "WSCProtectedKeychainItem.h"
+#import "WSCKeychainError.h"
 
 #import "_WSCPermittedOperationPrivate.h"
+#import "_WSCProtectedKeychainItemPrivate.h"
+#import "_WSCKeychainErrorPrivate.h"
 
 @implementation WSCPermittedOperation
 
 @dynamic descriptor;
+
 @synthesize secACL = _secACL;
+@synthesize hostProtectedKeychainItem = _hostProtectedKeychainItem;
 
 #pragma mark Attributes of Permitted Operations
 
@@ -111,8 +117,12 @@
  * using the given reference to the instance of `SecACL` opaque type.
  */
 + ( instancetype ) permittedOperationWithSecACLRef: ( SecACLRef )_SecACLRef
+                                         appliesTo: ( WSCProtectedKeychainItem* )_ProtectedKeychainItem
+                                             error: ( NSError** )_Error;
     {
-    return [ [ [ self alloc ] p_initWithSecACLRef: _SecACLRef ] autorelease ];
+    return [ [ [ self alloc ] p_initWithSecACLRef: _SecACLRef
+                                        appliesTo: _ProtectedKeychainItem
+                                            error: _Error ] autorelease ];
     }
 
 #pragma mark Overrides
@@ -130,16 +140,38 @@
 @implementation WSCPermittedOperation ( _WSCPermittedOperationPrivateInitialization )
 
 - ( instancetype ) p_initWithSecACLRef: ( SecACLRef )_SecACLRef
+                             appliesTo: ( WSCProtectedKeychainItem* )_ProtectedKeychainItem
+                                 error: ( NSError** )_Error;
     {
+    NSError* error = nil;
+
     if ( self = [ super init ] )
         {
-        if ( _SecACLRef )
-            self->_secACL = ( SecACLRef )CFRetain( _SecACLRef );
-        else
-            return nil;
+        _WSCDontBeABitch( &error, _ProtectedKeychainItem, [ WSCProtectedKeychainItem class ] );
+
+        if ( !error )
+            {
+            if ( _SecACLRef )
+                {
+                self->_secACL = ( SecACLRef )CFRetain( _SecACLRef );
+                self->_hostProtectedKeychainItem = _ProtectedKeychainItem;
+                }
+            else
+                error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                             code: WSCCommonInvalidParametersError
+                                         userInfo: nil ];
+            }
         }
 
-    return self;
+    if ( error )
+        {
+        if ( _Error )
+            *_Error = [ [ error copy ] autorelease ];
+
+        return nil;
+        }
+    else
+        return self;
     }
 
 @end // WSCAccessPermission + _WSCAccessPermissionPrivateInitialization

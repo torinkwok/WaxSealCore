@@ -33,10 +33,14 @@
 
 #import "WSCPermittedOperation.h"
 
+@class WSCProtectedKeychainItem;
+
 #pragma mark Private Programmatic Interfaces for Creating Permitted Operation
 @interface WSCPermittedOperation ( _WSCPermittedOperationPrivateInitialization )
 
-- ( instancetype ) p_initWithSecACLRef: ( SecACLRef )_SecACLRef;
+- ( instancetype ) p_initWithSecACLRef: ( SecACLRef )_SecACLRef
+                             appliesTo: ( WSCProtectedKeychainItem* )_ProtectedKeychainItem
+                                 error: ( NSError** )_Error;
 
 @end // WSCAccessPermission + _WSCAccessPermissionPrivateInitialization
 

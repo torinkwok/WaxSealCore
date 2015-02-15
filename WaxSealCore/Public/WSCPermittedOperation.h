@@ -33,6 +33,8 @@
 
 #import <Security/Security.h>
 
+@class WSCProtectedKeychainItem;
+
 /** Defines constants that specify operations that can be done with that protected item, 
     such as decrypting, encrypting, sign or authenticating.
   */
@@ -152,6 +154,7 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
     {
 @protected
     SecACLRef _secACL;
+    WSCProtectedKeychainItem* _hostProtectedKeychainItem;
     }
 
 #pragma mark Attributes of Permitted Operations
@@ -165,6 +168,10 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
               by the **Keychain Access** application.
   */
 @property ( copy, readwrite ) NSString* descriptor;
+
+/** The protected keychain item that the permitted operation represented by receiver applying to.
+  */
+@property ( unsafe_unretained, readonly ) WSCProtectedKeychainItem* hostProtectedKeychainItem;
 
 #pragma mark Keychain Services Bridge
 /** @name Keychain Services Bridge */
@@ -194,10 +201,19 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
 
   @param _SecACLRef A reference to the instance of `SecACL` opaque type.
   
+  @param _ProtectedKeychainItem The protected keychain item that the permitted operation represented by receiver applying to.
+                                You can get it with hostProtectedKeychainItem read-only property.
+                                
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+                You may specify `nil` for this parameter if you don't want the error information.
+
   @return A `WSCPermittedOperation` object initialized with the givent reference to the instance of `SecACL` opaque type.
           Return `nil` if *_SecACLRef* is `nil`.
   */
-+ ( instancetype ) permittedOperationWithSecACLRef: ( SecACLRef )_SecACLRef;
++ ( instancetype ) permittedOperationWithSecACLRef: ( SecACLRef )_SecACLRef
+                                         appliesTo: ( WSCProtectedKeychainItem* )_ProtectedKeychainItem
+                                             error: ( NSError** )_Error;
 
 @end // WSCPermittedOperation class
 

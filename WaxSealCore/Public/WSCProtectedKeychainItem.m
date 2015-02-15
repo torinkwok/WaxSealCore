@@ -105,7 +105,9 @@
                 if ( ( resultCode = SecKeychainItemSetAccess( self.secKeychainItem, secCurrentAccess ) ) == errSecSuccess )
                     // Everything is OK, create the wrapper of the secNewACL that has been added to
                     // the list of permitted operations of the protected keychain item.
-                    newPermitted = [ [ [ WSCPermittedOperation alloc ] p_initWithSecACLRef: secNewACL ] autorelease ];
+                    newPermitted = [ [ [ WSCPermittedOperation alloc ] p_initWithSecACLRef: secNewACL
+                                                                                 appliesTo: self
+                                                                                     error: _Error ] autorelease ];
 
             CFRelease( secNewACL );
             }
@@ -151,9 +153,10 @@
             for ( id _SecACL in ( __bridge NSArray* )secACLList )
                 {
                 WSCPermittedOperation* newPermittedOperation =
-                    [ WSCPermittedOperation permittedOperationWithSecACLRef: ( __bridge SecACLRef )_SecACL ];
-
-                if ( newPermittedOperation )
+                    [ WSCPermittedOperation permittedOperationWithSecACLRef: ( __bridge SecACLRef )_SecACL
+                                                                  appliesTo: self
+                                                                      error: &error ];
+                if ( !error )
                     [ mutablePermittedOperations addObject: newPermittedOperation ];
                 }
 
