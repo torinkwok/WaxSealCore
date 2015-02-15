@@ -51,6 +51,7 @@
 @dynamic keychain;
 
 @synthesize secKeychainItem = _secKeychainItem;
+// The ivar _secAccess will be synthesized in the subclass of WSCKeychainItem: WSCProtectedKeychainItem
 
 #pragma mark Common Keychain Item Attributes
 /* The `NSString` object that identifies the label of keychain item represented by receiver. */
@@ -161,6 +162,16 @@
         // The _SecKeychainItemRef parameter must not be nil.
         if ( _SecKeychainItemRef )
             self->_secKeychainItem = ( SecKeychainItemRef )CFRetain( _SecKeychainItemRef );
+
+        // TODO: Waiting for the other item class, Certificates, Keys, etc.
+        if ( self.itemClass == WSCKeychainItemClassInternetPassphraseItem
+                || self.itemClass == WSCKeychainItemClassApplicationPassphraseItem
+                || self.itemClass == WSCKeychainItemClassPrivateKeyItem )
+            {
+            NSError* error = nil;
+            self->_secAccess = [ self p_secCurrentAccess: &error ];
+            NSAssert( !error, error.description );
+            }
         }
 
     return self;
@@ -543,6 +554,21 @@
     SecKeychainAttribute attrStruct = { _Attr, ( UInt32 )sizeof( UInt32 ), ( void* )UInt32ValueBuffer };
 
     return attrStruct;
+    }
+
+/* Objective-C wrapper of SecKeychainItemCopyAccess() function in Keychain Services
+ * Use for copying the access of the protected keychain item represented by receiver.
+ */
+- ( SecAccessRef ) p_secCurrentAccess: ( NSError** )_Error
+    {
+    OSStatus resultCode = errSecSuccess;
+    SecAccessRef secCurrentAccess = NULL;
+
+    if ( ( resultCode = SecKeychainItemCopyAccess( self.secKeychainItem, &secCurrentAccess ) ) != errSecSuccess )
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+
+    return secCurrentAccess;
     }
 
 @end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes

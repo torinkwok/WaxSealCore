@@ -43,6 +43,7 @@
 
 @implementation WSCProtectedKeychainItem
 
+// The ivar self->_secAccess was declared in the super class: WSCKeychainItem
 @dynamic secAccess;
 
 #pragma mark Managing Permitted Operations
@@ -225,32 +226,13 @@ NSUInteger p_permittedOperationTags[] =
     return [ [ authorizations copy ] autorelease ];
     }
 
-/* Objective-C wrapper of SecKeychainItemCopyAccess() function in Keychain Services
- * Use for copying the access of the protected keychain item represented by receiver.
- */
-- ( SecAccessRef ) p_secCurrentAccess: ( NSError** )_Error
-    {
-    OSStatus resultCode = errSecSuccess;
-    SecAccessRef secCurrentAccess = NULL;
-
-    if ( ( resultCode = SecKeychainItemCopyAccess( self.secKeychainItem, &secCurrentAccess ) ) != errSecSuccess )
-        if ( _Error )
-            *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
-
-    return secCurrentAccess;
-    }
-
 #pragma mark Keychain Services Bridge
+
+/* The reference of the `SecAccess` opaque object, which wrapped by `WSCProtectedKeychainItem` object. (read-only)
+ */
 - ( SecAccessRef ) secAccess
     {
-    if ( !self->_secAccess )
-        {
-        NSError* error = nil;
-        self->_secAccess = [ self p_secCurrentAccess: &error ];
-
-        NSAssert( !error, error.description );
-        }
-
+    // The ivar self->_secAccess was declared in the super class: WSCKeychainItem
     return self->_secAccess;
     }
 

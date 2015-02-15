@@ -40,10 +40,6 @@
 // to the CoreFoundation-array of secTrustedApplicationRef.
 - ( NSArray* ) p_authorizationsFromPermittedOperationMasks: ( WSCPermittedOperationTag )_Operations;
 
-// Objective-C wrapper of SecKeychainItemCopyAccess() function in Keychain Services
-// Use for copying the access of the protected keychain item represented by receiver.
-- ( SecAccessRef ) p_secCurrentAccess: ( NSError** )_Error;
-
 @end // WSCProtectedKeychainItem + WSCProtectedKeychainItemPrivateManagingPermittedOperations
 
 //////////////////////////////////////////////////////////////////////////////
