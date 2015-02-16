@@ -255,6 +255,10 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
             else if ( [ _Key isEqualToString: _WSCPermittedOperationTrustedApplications ] )
                 {
                 NSArray* currentTrustedApplications = [ self p_retrieveContents: @[ _WSCPermittedOperationTrustedApplications ] ][ _WSCPermittedOperationTrustedApplications ];
+
+                // If the new trusted applications is exactly equal current trusted applications
+                // (judge according to the unique identification of each trusted application),
+                // skip the update.
                 if ( ![ currentTrustedApplications isEqualToArray: _NewValues[ _Key ] ] )
                     {
                     NSMutableArray* newSecTrustedApplications = [ NSMutableArray array ];
