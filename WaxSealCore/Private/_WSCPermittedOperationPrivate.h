@@ -47,7 +47,12 @@
 #pragma mark Private Programmatic Interfaces for Managing Permitted Operation
 @interface WSCPermittedOperation ( _WSCPermittedOperationPrivateManagment )
 
+// Objective-C wrapper of SecACLCopyContents() function in Keychain Services
+// Use for retrieving the contents of the permitted operation entry represented by receiver.
 - ( NSDictionary* ) p_retrieveContents: ( NSArray* )_RetrieveKeys;
+
+// Objective-C wrapper of SecACLSetContents() function in Keychain Services
+// Use for updating the contents of the permitted operation entry represented by receiver.
 - ( void ) p_updatePermittedOperation: ( NSDictionary* )_NewValues;
 
 @end // WSCAccessPermission + _WSCPermittedOperationPrivateManagment

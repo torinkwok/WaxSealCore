@@ -47,6 +47,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 @implementation WSCPermittedOperation
 
 @dynamic descriptor;
+@dynamic trustedApplications;
 
 @synthesize secACL = _secACL;
 @dynamic hostProtectedKeychainItem;
@@ -60,9 +61,22 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
     return [ self p_retrieveContents: @[ _WSCPermittedOperationDescriptor ] ][ _WSCPermittedOperationDescriptor ];
     }
 
-- ( void ) setDescriptor: ( NSString* )_Descriptor
+- ( void ) setDescriptor: ( NSString* )_NewDescriptor
     {
-    [ self p_updatePermittedOperation: @{ _WSCPermittedOperationDescriptor : _Descriptor } ];
+    [ self p_updatePermittedOperation: @{ _WSCPermittedOperationDescriptor : _NewDescriptor } ];
+    }
+
+/* An array of trusted application objects (that is, `WSCTrustedApplication` instances)
+ * identifying applications that are allowed access to the keychain item without user confirmation.
+ */
+- ( NSArray* ) trustedApplications
+    {
+    return [ self p_retrieveContents: @[ _WSCPermittedOperationTrustedApplications ] ][ _WSCPermittedOperationTrustedApplications ];
+    }
+
+- ( void ) setTrustedApplications: ( NSArray* )_NewTrustedApplications
+    {
+    [ self p_updatePermittedOperation: @{ _WSCPermittedOperationTrustedApplications : _NewTrustedApplications } ];
     }
 
 /* The protected keychain item that the permitted operation represented by receiver applying to.
@@ -142,6 +156,8 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 #pragma mark Private Programmatic Interfaces for Managing Permitted Operation
 @implementation WSCPermittedOperation ( _WSCPermittedOperationPrivateManagment )
 
+// Objective-C wrapper of SecACLCopyContents() function in Keychain Services
+// Use for retrieving the contents of the permitted operation entry represented by receiver.
 - ( NSDictionary* ) p_retrieveContents: ( NSArray* )_RetrieveKeys
     {
     if ( _RetrieveKeys.count == 0 )
@@ -202,6 +218,8 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
     return resultingContents;
     }
 
+// Objective-C wrapper of SecACLSetContents() function in Keychain Services
+// Use for updating the contents of the permitted operation entry represented by receiver.
 - ( void ) p_updatePermittedOperation: ( NSDictionary* )_NewValues
     {
     if ( _NewValues.count == 0 )

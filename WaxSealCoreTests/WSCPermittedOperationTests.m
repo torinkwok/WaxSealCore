@@ -68,6 +68,14 @@
     {
     NSError* error = nil;
 
+    WSCTrustedApplication* trustedApp_AppleContacts =
+        [ WSCTrustedApplication trustedApplicationWithContentsOfURL: [ NSURL URLWithString: @"/Applications/Contacts.app" ]
+                                                              error: &error ];
+
+    WSCTrustedApplication* trustedApp_iPhoto =
+        [ WSCTrustedApplication trustedApplicationWithContentsOfURL: [ NSURL URLWithString: @"/Applications/iPhoto.app" ]
+                                                              error: &error ];
+
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
@@ -106,7 +114,13 @@
         }
 
     for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
+        {
+        NSArray* trustedApplications = [ _PermittedOperation trustedApplications ];
+        if ( trustedApplications.count > 0 )
+            _PermittedOperation.trustedApplications = @[ trustedApp_AppleContacts, trustedApp_iPhoto ];
+
         _PermittedOperation.descriptor = @"NSTongG";
+        }
 
     for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
         {

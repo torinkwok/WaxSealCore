@@ -84,6 +84,22 @@
   */
 + ( instancetype ) trustedApplicationWithContentsOfURL: ( NSURL* )_ApplicationURL
                                                  error: ( NSError** )_Error;
+
+#pragma mark Comparing Trusted Application
+/** @name Comparing Trusted Application */
+
+/** Returns a Boolean value that indicates whether a given trusted application is equal to receiver.
+
+  @param _AnotherTrustedApplication The trusted application with which to compare the receiver.
+
+  @return `YES` if *_AnotherTrustedApplication* is equivalent to receiver (if they have the same unique identification);
+          otherwise *NO*.
+
+  **One more thing**
+   When you know both objects are keychains, this method is a faster way to check equality than method `isEqual:`.
+  */
+- ( BOOL ) isEqualToTrustedApplication: ( WSCTrustedApplication* )_AnotherTrustedApplication;
+
 #pragma mark Keychain Services Bridge
 /** @name Keychain Services Bridge */
 

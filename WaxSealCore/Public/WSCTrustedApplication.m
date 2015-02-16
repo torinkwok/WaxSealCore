@@ -103,6 +103,27 @@
     return [ [ [ [ self class ] alloc ] p_initWithSecTrustedApplicationRef: _SecTrustedAppRef ] autorelease ];
     }
 
+#pragma mark Comparing Trusted Application
+- ( BOOL ) isEqualToTrustedApplication: ( WSCTrustedApplication* )_TrustedApplication
+    {
+    if ( self == _TrustedApplication )
+        return YES;
+
+    return [ self.uniqueIdentification isEqualToData: _TrustedApplication.uniqueIdentification ];
+    }
+
+#pragma mark Overrides
+- ( BOOL ) isEqual: ( id )_Object
+    {
+    if ( self == _Object )
+        return YES;
+
+    if ( [ _Object isKindOfClass: [ WSCTrustedApplication class ] ] )
+        return [ self isEqualToTrustedApplication: ( WSCTrustedApplication* )_Object ];
+
+    return [ self isEqual: _Object ];
+    }
+
 - ( void ) dealloc
     {
     if ( self->_secTrustedApplication)
