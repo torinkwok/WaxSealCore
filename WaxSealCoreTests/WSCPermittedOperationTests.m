@@ -67,53 +67,90 @@
 - ( void ) testDescriptorProperty
     {
     NSError* error = nil;
+    WSCPermittedOperation* firstPermittedOperation_demo0 = nil;
 
-    // ----------------------------------------------------------------------------------
-    // Test Case 0
-    // ----------------------------------------------------------------------------------
-    WSCPassphraseItem* httpsPassword_testCase0;
-    NSString* serverName_testcase0 = @"secure.imdb.com";
-    NSString* relativePath_testCase0 = @"/register-imdb/changepassword/testcase";
-    NSString* accountName_testCase0 = @"Tong-G@outlook.com";
+    NSString* hostName = @"secure.imdb.com";
+    NSString* relativePath = @"/register-imdb/changepassword/demo";
+    NSString* accountName = @"waxsealcore@whatever.org";
+    
+    WSCPassphraseItem* IMDbPassphrase = [ [ WSCKeychain login ]
+        addInternetPassphraseWithServerName: hostName
+                            URLRelativePath: relativePath
+                                accountName: accountName
+                                   protocol: WSCInternetProtocolTypeHTTPS
+                                 passphrase: @"waxsealcore"
+                                      error: &error ];
 
-    httpsPassword_testCase0 =
-        ( WSCPassphraseItem* )[ [ WSCKeychain login ]
-            findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeHostName : serverName_testcase0
-                                                            , WSCKeychainItemAttributeRelativePath : relativePath_testCase0
-                                                            , WSCKeychainItemAttributeAccount : accountName_testCase0
-                                                            }
-                                                itemClass: WSCKeychainItemClassInternetPassphraseItem
-                                                    error: &error ];
-    if ( !httpsPassword_testCase0 )
-        httpsPassword_testCase0 =
-            [ [ WSCKeychain login ] addInternetPassphraseWithServerName: serverName_testcase0
-                                                        URLRelativePath: relativePath_testCase0
-                                                            accountName: accountName_testCase0
-                                                               protocol: WSCInternetProtocolTypeHTTPS
-                                                             passphrase: @"waxsealcore"
-                                                                  error: &error ];
-    XCTAssertNotNil( httpsPassword_testCase0 );
-    XCTAssertNil( error );
-    _WSCPrintNSErrorForUnitTest( error );
-
-    NSArray* permittedOperations_testCase0 = nil;
-    permittedOperations_testCase0 = [ httpsPassword_testCase0 permittedOperations ];
-    for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
+    if ( !error )
         {
-        NSString* descriptor = _PermittedOperation.descriptor;
-        XCTAssertNotNil( descriptor );
-        NSLog( @"Before Modifying - Positive Test Case 0: %@", descriptor );
+        firstPermittedOperation_demo0 = [ IMDbPassphrase permittedOperations ].firstObject;
+        
+        // The descriptor of the first permitted operation of IMDbPassphrase is "secure.imdb.com" by default.
+        NSLog( @"Before Modifying: %@", firstPermittedOperation_demo0.descriptor );
+        
+        // Modify the descriptor
+        firstPermittedOperation_demo0.descriptor = @"Demo for Documentation";
+        
+        // When we modify an permitted operation entry, we are modifying its host protected keychain item as well.
+        // Therefore, there is no need for a separate API such as "setPermittedOperations:", 
+        // "updatePermittedOperations:" bla bla bla... whatever, to write a modified permitted operation entry 
+        // back into the host protected keychain item.
+        
+        // The descriptor of the first permitted operation entry of IMDbPassphrase is now "Demo for Documentation"
+        WSCPermittedOperation* firstPermittedOperation_demo1 = [ IMDbPassphrase.permittedOperations firstObject ];
+        NSLog ( @"After Modifying: %@", firstPermittedOperation_demo1.descriptor );
+
+        [ [ IMDbPassphrase keychain ] deleteKeychainItem: IMDbPassphrase error: nil ];
         }
 
-    for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
-        _PermittedOperation.descriptor = @"NSTongG";
-
-    for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
-        {
-        NSString* descriptor = _PermittedOperation.descriptor;
-        XCTAssertNotNil( descriptor );
-        NSLog( @"After Modifying - Positive Test Case 0: %@", descriptor );
-        }
+//    NSError* error = nil;
+//
+//    // ----------------------------------------------------------------------------------
+//    // Test Case 0
+//    // ----------------------------------------------------------------------------------
+//    WSCPassphraseItem* httpsPassword_testCase0;
+//    NSString* serverName_testcase0 = @"secure.imdb.com";
+//    NSString* relativePath_testCase0 = @"/register-imdb/changepassword/testcase";
+//    NSString* accountName_testCase0 = @"Tong-G@outlook.com";
+//
+//    httpsPassword_testCase0 =
+//        ( WSCPassphraseItem* )[ [ WSCKeychain login ]
+//            findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeHostName : serverName_testcase0
+//                                                            , WSCKeychainItemAttributeRelativePath : relativePath_testCase0
+//                                                            , WSCKeychainItemAttributeAccount : accountName_testCase0
+//                                                            }
+//                                                itemClass: WSCKeychainItemClassInternetPassphraseItem
+//                                                    error: &error ];
+//    if ( !httpsPassword_testCase0 )
+//        httpsPassword_testCase0 =
+//            [ [ WSCKeychain login ] addInternetPassphraseWithServerName: serverName_testcase0
+//                                                        URLRelativePath: relativePath_testCase0
+//                                                            accountName: accountName_testCase0
+//                                                               protocol: WSCInternetProtocolTypeHTTPS
+//                                                             passphrase: @"waxsealcore"
+//                                                                  error: &error ];
+//    XCTAssertNotNil( httpsPassword_testCase0 );
+//    XCTAssertNil( error );
+//    _WSCPrintNSErrorForUnitTest( error );
+//
+//    NSArray* permittedOperations_testCase0 = nil;
+//    permittedOperations_testCase0 = [ httpsPassword_testCase0 permittedOperations ];
+//    for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
+//        {
+//        NSString* descriptor = _PermittedOperation.descriptor;
+//        XCTAssertNotNil( descriptor );
+//        NSLog( @"Before Modifying - Positive Test Case 0: %@", descriptor );
+//        }
+//
+//    for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
+//        _PermittedOperation.descriptor = @"NSTongG";
+//
+//    for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
+//        {
+//        NSString* descriptor = _PermittedOperation.descriptor;
+//        XCTAssertNotNil( descriptor );
+//        NSLog( @"After Modifying - Positive Test Case 0: %@", descriptor );
+//        }
     }
 
 @end // WSCAccessPermissionTests test case

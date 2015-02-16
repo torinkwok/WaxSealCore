@@ -166,6 +166,51 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
               that appears in the dialog box when the user is prompted for permission to use the item. 
               Note that this descriptor is not necessarily the same as the one displayed for the item
               by the **Keychain Access** application.
+              
+  @warning Because an permitted operation entry is always associated with an protected keychain item,
+           when you modify an permitted operation entry, you are modifying its host protected keychain item as well. 
+           Therefore, there is no need for a separate API to write a modified permitted operation entry 
+           back into the host protected keychain item. For ease of understanding, see the below code segment:
+
+    ```
+    NSError* error = nil;
+    WSCPermittedOperation* firstPermittedOperation_demo0 = nil;
+
+    NSString* hostName = @"secure.imdb.com";
+    NSString* relativePath = @"/register-imdb/changepassword/demo";
+    NSString* accountName = @"waxsealcore@whatever.org";
+    
+    WSCPassphraseItem* IMDbPassphrase = [ [ WSCKeychain login ]
+        addInternetPassphraseWithServerName: hostName
+                            URLRelativePath: relativePath
+                                accountName: accountName
+                                   protocol: WSCInternetProtocolTypeHTTPS
+                                 passphrase: @"waxsealcore"
+                                      error: &error ];
+
+    if ( !error )
+        {
+        firstPermittedOperation_demo0 = [ IMDbPassphrase permittedOperations ].firstObject;
+        
+        // The descriptor of the first permitted operation of IMDbPassphrase is "secure.imdb.com" by default.
+        NSLog( @"Before Modifying: %@", firstPermittedOperation_demo0.descriptor );
+        
+        // Modify the descriptor
+        firstPermittedOperation_demo0.descriptor = @"Demo for Documentation";
+        
+        // When we modify an permitted operation entry, we are modifying its host protected keychain item as well.
+        // Therefore, there is no need for a separate API such as "setPermittedOperations:", 
+        // "updatePermittedOperations:" bla bla bla... whatever, to write a modified permitted operation entry 
+        // back into the host protected keychain item.
+        
+        // The descriptor of the first permitted operation entry of IMDbPassphrase is now "Demo for Documentation"
+        WSCPermittedOperation* firstPermittedOperation_demo1 = [ IMDbPassphrase.permittedOperations firstObject ];
+        NSLog ( @"After Modifying: %@", firstPermittedOperation_demo1.descriptor );
+
+        // Done. Kill it.
+        [ [ IMDbPassphrase keychain ] deleteKeychainItem: IMDbPassphrase error: nil ];
+        }
+    ```
   */
 @property ( copy, readwrite ) NSString* descriptor;
 
