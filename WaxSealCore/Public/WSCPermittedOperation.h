@@ -214,6 +214,8 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
   */
 @property ( copy, readwrite ) NSString* descriptor;
 
+@property ( retain, readwrite ) NSArray* trustedApplications;
+
 /** The protected keychain item that the permitted operation represented by receiver applying to.
   */
 @property ( unsafe_unretained, readonly ) WSCProtectedKeychainItem* hostProtectedKeychainItem;

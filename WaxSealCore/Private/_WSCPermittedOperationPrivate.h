@@ -44,6 +44,14 @@
 
 @end // WSCAccessPermission + _WSCAccessPermissionPrivateInitialization
 
+#pragma mark Private Programmatic Interfaces for Managing Permitted Operation
+@interface WSCPermittedOperation ( _WSCPermittedOperationPrivateManagment )
+
+- ( NSDictionary* ) p_retrieveContents: ( NSArray* )_RetrieveKeys;
+- ( void ) p_updatePermittedOperation: ( NSDictionary* )_NewValues;
+
+@end // WSCAccessPermission + _WSCPermittedOperationPrivateManagment
+
 //////////////////////////////////////////////////////////////////////////////
 
 /*****************************************************************************
