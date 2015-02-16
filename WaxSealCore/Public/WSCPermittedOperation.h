@@ -218,12 +218,18 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
     identifying applications that are allowed access to the keychain item without user confirmation. 
 
   @discussion Use the [trustedApplicationWithContentsOfURL:error:]([WSCTrustedApplication trustedApplicationWithContentsOfURL:error:])
-  class method to create trusted application objects.
+              class method to create trusted application objects.
   
   When you use the part of write property (or the form of setTrustedApplications:),
   if you pass to `nil`, then any application can use the protected keychain 
   with which the permitted operation represented by receiver associated.
   If you pass an empty array, then all applications are treated as untrusted.
+  
+  @warning Because an permitted operation entry is always associated with an protected keychain item,
+           when you modify an permitted operation entry, you are modifying its host protected keychain item as well. 
+           Therefore, there is no need for a separate API to write a modified permitted operation entry 
+           back into the host protected keychain item. For ease of understanding, see the **Warning** section
+           of the description of [descriptor]([WSCPermittedOperation descriptor]) property.
   */
 @property ( retain, readwrite ) NSArray* trustedApplications;
 

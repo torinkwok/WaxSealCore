@@ -254,16 +254,20 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
             // Update the array of trusted applications
             else if ( [ _Key isEqualToString: _WSCPermittedOperationTrustedApplications ] )
                 {
-                NSMutableArray* newSecTrustedApplications = [ NSMutableArray array ];
-                for ( WSCTrustedApplication* _TrustApp in _NewValues[ _Key ] )
-                    if ( _TrustApp.secTrustedApplication )
-                        [ newSecTrustedApplications addObject: ( __bridge id )_TrustApp.secTrustedApplication ];
+                NSArray* currentTrustedApplications = [ self p_retrieveContents: @[ _WSCPermittedOperationTrustedApplications ] ][ _WSCPermittedOperationTrustedApplications ];
+                if ( ![ currentTrustedApplications isEqualToArray: _NewValues[ _Key ] ] )
+                    {
+                    NSMutableArray* newSecTrustedApplications = [ NSMutableArray array ];
+                    for ( WSCTrustedApplication* _TrustApp in _NewValues[ _Key ] )
+                        if ( _TrustApp.secTrustedApplication )
+                            [ newSecTrustedApplications addObject: ( __bridge id )_TrustApp.secTrustedApplication ];
 
-                if ( ( resultCode = SecACLSetContents( self->_secACL
-                                                     , ( __bridge CFArrayRef )newSecTrustedApplications
-                                                     , secOlderDesc
-                                                     , secOlderPromptSel ) ) != errSecSuccess )
-                    break;
+                    if ( ( resultCode = SecACLSetContents( self->_secACL
+                                                         , ( __bridge CFArrayRef )newSecTrustedApplications
+                                                         , secOlderDesc
+                                                         , secOlderPromptSel ) ) != errSecSuccess )
+                        break;
+                    }
                 }
 
             // Update the prompt selector
