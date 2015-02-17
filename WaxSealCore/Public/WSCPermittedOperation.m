@@ -72,12 +72,17 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
  */
 - ( NSArray* ) trustedApplications
     {
-    return [ self p_retrieveContents: @[ _WSCPermittedOperationTrustedApplications ] ][ _WSCPermittedOperationTrustedApplications ];
+    id currentTrustedApplications =
+        [ self p_retrieveContents: @[ _WSCPermittedOperationTrustedApplications ] ][ _WSCPermittedOperationTrustedApplications ];
+
+    return ( currentTrustedApplications == [ NSNull null ] ) ? nil : ( NSArray* )currentTrustedApplications;
     }
 
 - ( void ) setTrustedApplications: ( NSArray* )_NewTrustedApplications
     {
-    [ self p_updatePermittedOperation: @{ _WSCPermittedOperationTrustedApplications : _NewTrustedApplications } ];
+    [ self p_updatePermittedOperation:
+        @{ _WSCPermittedOperationTrustedApplications : _NewTrustedApplications
+                                                     ? _NewTrustedApplications : [ NSNull null ] } ];
     }
 
 /* The protected keychain item that the permitted operation represented by receiver applying to.
@@ -204,17 +209,21 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 
             else if ( [ _Key isEqualToString: _WSCPermittedOperationTrustedApplications ] )
                 {
-                NSMutableArray* cocoaTrustedApps = [ NSMutableArray array ];
-                for ( id _SecTrustApp in ( __bridge NSArray* )secTrustedApps )
+                id cocoaTrustedApps = nil;
+                if ( secTrustedApps )
                     {
-                    WSCTrustedApplication* trustedApp =
-                        [ WSCTrustedApplication trustedApplicationWithSecTrustedApplicationRef: ( __bridge SecTrustedApplicationRef )_SecTrustApp ];
+                    cocoaTrustedApps = [ NSMutableArray array ];
+                    for ( id _SecTrustApp in ( __bridge NSArray* )secTrustedApps )
+                        {
+                        WSCTrustedApplication* trustedApp =
+                            [ WSCTrustedApplication trustedApplicationWithSecTrustedApplicationRef: ( __bridge SecTrustedApplicationRef )_SecTrustApp ];
 
-                    NSAssert( trustedApp, @"Failed to construct the WSCTrustedApplication object" );
-                    [ cocoaTrustedApps addObject: trustedApp ];
+                        NSAssert( trustedApp, @"Failed to construct the WSCTrustedApplication object" );
+                        [ cocoaTrustedApps addObject: trustedApp ];
+                        }
                     }
 
-                resultingContents[ _Key ] = cocoaTrustedApps;
+                resultingContents[ _Key ] = cocoaTrustedApps ? cocoaTrustedApps : [ NSNull null ];
                 }
 
             else if ( [ _Key isEqualToString: _WSCPermittedOperationPromptSelector ] )
@@ -275,23 +284,25 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
             else if ( [ _Key isEqualToString: _WSCPermittedOperationTrustedApplications ] )
                 {
                 NSArray* currentTrustedApplications = [ self p_retrieveContents: @[ _WSCPermittedOperationTrustedApplications ] ][ _WSCPermittedOperationTrustedApplications ];
+                NSMutableArray* newSecTrustedApplications = nil;
 
                 // If the new trusted applications is exactly equal current trusted applications
                 // (judge according to the unique identification of each trusted application),
                 // skip the update.
-                if ( ![ currentTrustedApplications isEqualToArray: _NewValues[ _Key ] ] )
+                if ( _NewValues[ _Key ] != [ NSNull null ]
+                        && ![ currentTrustedApplications isEqualToArray: _NewValues[ _Key ] ] )
                     {
-                    NSMutableArray* newSecTrustedApplications = [ NSMutableArray array ];
+                    newSecTrustedApplications = [ NSMutableArray array ];
                     for ( WSCTrustedApplication* _TrustApp in _NewValues[ _Key ] )
                         if ( _TrustApp.secTrustedApplication )
                             [ newSecTrustedApplications addObject: ( __bridge id )_TrustApp.secTrustedApplication ];
-
-                    if ( ( resultCode = SecACLSetContents( self->_secACL
-                                                         , ( __bridge CFArrayRef )newSecTrustedApplications
-                                                         , secOlderDesc
-                                                         , secOlderPromptSel ) ) != errSecSuccess )
-                        break;
                     }
+
+                if ( ( resultCode = SecACLSetContents( self->_secACL
+                                                     , ( __bridge CFArrayRef )newSecTrustedApplications
+                                                     , secOlderDesc
+                                                     , secOlderPromptSel ) ) != errSecSuccess )
+                    break;
                 }
 
             // Update the prompt selector
@@ -300,7 +311,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                 WSCPermittedOperationPromptContext newPromptSelector = 0;
                 [ ( NSValue* )( _NewValues[ _Key ] ) getValue: &newPromptSelector ];
 
-                if ( ( SecKeychainPromptSelector )newPromptSelector == secOlderPromptSel )
+                if ( ( SecKeychainPromptSelector )newPromptSelector != secOlderPromptSel )
                     if ( ( resultCode = SecACLSetContents( self->_secACL
                                                          , secOlderTrustedApps
                                                          , secOlderDesc
