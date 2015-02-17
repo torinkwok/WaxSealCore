@@ -247,6 +247,12 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
   This bit is clear by default—you must set it explicitly for any permitted operation entry for which you want this extra protection.
   There is one exception to this rule: the **Keychain Access** application always requires a passphrase to display the
   secret data (e.g. passphrase) of a keychain item unless the **Keychain Access** application itself is included in the trusted application list.
+  
+  @warning Because an permitted operation entry is always associated with an protected keychain item,
+           when you modify an permitted operation entry, you are modifying its host protected keychain item as well. 
+           Therefore, there is no need for a separate API to write a modified permitted operation entry 
+           back into the host protected keychain item. For ease of understanding, see the **Warning** section
+           of the description of [descriptor]([WSCPermittedOperation descriptor]) property.
   */
 @property ( assign, readwrite ) WSCPermittedOperationPromptContext promptContext;
 
