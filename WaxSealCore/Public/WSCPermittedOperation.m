@@ -48,6 +48,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 
 @dynamic descriptor;
 @dynamic trustedApplications;
+@dynamic promptContext;
 
 @synthesize secACL = _secACL;
 @dynamic hostProtectedKeychainItem;
@@ -87,6 +88,25 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
         return self->_hostProtectedKeychainItem;
     else
         return nil;
+    }
+
+/* Masks that define when using a keychain or a protected keychain item should require a passphrase.
+ */
+- ( WSCPermittedOperationPromptContext ) promptContext
+    {
+    NSValue* wrapperValue =
+        [ self p_retrieveContents: @[ _WSCPermittedOperationPromptSelector ] ][ _WSCPermittedOperationPromptSelector ];
+
+    WSCPermittedOperationPromptContext currentPromptContext = 0;
+    [ wrapperValue getValue: &currentPromptContext ];
+
+    return currentPromptContext;
+    }
+
+- ( void ) setPromptContext: ( WSCPermittedOperationPromptContext )_NewPromptContext
+    {
+    NSValue* value = [ NSValue valueWithBytes: &_NewPromptContext objCType: @encode( WSCPermittedOperationPromptContext ) ];
+    [ self p_updatePermittedOperation: @{ _WSCPermittedOperationPromptSelector :value } ];
     }
 
 #pragma mark Keychain Services Bridge
