@@ -260,24 +260,31 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
     CFArrayRef secOlderTrustedApps = NULL;
     CFStringRef secOlderDesc = NULL;
     SecKeychainPromptSelector secOlderPromptSel = 0;
+
     if ( ( resultCode = SecACLCopyContents( self->_secACL
                                           , &secOlderTrustedApps
                                           , &secOlderDesc
                                           , &secOlderPromptSel ) ) == errSecSuccess )
         {
+        CFArrayRef secNewerTrustedApps = secOlderTrustedApps;
+        CFStringRef secNewerDesc = secOlderDesc;
+        SecKeychainPromptSelector secNewerPromptSel = secOlderPromptSel;
+
+        BOOL haveNeedForUpdatingDescriptor = NO;
+        BOOL haveNeedForUpdatingTrustedApps = NO;
+        BOOL haveNeedForUpdatingPromptSelector = NO;
+
         for ( NSString* _Key in _NewValues )
             {
             // Update the descritor
             if ( [ _Key isEqualToString: _WSCPermittedOperationDescriptor ] )
                 {
                 NSString* newDescriptor = _NewValues[ _Key ];
-                if ( ![ ( __bridge NSString* )secOlderDesc isEqualToString: newDescriptor ] )
-                    // Set the description for the given access control list entry which was wrapped in receiver.
-                    if ( ( resultCode = SecACLSetContents( self->_secACL
-                                                         , secOlderTrustedApps
-                                                         , ( __bridge CFStringRef )newDescriptor
-                                                         , secOlderPromptSel ) ) != errSecSuccess )
-                        break;
+
+                // Don't worry, the below '=' is not a typo,
+                // we are using the result of assignment as a condition
+                if ( ( haveNeedForUpdatingDescriptor = ![ ( __bridge NSString* )secOlderDesc isEqualToString: newDescriptor ] ) )
+                    secNewerDesc = ( __bridge CFStringRef )newDescriptor;
                 }
 
             // Update the array of trusted applications
@@ -289,20 +296,17 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                 // If the new trusted applications is exactly equal current trusted applications
                 // (judge according to the unique identification of each trusted application),
                 // skip the update.
-                if ( _NewValues[ _Key ] != [ NSNull null ]
-                        && ![ currentTrustedApplications isEqualToArray: _NewValues[ _Key ] ] )
+                if ( ( haveNeedForUpdatingTrustedApps = // we are using the result of assignment as a condition
+                        ( _NewValues[ _Key ] != [ NSNull null ]
+                            && ![ currentTrustedApplications isEqualToArray: _NewValues[ _Key ] ] ) ) )
                     {
                     newSecTrustedApplications = [ NSMutableArray array ];
                     for ( WSCTrustedApplication* _TrustApp in _NewValues[ _Key ] )
                         if ( _TrustApp.secTrustedApplication )
                             [ newSecTrustedApplications addObject: ( __bridge id )_TrustApp.secTrustedApplication ];
-                    }
 
-                if ( ( resultCode = SecACLSetContents( self->_secACL
-                                                     , ( __bridge CFArrayRef )newSecTrustedApplications
-                                                     , secOlderDesc
-                                                     , secOlderPromptSel ) ) != errSecSuccess )
-                    break;
+                    secNewerTrustedApps = ( __bridge CFArrayRef )newSecTrustedApplications;
+                    }
                 }
 
             // Update the prompt selector
@@ -311,20 +315,22 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                 WSCPermittedOperationPromptContext newPromptSelector = 0;
                 [ ( NSValue* )( _NewValues[ _Key ] ) getValue: &newPromptSelector ];
 
-                if ( ( SecKeychainPromptSelector )newPromptSelector != secOlderPromptSel )
-                    if ( ( resultCode = SecACLSetContents( self->_secACL
-                                                         , secOlderTrustedApps
-                                                         , secOlderDesc
-                                                         , ( SecKeychainPromptSelector )newPromptSelector
-                                                         ) ) != errSecSuccess )
-                    break;
+                // Of cource, the below '=' is not a typo,
+                // we are using the result of assignment as a condition
+                if ( ( haveNeedForUpdatingPromptSelector = ( ( SecKeychainPromptSelector )newPromptSelector != secOlderPromptSel ) ) )
+                    secNewerPromptSel = ( SecKeychainPromptSelector )newPromptSelector;
                 }
             }
 
-        if ( resultCode == errSecSuccess )
+        if ( haveNeedForUpdatingDescriptor || haveNeedForUpdatingTrustedApps || haveNeedForUpdatingPromptSelector )
             {
-            SecAccessRef currentAccess = self->_hostProtectedKeychainItem.secAccess;
-            resultCode = SecKeychainItemSetAccess( self->_hostProtectedKeychainItem.secKeychainItem, currentAccess );
+            // Set the description for the given access control list entry which was wrapped in receiver.
+            resultCode = SecACLSetContents( self->_secACL, secNewerTrustedApps, secNewerDesc, secNewerPromptSel );
+            if ( resultCode == errSecSuccess )
+                {
+                SecAccessRef currentAccess = self->_hostProtectedKeychainItem.secAccess;
+                resultCode = SecKeychainItemSetAccess( self->_hostProtectedKeychainItem.secKeychainItem, currentAccess );
+                }
             }
 
         if ( secOlderTrustedApps )
