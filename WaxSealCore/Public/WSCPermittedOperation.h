@@ -95,8 +95,11 @@ typedef NS_ENUM( NSUInteger, WSCPermittedOperationTag )
   */
 typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
     {
+    /// Indicates that prompt selector bit is not set, this is default.
+      WSCPermittedOperationPromptContextNone = 0
+
     /// Indicates that a passphrase should be required for every access action.
-      WSCPermittedOperationPromptContextRequirePassphraseEveryAccess = kSecKeychainPromptRequirePassphase
+    , WSCPermittedOperationPromptContextRequirePassphraseEveryAccess = kSecKeychainPromptRequirePassphase
 
     /// Indicates that a passphrase should be required
     /// when an unsigned application attempts to use a keychain or a protected keychain item,
@@ -136,7 +139,7 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
   If it is—or if the permitted operation specifies that all applications are allowed access—then access is permitted
   without confirmation from the user (as long as the keychain is unlocked). 
   If there is an permitted operation entry for the operation but the calling application is not in the list of 
-  trusted applications, then the system prompts the user for the keychain password before permitting the application 
+  trusted applications, then the system prompts the user for the keychain passphrase before permitting the application 
   to access the item.
   
   The *WaxSealCore* frameword provides API to create, delete, read, and modify permitted operation entries.
@@ -232,6 +235,20 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
            of the description of [descriptor]([WSCPermittedOperation descriptor]) property.
   */
 @property ( retain, readwrite ) NSArray* trustedApplications;
+
+/** Masks that define when using a keychain or a protected keychain item should require a passphrase.
+
+  @discussion If you set the prompt context bit,
+              the user is prompted for the keychain passphrase each time a nontrusted application attempts to access the item,
+              even if the keychain is already unlocked.
+              
+  If the user clicks `Always Allow` in response to prompt dialog, the application is added to the 
+  trusted applications of the protected keychain item as a trusted application and the dialog does not appear again.
+  This bit is clear by default—you must set it explicitly for any permitted operation entry for which you want this extra protection.
+  There is one exception to this rule: the **Keychain Access** application always requires a passphrase to display the
+  secret data (e.g. passphrase) of a keychain item unless the **Keychain Access** application itself is included in the trusted application list.
+  */
+@property ( assign, readwrite ) WSCPermittedOperationPromptContext promptContext;
 
 /** The protected keychain item that the permitted operation represented by receiver applying to.
   */

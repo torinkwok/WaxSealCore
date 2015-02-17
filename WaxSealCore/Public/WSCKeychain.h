@@ -530,7 +530,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   The corresponding value is an Boolean value that indicates whether the item is invisible.
 
   + `WSCKeychainItemAttributeNegative`
-  The corresponding value is an Boolean value that indicates whether there is a valid password associated with this keychain item.
+  The corresponding value is an Boolean value that indicates whether there is a valid passphrase associated with this keychain item.
 
   + `WSCKeychainItemAttributeAccount`
   The corresponding value is an `NSString` object that identifies the user account of a passphrase item.

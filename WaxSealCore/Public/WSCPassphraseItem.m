@@ -273,7 +273,7 @@
         NSDictionary* searchCriteriaDict = nil;
         WSCKeychainItemClass classOfReceiver = [ self p_itemClass: nil ];
 
-        // Get the search criteria for the Internet or application password item.
+        // Get the search criteria for the Internet or application passphrase item.
         // we need only one keychain item satisfying the given search criteria
         // to proof the keychain item represented by receiver is still valid.
         if ( classOfReceiver == WSCKeychainItemClassInternetPassphraseItem )
