@@ -137,10 +137,10 @@
     NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithData: self.httpsPassphrase_testCase0.passphrase
                                                          encoding: NSUTF8StringEncoding ] autorelease ] );
 
-//    restrictedOperation_testCase0.trustedApplications = @[];
-//    restrictedOperation_testCase0.promptContext = WSCPermittedOperationPromptContextRequirePassphraseEveryAccess;
-//    NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithData: self.httpsPassphrase_testCase0.passphrase
-//                                                         encoding: NSUTF8StringEncoding ] autorelease ] );
+    restrictedOperation_testCase0.trustedApplications = @[];
+    restrictedOperation_testCase0.promptContext = WSCPermittedOperationPromptContextRequirePassphraseEveryAccess;
+    NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithData: self.httpsPassphrase_testCase0.passphrase
+                                                         encoding: NSUTF8StringEncoding ] autorelease ] );
 
     restrictedOperation_testCase0.trustedApplications = nil;
     XCTAssertNil( restrictedOperation_testCase0.trustedApplications );

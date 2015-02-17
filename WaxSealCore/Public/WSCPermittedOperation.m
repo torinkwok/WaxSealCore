@@ -293,12 +293,25 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                 NSArray* currentTrustedApplications = [ self p_retrieveContents: @[ _WSCPermittedOperationTrustedApplications ] ][ _WSCPermittedOperationTrustedApplications ];
                 NSMutableArray* newSecTrustedApplications = nil;
 
-                // If the new trusted applications is exactly equal current trusted applications
+                // the below '=' is not a typo,
+                // we are using the result of assignment as a condition
+                if ( ( haveNeedForUpdatingTrustedApps =
+                        // If current trusted applications list is currently not nil,
+                        // (that is, any application can use the protected keychain with which
+                        // the permitted operation represented by receiver associated)
+                        // while the new trusted applications list is nil
+                        // otherwise, skip the update
+                        ( secOlderTrustedApps && ( _NewValues[ _Key ] == [ NSNull null ] ) ) ) )
+                    secNewerTrustedApps = NULL;
+
+                // If the new trusted applications is exactly equal to current trusted applications
                 // (judge according to the unique identification of each trusted application),
-                // skip the update.
-                if ( ( haveNeedForUpdatingTrustedApps = // we are using the result of assignment as a condition
-                        ( _NewValues[ _Key ] != [ NSNull null ]
-                            && ![ currentTrustedApplications isEqualToArray: _NewValues[ _Key ] ] ) ) )
+                // skip the update
+                else if ( ( haveNeedForUpdatingTrustedApps = // the '=' is not a typo, we are using the result of assignment as a condition
+                            // New value must be kind of NSArray class
+                            ( [ _NewValues[ _Key ] isKindOfClass: [ NSArray class ] ]
+                                // Current trusted applications must not exactly equal to the new trusted ones
+                                && ![ currentTrustedApplications isEqualToArray: _NewValues[ _Key ] ] ) ) )
                     {
                     newSecTrustedApplications = [ NSMutableArray array ];
                     for ( WSCTrustedApplication* _TrustApp in _NewValues[ _Key ] )
