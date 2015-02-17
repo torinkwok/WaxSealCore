@@ -169,6 +169,8 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
               that appears in the dialog box when the user is prompted for permission to use the item. 
               Note that this descriptor is not necessarily the same as the one displayed for the item
               by the **Keychain Access** application.
+              When you use this property in the form of write property (or setDescriptor:), 
+              if the current descriptor is exactly equal to the new descriptor, do nothing.
               
   @warning Because an permitted operation entry is always associated with an protected keychain item,
            when you modify an permitted operation entry, you are modifying its host protected keychain item as well. 
@@ -224,7 +226,8 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
               class method to create trusted application objects.
   
   When you use the part of write property (or the form of setTrustedApplications:),
-  if you pass to `nil`, then any application can use the protected keychain 
+  if the current trusted applications is exactly equal to the trusted applications, do nothing.
+  If you pass to `nil`, then any application can use the protected keychain
   with which the permitted operation represented by receiver associated.
   If you pass an empty array, then all applications are treated as untrusted.
   
@@ -248,6 +251,9 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
   There is one exception to this rule: the **Keychain Access** application always requires a passphrase to display the
   secret data (e.g. passphrase) of a keychain item unless the **Keychain Access** application itself is included in the trusted application list.
   
+  When you use this property in the form of write property (or setPromptContext:),
+  if the current prompt context is exactly equal to the new prompt context, do nothing.
+
   @warning Because an permitted operation entry is always associated with an protected keychain item,
            when you modify an permitted operation entry, you are modifying its host protected keychain item as well. 
            Therefore, there is no need for a separate API to write a modified permitted operation entry 
