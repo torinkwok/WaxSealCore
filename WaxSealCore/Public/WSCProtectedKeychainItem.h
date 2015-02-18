@@ -70,7 +70,9 @@
                               If you set this parameter to `nil`, then any application can use this item. 
                               If you pass an empty array, then there are no trusted applications.
                               
-  @param _Operations An unsigned integer bit field containing any of the operation tag masks described in ["WSCPermittedOperationTag Constants Reference"](WSCPermittedOperationTag).
+  @param _Operations An unsigned integer bit field containing any of the operation tag masks described in 
+                     ["WSCPermittedOperationTag Constants Reference"](WSCPermittedOperationTag),
+                     combined using the C bitwise `OR` operator.
                               
   @param _PromptContext A set of prompt context masks. See `WSCPermittedOperationPromptContext` for possible values.
   

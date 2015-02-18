@@ -262,6 +262,17 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
   */
 @property ( assign, readwrite ) WSCPermittedOperationPromptContext promptContext;
 
+/** An unsigned integer bit field containing any of the operation tag masks 
+    described in ["WSCPermittedOperationTag Constants Reference"](WSCPermittedOperationTag).
+    
+  @discussion Use this read-write property to retrieve the set of operations 
+              for the permitted operation entry represented by receiver.
+              
+  You can examine individual flag settings using the C bitwise `AND` operator with the 
+  predefined operation tag masks described in ["WSCPermittedOperationTag Constants Reference"](WSCPermittedOperationTag).
+  */
+@property ( assign, readwrite ) WSCPermittedOperationTag operations;
+
 /** The protected keychain item that the permitted operation represented by receiver applying to.
   */
 @property ( unsafe_unretained, readonly ) WSCProtectedKeychainItem* hostProtectedKeychainItem;
