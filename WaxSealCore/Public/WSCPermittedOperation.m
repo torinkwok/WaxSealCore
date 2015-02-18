@@ -37,7 +37,6 @@
 #import "WSCTrustedApplication.h"
 
 #import "_WSCPermittedOperationPrivate.h"
-#import "_WSCProtectedKeychainItemPrivate.h"
 #import "_WSCKeychainErrorPrivate.h"
 
 NSString static* const _WSCPermittedOperationDescriptor = @"Descritor";
@@ -112,6 +111,36 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
     {
     NSValue* value = [ NSValue valueWithBytes: &_NewPromptContext objCType: @encode( WSCPermittedOperationPromptContext ) ];
     [ self p_updatePermittedOperation: @{ _WSCPermittedOperationPromptSelector :value } ];
+    }
+
+/* An unsigned integer bit field containing any of the operation tag masks
+ */
+- ( WSCPermittedOperationTag ) operations
+    {
+    CFArrayRef secAuthorizations = NULL;
+    WSCPermittedOperationTag operationsTag = 0;
+
+    if ( ( secAuthorizations = SecACLCopyAuthorizations( self.secACL ) ) )
+        // Convert the given array of CoreFoundation-string representing the autorization key.
+        // to an unsigned integer bit field containing any of the operation tag masks.
+        operationsTag = _WSCPermittedOperationMasksFromSecAuthorizations( ( __bridge NSArray* )secAuthorizations );
+
+    return operationsTag;
+    }
+
+- ( void ) setOperations: ( WSCPermittedOperationTag )_Operation
+    {
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
+
+    // Convert the given unsigned integer bit field containing any of the operation tag masks
+    // to the array of CoreFoundation-string representing the autorization key.
+    CFArrayRef secAuthorizations = ( __bridge CFArrayRef )_WACSecAuthorizationsFromPermittedOperationMasks( _Operation );
+    resultCode = SecACLUpdateAuthorizations( self.secACL, secAuthorizations );
+
+    if ( resultCode != errSecSuccess )
+        error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+    _WSCPrintNSErrorForLog( error );
     }
 
 #pragma mark Keychain Services Bridge

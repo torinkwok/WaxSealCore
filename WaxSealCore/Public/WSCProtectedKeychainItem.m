@@ -38,7 +38,6 @@
 
 #import "_WSCKeychainErrorPrivate.h"
 #import "_WSCKeychainItemPrivate.h"
-#import "_WSCProtectedKeychainItemPrivate.h"
 #import "_WSCPermittedOperationPrivate.h"
 
 @implementation WSCProtectedKeychainItem
@@ -96,7 +95,7 @@
             {
             // Extract operation tags from the given bits field
             // to construct a list of authorizations that will be used for the secNewACL.
-            NSArray* authorizations = [ self p_authorizationsFromPermittedOperationMasks: _Operations ];
+            NSArray* authorizations = _WACSecAuthorizationsFromPermittedOperationMasks( _Operations );
 
             // Update the authorizations of the secNewACL.
             // Because an ACL object is always associated with an access object,
@@ -171,61 +170,6 @@
     return [ [ mutablePermittedOperations copy ] autorelease ];
     }
 
-@end // WSCProtectedKeychainItem
-
-#pragma mark WSCProtectedKeychainItem + WSCProtectedKeychainItemPrivateManagingPermittedOperations
-@implementation WSCProtectedKeychainItem ( WSCProtectedKeychainItemPrivateManagingPermittedOperations )
-
-NSUInteger p_permittedOperationTags[] =
-    { WSCPermittedOperationTagLogin, WSCPermittedOperationTagGenerateKey, WSCPermittedOperationTagDelete
-    , WSCPermittedOperationTagEncrypt, WSCPermittedOperationTagDecrypt
-    , WSCPermittedOperationTagExportEncryptedKey, WSCPermittedOperationTagExportUnencryptedKey
-    , WSCPermittedOperationTagImportEncryptedKey, WSCPermittedOperationTagImportUnencryptedKey
-    , WSCPermittedOperationTagSign, WSCPermittedOperationTagCreateOrVerifyMessageAuthCode
-    , WSCPermittedOperationTagDerive, WSCPermittedOperationTagChangePermittedOperationItself
-    , WSCPermittedOperationTagChangeOwner, WSCPermittedOperationTagAnyOperation
-    };
-
-/* Convert the given Cocoa-array of WSCTrustedApplication
- * to the CoreFoundation-array of secTrustedApplicationRef
- */
-- ( NSArray* ) p_authorizationsFromPermittedOperationMasks: ( WSCPermittedOperationTag )_Operations
-    {
-    NSMutableArray* authorizations = [ NSMutableArray array ];
-
-    if ( ( _Operations & WSCPermittedOperationTagAnyOperation ) != 0 )
-        [ authorizations addObject: ( __bridge id )kSecACLAuthorizationAny ];
-    else
-        {
-        int prefinedAuthorizationTags = sizeof( p_permittedOperationTags ) / sizeof( p_permittedOperationTags[ 0 ] );
-        for ( int _Index = 0; _Index < prefinedAuthorizationTags; _Index++ )
-            {
-            if ( ( _Operations & p_permittedOperationTags[ _Index ] ) != 0 )
-                {
-                switch ( p_permittedOperationTags[ _Index ] )
-                    {
-                    case WSCPermittedOperationTagLogin: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationLogin ]; break;
-                    case WSCPermittedOperationTagGenerateKey: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationGenKey ]; break;
-                    case WSCPermittedOperationTagDelete: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationDelete ]; break;
-                    case WSCPermittedOperationTagEncrypt: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationEncrypt ]; break;
-                    case WSCPermittedOperationTagDecrypt: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationDecrypt ]; break;
-                    case WSCPermittedOperationTagExportEncryptedKey: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationExportWrapped ]; break;
-                    case WSCPermittedOperationTagExportUnencryptedKey: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationExportClear ]; break;
-                    case WSCPermittedOperationTagImportEncryptedKey: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationImportWrapped ]; break;
-                    case WSCPermittedOperationTagImportUnencryptedKey: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationImportClear ]; break;
-                    case WSCPermittedOperationTagSign: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationSign ]; break;
-                    case WSCPermittedOperationTagCreateOrVerifyMessageAuthCode: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationMAC ]; break;
-                    case WSCPermittedOperationTagDerive: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationDerive ]; break;
-                    case WSCPermittedOperationTagChangePermittedOperationItself: [ authorizations addObject: ( __bridge id )( CFTypeRef )( CFSTR( "ACLAuthorizationChangeACL" ) ) ]; break;
-                    case WSCPermittedOperationTagChangeOwner: [ authorizations addObject: ( __bridge id )( CFTypeRef )( CFSTR( "ACLAuthorizationChangeOwner" ) ) ]; break;
-                    }
-                }
-            }
-        }
-
-    return [ [ authorizations copy ] autorelease ];
-    }
-
 #pragma mark Keychain Services Bridge
 
 /* The reference of the `SecAccess` opaque object, which wrapped by `WSCProtectedKeychainItem` object. (read-only)
@@ -236,7 +180,7 @@ NSUInteger p_permittedOperationTags[] =
     return self->_secAccess;
     }
 
-@end // WSCProtectedKeychainItem + WSCProtectedKeychainItemPrivateManagingPermittedOperations
+@end // WSCProtectedKeychainItem
 
 //////////////////////////////////////////////////////////////////////////////
 

@@ -32,6 +32,7 @@
  ****************************************************************************/
 
 #import "WSCKeychain.h"
+#import "WSCPermittedOperation.h"
 
 #define __THROW_EXCEPTION__WHEN_INVOKED_PURE_VIRTUAL_METHOD__           \
     @throw [ NSException exceptionWithName: NSGenericException  \
@@ -96,8 +97,15 @@
 
 void _WSCFillErrorParamWithSecErrorCode( OSStatus _ResultCode, NSError** _ErrorParam );
 NSString* _WSCFourCharCode2NSString( FourCharCode _FourCharCodeValue );
-
 NSString* _WSCSchemeStringForProtocol( WSCInternetProtocolType _Protocol );
+
+// Convert the given unsigned integer bit field containing any of the operation tag masks
+// to the array of CoreFoundation-string representing the autorization key.
+NSArray* _WACSecAuthorizationsFromPermittedOperationMasks( WSCPermittedOperationTag _Operations );
+
+// Convert the given array of CoreFoundation-string representing the autorization key.
+// to an unsigned integer bit field containing any of the operation tag masks.
+WSCPermittedOperationTag _WSCPermittedOperationMasksFromSecAuthorizations( NSArray* _Authorizations );
 
 //////////////////////////////////////////////////////////////////////////////
 

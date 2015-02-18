@@ -122,6 +122,106 @@ NSString* _WSCSchemeStringForProtocol( WSCInternetProtocolType _Protocol )
         }
     }
 
+/* Convert the given unsigned integer bit field containing any of the operation tag masks
+ * to the array of CoreFoundation-string representing the autorization key.
+ */
+NSUInteger p_permittedOperationTags[] =
+    { WSCPermittedOperationTagLogin, WSCPermittedOperationTagGenerateKey, WSCPermittedOperationTagDelete
+    , WSCPermittedOperationTagEncrypt, WSCPermittedOperationTagDecrypt
+    , WSCPermittedOperationTagExportEncryptedKey, WSCPermittedOperationTagExportUnencryptedKey
+    , WSCPermittedOperationTagImportEncryptedKey, WSCPermittedOperationTagImportUnencryptedKey
+    , WSCPermittedOperationTagSign, WSCPermittedOperationTagCreateOrVerifyMessageAuthCode
+    , WSCPermittedOperationTagDerive, WSCPermittedOperationTagChangePermittedOperationItself
+    , WSCPermittedOperationTagChangeOwner, WSCPermittedOperationTagAnyOperation
+    };
+
+NSArray* _WACSecAuthorizationsFromPermittedOperationMasks( WSCPermittedOperationTag _Operations )
+    {
+    NSMutableArray* authorizations = [ NSMutableArray array ];
+
+    if ( ( _Operations & WSCPermittedOperationTagAnyOperation ) != 0 )
+        [ authorizations addObject: ( __bridge id )kSecACLAuthorizationAny ];
+    else
+        {
+        int prefinedAuthorizationTags = sizeof( p_permittedOperationTags ) / sizeof( p_permittedOperationTags[ 0 ] );
+        for ( int _Index = 0; _Index < prefinedAuthorizationTags; _Index++ )
+            {
+            if ( ( _Operations & p_permittedOperationTags[ _Index ] ) != 0 )
+                {
+                switch ( p_permittedOperationTags[ _Index ] )
+                    {
+                    case WSCPermittedOperationTagLogin: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationLogin ]; break;
+                    case WSCPermittedOperationTagGenerateKey: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationGenKey ]; break;
+                    case WSCPermittedOperationTagDelete: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationDelete ]; break;
+                    case WSCPermittedOperationTagEncrypt: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationEncrypt ]; break;
+                    case WSCPermittedOperationTagDecrypt: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationDecrypt ]; break;
+                    case WSCPermittedOperationTagExportEncryptedKey: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationExportWrapped ]; break;
+                    case WSCPermittedOperationTagExportUnencryptedKey: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationExportClear ]; break;
+                    case WSCPermittedOperationTagImportEncryptedKey: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationImportWrapped ]; break;
+                    case WSCPermittedOperationTagImportUnencryptedKey: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationImportClear ]; break;
+                    case WSCPermittedOperationTagSign: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationSign ]; break;
+                    case WSCPermittedOperationTagCreateOrVerifyMessageAuthCode: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationMAC ]; break;
+                    case WSCPermittedOperationTagDerive: [ authorizations addObject: ( __bridge id )kSecACLAuthorizationDerive ]; break;
+                    case WSCPermittedOperationTagChangePermittedOperationItself: [ authorizations addObject: ( __bridge id )( CFTypeRef )( CFSTR( "ACLAuthorizationChangeACL" ) ) ]; break;
+                    case WSCPermittedOperationTagChangeOwner: [ authorizations addObject: ( __bridge id )( CFTypeRef )( CFSTR( "ACLAuthorizationChangeOwner" ) ) ]; break;
+                    }
+                }
+            }
+        }
+
+    return [ [ authorizations copy ] autorelease ];
+    }
+
+/* Convert the given array of CoreFoundation-string representing the autorization key.
+ * to an unsigned integer bit field containing any of the operation tag masks.
+ */
+#define ARE_STRINGS_EQUAL( _LhsString, _RhsSecString ) \
+    [ _LhsString isEqualToString: ( __bridge NSString* )_RhsSecString ]
+
+WSCPermittedOperationTag _WSCPermittedOperationMasksFromSecAuthorizations( NSArray* _Authorizations )
+    {
+    WSCPermittedOperationTag operationTag = 0;
+
+    if ( [ _Authorizations containsObject: ( __bridge NSString* )kSecACLAuthorizationAny ] )
+        operationTag |= WSCPermittedOperationTagAnyOperation;
+    else
+        {
+        for ( NSString* _AuthorizationKey in _Authorizations )
+            {
+            if ( ARE_STRINGS_EQUAL( _AuthorizationKey, kSecACLAuthorizationLogin ) )
+                operationTag |= WSCPermittedOperationTagLogin;
+            else if ( ARE_STRINGS_EQUAL( _AuthorizationKey, kSecACLAuthorizationGenKey ) )
+                operationTag |= WSCPermittedOperationTagGenerateKey;
+            else if ( ARE_STRINGS_EQUAL( _AuthorizationKey, kSecACLAuthorizationDelete ) )
+                operationTag |= WSCPermittedOperationTagDelete;
+            else if ( ARE_STRINGS_EQUAL( _AuthorizationKey, kSecACLAuthorizationEncrypt ) )
+                operationTag |= WSCPermittedOperationTagEncrypt;
+            else if ( ARE_STRINGS_EQUAL( _AuthorizationKey, kSecACLAuthorizationDecrypt ) )
+                operationTag |= WSCPermittedOperationTagDecrypt;
+            else if ( ARE_STRINGS_EQUAL( _AuthorizationKey, kSecACLAuthorizationExportWrapped ) )
+                operationTag |= WSCPermittedOperationTagExportEncryptedKey;
+            else if ( ARE_STRINGS_EQUAL( _AuthorizationKey, kSecACLAuthorizationExportClear ) )
+                operationTag |= WSCPermittedOperationTagExportUnencryptedKey;
+            else if ( ARE_STRINGS_EQUAL( _AuthorizationKey, kSecACLAuthorizationImportWrapped ) )
+                operationTag |= WSCPermittedOperationTagImportEncryptedKey;
+            else if ( ARE_STRINGS_EQUAL( _AuthorizationKey, kSecACLAuthorizationImportClear ) )
+                operationTag |= WSCPermittedOperationTagImportUnencryptedKey;
+            else if ( ARE_STRINGS_EQUAL( _AuthorizationKey, kSecACLAuthorizationSign ) )
+                operationTag |= WSCPermittedOperationTagSign;
+            else if ( ARE_STRINGS_EQUAL( _AuthorizationKey, kSecACLAuthorizationMAC ) )
+                operationTag |= WSCPermittedOperationTagCreateOrVerifyMessageAuthCode;
+            else if ( ARE_STRINGS_EQUAL( _AuthorizationKey, kSecACLAuthorizationDerive ) )
+                operationTag |= WSCPermittedOperationTagDerive;
+            else if ( ARE_STRINGS_EQUAL( _AuthorizationKey, CFSTR( "ACLAuthorizationChangeACL" ) ) )
+                operationTag |= WSCPermittedOperationTagChangePermittedOperationItself;
+            else if ( ARE_STRINGS_EQUAL( _AuthorizationKey, CFSTR( "ACLAuthorizationChangeOwner" ) ) )
+                operationTag |= WSCPermittedOperationTagChangeOwner;
+            }
+        }
+
+    return operationTag;
+    }
+
 //////////////////////////////////////////////////////////////////////////////
 
 /*****************************************************************************
