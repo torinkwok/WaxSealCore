@@ -110,6 +110,33 @@
     [ self.httpsPassphrase_testCase0 release ];
     }
 
+- ( void ) testOperationsProperty
+    {
+    // ----------------------------------------------------------------------------------
+    // Test Case 0
+    // ----------------------------------------------------------------------------------
+    NSArray* permittedOperations_testCase0 = nil;
+    permittedOperations_testCase0 = [ self.httpsPassphrase_testCase0 permittedOperations ];
+
+    WSCPermittedOperation* restrictedOperation_testCase0 = nil;
+    for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
+        {
+        if ( _PermittedOperation.operations & WSCPermittedOperationTagDecrypt )
+            {
+            restrictedOperation_testCase0 = _PermittedOperation;
+            break;
+            }
+        }
+
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ Before Modifying - Test Case 0 - HTTPS Passphrase Item +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+
+    restrictedOperation_testCase0.operations |= ( WSCPermittedOperationTagGenerateKey | WSCPermittedOperationTagLogin );
+
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 0 - HTTPS Passphrase Item +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+    }
+
 - ( void ) testTrustedApplicationsProperty
     {
     // ----------------------------------------------------------------------------------
@@ -121,8 +148,7 @@
     WSCPermittedOperation* restrictedOperation_testCase0 = nil;
     for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
         {
-        NSArray* trustedApplications = [ _PermittedOperation trustedApplications ];
-        if ( trustedApplications.count > 0 )
+        if ( _PermittedOperation.operations & WSCPermittedOperationTagDecrypt )
             {
             restrictedOperation_testCase0 = _PermittedOperation;
             break;

@@ -38,6 +38,7 @@
 
 #import "_WSCPermittedOperationPrivate.h"
 #import "_WSCKeychainErrorPrivate.h"
+#import "_WSCTrustedApplicationPrivate.h"
 
 NSString static* const _WSCPermittedOperationDescriptor = @"Descritor";
 NSString static* const _WSCPermittedOperationTrustedApplications = @"Trusted Applications";
@@ -121,9 +122,12 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
     WSCPermittedOperationTag operationsTag = 0;
 
     if ( ( secAuthorizations = SecACLCopyAuthorizations( self.secACL ) ) )
+        {
         // Convert the given array of CoreFoundation-string representing the autorization key.
         // to an unsigned integer bit field containing any of the operation tag masks.
         operationsTag = _WSCPermittedOperationMasksFromSecAuthorizations( ( __bridge NSArray* )secAuthorizations );
+        CFRelease( secAuthorizations );
+        }
 
     return operationsTag;
     }
@@ -133,14 +137,34 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
     NSError* error = nil;
     OSStatus resultCode = errSecSuccess;
 
+    // Get the current authorizations.
+    CFArrayRef secOlderAuthorizations = SecACLCopyAuthorizations( self.secACL );
+
     // Convert the given unsigned integer bit field containing any of the operation tag masks
     // to the array of CoreFoundation-string representing the autorization key.
-    CFArrayRef secAuthorizations = ( __bridge CFArrayRef )_WACSecAuthorizationsFromPermittedOperationMasks( _Operation );
-    resultCode = SecACLUpdateAuthorizations( self.secACL, secAuthorizations );
+    CFArrayRef secNewerAuthorizations = ( __bridge CFArrayRef )_WACSecAuthorizationsFromPermittedOperationMasks( _Operation );
 
-    if ( resultCode != errSecSuccess )
-        error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
-    _WSCPrintNSErrorForLog( error );
+    @autoreleasepool
+        {
+        // secOlderAuthorizations may be completely equal to secNewerAuthorizations
+        // but the order of their elements may be not completely equal.
+        // Therefore, we convert two arrays to two temporary NSSet then compare them.
+        NSSet* tmpOlderAuthorizationsSet = [ NSSet setWithArray: ( __bridge NSArray* )secOlderAuthorizations ];
+        NSSet* tmpNewerAuthorizationsSet = [ NSSet setWithArray: ( __bridge NSArray* )secNewerAuthorizations ];
+
+        if ( ![ tmpOlderAuthorizationsSet isEqualToSet: tmpNewerAuthorizationsSet ] )
+            {
+            if ( ( resultCode = SecACLUpdateAuthorizations( self.secACL, secNewerAuthorizations ) ) == errSecSuccess )
+                {
+                SecAccessRef currentAccess = self.hostProtectedKeychainItem.secAccess;
+                resultCode = SecKeychainItemSetAccess( self.hostProtectedKeychainItem.secKeychainItem, currentAccess );
+                }
+
+            if ( resultCode != errSecSuccess )
+                error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+            _WSCPrintNSErrorForLog( error );
+            }
+        }
     }
 
 #pragma mark Keychain Services Bridge
@@ -316,7 +340,6 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
             // Update the array of trusted applications
             else if ( [ _Key isEqualToString: _WSCPermittedOperationTrustedApplications ] )
                 {
-                NSArray* currentTrustedApplications = [ self p_retrieveContents: @[ _WSCPermittedOperationTrustedApplications ] ][ _WSCPermittedOperationTrustedApplications ];
                 NSMutableArray* newSecTrustedApplications = nil;
 
                 // If current trusted applications list is currently not nil,
@@ -330,9 +353,9 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                 // If the new trusted applications is exactly equal to current trusted applications
                 // (judge according to the unique identification of each trusted application),
                 // skip the update
-                else if ( [ _NewValues[ _Key ] isKindOfClass: [ NSArray class ] ] // New value must be kind of NSArray class
-                            // Current trusted applications must not exactly equal to the new trusted ones
-                            && ![ currentTrustedApplications isEqualToArray: _NewValues[ _Key ] ] )
+
+                // Current trusted applications must not exactly equal to the new trusted ones
+                else if ( ![ _WSArrayOfTrustedAppsFromSecTrustedApps( secOlderTrustedApps ) isEqualToArray: _NewValues[ _Key ] ] )
                     {
                     newSecTrustedApplications = [ NSMutableArray array ];
                     for ( WSCTrustedApplication* _TrustApp in _NewValues[ _Key ] )

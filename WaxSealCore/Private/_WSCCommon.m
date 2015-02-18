@@ -33,6 +33,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "WSCTrustedApplication.h"
+
 #import "_WSCCommon.h"
 
 inline void _WSCFillErrorParamWithSecErrorCode( OSStatus _ResultCode, NSError** _ErrorParam )

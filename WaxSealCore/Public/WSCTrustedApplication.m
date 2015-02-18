@@ -177,6 +177,25 @@
 
 @end // WSCTrustedApplication + WSCTrustedApplicationPrivateInitialization
 
+/* Convert the CoreFoundation-array of SecTrustedApplicationRef
+ * to the Cocoa-array of WSCTrustedApplication objects
+ */
+NSArray* _WSArrayOfTrustedAppsFromSecTrustedApps( CFArrayRef _SecTrustedApps )
+    {
+    if ( !_SecTrustedApps )
+        return nil;
+
+    NSMutableArray* arrayOfTrustedApps = [ NSMutableArray array ];
+
+    for ( id _SecTrustedApp in ( __bridge NSArray* )_SecTrustedApps )
+        if ( _SecTrustedApp )
+            [ arrayOfTrustedApps addObject:
+                [ WSCTrustedApplication trustedApplicationWithSecTrustedApplicationRef:
+                    ( __bridge SecTrustedApplicationRef )_SecTrustedApp  ] ];
+
+    return [ [ arrayOfTrustedApps copy ] autorelease ];
+    }
+
 //////////////////////////////////////////////////////////////////////////////
 
 /*****************************************************************************
