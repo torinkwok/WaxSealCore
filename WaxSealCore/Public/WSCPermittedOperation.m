@@ -266,13 +266,12 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                                           , &secOlderDesc
                                           , &secOlderPromptSel ) ) == errSecSuccess )
         {
+        // The secNewer... contents are currently exactly equal to the secOlder... contents.
+        // If there is indeed a need for updating the any contents
+        // the value of secNewer... will be replaced with new contents.
         CFArrayRef secNewerTrustedApps = secOlderTrustedApps;
         CFStringRef secNewerDesc = secOlderDesc;
         SecKeychainPromptSelector secNewerPromptSel = secOlderPromptSel;
-
-        BOOL haveNeedForUpdatingDescriptor = NO;
-        BOOL haveNeedForUpdatingTrustedApps = NO;
-        BOOL haveNeedForUpdatingPromptSelector = NO;
 
         for ( NSString* _Key in _NewValues )
             {
@@ -281,9 +280,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                 {
                 NSString* newDescriptor = _NewValues[ _Key ];
 
-                // Don't worry, the below '=' is not a typo,
-                // we are using the result of assignment as a condition
-                if ( ( haveNeedForUpdatingDescriptor = ![ ( __bridge NSString* )secOlderDesc isEqualToString: newDescriptor ] ) )
+                if ( ![ ( __bridge NSString* )secOlderDesc isEqualToString: newDescriptor ] )
                     secNewerDesc = ( __bridge CFStringRef )newDescriptor;
                 }
 
@@ -293,25 +290,20 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                 NSArray* currentTrustedApplications = [ self p_retrieveContents: @[ _WSCPermittedOperationTrustedApplications ] ][ _WSCPermittedOperationTrustedApplications ];
                 NSMutableArray* newSecTrustedApplications = nil;
 
-                // the below '=' is not a typo,
-                // we are using the result of assignment as a condition
-                if ( ( haveNeedForUpdatingTrustedApps =
-                        // If current trusted applications list is currently not nil,
-                        // (that is, any application can use the protected keychain with which
-                        // the permitted operation represented by receiver associated)
-                        // while the new trusted applications list is nil
-                        // otherwise, skip the update
-                        ( secOlderTrustedApps && ( _NewValues[ _Key ] == [ NSNull null ] ) ) ) )
+                // If current trusted applications list is currently not nil,
+                // (that is, any application can use the protected keychain with which
+                // the permitted operation represented by receiver associated)
+                // while the new trusted applications list is nil
+                // otherwise, skip the update
+                if ( secOlderTrustedApps && ( _NewValues[ _Key ] == [ NSNull null ] ) )
                     secNewerTrustedApps = NULL;
 
                 // If the new trusted applications is exactly equal to current trusted applications
                 // (judge according to the unique identification of each trusted application),
                 // skip the update
-                else if ( ( haveNeedForUpdatingTrustedApps = // the '=' is not a typo, we are using the result of assignment as a condition
-                            // New value must be kind of NSArray class
-                            ( [ _NewValues[ _Key ] isKindOfClass: [ NSArray class ] ]
-                                // Current trusted applications must not exactly equal to the new trusted ones
-                                && ![ currentTrustedApplications isEqualToArray: _NewValues[ _Key ] ] ) ) )
+                else if ( [ _NewValues[ _Key ] isKindOfClass: [ NSArray class ] ] // New value must be kind of NSArray class
+                            // Current trusted applications must not exactly equal to the new trusted ones
+                            && ![ currentTrustedApplications isEqualToArray: _NewValues[ _Key ] ] )
                     {
                     newSecTrustedApplications = [ NSMutableArray array ];
                     for ( WSCTrustedApplication* _TrustApp in _NewValues[ _Key ] )
@@ -328,16 +320,18 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                 WSCPermittedOperationPromptContext newPromptSelector = 0;
                 [ ( NSValue* )( _NewValues[ _Key ] ) getValue: &newPromptSelector ];
 
-                // Of cource, the below '=' is not a typo,
-                // we are using the result of assignment as a condition
-                if ( ( haveNeedForUpdatingPromptSelector = ( ( SecKeychainPromptSelector )newPromptSelector != secOlderPromptSel ) ) )
+                if ( ( SecKeychainPromptSelector )newPromptSelector != secOlderPromptSel )
                     secNewerPromptSel = ( SecKeychainPromptSelector )newPromptSelector;
                 }
             }
 
-        if ( haveNeedForUpdatingDescriptor || haveNeedForUpdatingTrustedApps || haveNeedForUpdatingPromptSelector )
+        // If we have need for updating the contents
+        // otherwise, skip this step
+        if ( secNewerDesc != secOlderDesc
+                || secNewerTrustedApps != secOlderTrustedApps
+                || secNewerPromptSel != secOlderPromptSel )
             {
-            // Set the description for the given access control list entry which was wrapped in receiver.
+            // Set the new contents for the given access control list entry which was wrapped in receiver.
             resultCode = SecACLSetContents( self->_secACL, secNewerTrustedApps, secNewerDesc, secNewerPromptSel );
             if ( resultCode == errSecSuccess )
                 {
@@ -346,6 +340,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                 }
             }
 
+        // Done, kill them😈.
         if ( secOlderTrustedApps )
             CFRelease( secOlderTrustedApps );
 
