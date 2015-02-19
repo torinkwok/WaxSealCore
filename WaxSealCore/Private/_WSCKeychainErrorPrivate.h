@@ -41,6 +41,7 @@ NSString extern* const WSCKeychainItemIsInvalidErrorDescription;
 NSString extern* const WSCKeychainItemAttributeIsUniqueToInternetPassphraseErrorDescription;
 NSString extern* const WSCKeychainItemAttributeIsUniqueToApplicationPassphraseErrorDescription;
 NSString extern* const WSCKeychainItemPermissionDeniedErrorDescription;
+NSString extern* const WSCPermittedOperationFailedToChangeTheOwnerOfPermittedOperationErrorDescription;
 
 id extern const s_guard;
 void _WSCDontBeABitch( NSError** _Error, ... );

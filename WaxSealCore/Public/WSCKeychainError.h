@@ -77,6 +77,10 @@ typedef NS_ENUM( NSUInteger, WaxSealCoreErrorCode )
     /** Do not have permission to access the secret data of keychain item.
       */
     , WSCKeychainItemPermissionDeniedError = 9U
+
+    /** An invalid attempt to change the owner of a permitted operation entry.
+      */
+    , WSCPermittedOperationFailedToChangeTheOwnerOfPermittedOperationError = 10U
     };
 
 //////////////////////////////////////////////////////////////////////////////

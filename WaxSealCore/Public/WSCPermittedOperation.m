@@ -161,7 +161,15 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                 }
 
             if ( resultCode != errSecSuccess )
+                {
                 error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+
+                if ( resultCode == errSecInvalidOwnerEdit )
+                    error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                                 code: WSCPermittedOperationFailedToChangeTheOwnerOfPermittedOperationError
+                                             userInfo: @{ NSUnderlyingErrorKey : error } ];
+                }
+
             _WSCPrintNSErrorForLog( error );
             }
         }

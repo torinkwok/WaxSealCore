@@ -110,16 +110,20 @@
     [ self.httpsPassphrase_testCase0 release ];
     }
 
+
+
 - ( void ) testOperationsProperty
     {
+    NSError* error = nil;
+
+    NSArray* commonPermittedOperations = nil;
+    commonPermittedOperations = [ self.httpsPassphrase_testCase0 permittedOperations ];
+
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-    NSArray* permittedOperations_testCase0 = nil;
-    permittedOperations_testCase0 = [ self.httpsPassphrase_testCase0 permittedOperations ];
-
     WSCPermittedOperation* restrictedOperation_testCase0 = nil;
-    for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
+    for ( WSCPermittedOperation* _PermittedOperation in commonPermittedOperations )
         {
         if ( _PermittedOperation.operations & WSCPermittedOperationTagDecrypt )
             {
@@ -128,12 +132,133 @@
             }
         }
 
-    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ Before Modifying - Test Case 0 - HTTPS Passphrase Item +++++++++ +++++++++ +++++++++\n" );
+    WSCPermittedOperationTag olderTag_testCase0 = restrictedOperation_testCase0.operations;
+
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ Before Modifying - Test Case 0 - HTTPS Passphrase Item #0 +++++++++ +++++++++ +++++++++\n" );
     _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
 
     restrictedOperation_testCase0.operations |= ( WSCPermittedOperationTagGenerateKey | WSCPermittedOperationTagLogin );
+    XCTAssertEqual( restrictedOperation_testCase0.operations, ( olderTag_testCase0 | WSCPermittedOperationTagGenerateKey | WSCPermittedOperationTagLogin ) );
 
-    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 0 - HTTPS Passphrase Item +++++++++ +++++++++ +++++++++\n" );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 0 - HTTPS Passphrase Item #1 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+
+    restrictedOperation_testCase0.operations = WSCPermittedOperationTagGenerateKey;
+    XCTAssertEqual( restrictedOperation_testCase0.operations, WSCPermittedOperationTagGenerateKey );
+
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 0 - HTTPS Passphrase Item #2 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+
+    restrictedOperation_testCase0.operations = olderTag_testCase0;
+    XCTAssertEqual( restrictedOperation_testCase0.operations, olderTag_testCase0 );
+
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 0 - HTTPS Passphrase Item #3 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 1
+    // ----------------------------------------------------------------------------------
+    WSCPermittedOperation* restrictedOperation_testCase1 = nil;
+    for ( WSCPermittedOperation* _PermittedOperation in commonPermittedOperations )
+        {
+        if ( _PermittedOperation.operations & WSCPermittedOperationTagEncrypt )
+            {
+            restrictedOperation_testCase1 = _PermittedOperation;
+            break;
+            }
+        }
+
+    WSCPermittedOperationTag olderTag_testCase1 = restrictedOperation_testCase1.operations;
+
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ Before Modifying - Test Case 1 - HTTPS Passphrase Item #0 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+
+    restrictedOperation_testCase1.operations |= ( WSCPermittedOperationTagGenerateKey | WSCPermittedOperationTagLogin );
+
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 1 - HTTPS Passphrase Item #1 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+
+    restrictedOperation_testCase1.operations = WSCPermittedOperationTagGenerateKey;
+
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 1 - HTTPS Passphrase Item #2 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+
+    restrictedOperation_testCase1.operations = olderTag_testCase1;
+
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 1 - HTTPS Passphrase Item #3 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 2
+    // ----------------------------------------------------------------------------------
+    WSCPermittedOperation* restrictedOperation_testCase2 =
+        [ self.httpsPassphrase_testCase0 addPermittedOperationWithDescription: @"I love OS X"
+                                                          trustedApplications: @[ self.iPhoto ]
+                                                                forOperations: WSCPermittedOperationTagSign
+                                                                promptContext: 0
+                                                                        error: &error ];
+    XCTAssertNotNil( restrictedOperation_testCase2 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    WSCPermittedOperationTag olderTag_testCase2 = restrictedOperation_testCase2.operations;
+
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ Before Modifying - Test Case 2 - HTTPS Passphrase Item #0 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+
+    restrictedOperation_testCase2.operations |= WSCPermittedOperationTagLogin;
+    XCTAssertEqual( restrictedOperation_testCase2.operations, ( olderTag_testCase2 | WSCPermittedOperationTagLogin ) );
+
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 2 - HTTPS Passphrase Item #1 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+
+    restrictedOperation_testCase2.operations = WSCPermittedOperationTagEncrypt;
+    XCTAssertEqual( restrictedOperation_testCase2.operations, WSCPermittedOperationTagEncrypt );
+
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 2 - HTTPS Passphrase Item #2 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+
+    restrictedOperation_testCase2.operations = olderTag_testCase2;
+    XCTAssertEqual( restrictedOperation_testCase2.operations, olderTag_testCase2 );
+
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 2 - HTTPS Passphrase Item #3 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 0
+    // ----------------------------------------------------------------------------------
+    WSCPermittedOperation* restrictedOperation_negativeTestCase0 = nil;
+    for ( WSCPermittedOperation* _PermittedOperation in commonPermittedOperations )
+        {
+        if ( _PermittedOperation.operations & WSCPermittedOperationTagChangePermittedOperationItself )
+            {
+            restrictedOperation_negativeTestCase0 = _PermittedOperation;
+            break;
+            }
+        }
+
+    WSCPermittedOperationTag olderTag_negativeTestCase0 = restrictedOperation_negativeTestCase0.operations;
+
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ Before Modifying - Negative Test Case 0 - HTTPS Passphrase Item #0 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+
+    restrictedOperation_negativeTestCase0.operations |= ( WSCPermittedOperationTagGenerateKey | WSCPermittedOperationTagLogin );
+    XCTAssertNotEqual( restrictedOperation_negativeTestCase0.operations, ( olderTag_negativeTestCase0 | WSCPermittedOperationTagGenerateKey | WSCPermittedOperationTagLogin ) );
+    XCTAssertEqual( restrictedOperation_negativeTestCase0.operations, olderTag_negativeTestCase0 );
+
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Negative Test Case 0 - HTTPS Passphrase Item #1 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+
+    restrictedOperation_negativeTestCase0.operations = WSCPermittedOperationTagGenerateKey;
+    XCTAssertNotEqual( restrictedOperation_negativeTestCase0.operations, WSCPermittedOperationTagGenerateKey );
+    XCTAssertEqual( restrictedOperation_negativeTestCase0.operations, olderTag_negativeTestCase0 );
+
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Negative Test Case 0 - HTTPS Passphrase Item #2 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+
+    restrictedOperation_negativeTestCase0.operations = olderTag_negativeTestCase0;
+
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 2 - HTTPS Passphrase Item #3 +++++++++ +++++++++ +++++++++\n" );
     _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
     }
 

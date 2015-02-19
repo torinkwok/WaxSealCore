@@ -75,6 +75,7 @@
                      combined using the C bitwise `OR` operator.
                               
   @param _PromptContext A set of prompt context masks. See `WSCPermittedOperationPromptContext` for possible values.
+                        By default, the value of this parameter is `0`.
   
   @param _Error On input, a pointer to an error object.
                 If an error occurs, this pointer is set to an actual error object containing the error information.

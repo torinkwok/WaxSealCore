@@ -47,6 +47,7 @@ NSString* const WSCKeychainItemIsInvalidErrorDescription            = @"Current 
 NSString* const WSCKeychainItemAttributeIsUniqueToInternetPassphraseErrorDescription    = @"The specified attribute was not be supported since this attribute is unique to the Internet passphrase.";
 NSString* const WSCKeychainItemAttributeIsUniqueToApplicationPassphraseErrorDescription = @"The specified attribute was not be supported since this attribute is unique to the application passphrase.";
 NSString* const WSCKeychainItemPermissionDeniedErrorDescription     = @"Do not have permission to access the secret data of keychain item.";
+NSString* const WSCPermittedOperationFailedToChangeTheOwnerOfPermittedOperationErrorDescription = @"An invalid attempt to change the owner of a permitted operation entry.";
 
 id const s_guard = ( id )'sgrd';
 void _WSCDontBeABitch( NSError** _Error, ... )
@@ -213,6 +214,15 @@ void _WSCDontBeABitch( NSError** _Error, ... )
                         ? [ NSString stringWithFormat: @"%@ %@", WSCKeychainItemPermissionDeniedErrorDescription
                                                                , _UserInfo[ NSLocalizedFailureReasonErrorKey ] ]
                         : WSCKeychainItemPermissionDeniedErrorDescription;
+                } break;
+
+            case WSCPermittedOperationFailedToChangeTheOwnerOfPermittedOperationError:
+                {
+                newUserInfo[ NSLocalizedDescriptionKey ] =
+                    _UserInfo[ NSLocalizedFailureReasonErrorKey ]
+                        ? [ NSString stringWithFormat: @"%@ %@", WSCPermittedOperationFailedToChangeTheOwnerOfPermittedOperationErrorDescription
+                                                               , _UserInfo[ NSLocalizedFailureReasonErrorKey ] ]
+                        : WSCPermittedOperationFailedToChangeTheOwnerOfPermittedOperationErrorDescription;
                 } break;
             }
         }
