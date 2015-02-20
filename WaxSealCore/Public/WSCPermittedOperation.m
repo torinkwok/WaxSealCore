@@ -135,6 +135,12 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 
 - ( void ) setOperations: ( WSCPermittedOperationTag )_Operation
     {
+    // DEBUG
+    SecAccessRef debugAccess = NULL;
+    SecKeychainItemCopyAccess( self.hostProtectedKeychainItem.secKeychainItem, &debugAccess );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 100 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( debugAccess );
+
     NSError* error = nil;
     OSStatus resultCode = errSecSuccess;
 
@@ -174,6 +180,11 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
             _WSCPrintNSErrorForLog( error );
             }
         }
+
+    // DEBUG
+    SecKeychainItemCopyAccess( self.hostProtectedKeychainItem.secKeychainItem, &debugAccess );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 101 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( debugAccess );
 
     // Kill secOlderAuthorizations,
     // secNewerAuthorizations is an NSArray object.
