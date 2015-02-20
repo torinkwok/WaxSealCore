@@ -160,32 +160,52 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                 SecAccessRef currentAccess = self.hostProtectedKeychainItem.secAccess;
                 resultCode = SecKeychainItemSetAccess( self.hostProtectedKeychainItem.secKeychainItem, currentAccess );
 
-//                SecAccessRef newAccess = [ self->_hostProtectedKeychainItem p_secCurrentAccess: &error ];
-//                NSAssert( !error, error.description );
-//                [ self->_hostProtectedKeychainItem p_setSecCurrentAccess: newAccess error: &error ];
-//                NSAssert( !error, error.description );
-//
-//                CFArrayRef allACLs = NULL;
-//                resultCode = SecAccessCopyACLList( newAccess, &allACLs );
-//                NSArray* currentTrustedApps = [ self trustedApplications ];
-//                NSString* currentDescriptor = [ self descriptor ];
-//                WSCPermittedOperationPromptContext currentPromptSelector = [ self promptContext ];
-//                NSArray* currentOperations = _WACSecAuthorizationsFromPermittedOperationMasks( [ self operations ] );
-//                for ( id _ACLRef in ( __bridge NSArray* )allACLs )
-//                    {
-//                    CFArrayRef secTrustedApps = NULL;
-//                    CFStringRef secDescriptor = NULL;
-//                    SecKeychainPromptSelector secPromptSelector = 0;
-//                    SecACLCopyContents( _ACLRef, &secTrustedApps, &secDescriptor, &secPromptSelector );
-//
-//                    NSArray* trustedApps = _WSArrayOfTrustedAppsFromSecTrustedApps( secTrustedApps );
-//                    CFArrayRef secOperations = SecACLCopyAuthorizations( _ACLRef );
-//
-//                    if ( [ currentTrustedApps isEqualToArray: trustedApps ]
-//                            && [ currentDescriptor isEqualToString: ( __bridge NSString* )secDescriptor ]
-//                            && currentPromptSelector == secPromptSelector
-//                            && [ currentOperations
-//                    }
+                SecAccessRef newAccess = [ self->_hostProtectedKeychainItem p_secCurrentAccess: &error ];
+                NSAssert( !error, error.description );
+                [ self->_hostProtectedKeychainItem p_setSecCurrentAccess: newAccess error: &error ];
+                NSAssert( !error, error.description );
+
+                CFArrayRef allACLs = NULL;
+                resultCode = SecAccessCopyACLList( newAccess, &allACLs );
+                NSSet* currentTrustedApps = [ self trustedApplications ];
+                NSString* currentDescriptor = [ self descriptor ];
+                WSCPermittedOperationPromptContext currentPromptSelector = [ self promptContext ];
+                WSCPermittedOperationTag currentOperations = [ self operations ];
+                for ( id _ACLRef in ( __bridge NSArray* )allACLs )
+                    {
+                    BOOL haveSuccessfullyFound = NO;
+
+                    CFArrayRef secTrustedApps = NULL;
+                    CFStringRef secDescriptor = NULL;
+                    SecKeychainPromptSelector secPromptSelector = 0;
+                    SecACLCopyContents( ( __bridge SecACLRef )_ACLRef, &secTrustedApps, &secDescriptor, &secPromptSelector );
+
+                    NSSet* trustedApps = _WSCSetOfTrustedAppsFromSecTrustedApps( secTrustedApps );
+                    WSCPermittedOperationTag secOperations =
+                        _WSCPermittedOperationMasksFromSecAuthorizations( ( __bridge NSArray* )SecACLCopyAuthorizations( ( __bridge SecACLRef )_ACLRef ) );
+
+                    if ( [ currentTrustedApps isEqualToSet: trustedApps ]
+                            && [ currentDescriptor isEqualToString: ( __bridge NSString* )secDescriptor ]
+                            && currentPromptSelector == secPromptSelector
+                            && currentOperations == secOperations )
+                        {
+                        CFRelease( self->_secACL );
+                        self->_secACL = CFRetain( _ACLRef );
+                        haveSuccessfullyFound = YES;
+                        }
+
+                    if ( secTrustedApps )
+                        CFRelease( secTrustedApps );
+
+                    if ( secDescriptor );
+                        CFRelease( secDescriptor );
+
+                    if ( haveSuccessfullyFound )
+                        break;
+                    }
+
+                if ( allACLs )
+                    CFRelease( allACLs );
                 }
 
             if ( resultCode != errSecSuccess )
@@ -423,20 +443,55 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
             resultCode = SecACLSetContents( self->_secACL, secNewerTrustedApps, secNewerDesc, secNewerPromptSel );
             if ( resultCode == errSecSuccess )
                 {
-                SecAccessRef currentAccess = self->_hostProtectedKeychainItem.secAccess;
-                resultCode = SecKeychainItemSetAccess( self->_hostProtectedKeychainItem.secKeychainItem, currentAccess );
+                SecAccessRef currentAccess = self.hostProtectedKeychainItem.secAccess;
+                resultCode = SecKeychainItemSetAccess( self.hostProtectedKeychainItem.secKeychainItem, currentAccess );
 
-//                SecAccessRef newAccess = [ self->_hostProtectedKeychainItem p_secCurrentAccess: &error ];
-//                NSAssert( !error, error.description );
-//                [ self->_hostProtectedKeychainItem p_setSecCurrentAccess: newAccess error: &error ];
-//                NSAssert( !error, error.description );
-//
-//                NSArray* authorizations = _WACSecAuthorizationsFromPermittedOperationMasks( self.operations );
-//                for ( NSString* _Authorization in authorizations )
-//                    {
-//                    CFArrayRef matchedACLs = SecAccessCopyMatchingACLList( newAccess, _Authorization );
-//                    self->_secACL = CFArrayGetValueAtIndex( matchedACLs, 0 );
-//                    }
+                SecAccessRef newAccess = [ self->_hostProtectedKeychainItem p_secCurrentAccess: &error ];
+                NSAssert( !error, error.description );
+                [ self->_hostProtectedKeychainItem p_setSecCurrentAccess: newAccess error: &error ];
+                NSAssert( !error, error.description );
+
+                CFArrayRef allACLs = NULL;
+                resultCode = SecAccessCopyACLList( newAccess, &allACLs );
+                NSSet* currentTrustedApps = [ self trustedApplications ];
+                NSString* currentDescriptor = [ self descriptor ];
+                WSCPermittedOperationPromptContext currentPromptSelector = [ self promptContext ];
+                WSCPermittedOperationTag currentOperations = [ self operations ];
+                for ( id _ACLRef in ( __bridge NSArray* )allACLs )
+                    {
+                    BOOL haveSuccessfullyFound = NO;
+
+                    CFArrayRef secTrustedApps = NULL;
+                    CFStringRef secDescriptor = NULL;
+                    SecKeychainPromptSelector secPromptSelector = 0;
+                    SecACLCopyContents( ( __bridge SecACLRef )_ACLRef, &secTrustedApps, &secDescriptor, &secPromptSelector );
+
+                    NSSet* trustedApps = _WSCSetOfTrustedAppsFromSecTrustedApps( secTrustedApps );
+                    WSCPermittedOperationTag secOperations =
+                        _WSCPermittedOperationMasksFromSecAuthorizations( ( __bridge NSArray* )SecACLCopyAuthorizations( ( __bridge SecACLRef )_ACLRef ) );
+
+                    if ( [ currentTrustedApps isEqualToSet: trustedApps ]
+                            && [ currentDescriptor isEqualToString: ( __bridge NSString* )secDescriptor ]
+                            && currentPromptSelector == secPromptSelector
+                            && currentOperations == secOperations )
+                        {
+                        CFRelease( self->_secACL );
+                        self->_secACL = CFRetain( _ACLRef );
+                        haveSuccessfullyFound = YES;
+                        }
+
+                    if ( secTrustedApps )
+                        CFRelease( secTrustedApps );
+
+                    if ( secDescriptor );
+                        CFRelease( secDescriptor );
+
+                    if ( haveSuccessfullyFound )
+                        break;
+                    }
+
+                if ( allACLs )
+                    CFRelease( allACLs );
                 }
             }
 
