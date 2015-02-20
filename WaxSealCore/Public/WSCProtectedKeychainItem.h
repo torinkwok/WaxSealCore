@@ -65,10 +65,10 @@
 
   @param _Description The human readable name to be used to refer to this item when the user is prompted.
   
-  @param _TrustedApplications An set of trusted application objects (that is, `WSCTrustedApplication` instances)
+  @param _TrustedApplications An array of trusted application objects (that is, `WSCTrustedApplication` instances) 
                               identifying applications that are allowed access to the protected keychain item without user confirmation.
                               If you set this parameter to `nil`, then any application can use this item. 
-                              If you pass an empty set, then there are no trusted applications.
+                              If you pass an empty array, then there are no trusted applications.
                               
   @param _Operations An unsigned integer bit field containing any of the operation tag masks described in 
                      ["WSCPermittedOperationTag Constants Reference"](WSCPermittedOperationTag),
@@ -85,7 +85,7 @@
           Returns `nil` if an error occurs.
   */
 - ( WSCPermittedOperation* ) addPermittedOperationWithDescription: ( NSString* )_Description
-                                              trustedApplications: ( NSSet* )_TrustedApplications
+                                              trustedApplications: ( NSArray* )_TrustedApplications
                                                     forOperations: ( WSCPermittedOperationTag )_Operations
                                                     promptContext: ( WSCPermittedOperationPromptContext )_PromptContext
                                                             error: ( NSError** )_Error;

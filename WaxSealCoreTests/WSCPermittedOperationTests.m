@@ -225,7 +225,7 @@
 //    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 2 - HTTPS Passphrase Item #3 +++++++++ +++++++++ +++++++++\n" );
 //    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
 
-//    SecACLRemove( restrictedOperation_testCase2.secACL );
+    SecACLRemove( restrictedOperation_testCase2.secACL );
 #if 0
     // ----------------------------------------------------------------------------------
     // Negative Test Case 0

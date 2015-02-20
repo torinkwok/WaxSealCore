@@ -574,7 +574,11 @@
 - ( void ) p_setSecCurrentAccess: ( SecAccessRef )_NewAccessRef
                            error: ( NSError** )_Error;
     {
-    self->_secAccess = _NewAccessRef;
+    OSStatus resultCode = errSecSuccess;
+
+    if ( ( resultCode = SecKeychainItemSetAccess( self.secKeychainItem, _NewAccessRef ) ) != errSecSuccess )
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
     }
 
 @end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes
