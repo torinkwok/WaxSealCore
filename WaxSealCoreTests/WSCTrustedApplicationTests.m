@@ -158,6 +158,82 @@
     XCTAssertEqualObjects( trustedApp_testCase1.uniqueIdentification, uniqueID_testCase0 );
 
     [ [ NSFileManager defaultManager ] removeItemAtURL: URL_testCase1 error: nil ];
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 2
+    // ----------------------------------------------------------------------------------
+    WSCTrustedApplication* AppleContacts_0 =
+        [ WSCTrustedApplication trustedApplicationWithContentsOfURL: [ NSURL URLWithString: @"/Applications/Contacts.app" ]
+                                                              error: &error ];
+
+    WSCTrustedApplication* AppleContacts_1 =
+        [ WSCTrustedApplication trustedApplicationWithContentsOfURL: [ NSURL URLWithString: @"/Applications/Contacts.app" ]
+                                                              error: &error ];
+
+    WSCTrustedApplication* AppleContacts_2 =
+        [ WSCTrustedApplication trustedApplicationWithContentsOfURL: [ NSURL URLWithString: @"/Applications/Contacts.app" ]
+                                                              error: &error ];
+
+    WSCTrustedApplication* iPhoto_0 =
+        [ WSCTrustedApplication trustedApplicationWithContentsOfURL: [ NSURL URLWithString: @"/Applications/iPhoto.app" ]
+                                                              error: &error ];
+
+    WSCTrustedApplication* iPhoto_1 =
+        [ WSCTrustedApplication trustedApplicationWithContentsOfURL: [ NSURL URLWithString: @"/Applications/iPhoto.app" ]
+                                                              error: &error ];
+
+    WSCTrustedApplication* iPhoto_2 =
+        [ WSCTrustedApplication trustedApplicationWithContentsOfURL: [ NSURL URLWithString: @"/Applications/iPhoto.app" ]
+                                                              error: &error ];
+    WSCTrustedApplication* Grab_0 =
+        [ WSCTrustedApplication trustedApplicationWithContentsOfURL: [ NSURL URLWithString: @"/Applications/Utilities/Grab.app" ]
+                                                              error: &error ];
+
+    WSCTrustedApplication* Grab_1 =
+        [ WSCTrustedApplication trustedApplicationWithContentsOfURL: [ NSURL URLWithString: @"/Applications/Utilities/Grab.app" ]
+                                                              error: &error ];
+
+    WSCTrustedApplication* Grab_2 =
+        [ WSCTrustedApplication trustedApplicationWithContentsOfURL: [ NSURL URLWithString: @"/Applications/Utilities/Grab.app" ]
+                                                              error: &error ];
+
+    XCTAssertEqual( AppleContacts_0.hash, AppleContacts_1.hash );
+    XCTAssertEqual( AppleContacts_1.hash, AppleContacts_2.hash );
+    XCTAssertEqual( AppleContacts_2.hash, AppleContacts_0.hash );
+
+    XCTAssertEqual( iPhoto_0.hash, iPhoto_1.hash );
+    XCTAssertEqual( iPhoto_1.hash, iPhoto_2.hash );
+    XCTAssertEqual( iPhoto_2.hash, iPhoto_0.hash );
+
+    XCTAssertEqual( Grab_0.hash, Grab_1.hash );
+    XCTAssertEqual( Grab_1.hash, Grab_2.hash );
+    XCTAssertEqual( Grab_2.hash, Grab_0.hash );
+
+    XCTAssertNotEqual( AppleContacts_0.hash, iPhoto_0.hash );
+    XCTAssertNotEqual( iPhoto_0.hash, Grab_0.hash );
+    XCTAssertNotEqual( Grab_0.hash, AppleContacts_0.hash );
+
+    NSMutableSet* set_testCase2_0 = [ NSMutableSet set ];
+    [ set_testCase2_0 addObject: AppleContacts_0 ];
+    [ set_testCase2_0 addObject: iPhoto_0 ];
+    [ set_testCase2_0 addObject: Grab_0 ];
+    XCTAssertEqual( set_testCase2_0.count, 3 );
+
+    [ set_testCase2_0 addObject: AppleContacts_0 ];
+    [ set_testCase2_0 addObject: AppleContacts_0 ];
+    [ set_testCase2_0 addObject: iPhoto_0 ];
+    [ set_testCase2_0 addObject: Grab_0 ];
+    XCTAssertEqual( set_testCase2_0.count, 3 );
+
+    NSMutableSet* set_testCase2_1 = [ NSMutableSet set ];
+    [ set_testCase2_1 addObject: AppleContacts_1 ];
+    [ set_testCase2_1 addObject: iPhoto_1 ];
+    XCTAssertEqual( set_testCase2_1.count, 2 );
+    XCTAssertNotEqualObjects(set_testCase2_0, set_testCase2_1 );
+
+    [ set_testCase2_1 addObject: Grab_1 ];
+    XCTAssertEqual( set_testCase2_1.count, 3 );
+    XCTAssertEqualObjects(set_testCase2_0, set_testCase2_1 );
     }
 
 - ( void ) testCreatingTrustedApplicationWithSecTrustedApplicationRef
