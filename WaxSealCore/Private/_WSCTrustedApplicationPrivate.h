@@ -42,8 +42,8 @@
 @end // WSCTrustedApplication + WSCTrustedApplicationPrivateInitialization
 
 // Convert the CoreFoundation-array of SecTrustedApplicationRef
-// to the Cocoa-array of WSCTrustedApplication objects
-NSArray* _WSArrayOfTrustedAppsFromSecTrustedApps( CFArrayRef _SecTrustedApps );
+// to the Cocoa-set of WSCTrustedApplication objects
+NSSet* _WSCSetOfTrustedAppsFromSecTrustedApps( CFArrayRef _SecTrustedApps );
 
 //////////////////////////////////////////////////////////////////////////////
 

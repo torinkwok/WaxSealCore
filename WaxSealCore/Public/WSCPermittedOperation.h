@@ -219,7 +219,7 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
   */
 @property ( copy, readwrite ) NSString* descriptor;
 
-/** An array of trusted application objects (that is, `WSCTrustedApplication` instances) 
+/** A set of trusted application objects (that is, `WSCTrustedApplication` instances)
     identifying applications that are allowed access to the keychain item without user confirmation. 
 
   @discussion Use the [trustedApplicationWithContentsOfURL:error:]([WSCTrustedApplication trustedApplicationWithContentsOfURL:error:])
@@ -229,7 +229,7 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
   if the current trusted applications is exactly equal to the trusted applications, do nothing.
   If you pass to `nil`, then any application can use the protected keychain
   with which the permitted operation represented by receiver associated.
-  If you pass an empty array, then all applications are treated as untrusted.
+  If you pass an empty set, then all applications are treated as untrusted.
   
   @warning Because an permitted operation entry is always associated with an protected keychain item,
            when you modify an permitted operation entry, you are modifying its host protected keychain item as well. 
@@ -237,7 +237,7 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
            back into the host protected keychain item. For ease of understanding, see the **Warning** section
            of the description of [descriptor]([WSCPermittedOperation descriptor]) property.
   */
-@property ( retain, readwrite ) NSArray* trustedApplications;
+@property ( retain, readwrite ) NSSet* trustedApplications;
 
 /** Masks that define when using a keychain or a protected keychain item should require a passphrase.
 

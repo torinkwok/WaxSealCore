@@ -39,6 +39,7 @@
 #import "_WSCPermittedOperationPrivate.h"
 #import "_WSCKeychainErrorPrivate.h"
 #import "_WSCTrustedApplicationPrivate.h"
+#import "_WSCKeychainItemPrivate.h"
 
 NSString static* const _WSCPermittedOperationDescriptor = @"Descritor";
 NSString static* const _WSCPermittedOperationTrustedApplications = @"Trusted Applications";
@@ -67,18 +68,18 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
     [ self p_updatePermittedOperation: @{ _WSCPermittedOperationDescriptor : _NewDescriptor } ];
     }
 
-/* An array of trusted application objects (that is, `WSCTrustedApplication` instances)
+/* A set of trusted application objects (that is, `WSCTrustedApplication` instances)
  * identifying applications that are allowed access to the keychain item without user confirmation.
  */
-- ( NSArray* ) trustedApplications
+- ( NSSet* ) trustedApplications
     {
     id currentTrustedApplications =
         [ self p_retrieveContents: @[ _WSCPermittedOperationTrustedApplications ] ][ _WSCPermittedOperationTrustedApplications ];
 
-    return ( currentTrustedApplications == [ NSNull null ] ) ? nil : ( NSArray* )currentTrustedApplications;
+    return ( currentTrustedApplications == [ NSNull null ] ) ? nil : ( NSSet* )currentTrustedApplications;
     }
 
-- ( void ) setTrustedApplications: ( NSArray* )_NewTrustedApplications
+- ( void ) setTrustedApplications: ( NSSet* )_NewTrustedApplications
     {
     [ self p_updatePermittedOperation:
         @{ _WSCPermittedOperationTrustedApplications : _NewTrustedApplications
@@ -158,6 +159,33 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                 {
                 SecAccessRef currentAccess = self.hostProtectedKeychainItem.secAccess;
                 resultCode = SecKeychainItemSetAccess( self.hostProtectedKeychainItem.secKeychainItem, currentAccess );
+
+//                SecAccessRef newAccess = [ self->_hostProtectedKeychainItem p_secCurrentAccess: &error ];
+//                NSAssert( !error, error.description );
+//                [ self->_hostProtectedKeychainItem p_setSecCurrentAccess: newAccess error: &error ];
+//                NSAssert( !error, error.description );
+//
+//                CFArrayRef allACLs = NULL;
+//                resultCode = SecAccessCopyACLList( newAccess, &allACLs );
+//                NSArray* currentTrustedApps = [ self trustedApplications ];
+//                NSString* currentDescriptor = [ self descriptor ];
+//                WSCPermittedOperationPromptContext currentPromptSelector = [ self promptContext ];
+//                NSArray* currentOperations = _WACSecAuthorizationsFromPermittedOperationMasks( [ self operations ] );
+//                for ( id _ACLRef in ( __bridge NSArray* )allACLs )
+//                    {
+//                    CFArrayRef secTrustedApps = NULL;
+//                    CFStringRef secDescriptor = NULL;
+//                    SecKeychainPromptSelector secPromptSelector = 0;
+//                    SecACLCopyContents( _ACLRef, &secTrustedApps, &secDescriptor, &secPromptSelector );
+//
+//                    NSArray* trustedApps = _WSArrayOfTrustedAppsFromSecTrustedApps( secTrustedApps );
+//                    CFArrayRef secOperations = SecACLCopyAuthorizations( _ACLRef );
+//
+//                    if ( [ currentTrustedApps isEqualToArray: trustedApps ]
+//                            && [ currentDescriptor isEqualToString: ( __bridge NSString* )secDescriptor ]
+//                            && currentPromptSelector == secPromptSelector
+//                            && [ currentOperations
+//                    }
                 }
 
             if ( resultCode != errSecSuccess )
@@ -273,7 +301,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                 id cocoaTrustedApps = nil;
                 if ( secTrustedApps )
                     {
-                    cocoaTrustedApps = [ NSMutableArray array ];
+                    cocoaTrustedApps = [ NSMutableSet set ];
                     for ( id _SecTrustApp in ( __bridge NSArray* )secTrustedApps )
                         {
                         WSCTrustedApplication* trustedApp =
@@ -284,7 +312,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                         }
                     }
 
-                resultingContents[ _Key ] = cocoaTrustedApps ? cocoaTrustedApps : [ NSNull null ];
+                resultingContents[ _Key ] = cocoaTrustedApps ? [ [ cocoaTrustedApps copy ] autorelease ] : [ NSNull null ];
                 }
 
             else if ( [ _Key isEqualToString: _WSCPermittedOperationPromptSelector ] )
@@ -363,7 +391,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                 // skip the update
 
                 // Current trusted applications must not exactly equal to the new trusted ones
-                else if ( ![ _WSArrayOfTrustedAppsFromSecTrustedApps( secOlderTrustedApps ) isEqualToArray: _NewValues[ _Key ] ] )
+                else if ( ![ _WSCSetOfTrustedAppsFromSecTrustedApps( secOlderTrustedApps ) isEqualToSet: _NewValues[ _Key ] ] )
                     {
                     newSecTrustedApplications = [ NSMutableArray array ];
                     for ( WSCTrustedApplication* _TrustApp in _NewValues[ _Key ] )
@@ -397,6 +425,18 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                 {
                 SecAccessRef currentAccess = self->_hostProtectedKeychainItem.secAccess;
                 resultCode = SecKeychainItemSetAccess( self->_hostProtectedKeychainItem.secKeychainItem, currentAccess );
+
+//                SecAccessRef newAccess = [ self->_hostProtectedKeychainItem p_secCurrentAccess: &error ];
+//                NSAssert( !error, error.description );
+//                [ self->_hostProtectedKeychainItem p_setSecCurrentAccess: newAccess error: &error ];
+//                NSAssert( !error, error.description );
+//
+//                NSArray* authorizations = _WACSecAuthorizationsFromPermittedOperationMasks( self.operations );
+//                for ( NSString* _Authorization in authorizations )
+//                    {
+//                    CFArrayRef matchedACLs = SecAccessCopyMatchingACLList( newAccess, _Authorization );
+//                    self->_secACL = CFArrayGetValueAtIndex( matchedACLs, 0 );
+//                    }
                 }
             }
 

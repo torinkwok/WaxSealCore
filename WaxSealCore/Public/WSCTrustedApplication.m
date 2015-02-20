@@ -132,6 +132,11 @@
     [ super dealloc ];
     }
 
+- ( NSUInteger ) hash
+    {
+    return self.uniqueIdentification.hash;
+    }
+
 @end // WSCTrustedApplication class
 
 #pragma mark WSCTrustedApplication + _WSCTrustedApplicationPrivateInitialization
@@ -177,23 +182,22 @@
 
 @end // WSCTrustedApplication + WSCTrustedApplicationPrivateInitialization
 
-/* Convert the CoreFoundation-array of SecTrustedApplicationRef
- * to the Cocoa-array of WSCTrustedApplication objects
- */
-NSArray* _WSArrayOfTrustedAppsFromSecTrustedApps( CFArrayRef _SecTrustedApps )
+// Convert the CoreFoundation-array of SecTrustedApplicationRef
+// to the Cocoa-set of WSCTrustedApplication objects
+NSSet* _WSCSetOfTrustedAppsFromSecTrustedApps( CFArrayRef _SecTrustedApps )
     {
     if ( !_SecTrustedApps )
         return nil;
 
-    NSMutableArray* arrayOfTrustedApps = [ NSMutableArray array ];
+    NSMutableSet* setOfTrustedApps = [ NSMutableSet set ];
 
     for ( id _SecTrustedApp in ( __bridge NSArray* )_SecTrustedApps )
         if ( _SecTrustedApp )
-            [ arrayOfTrustedApps addObject:
+            [ setOfTrustedApps addObject:
                 [ WSCTrustedApplication trustedApplicationWithSecTrustedApplicationRef:
                     ( __bridge SecTrustedApplicationRef )_SecTrustedApp  ] ];
 
-    return [ [ arrayOfTrustedApps copy ] autorelease ];
+    return [ [ setOfTrustedApps copy ] autorelease ];
     }
 
 //////////////////////////////////////////////////////////////////////////////

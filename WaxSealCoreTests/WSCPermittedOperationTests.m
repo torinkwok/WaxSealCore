@@ -110,15 +110,13 @@
     [ self.httpsPassphrase_testCase0 release ];
     }
 
-
-
 - ( void ) testOperationsProperty
     {
     NSError* error = nil;
 
     NSArray* commonPermittedOperations = nil;
     commonPermittedOperations = [ self.httpsPassphrase_testCase0 permittedOperations ];
-
+#if 0
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
@@ -187,13 +185,16 @@
 
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 1 - HTTPS Passphrase Item #3 +++++++++ +++++++++ +++++++++\n" );
     _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
-
+#endif
     // ----------------------------------------------------------------------------------
     // Test Case 2
     // ----------------------------------------------------------------------------------
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 0 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+
     WSCPermittedOperation* restrictedOperation_testCase2 =
         [ self.httpsPassphrase_testCase0 addPermittedOperationWithDescription: @"I love OS X"
-                                                          trustedApplications: @[ self.iPhoto ]
+                                                          trustedApplications: [ NSSet setWithArray: @[ self.iPhoto ] ]
                                                                 forOperations: WSCPermittedOperationTagSign
                                                                 promptContext: 0
                                                                         error: &error ];
@@ -208,22 +209,24 @@
 
     restrictedOperation_testCase2.operations |= WSCPermittedOperationTagLogin;
     XCTAssertEqual( restrictedOperation_testCase2.operations, ( olderTag_testCase2 | WSCPermittedOperationTagLogin ) );
+//
+//    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 2 - HTTPS Passphrase Item #1 +++++++++ +++++++++ +++++++++\n" );
+//    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+//
+//    restrictedOperation_testCase2.operations = WSCPermittedOperationTagEncrypt;
+//    XCTAssertEqual( restrictedOperation_testCase2.operations, WSCPermittedOperationTagEncrypt );
+//
+//    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 2 - HTTPS Passphrase Item #2 +++++++++ +++++++++ +++++++++\n" );
+//    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+//
+//    restrictedOperation_testCase2.operations = olderTag_testCase2;
+//    XCTAssertEqual( restrictedOperation_testCase2.operations, olderTag_testCase2 );
+//
+//    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 2 - HTTPS Passphrase Item #3 +++++++++ +++++++++ +++++++++\n" );
+//    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
 
-    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 2 - HTTPS Passphrase Item #1 +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
-
-    restrictedOperation_testCase2.operations = WSCPermittedOperationTagEncrypt;
-    XCTAssertEqual( restrictedOperation_testCase2.operations, WSCPermittedOperationTagEncrypt );
-
-    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 2 - HTTPS Passphrase Item #2 +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
-
-    restrictedOperation_testCase2.operations = olderTag_testCase2;
-    XCTAssertEqual( restrictedOperation_testCase2.operations, olderTag_testCase2 );
-
-    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 2 - HTTPS Passphrase Item #3 +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
-
+    SecACLRemove( restrictedOperation_testCase2.secACL );
+#if 0
     // ----------------------------------------------------------------------------------
     // Negative Test Case 0
     // ----------------------------------------------------------------------------------
@@ -260,6 +263,7 @@
 
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 2 - HTTPS Passphrase Item #3 +++++++++ +++++++++ +++++++++\n" );
     _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+#endif
     }
 
 - ( void ) testTrustedApplicationsProperty
@@ -283,12 +287,12 @@
     NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithData: self.httpsPassphrase_testCase0.passphrase
                                                          encoding: NSUTF8StringEncoding ] autorelease ] );
 
-    restrictedOperation_testCase0.trustedApplications = @[ self.AppleContacts, self.iPhoto ];
+    restrictedOperation_testCase0.trustedApplications = [ NSSet setWithArray: @[ self.AppleContacts, self.iPhoto ] ];
 
     NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithData: self.httpsPassphrase_testCase0.passphrase
                                                          encoding: NSUTF8StringEncoding ] autorelease ] );
 
-    restrictedOperation_testCase0.trustedApplications = @[];
+    restrictedOperation_testCase0.trustedApplications = [ NSSet setWithArray: @[] ];
     restrictedOperation_testCase0.promptContext = WSCPermittedOperationPromptContextRequirePassphraseEveryAccess;
     NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithData: self.httpsPassphrase_testCase0.passphrase
                                                          encoding: NSUTF8StringEncoding ] autorelease ] );

@@ -89,6 +89,9 @@
 // Use for copying the access of the protected keychain item represented by receiver.
 - ( SecAccessRef ) p_secCurrentAccess: ( NSError** )_Error;
 
+- ( void ) p_setSecCurrentAccess: ( SecAccessRef )_NewAccessRef
+                           error: ( NSError** )_Error;
+
 @end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes
 
 //////////////////////////////////////////////////////////////////////////////

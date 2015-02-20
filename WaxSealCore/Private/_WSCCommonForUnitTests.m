@@ -271,12 +271,12 @@ void _WSCPrintAccess( SecAccessRef _Access )
                     [ promptSelctors addObject: allowedSelectorString[ _Index ] ];
 
             fprintf( stdout, "\n======================== %lu ========================\n", _Index );
-            NSLog( @"\nTrusted Application: %@\n"
-                    "\nDescriptor: %@\n"
+            NSLog( @"\nDescriptor: %@\n"
+                    "\nTrusted Application: %@\n"
                     "\nAuth tags of ACL #%lu: %@\n"
                     "\nPrompt Selectors: %@\n"
-                 , ( __bridge NSArray* )trustedApps
                  , ( __bridge NSString* )descriptor
+                 , ( __bridge NSSet* )trustedApps
                  , _Index, ( __bridge NSArray* )authTags
                  , promptSelctors
                  );

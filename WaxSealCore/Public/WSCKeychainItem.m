@@ -571,6 +571,16 @@
     return secCurrentAccess;
     }
 
+- ( void ) p_setSecCurrentAccess: ( SecAccessRef )_NewAccessRef
+                           error: ( NSError** )_Error;
+    {
+    OSStatus resultCode = errSecSuccess;
+
+    if ( ( resultCode = SecKeychainItemSetAccess( self.secKeychainItem, _NewAccessRef ) ) != errSecSuccess )
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+    }
+
 @end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes
 
 NSString* const WSCKeychainItemAttributeCreationDate                = @"'cdat'";
