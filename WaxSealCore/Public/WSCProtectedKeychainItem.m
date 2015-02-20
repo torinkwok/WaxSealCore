@@ -50,7 +50,7 @@
  * and adds it to the protected keychain item represented by receiver.
  */
 - ( WSCPermittedOperation* ) addPermittedOperationWithDescription: ( NSString* )_Description
-                                              trustedApplications: ( NSArray* )_TrustedApplications
+                                              trustedApplications: ( NSSet* )_TrustedApplications
                                                     forOperations: ( WSCPermittedOperationTag )_Operations
                                                     promptContext: ( WSCPermittedOperationPromptContext )_PromptContext
                                                             error: ( NSError** )_Error
@@ -74,7 +74,7 @@
         {
         secTrustedApps = [ NSMutableArray arrayWithCapacity: _TrustedApplications.count ];
         [ _TrustedApplications enumerateObjectsUsingBlock:
-            ^( WSCTrustedApplication* _TrustedApp, NSUInteger _Index, BOOL* _Stop )
+            ^( WSCTrustedApplication* _TrustedApp, BOOL* _Stop )
                 {
                 [ secTrustedApps addObject: ( __bridge id )_TrustedApp.secTrustedApplication ];
                 } ];

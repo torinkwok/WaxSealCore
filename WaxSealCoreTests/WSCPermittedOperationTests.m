@@ -101,7 +101,7 @@
         [ WSCTrustedApplication trustedApplicationWithContentsOfURL: [ NSURL URLWithString: @"/Applications/iPhoto.app" ]
                                                               error: &error ];
     self.Grab =
-        [ WSCTrustedApplication trustedApplicationWithContentsOfURL: [ NSURL URLWithString: @"/Applications/iPhoto.app" ]
+        [ WSCTrustedApplication trustedApplicationWithContentsOfURL: [ NSURL URLWithString: @"/Applications/Utilities/Grab.app" ]
                                                               error: &error ];
     }
 
@@ -189,11 +189,20 @@
     // ----------------------------------------------------------------------------------
     // Test Case 2
     // ----------------------------------------------------------------------------------
+    int count = 0;
+    for ( WSCPermittedOperation* _PermittedOperation in commonPermittedOperations )
+        {
+        if ( ( _PermittedOperation.operations == WSCPermittedOperationTagEncrypt && !_PermittedOperation.trustedApplications )
+                || _PermittedOperation.operations & WSCPermittedOperationTagDecrypt
+                || ( _PermittedOperation.operations == WSCPermittedOperationTagChangePermittedOperationItself && _PermittedOperation.trustedApplications.count == 0 ) )
+            _PermittedOperation.descriptor = [ NSString stringWithFormat: @"Initial Permitted Operation %d", count++ ];
+        }
+
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 0 +++++++++ +++++++++ +++++++++\n" );
     _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
 
     WSCPermittedOperation* restrictedOperation_testCase2 =
-        [ self.httpsPassphrase_testCase0 addPermittedOperationWithDescription: @"I love OS X"
+        [ self.httpsPassphrase_testCase0 addPermittedOperationWithDescription: [ NSString stringWithFormat: @"I love OS X %@", [ NSDate date ] ]
                                                           trustedApplications: [ NSSet setWithArray: @[ self.iPhoto ] ]
                                                                 forOperations: WSCPermittedOperationTagSign
                                                                 promptContext: 0
@@ -202,13 +211,20 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    WSCPermittedOperationTag olderTag_testCase2 = restrictedOperation_testCase2.operations;
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 1 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+
+    restrictedOperation_testCase2.trustedApplications = [ NSSet setWithObjects: self.Grab, self.iPhoto, self.AppleContacts, nil ];
+
+//    WSCPermittedOperationTag olderTag_testCase2 = restrictedOperation_testCase2.operations;
 
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ Before Modifying - Test Case 2 - HTTPS Passphrase Item #0 +++++++++ +++++++++ +++++++++\n" );
     _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
 
-    restrictedOperation_testCase2.operations |= WSCPermittedOperationTagLogin;
-    XCTAssertEqual( restrictedOperation_testCase2.operations, ( olderTag_testCase2 | WSCPermittedOperationTagLogin ) );
+    restrictedOperation_testCase2.operations = ( WSCPermittedOperationTagLogin | WSCPermittedOperationTagSign );
+    restrictedOperation_testCase2.operations = ( WSCPermittedOperationTagLogin | WSCPermittedOperationTagSign | WSCPermittedOperationTagImportUnencryptedKey );
+    restrictedOperation_testCase2.operations = ( WSCPermittedOperationTagLogin | WSCPermittedOperationTagSign | WSCPermittedOperationTagImportUnencryptedKey | WSCPermittedOperationTagImportEncryptedKey );
+//    XCTAssertEqual( restrictedOperation_testCase2.operations, ( olderTag_testCase2 | WSCPermittedOperationTagLogin ) );
 //
 //    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 2 - HTTPS Passphrase Item #1 +++++++++ +++++++++ +++++++++\n" );
 //    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
@@ -225,7 +241,11 @@
 //    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 2 - HTTPS Passphrase Item #3 +++++++++ +++++++++ +++++++++\n" );
 //    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
 
-    SecACLRemove( restrictedOperation_testCase2.secACL );
+//    SecACLRemove( restrictedOperation_testCase2.secACL );
+
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 2 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+
 #if 0
     // ----------------------------------------------------------------------------------
     // Negative Test Case 0

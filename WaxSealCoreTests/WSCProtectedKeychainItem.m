@@ -144,7 +144,7 @@
 
     WSCPermittedOperation* permittedOperation_testCase1 =
         [ applicationPassphraseItem_testCase1 addPermittedOperationWithDescription: @"Test Case 1"
-                                                               trustedApplications: @[ trustedApp_AppleContacts, trustedApp_iPhoto ]
+                                                               trustedApplications: [ NSSet setWithArray: @[ trustedApp_AppleContacts, trustedApp_iPhoto ] ]
                                                                      forOperations: WSCPermittedOperationTagChangePermittedOperationItself
                                                                      promptContext: WSCPermittedOperationPromptContextRequirePassphraseEveryAccess
                                                                              error: &error ];
@@ -179,7 +179,7 @@
 
     WSCPermittedOperation* permittedOperation_negativeTestCase0 =
         [ applicationPassphraseItem_negativeTestCase0 addPermittedOperationWithDescription: @"HaHaHa"
-                                                                       trustedApplications: @[]
+                                                                       trustedApplications: [ NSSet set ]
                                                                              forOperations: WSCPermittedOperationTagChangeOwner
                                                                              promptContext: 0
                                                                                      error: &error ];
@@ -197,14 +197,14 @@
 
     permittedOperation_negativeTestCase0 =
         [ applicationPassphraseItem_negativeTestCase0 addPermittedOperationWithDescription: @"PiaPiaPia"
-                                                                       trustedApplications: @[ trustedApp_AppleContacts ]
+                                                                       trustedApplications: [ NSSet setWithArray: @[ trustedApp_AppleContacts ] ]
                                                                              forOperations: WSCPermittedOperationTagDecrypt | WSCPermittedOperationTagDelete
                                                                              promptContext: WSCPermittedOperationPromptContextRequirePassphraseEveryAccess
                                                                                      error: &error ];
 
     permittedOperation_negativeTestCase0 =
         [ applicationPassphraseItem_negativeTestCase0 addPermittedOperationWithDescription: @"PengPengPeng"
-                                                                       trustedApplications: @[ trustedApp_AppleContacts ]
+                                                                       trustedApplications: [ NSSet setWithArray: @[ trustedApp_AppleContacts ] ]
                                                                              forOperations: WSCPermittedOperationTagDerive | WSCPermittedOperationTagDelete
                                                                              promptContext: 0
                                                                                      error: &error ];
@@ -229,7 +229,7 @@
 
     permittedOperation_negativeTestCase0 =
         [ applicationPassphraseItem_negativeTestCase0 addPermittedOperationWithDescription: @"Negative Test Case 0"
-                                                                       trustedApplications: @[ trustedApp_AppleContacts ]
+                                                                       trustedApplications: [ NSSet setWithArray: @[ trustedApp_AppleContacts ] ]
                                                                              forOperations: WSCPermittedOperationTagDecrypt | WSCPermittedOperationTagDelete
                                                                              promptContext: WSCPermittedOperationPromptContextRequirePassphraseEveryAccess
                                                                                      error: &error ];
@@ -256,7 +256,7 @@
 
     WSCPermittedOperation* permittedOperation_negativeTestCase1 =
         [ applicationPassphraseItem_negativeTestCase1 addPermittedOperationWithDescription: @"Negative Test Case 1"
-                                                                       trustedApplications: @[ trustedApp_AppleContacts ]
+                                                                       trustedApplications: [ NSSet setWithArray: @[ trustedApp_AppleContacts ] ]
                                                                              forOperations: WSCPermittedOperationTagDecrypt | WSCPermittedOperationTagDelete
                                                                              promptContext: WSCPermittedOperationPromptContextRequirePassphraseEveryAccess
                                                                                      error: &error ];
