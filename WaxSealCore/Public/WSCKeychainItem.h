@@ -49,6 +49,7 @@
     {
 @protected
     SecKeychainItemRef _secKeychainItem;
+    CFMutableSetRef _secAccessAutoReleasePool;
     }
 
 #pragma mark Common Keychain Item Attributes

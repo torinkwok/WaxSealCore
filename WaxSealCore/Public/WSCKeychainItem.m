@@ -142,6 +142,9 @@
     if ( self->_secKeychainItem )
         CFRelease( self->_secKeychainItem );
 
+    if ( self->_secAccessAutoReleasePool )
+        CFRelease( self->_secAccessAutoReleasePool );
+
     [ super dealloc ];
     }
 
@@ -158,7 +161,10 @@
         {
         // The _SecKeychainItemRef parameter must not be nil.
         if ( _SecKeychainItemRef )
+            {
             self->_secKeychainItem = ( SecKeychainItemRef )CFRetain( _SecKeychainItemRef );
+            self->_secAccessAutoReleasePool = CFSetCreateMutable( kCFAllocatorDefault, 0, &kCFTypeSetCallBacks );
+            }
         else
             return nil;
         }
