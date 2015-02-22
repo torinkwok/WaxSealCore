@@ -112,6 +112,12 @@
 
 - ( void ) testOperationsProperty
     {
+    // DEBUG
+    SecAccessRef debugAccess = NULL;
+    SecKeychainItemCopyAccess( self.httpsPassphrase_testCase0.secKeychainItem, &debugAccess );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 400 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( debugAccess );
+
     NSError* error = nil;
 
     NSArray* commonPermittedOperations = nil;
@@ -201,6 +207,10 @@
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 0 +++++++++ +++++++++ +++++++++\n" );
     _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
 
+    SecKeychainItemCopyAccess( self.httpsPassphrase_testCase0.secKeychainItem, &debugAccess );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 401 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( debugAccess );
+
     WSCPermittedOperation* restrictedOperation_testCase2 =
         [ self.httpsPassphrase_testCase0 addPermittedOperationWithDescription: [ NSString stringWithFormat: @"I love OS X %@", [ NSDate date ] ]
                                                           trustedApplications: [ NSSet setWithArray: @[ self.iPhoto ] ]
@@ -211,6 +221,10 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
+    SecKeychainItemCopyAccess( self.httpsPassphrase_testCase0.secKeychainItem, &debugAccess );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 402 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( debugAccess );
+
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 1 +++++++++ +++++++++ +++++++++\n" );
     _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
 
@@ -218,12 +232,24 @@
 
 //    WSCPermittedOperationTag olderTag_testCase2 = restrictedOperation_testCase2.operations;
 
+    SecKeychainItemCopyAccess( self.httpsPassphrase_testCase0.secKeychainItem, &debugAccess );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 403 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( debugAccess );
+
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ Before Modifying - Test Case 2 - HTTPS Passphrase Item #0 +++++++++ +++++++++ +++++++++\n" );
     _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
 
     restrictedOperation_testCase2.operations = ( WSCPermittedOperationTagLogin | WSCPermittedOperationTagSign );
     restrictedOperation_testCase2.operations = ( WSCPermittedOperationTagLogin | WSCPermittedOperationTagSign | WSCPermittedOperationTagImportUnencryptedKey );
     restrictedOperation_testCase2.operations = ( WSCPermittedOperationTagLogin | WSCPermittedOperationTagSign | WSCPermittedOperationTagImportUnencryptedKey | WSCPermittedOperationTagImportEncryptedKey );
+
+    SecKeychainItemCopyAccess( self.httpsPassphrase_testCase0.secKeychainItem, &debugAccess );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 404 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( debugAccess );
+
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 2 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
+
 //    XCTAssertEqual( restrictedOperation_testCase2.operations, ( olderTag_testCase2 | WSCPermittedOperationTagLogin ) );
 //
 //    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 2 - HTTPS Passphrase Item #1 +++++++++ +++++++++ +++++++++\n" );
@@ -242,10 +268,6 @@
 //    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
 
 //    SecACLRemove( restrictedOperation_testCase2.secACL );
-
-    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 2 +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
-
 #if 0
     // ----------------------------------------------------------------------------------
     // Negative Test Case 0
@@ -288,6 +310,12 @@
 
 - ( void ) testTrustedApplicationsProperty
     {
+    // DEBUG
+    SecAccessRef debugAccess = NULL;
+    SecKeychainItemCopyAccess( self.httpsPassphrase_testCase0.secKeychainItem, &debugAccess );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 300 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( debugAccess );
+
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
@@ -309,6 +337,10 @@
 
     restrictedOperation_testCase0.trustedApplications = [ NSSet setWithArray: @[ self.AppleContacts, self.iPhoto ] ];
 
+    SecKeychainItemCopyAccess( self.httpsPassphrase_testCase0.secKeychainItem, &debugAccess );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 301 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( debugAccess );
+
     NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithData: self.httpsPassphrase_testCase0.passphrase
                                                          encoding: NSUTF8StringEncoding ] autorelease ] );
 
@@ -317,8 +349,16 @@
     NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithData: self.httpsPassphrase_testCase0.passphrase
                                                          encoding: NSUTF8StringEncoding ] autorelease ] );
 
+    SecKeychainItemCopyAccess( self.httpsPassphrase_testCase0.secKeychainItem, &debugAccess );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 302 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( debugAccess );
+
     restrictedOperation_testCase0.trustedApplications = nil;
     XCTAssertNil( restrictedOperation_testCase0.trustedApplications );
+
+    SecKeychainItemCopyAccess( self.httpsPassphrase_testCase0.secKeychainItem, &debugAccess );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 303 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( debugAccess );
     }
 
 - ( void ) testPromptContextProperty
@@ -335,11 +375,18 @@
 
 - ( void ) testDescriptorProperty
     {
+    // DEBUG
+    SecAccessRef debugAccess = NULL;
+    SecKeychainItemCopyAccess( self.httpsPassphrase_testCase0.secKeychainItem, &debugAccess );
+    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 200 +++++++++ +++++++++ +++++++++\n" );
+    _WSCPrintAccess( debugAccess );
+
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
     NSArray* permittedOperations_testCase0 = nil;
     permittedOperations_testCase0 = [ self.httpsPassphrase_testCase0 permittedOperations ];
+
     for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
         {
         NSString* descriptor = _PermittedOperation.descriptor;
@@ -347,8 +394,16 @@
         NSLog( @"Before Modifying - Positive Test Case 0: %@", descriptor );
         }
 
+    int count = 1;
     for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
+        {
         _PermittedOperation.descriptor = @"NSTongG";
+
+        // DEBUG
+        SecKeychainItemCopyAccess( self.httpsPassphrase_testCase0.secKeychainItem, &debugAccess );
+        fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 20%d +++++++++ +++++++++ +++++++++\n", count++ );
+        _WSCPrintAccess( debugAccess );
+        }
 
     for ( WSCPermittedOperation* _PermittedOperation in permittedOperations_testCase0 )
         {

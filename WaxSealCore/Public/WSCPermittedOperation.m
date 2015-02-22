@@ -135,12 +135,6 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 
 - ( void ) setOperations: ( WSCPermittedOperationTag )_Operation
     {
-    // DEBUG
-    SecAccessRef debugAccess = NULL;
-    SecKeychainItemCopyAccess( self.hostProtectedKeychainItem.secKeychainItem, &debugAccess );
-    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 100 +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( debugAccess );
-
     NSError* error = nil;
     OSStatus resultCode = errSecSuccess;
 
@@ -163,6 +157,10 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
             {
             if ( ( resultCode = SecACLUpdateAuthorizations( self.secACL, secNewerAuthorizations ) ) == errSecSuccess )
                 {
+                SecKeychainItemCopyAccess( self.hostProtectedKeychainItem.secKeychainItem, &debugAccess );
+                fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 101 +++++++++ +++++++++ +++++++++\n" );
+                _WSCPrintAccess( debugAccess );
+
                 SecAccessRef currentAccess = self.hostProtectedKeychainItem.secAccess;
                 resultCode = SecKeychainItemSetAccess( self.hostProtectedKeychainItem.secKeychainItem, currentAccess );
                 }
@@ -180,11 +178,6 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
             _WSCPrintNSErrorForLog( error );
             }
         }
-
-    // DEBUG
-    SecKeychainItemCopyAccess( self.hostProtectedKeychainItem.secKeychainItem, &debugAccess );
-    fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 101 +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( debugAccess );
 
     // Kill secOlderAuthorizations,
     // secNewerAuthorizations is an NSArray object.
