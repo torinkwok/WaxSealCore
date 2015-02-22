@@ -42,7 +42,6 @@
 
 @implementation WSCProtectedKeychainItem
 
-// The ivar self->_secAccess was declared in the super class: WSCKeychainItem
 @dynamic secAccess;
 
 #pragma mark Managing Permitted Operations
@@ -176,8 +175,11 @@
  */
 - ( SecAccessRef ) secAccess
     {
-    // The ivar self->_secAccess was declared in the super class: WSCKeychainItem
-    return self->_secAccess;
+    NSError* error = nil;
+    SecAccessRef currentSecAccess = [ self p_secCurrentAccess: &error ];
+    _WSCPrintNSErrorForLog( error );
+
+    return currentSecAccess;
     }
 
 @end // WSCProtectedKeychainItem

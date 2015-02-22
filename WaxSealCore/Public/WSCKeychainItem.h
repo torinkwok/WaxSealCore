@@ -49,7 +49,6 @@
     {
 @protected
     SecKeychainItemRef _secKeychainItem;
-    SecAccessRef _secAccess;
     }
 
 #pragma mark Common Keychain Item Attributes

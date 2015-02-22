@@ -156,7 +156,6 @@ typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
 @interface WSCPermittedOperation : NSObject
     {
 @protected
-    SecACLRef _secACL;
     WSCProtectedKeychainItem* _hostProtectedKeychainItem;
     }
 

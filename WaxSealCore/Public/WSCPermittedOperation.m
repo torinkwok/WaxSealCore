@@ -51,7 +51,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 @dynamic trustedApplications;
 @dynamic promptContext;
 
-@synthesize secACL = _secACL;
+@dynamic secACL;
 @dynamic hostProtectedKeychainItem;
 
 #pragma mark Attributes of Permitted Operations
@@ -94,6 +94,68 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
         return self->_hostProtectedKeychainItem;
     else
         return nil;
+    }
+
+- ( SecACLRef ) p_retrieveSecACLFromSecAccess: ( SecAccessRef )_HostSecAccess
+                                        error: ( NSError** )_Error
+    {
+    OSStatus resultCode = errSecSuccess;
+
+    SecACLRef findingACL = NULL;
+	
+	SecAccessRef newAccess = [ self->_hostProtectedKeychainItem p_secCurrentAccess: _Error ];
+	
+	CFArrayRef allACLs = NULL;
+	resultCode = SecAccessCopyACLList( newAccess, &allACLs );
+	NSSet* currentTrustedApps = [ self trustedApplications ];
+	NSString* currentDescriptor = [ self descriptor ];
+	WSCPermittedOperationPromptContext currentPromptSelector = [ self promptContext ];
+	WSCPermittedOperationTag currentOperations = [ self operations ];
+	for ( id _ACLRef in ( __bridge NSArray* )allACLs )
+	    {
+	    BOOL haveSuccessfullyFound = NO;
+	
+	    CFArrayRef secTrustedApps = NULL;
+	    CFStringRef secDescriptor = NULL;
+	    SecKeychainPromptSelector secPromptSelector = 0;
+	    SecACLCopyContents( ( __bridge SecACLRef )_ACLRef, &secTrustedApps, &secDescriptor, &secPromptSelector );
+	
+	    NSSet* trustedApps = _WSCSetOfTrustedAppsFromSecTrustedApps( secTrustedApps );
+	    WSCPermittedOperationTag secOperations =
+	        _WSCPermittedOperationMasksFromSecAuthorizations( ( __bridge NSArray* )SecACLCopyAuthorizations( ( __bridge SecACLRef )_ACLRef ) );
+	
+	    if ( [ currentTrustedApps isEqualToSet: trustedApps ]
+	            && [ currentDescriptor isEqualToString: ( __bridge NSString* )secDescriptor ]
+	            && currentPromptSelector == secPromptSelector
+	            && currentOperations == secOperations )
+	        {
+	        findingACL = ( __bridge SecACLRef )_ACLRef;
+	        haveSuccessfullyFound = YES;
+	        }
+	
+	    if ( secTrustedApps )
+	        CFRelease( secTrustedApps );
+	
+	    if ( secDescriptor )
+	        CFRelease( secDescriptor );
+	
+	    if ( haveSuccessfullyFound )
+	        break;
+	    }
+	
+	if ( allACLs )
+	    CFRelease( allACLs );
+
+    return findingACL;
+    }
+
+- ( SecACLRef ) secACL
+    {
+    NSError* error = nil;
+    SecACLRef currentACL = [ self p_retrieveSecACLFromSecAccess: self.hostProtectedKeychainItem.secAccess
+                                                          error: &error ];
+    _WSCPrintNSErrorForLog( error );
+    return currentACL;
     }
 
 /* Masks that define when using a keychain or a protected keychain item should require a passphrase.
@@ -157,10 +219,6 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
             {
             if ( ( resultCode = SecACLUpdateAuthorizations( self.secACL, secNewerAuthorizations ) ) == errSecSuccess )
                 {
-                SecKeychainItemCopyAccess( self.hostProtectedKeychainItem.secKeychainItem, &debugAccess );
-                fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 101 +++++++++ +++++++++ +++++++++\n" );
-                _WSCPrintAccess( debugAccess );
-
                 SecAccessRef currentAccess = self.hostProtectedKeychainItem.secAccess;
                 resultCode = SecKeychainItemSetAccess( self.hostProtectedKeychainItem.secKeychainItem, currentAccess );
                 }
@@ -202,9 +260,6 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 #pragma mark Overrides
 - ( void ) dealloc
     {
-    if ( self->_secACL )
-        CFRelease( self->_secACL );
-
     [ super dealloc ];
     }
 
@@ -226,10 +281,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
         if ( !error )
             {
             if ( _SecACLRef )
-                {
-                self->_secACL = ( SecACLRef )CFRetain( _SecACLRef );
                 self->_hostProtectedKeychainItem = _ProtectedKeychainItem;
-                }
             else
                 error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                              code: WSCCommonInvalidParametersError
@@ -270,7 +322,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
     NSMutableDictionary* resultingContents = nil;
 
     // Get the contents for a given access control list entry which was wrapped in receiver.
-    if ( ( resultCode = SecACLCopyContents( self->_secACL, &secTrustedApps, &secDesc, &secPromptSel ) ) == errSecSuccess )
+    if ( ( resultCode = SecACLCopyContents( self.secACL, &secTrustedApps, &secDesc, &secPromptSel ) ) == errSecSuccess )
         {
         resultingContents = [ NSMutableDictionary dictionary ];
 
@@ -333,7 +385,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
     CFStringRef secOlderDesc = NULL;
     SecKeychainPromptSelector secOlderPromptSel = 0;
 
-    if ( ( resultCode = SecACLCopyContents( self->_secACL
+    if ( ( resultCode = SecACLCopyContents( self.secACL
                                           , &secOlderTrustedApps
                                           , &secOlderDesc
                                           , &secOlderPromptSel ) ) == errSecSuccess )
@@ -402,8 +454,10 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                 || secNewerTrustedApps != secOlderTrustedApps
                 || secNewerPromptSel != secOlderPromptSel )
             {
+            SecAccessRef currentAccess = self->_hostProtectedKeychainItem.secAccess;
+            SecACLRef currentACL = [ self p_retrieveSecACLFromSecAccess: currentAccess error: &error ];
             // Set the new contents for the given access control list entry which was wrapped in receiver.
-            resultCode = SecACLSetContents( self->_secACL, secNewerTrustedApps, secNewerDesc, secNewerPromptSel );
+            resultCode = SecACLSetContents( currentACL, secNewerTrustedApps, secNewerDesc, secNewerPromptSel );
             if ( resultCode == errSecSuccess )
                 {
                 SecAccessRef currentAccess = self->_hostProtectedKeychainItem.secAccess;

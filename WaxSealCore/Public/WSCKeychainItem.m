@@ -142,9 +142,6 @@
     if ( self->_secKeychainItem )
         CFRelease( self->_secKeychainItem );
 
-    if ( self->_secAccess )
-        CFRelease( self->_secAccess );
-
     [ super dealloc ];
     }
 
@@ -162,16 +159,8 @@
         // The _SecKeychainItemRef parameter must not be nil.
         if ( _SecKeychainItemRef )
             self->_secKeychainItem = ( SecKeychainItemRef )CFRetain( _SecKeychainItemRef );
-
-        // TODO: Waiting for the other item class, Certificates, Keys, etc.
-        if ( self.itemClass == WSCKeychainItemClassInternetPassphraseItem
-                || self.itemClass == WSCKeychainItemClassApplicationPassphraseItem
-                || self.itemClass == WSCKeychainItemClassPrivateKeyItem )
-            {
-            NSError* error = nil;
-            self->_secAccess = [ self p_secCurrentAccess: &error ];
-            NSAssert( !error, error.description );
-            }
+        else
+            return nil;
         }
 
     return self;
