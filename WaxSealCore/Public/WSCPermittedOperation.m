@@ -206,11 +206,11 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 
         if ( ![ tmpOlderAuthorizationsSet isEqualToSet: tmpNewerAuthorizationsSet ] )
             {
-            SecAccessRef currentAccess = self->_hostProtectedKeychainItem.secAccess;
-            SecACLRef currentSecACL = [ self p_retrieveSecACLFromSecAccess: currentAccess error: &error ];
+            SecAccessRef secCurrentAccess = self->_hostProtectedKeychainItem.secAccess;
+            SecACLRef currentSecACL = [ self p_retrieveSecACLFromSecAccess: secCurrentAccess error: &error ];
             if ( ( resultCode = SecACLUpdateAuthorizations( currentSecACL, secNewerAuthorizations ) ) == errSecSuccess )
                 {
-                resultCode = SecKeychainItemSetAccess( self.hostProtectedKeychainItem.secKeychainItem, currentAccess );
+                resultCode = SecKeychainItemSetAccess( self.hostProtectedKeychainItem.secKeychainItem, secCurrentAccess );
                 CFRelease( self->_secACL );
                 self->_secACL = currentSecACL;
                 }
@@ -252,6 +252,9 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 #pragma mark Overrides
 - ( void ) dealloc
     {
+    if ( self->_secACL )
+        CFRelease( self->_secACL );
+
     [ super dealloc ];
     }
 

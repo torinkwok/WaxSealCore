@@ -181,7 +181,6 @@
     NSError* error = nil;
     SecAccessRef currentSecAccess = [ self p_secCurrentAccess: &error ];
     NSAssert( !error, error.description );
-    CFSetAddValue( self->_secAccessAutoReleasePool, currentSecAccess );
 
     return currentSecAccess;
     }
