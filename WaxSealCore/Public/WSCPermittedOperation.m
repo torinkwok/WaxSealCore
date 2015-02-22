@@ -206,10 +206,13 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 
         if ( ![ tmpOlderAuthorizationsSet isEqualToSet: tmpNewerAuthorizationsSet ] )
             {
-            if ( ( resultCode = SecACLUpdateAuthorizations( self.secACL, secNewerAuthorizations ) ) == errSecSuccess )
+            SecAccessRef currentAccess = self->_hostProtectedKeychainItem.secAccess;
+            SecACLRef currentSecACL = [ self p_retrieveSecACLFromSecAccess: currentAccess error: &error ];
+            if ( ( resultCode = SecACLUpdateAuthorizations( currentSecACL, secNewerAuthorizations ) ) == errSecSuccess )
                 {
-                SecAccessRef currentAccess = self.hostProtectedKeychainItem.secAccess;
                 resultCode = SecKeychainItemSetAccess( self.hostProtectedKeychainItem.secKeychainItem, currentAccess );
+                CFRelease( self->_secACL );
+                self->_secACL = currentSecACL;
                 }
 
             if ( resultCode != errSecSuccess )
