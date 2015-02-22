@@ -36,6 +36,7 @@
 #import "WSCKeychainError.h"
 #import "WSCTrustedApplication.h"
 
+#import "_WSCProtectedKeychainItemPrivate.h"
 #import "_WSCPermittedOperationPrivate.h"
 #import "_WSCKeychainErrorPrivate.h"
 #import "_WSCTrustedApplicationPrivate.h"
