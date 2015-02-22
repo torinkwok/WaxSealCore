@@ -41,7 +41,7 @@
 // The reference of the `SecAccess` opaque object, which wrapped by `WSCProtectedKeychainItem` object. (read-only)
 // If you are familiar with the underlying *Keychain Services* API,
 // you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* API with this property.
-@property ( unsafe_unretained, readonly ) SecAccessRef p_secAccess;
+@property ( unsafe_unretained, readonly ) SecAccessRef secAccess;
 
 @end // WSCProtectedKeychainItem + _WSCProtectedKeychainItemBridge
 

@@ -207,7 +207,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 
         if ( ![ tmpOlderAuthorizationsSet isEqualToSet: tmpNewerAuthorizationsSet ] )
             {
-            SecAccessRef currentAccess = self->_hostProtectedKeychainItem.p_secAccess;
+            SecAccessRef currentAccess = self->_hostProtectedKeychainItem.secAccess;
             SecACLRef currentSecACL = [ self p_retrieveSecACLFromSecAccess: currentAccess error: &error ];
             if ( ( resultCode = SecACLUpdateAuthorizations( currentSecACL, secNewerAuthorizations ) ) == errSecSuccess )
                 {
@@ -450,7 +450,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                 || secNewerTrustedApps != secOlderTrustedApps
                 || secNewerPromptSel != secOlderPromptSel )
             {
-            SecAccessRef currentAccess = self->_hostProtectedKeychainItem.p_secAccess;
+            SecAccessRef currentAccess = self->_hostProtectedKeychainItem.secAccess;
             SecACLRef currentACL = [ self p_retrieveSecACLFromSecAccess: currentAccess error: &error ];
             // Set the new contents for the given access control list entry which was wrapped in receiver.
             resultCode = SecACLSetContents( currentACL, secNewerTrustedApps, secNewerDesc, secNewerPromptSel );
