@@ -36,12 +36,13 @@
 #import "WSCPermittedOperation.h"
 #import "WSCKeychainError.h"
 
-#import "_WSCProtectedKeychainItemPrivate.h"
 #import "_WSCKeychainErrorPrivate.h"
 #import "_WSCKeychainItemPrivate.h"
 #import "_WSCPermittedOperationPrivate.h"
 
 @implementation WSCProtectedKeychainItem
+
+@dynamic secAccess;
 
 #pragma mark Managing Permitted Operations
 /* Creates a new permitted operation entry from the description, trusted application list, and prompt context provided
@@ -171,15 +172,10 @@
     return [ [ mutablePermittedOperations copy ] autorelease ];
     }
 
-@end // WSCProtectedKeychainItem
+#pragma mark Keychain Services Bridge
 
-#pragma mark WSCProtectedKeychainItem + _WSCProtectedKeychainItemBridge
-@implementation WSCProtectedKeychainItem ( _WSCProtectedKeychainItemBridge )
-
-@dynamic secAccess;
-
-// The reference of the `SecAccess` opaque object,
-// which wrapped by `WSCProtectedKeychainItem` object. (read-only)
+/* The reference of the `SecAccess` opaque object, which wrapped by `WSCProtectedKeychainItem` object. (read-only)
+ */
 - ( SecAccessRef ) secAccess
     {
     NSError* error = nil;
@@ -189,7 +185,7 @@
     return currentSecAccess;
     }
 
-@end // WSCProtectedKeychainItem + _WSCProtectedKeychainItemBridge
+@end // WSCProtectedKeychainItem
 
 //////////////////////////////////////////////////////////////////////////////
 

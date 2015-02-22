@@ -43,8 +43,6 @@
 #import "_WSCTrustedApplicationPrivate.h"
 #import "_WSCPermittedOperationPrivate.h"
 
-#import "_WSCProtectedKeychainItemPrivate.h"
-
 // --------------------------------------------------------
 #pragma mark Interface of WSCAccessPermissionTests case
 // --------------------------------------------------------

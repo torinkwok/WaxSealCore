@@ -40,8 +40,6 @@
 #import "WSCPassphraseItem.h"
 #import "WSCKeychainError.h"
 
-#import "_WSCProtectedKeychainItemPrivate.h"
-
 @interface WSCProtectedKeychainItemTests : XCTestCase
 
 @end

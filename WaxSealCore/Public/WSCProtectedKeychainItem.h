@@ -100,6 +100,16 @@
   */
 - ( NSArray* ) permittedOperations;
 
+#pragma mark Keychain Services Bridge
+/** @name Keychain Services Bridge */
+
+/** The reference of the `SecAccess` opaque object, which wrapped by `WSCProtectedKeychainItem` object. (read-only)
+  
+  @discussion If you are familiar with the underlying *Keychain Services* API,
+              you can move freely back and forth between *WaxSealCore* framework and *Keychain Services* API with this property.
+  */
+@property ( unsafe_unretained, readonly ) SecAccessRef secAccess;
+
 @end // WSCKeychainItem class
 
 //////////////////////////////////////////////////////////////////////////////
