@@ -51,7 +51,7 @@
 @dynamic keychain;
 
 @synthesize secKeychainItem = _secKeychainItem;
-// The ivar _secAccess will be synthesized in the subclass of WSCKeychainItem: WSCProtectedKeychainItem
+// The ivar _p_secAccess will be synthesized in the subclass of WSCKeychainItem: WSCProtectedKeychainItem
 
 #pragma mark Common Keychain Item Attributes
 /* The `NSString` object that identifies the label of keychain item represented by receiver. */

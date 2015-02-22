@@ -110,7 +110,7 @@
     XCTAssertEqual( commonPermittedOperations.count, 3 );
 
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ Before Modifying - Test Case 0 - Internet Passphrase Item +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( internetPassphraseItem_testCase0.secAccess );
+    _WSCPrintAccess( internetPassphraseItem_testCase0.p_secAccess );
 
     WSCPermittedOperation* permittedOperation_testCase0 =
         [ internetPassphraseItem_testCase0 addPermittedOperationWithDescription: @"Test Case 0"
@@ -128,7 +128,7 @@
     XCTAssertEqual( commonPermittedOperations.count, 4 );
 
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 0 - Internet Passphrase Item +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( internetPassphraseItem_testCase0.secAccess );
+    _WSCPrintAccess( internetPassphraseItem_testCase0.p_secAccess );
 
     // ----------------------------------------------------------------------------------
     // Test Case 1
@@ -142,7 +142,7 @@
     XCTAssertEqual( commonPermittedOperations.count, 3 );
 
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ Before Modifying - Test Case 1 - Application Passphrase Item +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( applicationPassphraseItem_testCase1.secAccess );
+    _WSCPrintAccess( applicationPassphraseItem_testCase1.p_secAccess );
 
     WSCPermittedOperation* permittedOperation_testCase1 =
         [ applicationPassphraseItem_testCase1 addPermittedOperationWithDescription: @"Test Case 1"
@@ -161,7 +161,7 @@
     XCTAssertEqual( commonPermittedOperations.count, 4 );
 
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying - Test Case 1 - Application Passphrase Item +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( applicationPassphraseItem_testCase1.secAccess );
+    _WSCPrintAccess( applicationPassphraseItem_testCase1.p_secAccess );
 
     // ----------------------------------------------------------------------------------
     // Negative Test Case 0
@@ -177,7 +177,7 @@
     XCTAssertEqual( commonPermittedOperations.count, 3 );
 
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ Before Modifying - Negative Test Case 0 - Application Passphrase Item +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( applicationPassphraseItem_negativeTestCase0.secAccess );
+    _WSCPrintAccess( applicationPassphraseItem_negativeTestCase0.p_secAccess );
 
     WSCPermittedOperation* permittedOperation_negativeTestCase0 =
         [ applicationPassphraseItem_negativeTestCase0 addPermittedOperationWithDescription: @"HaHaHa"
@@ -195,7 +195,7 @@
     XCTAssertEqual( commonPermittedOperations.count, 4 );
 
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying #0 - Negative Test Case 0 - Application Passphrase Item +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( applicationPassphraseItem_negativeTestCase0.secAccess );
+    _WSCPrintAccess( applicationPassphraseItem_negativeTestCase0.p_secAccess );
 
     permittedOperation_negativeTestCase0 =
         [ applicationPassphraseItem_negativeTestCase0 addPermittedOperationWithDescription: @"PiaPiaPia"
@@ -218,7 +218,7 @@
     XCTAssertEqual( permittedOperation_negativeTestCase0.hostProtectedKeychainItem, applicationPassphraseItem_negativeTestCase0 );
 
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ After Modifying #1 - Negative Test Case 0 - Application Passphrase Item +++++++++ +++++++++ +++++++++\n" );
-    _WSCPrintAccess( applicationPassphraseItem_negativeTestCase0.secAccess );
+    _WSCPrintAccess( applicationPassphraseItem_negativeTestCase0.p_secAccess );
 
     isSuccess = [ applicationPassphraseItem_negativeTestCase0.keychain deleteKeychainItem: applicationPassphraseItem_negativeTestCase0 error: &error ];
     XCTAssertTrue( isSuccess );

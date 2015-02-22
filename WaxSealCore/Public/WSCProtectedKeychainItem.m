@@ -136,12 +136,12 @@
     OSStatus resultCode = errSecSuccess;
     NSMutableArray* mutablePermittedOperations = nil;
 
-    if ( self.secAccess )
+    if ( self.p_secAccess )
         {
         CFArrayRef secACLList = NULL;
 
         // Retrieves all the access control list entries of a given access object.
-        if ( ( resultCode = SecAccessCopyACLList( self.secAccess, &secACLList ) ) == errSecSuccess )
+        if ( ( resultCode = SecAccessCopyACLList( self.p_secAccess, &secACLList ) ) == errSecSuccess )
             {
             mutablePermittedOperations = [ NSMutableArray array ];
 
@@ -176,11 +176,12 @@
 #pragma mark WSCProtectedKeychainItem + _WSCProtectedKeychainItemBridge
 @implementation WSCProtectedKeychainItem ( _WSCProtectedKeychainItemBridge )
 
-@dynamic secAccess;
+// The ivar self->_secAccess was declared in the super class: WSCKeychainItem
+@dynamic p_secAccess;
 
 // The reference of the `SecAccess` opaque object,
 // which wrapped by `WSCProtectedKeychainItem` object. (read-only)
-- ( SecAccessRef ) secAccess
+- ( SecAccessRef ) p_secAccess
     {
     NSError* error = nil;
     SecAccessRef currentSecAccess = [ self p_secCurrentAccess: &error ];
