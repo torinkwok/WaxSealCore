@@ -82,10 +82,13 @@
     OSStatus resultCode = errSecSuccess;
     SecACLRef secNewACL = NULL;
 
-    if ( self.secAccess )
+    SecAccessRef secCurrentAccess = [ self p_secCurrentAccess: &error ];
+    NSAssert( !error, error.description );
+
+    if ( secCurrentAccess )
         {
         // Create the an ALC (Access Control List)
-        if ( ( resultCode = SecACLCreateWithSimpleContents( self.secAccess
+        if ( ( resultCode = SecACLCreateWithSimpleContents( secCurrentAccess
                                                           , ( __bridge CFArrayRef )secTrustedApps
                                                           , ( __bridge CFStringRef )_Description
                                                           , ( SecKeychainPromptSelector )_PromptContext
@@ -102,7 +105,7 @@
             // There is no need for a separate function to write a modified ACL object back into the secCurrentAccess object.
             if ( ( resultCode = SecACLUpdateAuthorizations( secNewACL, ( __bridge CFArrayRef )authorizations ) ) == errSecSuccess )
                 // Write the modified access object (secCurrentAccess) that carries the secNewACL back into the protected keychain item represented by receiver.
-                if ( ( resultCode = SecKeychainItemSetAccess( self.secKeychainItem, self.secAccess ) ) == errSecSuccess )
+                if ( ( resultCode = SecKeychainItemSetAccess( self.secKeychainItem, secCurrentAccess ) ) == errSecSuccess )
                     // Everything is OK, create the wrapper of the secNewACL that has been added to
                     // the list of permitted operations of the protected keychain item.
                     newPermitted = [ [ [ WSCPermittedOperation alloc ] p_initWithSecACLRef: secNewACL

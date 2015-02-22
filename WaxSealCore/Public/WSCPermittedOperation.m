@@ -51,7 +51,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 @dynamic trustedApplications;
 @dynamic promptContext;
 
-@dynamic secACL;
+@synthesize secACL = _secACL;
 @dynamic hostProtectedKeychainItem;
 
 #pragma mark Attributes of Permitted Operations
@@ -102,11 +102,9 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
     OSStatus resultCode = errSecSuccess;
 
     SecACLRef findingACL = NULL;
-	
-	SecAccessRef newAccess = [ self->_hostProtectedKeychainItem p_secCurrentAccess: _Error ];
-	
 	CFArrayRef allACLs = NULL;
-	resultCode = SecAccessCopyACLList( newAccess, &allACLs );
+
+	resultCode = SecAccessCopyACLList( _HostSecAccess, &allACLs );
 	NSSet* currentTrustedApps = [ self trustedApplications ];
 	NSString* currentDescriptor = [ self descriptor ];
 	WSCPermittedOperationPromptContext currentPromptSelector = [ self promptContext ];
@@ -124,7 +122,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 	    WSCPermittedOperationTag secOperations =
 	        _WSCPermittedOperationMasksFromSecAuthorizations( ( __bridge NSArray* )SecACLCopyAuthorizations( ( __bridge SecACLRef )_ACLRef ) );
 	
-	    if ( [ currentTrustedApps isEqualToSet: trustedApps ]
+	    if ( ( [ currentTrustedApps isEqualToSet: trustedApps ] || currentTrustedApps == trustedApps )
 	            && [ currentDescriptor isEqualToString: ( __bridge NSString* )secDescriptor ]
 	            && currentPromptSelector == secPromptSelector
 	            && currentOperations == secOperations )
@@ -147,15 +145,6 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 	    CFRelease( allACLs );
 
     return findingACL;
-    }
-
-- ( SecACLRef ) secACL
-    {
-    NSError* error = nil;
-    SecACLRef currentACL = [ self p_retrieveSecACLFromSecAccess: self.hostProtectedKeychainItem.secAccess
-                                                          error: &error ];
-    _WSCPrintNSErrorForLog( error );
-    return currentACL;
     }
 
 /* Masks that define when using a keychain or a protected keychain item should require a passphrase.
@@ -281,7 +270,10 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
         if ( !error )
             {
             if ( _SecACLRef )
+                {
+                self->_secACL = _SecACLRef;
                 self->_hostProtectedKeychainItem = _ProtectedKeychainItem;
+                }
             else
                 error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                              code: WSCCommonInvalidParametersError
@@ -322,7 +314,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
     NSMutableDictionary* resultingContents = nil;
 
     // Get the contents for a given access control list entry which was wrapped in receiver.
-    if ( ( resultCode = SecACLCopyContents( self.secACL, &secTrustedApps, &secDesc, &secPromptSel ) ) == errSecSuccess )
+    if ( ( resultCode = SecACLCopyContents( self->_secACL, &secTrustedApps, &secDesc, &secPromptSel ) ) == errSecSuccess )
         {
         resultingContents = [ NSMutableDictionary dictionary ];
 
@@ -460,8 +452,9 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
             resultCode = SecACLSetContents( currentACL, secNewerTrustedApps, secNewerDesc, secNewerPromptSel );
             if ( resultCode == errSecSuccess )
                 {
-                SecAccessRef currentAccess = self->_hostProtectedKeychainItem.secAccess;
                 resultCode = SecKeychainItemSetAccess( self->_hostProtectedKeychainItem.secKeychainItem, currentAccess );
+                CFRelease( self->_secACL );
+                self->_secACL = currentACL;
                 }
             }
 
@@ -475,7 +468,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 
     if ( resultCode != errSecSuccess )
         error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
-    NSAssert( !error, error.description );
+    _WSCPrintNSErrorForLog( error );
     }
 
 @end // WSCAccessPermission + _WSCPermittedOperationPrivateManagment
