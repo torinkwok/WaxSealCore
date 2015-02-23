@@ -144,28 +144,26 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
     // to the array of CoreFoundation-string representing the autorization key.
     CFArrayRef secNewerAuthorizations = ( __bridge CFArrayRef )_WACSecAuthorizationsFromPermittedOperationMasks( _Operation );
 
-    @autoreleasepool
-        {
-        // secOlderAuthorizations may be completely equal to secNewerAuthorizations
-        // but the order of their elements may be not completely equal.
-        // Therefore, we convert two arrays to two temporary NSSet then compare them.
-        NSSet* tmpOlderAuthorizationsSet = [ NSSet setWithArray: ( __bridge NSArray* )secOlderAuthorizations ];
-        NSSet* tmpNewerAuthorizationsSet = [ NSSet setWithArray: ( __bridge NSArray* )secNewerAuthorizations ];
+    // secOlderAuthorizations may be completely equal to secNewerAuthorizations
+    // but the order of their elements may be not completely equal.
+    // Therefore, we convert two arrays to two temporary NSSet then compare them.
+    NSSet* tmpOlderAuthorizationsSet = [ NSSet setWithArray: ( __bridge NSArray* )secOlderAuthorizations ];
+    NSSet* tmpNewerAuthorizationsSet = [ NSSet setWithArray: ( __bridge NSArray* )secNewerAuthorizations ];
 
-        if ( ![ tmpOlderAuthorizationsSet isEqualToSet: tmpNewerAuthorizationsSet ] )
-            {
-            [ self p_backIntoTheModifiedACLEntryWithNewContents: nil
-                                           andNewAuthorizations: secNewerAuthorizations 
-                                                          error: &error ];
-            _WSCPrintNSErrorForLog( error );
-            }
-        }
+    // If secOlderAuthorizations is exactly equal to secNewerTrustedApps,
+    // we have no need for performing update operation.
+    if ( ![ tmpOlderAuthorizationsSet isEqualToSet: tmpNewerAuthorizationsSet ] )
+        [ self p_backIntoTheModifiedACLEntryWithNewContents: nil
+                                       andNewAuthorizations: secNewerAuthorizations
+                                                      error: &error ];
 
     // Kill secOlderAuthorizations,
     // secNewerAuthorizations is an NSArray object.
     // Therefore, no need to kill it manually.
     if ( secOlderAuthorizations )
         CFRelease( secOlderAuthorizations );
+
+    _WSCPrintNSErrorForLog( error );
     }
 
 #pragma mark Keychain Services Bridge
@@ -385,11 +383,6 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
         if ( secNewerDesc != secOlderDesc
                 || secNewerTrustedApps != secOlderTrustedApps
                 || secNewerPromptSel != secOlderPromptSel )
-            {
-            // Set the new contents for the given access control list entry which was wrapped in receiver.
-            // Because the secCurrentACL was associated with secCurrentAccess,
-            // when we modify the contents of secCurrentACL, the secCurrentAccess has been modified as well.
-            // We just need to write the modified secCurrentAccess back into the host protected keychain item.
             [ self p_backIntoTheModifiedACLEntryWithNewContents:
                 ( __bridge CFDictionaryRef )@{ _WSCPermittedOperationDescriptor : secNewerDesc ? ( __bridge id )secNewerDesc : [ NSNull null ]
                                              , _WSCPermittedOperationTrustedApplications : secNewerTrustedApps ? ( __bridge id )secNewerTrustedApps : [ NSNull null ]
@@ -398,8 +391,6 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                                                                 objCType: @encode( WSCPermittedOperationPromptContext ) ] }
                                            andNewAuthorizations: nil
                                                           error: &error ];
-            }
-
         // Done, kill them😈.
         if ( secOlderTrustedApps )
             CFRelease( secOlderTrustedApps );
@@ -435,25 +426,28 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 
     if ( _SecNewContents )
         {
-        CFArrayRef newTrustedApps = ( __bridge CFArrayRef )( ( __bridge NSDictionary* )_SecNewContents )[ _WSCPermittedOperationTrustedApplications ];
-        CFStringRef newDescriptor = ( __bridge CFStringRef )( ( __bridge NSDictionary* )_SecNewContents )[ _WSCPermittedOperationDescriptor ];
-        newTrustedApps = ( ( __bridge id )newTrustedApps == [ NSNull null ] ) ? NULL : newTrustedApps;
-        newDescriptor = ( ( __bridge id )newDescriptor == [ NSNull null ] ) ? NULL : newDescriptor;
+        void* newTrustedApps = ( __bridge void* )( ( __bridge NSDictionary* )_SecNewContents )[ _WSCPermittedOperationTrustedApplications ];
+        void* newDescriptor = ( __bridge void* )( ( __bridge NSDictionary* )_SecNewContents )[ _WSCPermittedOperationDescriptor ];
+        newTrustedApps = ( newTrustedApps == [ NSNull null ] ) ? NULL : newTrustedApps;
+        newDescriptor = ( newDescriptor == [ NSNull null ] ) ? NULL : newDescriptor;
 
         SecKeychainPromptSelector newPromptSelector = 0;
-
         NSValue* cocoaValueWrappedNewPromptSel = ( ( __bridge NSDictionary* )_SecNewContents )[ _WSCPermittedOperationPromptSelector ];
         [ cocoaValueWrappedNewPromptSel getValue: &newPromptSelector ];
 
         // Set the new contents for the given access control list entry which was wrapped in receiver.
-        resultCode = SecACLSetContents( secCurrentACL, newTrustedApps, newDescriptor, newPromptSelector );
+        resultCode = SecACLSetContents( secCurrentACL, ( CFArrayRef )newTrustedApps, ( CFStringRef )newDescriptor, newPromptSelector );
         }
 
     if ( _SecNewAuthorizations )
         resultCode = SecACLUpdateAuthorizations( secCurrentACL, _SecNewAuthorizations );
 
-    // Write the modified access back into the host protected keychain item.
+    // Set the new contents for the given access control list entry which was wrapped in receiver.
+    // Because the secCurrentACL was associated with secCurrentAccess,
+    // when we modify the contents of secCurrentACL, the secCurrentAccess has been modified as well.
+    // We just need to write the modified secCurrentAccess back into the host protected keychain item.
     if ( resultCode == errSecSuccess
+            // Write the modified access back into the host protected keychain item.
             && ( resultCode = SecKeychainItemSetAccess( self.hostProtectedKeychainItem.secKeychainItem
                                                       , secCurrentAccess ) ) == errSecSuccess )
         {
@@ -471,7 +465,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                                      userInfo: @{ NSUnderlyingErrorKey : error } ];
         }
 
-    if ( _Error )
+    if ( error && _Error )
         *_Error = [ [ error copy ] autorelease ];
 
     if ( secCurrentAccess )

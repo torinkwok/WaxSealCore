@@ -112,13 +112,16 @@
 
 - ( void ) testOperationsProperty
     {
+    NSError* error = nil;
+
     // DEBUG
     SecAccessRef debugAccess = NULL;
+    CFArrayRef debugTrustedApps = NULL;
+    CFStringRef debugDescriptor = NULL;
+    SecKeychainPromptSelector debugPromptSel = 0;
     SecKeychainItemCopyAccess( self.httpsPassphrase_testCase0.secKeychainItem, &debugAccess );
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 400 +++++++++ +++++++++ +++++++++\n" );
     _WSCPrintAccess( debugAccess );
-
-    NSError* error = nil;
 
     NSArray* commonPermittedOperations = nil;
     commonPermittedOperations = [ self.httpsPassphrase_testCase0 permittedOperations ];
@@ -155,7 +158,12 @@
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 1 +++++++++ +++++++++ +++++++++\n" );
     _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
 
+    restrictedOperation_testCase2.promptContext = WSCPermyittedOperationPromptContextInvalidSigned | WSCPermittedOperationPromptContextWhenUnsigned | WSCPermittedOperationPromptContextRequirePassphraseEveryAccess;
     restrictedOperation_testCase2.trustedApplications = [ NSSet setWithObjects: self.Grab, self.iPhoto, self.AppleContacts, nil ];
+    NSLog( @"New Prompt Context: %d", restrictedOperation_testCase2.promptContext );
+
+    SecACLCopyContents( restrictedOperation_testCase2.secACL, &debugTrustedApps, &debugDescriptor, &debugPromptSel );
+    NSLog( @"New Sec Prompt Context: %d", debugPromptSel );
 
     WSCPermittedOperationTag olderTag_testCase2 = restrictedOperation_testCase2.operations;
 
