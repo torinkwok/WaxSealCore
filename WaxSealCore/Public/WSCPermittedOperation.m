@@ -136,7 +136,6 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 - ( void ) setOperations: ( WSCPermittedOperationTag )_Operation
     {
     NSError* error = nil;
-    OSStatus resultCode = errSecSuccess;
 
     // Get the current authorizations.
     CFArrayRef secOlderAuthorizations = SecACLCopyAuthorizations( self.secACL );
@@ -155,30 +154,9 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 
         if ( ![ tmpOlderAuthorizationsSet isEqualToSet: tmpNewerAuthorizationsSet ] )
             {
-            SecAccessRef secCurrentAccess = [ self.hostProtectedKeychainItem p_secCurrentAccess: nil ];
-
-            // Get the ACL entry associated with secCurrentAccess
-            // while has the contents that equivalent to the self->_secACL's
-            SecACLRef secCurrentACL = [ self p_retrieveSecACLFromSecAccess: secCurrentAccess error: nil ];
-
-            // Set the new authorizations for the given access control list entry which was wrapped in receiver.
-            if ( ( resultCode = SecACLUpdateAuthorizations( secCurrentACL, secNewerAuthorizations ) ) == errSecSuccess )
-                // Because the secCurrentACL was associated with secCurrentAccess,
-                // when we modify the authorizations of secCurrentACL, the secCurrentAccess has been modified as well.
-                // We just need to write the modified secCurrentAccess back into the host protected keychain item.
-                [ self p_writeModifiedAccessBackIntoHostProtectedKeychainItem: secCurrentAccess
-                                                         withModifiedACLEntry: secCurrentACL
-                                                                        error: &error ];
-            if ( resultCode != errSecSuccess )
-                {
-                error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
-
-                if ( resultCode == errSecInvalidOwnerEdit )
-                    error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                                 code: WSCPermittedOperationFailedToChangeTheOwnerOfPermittedOperationError
-                                             userInfo: @{ NSUnderlyingErrorKey : error } ];
-                }
-
+            [ self p_backIntoTheModifiedACLEntryWithNewContents: nil
+                                           andNewAuthorizations: secNewerAuthorizations 
+                                                          error: &error ];
             _WSCPrintNSErrorForLog( error );
             }
         }
@@ -408,20 +386,18 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                 || secNewerTrustedApps != secOlderTrustedApps
                 || secNewerPromptSel != secOlderPromptSel )
             {
-            SecAccessRef secCurrentAccess = [ self.hostProtectedKeychainItem p_secCurrentAccess: nil ];
-
-            // Get the ACL entry associated with secCurrentAccess
-            // while has the contents that equivalent to the self->_secACL's
-            SecACLRef secCurrentACL = [ self p_retrieveSecACLFromSecAccess: secCurrentAccess error: nil ];
-
             // Set the new contents for the given access control list entry which was wrapped in receiver.
-            if ( ( resultCode = SecACLSetContents( secCurrentACL, secNewerTrustedApps, secNewerDesc, secNewerPromptSel ) ) == errSecSuccess )
-                // Because the secCurrentACL was associated with secCurrentAccess,
-                // when we modify the contents of secCurrentACL, the secCurrentAccess has been modified as well.
-                // We just need to write the modified secCurrentAccess back into the host protected keychain item.
-                [ self p_writeModifiedAccessBackIntoHostProtectedKeychainItem: secCurrentAccess
-                                                         withModifiedACLEntry: secCurrentACL
-                                                                        error: &error ];
+            // Because the secCurrentACL was associated with secCurrentAccess,
+            // when we modify the contents of secCurrentACL, the secCurrentAccess has been modified as well.
+            // We just need to write the modified secCurrentAccess back into the host protected keychain item.
+            [ self p_backIntoTheModifiedACLEntryWithNewContents:
+                ( __bridge CFDictionaryRef )@{ _WSCPermittedOperationDescriptor : secNewerDesc ? ( __bridge id )secNewerDesc : [ NSNull null ]
+                                             , _WSCPermittedOperationTrustedApplications : secNewerTrustedApps ? ( __bridge id )secNewerTrustedApps : [ NSNull null ]
+                                             , _WSCPermittedOperationPromptSelector :
+                                                [ NSValue valueWithBytes: &secNewerPromptSel
+                                                                objCType: @encode( WSCPermittedOperationPromptContext ) ] }
+                                           andNewAuthorizations: nil
+                                                          error: &error ];
             }
 
         // Done, kill them😈.
@@ -437,29 +413,72 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
     _WSCPrintNSErrorForLog( error );
     }
 
-- ( void ) p_writeModifiedAccessBackIntoHostProtectedKeychainItem: ( SecAccessRef )_ModifiedAccess
-                                             withModifiedACLEntry: ( SecACLRef )_ModifiedACLEntry
-                                                            error: ( NSError** )_Error
+/* Objective-C wrapper of SecACLSetContents() and SecACLUpdateAuthorizations().
+ * We use it to write the modified ACL entry back into the host protected keychain item.
+ */
+- ( void ) p_backIntoTheModifiedACLEntryWithNewContents: ( CFDictionaryRef )_SecNewContents
+                                   andNewAuthorizations: ( CFArrayRef )_SecNewAuthorizations
+                                                  error: ( NSError** )_Error
     {
+    if ( !_SecNewContents && !_SecNewAuthorizations )
+        return;
+
+    NSError* error = nil;
     OSStatus resultCode = errSecSuccess;
 
+    SecAccessRef secCurrentAccess = [ self.hostProtectedKeychainItem p_secCurrentAccess: &error ];
+
+    // Get the ACL entry associated with secCurrentAccess
+    // while has the contents that equivalent to the self->_secACL's
+    SecACLRef secCurrentACL = [ self p_retrieveSecACLFromSecAccess: secCurrentAccess error: &error ];
+    NSAssert( !error, error.description );
+
+    if ( _SecNewContents )
+        {
+        CFArrayRef newTrustedApps = ( __bridge CFArrayRef )( ( __bridge NSDictionary* )_SecNewContents )[ _WSCPermittedOperationTrustedApplications ];
+        CFStringRef newDescriptor = ( __bridge CFStringRef )( ( __bridge NSDictionary* )_SecNewContents )[ _WSCPermittedOperationDescriptor ];
+        newTrustedApps = ( ( __bridge id )newTrustedApps == [ NSNull null ] ) ? NULL : newTrustedApps;
+        newDescriptor = ( ( __bridge id )newDescriptor == [ NSNull null ] ) ? NULL : newDescriptor;
+
+        SecKeychainPromptSelector newPromptSelector = 0;
+
+        NSValue* cocoaValueWrappedNewPromptSel = ( ( __bridge NSDictionary* )_SecNewContents )[ _WSCPermittedOperationPromptSelector ];
+        [ cocoaValueWrappedNewPromptSel getValue: &newPromptSelector ];
+
+        // Set the new contents for the given access control list entry which was wrapped in receiver.
+        resultCode = SecACLSetContents( secCurrentACL, newTrustedApps, newDescriptor, newPromptSelector );
+        }
+
+    if ( _SecNewAuthorizations )
+        resultCode = SecACLUpdateAuthorizations( secCurrentACL, _SecNewAuthorizations );
+
     // Write the modified access back into the host protected keychain item.
-    if ( ( resultCode = SecKeychainItemSetAccess( self.hostProtectedKeychainItem.secKeychainItem
-                                                , _ModifiedAccess ) ) == errSecSuccess )
+    if ( resultCode == errSecSuccess
+            && ( resultCode = SecKeychainItemSetAccess( self.hostProtectedKeychainItem.secKeychainItem
+                                                      , secCurrentAccess ) ) == errSecSuccess )
         {
         CFRelease( self->_secACL );
-        self->_secACL = ( SecACLRef )CFRetain( _ModifiedACLEntry );
+        self->_secACL = ( SecACLRef )CFRetain( secCurrentACL );
         }
 
     if ( resultCode != errSecSuccess )
-        if ( _Error )
-            *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
+        {
+        error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
 
-    if ( _ModifiedAccess )
-        CFRelease( _ModifiedAccess );
+        if ( resultCode == errSecInvalidOwnerEdit )
+            error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                         code: WSCPermittedOperationFailedToChangeTheOwnerOfPermittedOperationError
+                                     userInfo: @{ NSUnderlyingErrorKey : error } ];
+        }
 
-    if ( _ModifiedACLEntry )
-        CFRelease( _ModifiedACLEntry );
+    if ( _Error )
+        *_Error = [ [ error copy ] autorelease ];
+
+    if ( secCurrentAccess )
+        CFRelease( secCurrentAccess );
+
+    if ( secCurrentACL )
+        CFRelease( secCurrentACL );
     }
 
 /* Get the ACL entry associated with secCurrentAccess

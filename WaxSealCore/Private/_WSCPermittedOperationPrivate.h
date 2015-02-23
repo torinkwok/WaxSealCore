@@ -60,9 +60,11 @@
 - ( SecACLRef ) p_retrieveSecACLFromSecAccess: ( SecAccessRef )_HostSecAccess
                                         error: ( NSError** )_Error;
 
-- ( void ) p_writeModifiedAccessBackIntoHostProtectedKeychainItem: ( SecAccessRef )_ModifiedAccess
-                                             withModifiedACLEntry: ( SecACLRef )_ModifiedACLEntry
-                                                            error: ( NSError** )_Error;
+// Objective-C wrapper of SecACLSetContents() and SecACLUpdateAuthorizations().
+// We use it to write the modified ACL entry back into the host protected keychain item.
+- ( void ) p_backIntoTheModifiedACLEntryWithNewContents: ( CFDictionaryRef )_SecNewContents
+                                   andNewAuthorizations: ( CFArrayRef )_SecNewAuthorizations
+                                                  error: ( NSError** )_Error;
 
 @end // WSCAccessPermission + _WSCPermittedOperationPrivateManagment
 
