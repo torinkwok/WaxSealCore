@@ -158,7 +158,7 @@
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 1 +++++++++ +++++++++ +++++++++\n" );
     _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
 
-    restrictedOperation_testCase2.promptContext = WSCPermyittedOperationPromptContextInvalidSigned | WSCPermittedOperationPromptContextWhenUnsigned | WSCPermittedOperationPromptContextRequirePassphraseEveryAccess;
+    restrictedOperation_testCase2.promptContext = WSCPermittedOperationPromptContextWhenUnsigned | WSCPermittedOperationPromptContextWhenUnsigned | WSCPermittedOperationPromptContextRequirePassphraseEveryAccess;
     restrictedOperation_testCase2.trustedApplications = [ NSSet setWithObjects: self.Grab, self.iPhoto, self.AppleContacts, nil ];
     NSLog( @"New Prompt Context: %d", restrictedOperation_testCase2.promptContext );
 
