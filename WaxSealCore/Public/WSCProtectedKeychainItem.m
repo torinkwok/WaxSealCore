@@ -179,10 +179,11 @@
 - ( SecAccessRef ) secAccess
     {
     NSError* error = nil;
-    SecAccessRef currentSecAccess = [ self p_secCurrentAccess: &error ];
+    SecAccessRef secCurrentAccess = [ self p_secCurrentAccess: &error ];
     NSAssert( !error, error.description );
+    CFSetAddValue( self->_secAccessAutoReleasePool, secCurrentAccess );
 
-    return currentSecAccess;
+    return secCurrentAccess;
     }
 
 @end // WSCProtectedKeychainItem

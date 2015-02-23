@@ -155,14 +155,20 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 
         if ( ![ tmpOlderAuthorizationsSet isEqualToSet: tmpNewerAuthorizationsSet ] )
             {
-            SecAccessRef secCurrentAccess = self->_hostProtectedKeychainItem.secAccess;
-            SecACLRef currentSecACL = [ self p_retrieveSecACLFromSecAccess: secCurrentAccess error: &error ];
-            if ( ( resultCode = SecACLUpdateAuthorizations( currentSecACL, secNewerAuthorizations ) ) == errSecSuccess )
+            SecAccessRef secCurrentAccess = [ self.hostProtectedKeychainItem p_secCurrentAccess: nil ];
+            SecACLRef secCurrentACL = [ self p_retrieveSecACLFromSecAccess: secCurrentAccess error: nil ];
+            if ( ( resultCode = SecACLUpdateAuthorizations( secCurrentACL, secNewerAuthorizations ) ) == errSecSuccess )
                 {
                 resultCode = SecKeychainItemSetAccess( self.hostProtectedKeychainItem.secKeychainItem, secCurrentAccess );
                 CFRelease( self->_secACL );
-                self->_secACL = currentSecACL;
+                self->_secACL = secCurrentACL;
                 }
+            else
+                if ( secCurrentACL )
+                    CFRelease( secCurrentACL );
+
+            if ( secCurrentAccess )
+                CFRelease( secCurrentAccess );
 
             if ( resultCode != errSecSuccess )
                 {
@@ -401,16 +407,21 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
                 || secNewerTrustedApps != secOlderTrustedApps
                 || secNewerPromptSel != secOlderPromptSel )
             {
-            SecAccessRef currentAccess = self->_hostProtectedKeychainItem.secAccess;
-            SecACLRef currentACL = [ self p_retrieveSecACLFromSecAccess: currentAccess error: &error ];
+            SecAccessRef secCurrentAccess = [ self.hostProtectedKeychainItem p_secCurrentAccess: nil ];
+            SecACLRef secCurrentACL = [ self p_retrieveSecACLFromSecAccess: secCurrentAccess error: nil ];
             // Set the new contents for the given access control list entry which was wrapped in receiver.
-            resultCode = SecACLSetContents( currentACL, secNewerTrustedApps, secNewerDesc, secNewerPromptSel );
-            if ( resultCode == errSecSuccess )
+            if ( ( resultCode = SecACLSetContents( secCurrentACL, secNewerTrustedApps, secNewerDesc, secNewerPromptSel ) ) == errSecSuccess )
                 {
-                resultCode = SecKeychainItemSetAccess( self->_hostProtectedKeychainItem.secKeychainItem, currentAccess );
+                resultCode = SecKeychainItemSetAccess( self->_hostProtectedKeychainItem.secKeychainItem, secCurrentAccess );
                 CFRelease( self->_secACL );
-                self->_secACL = currentACL;
+                self->_secACL = secCurrentACL;
                 }
+            else
+                if ( secCurrentACL )
+                    CFRelease( secCurrentACL );
+
+            if ( secCurrentAccess )
+                CFRelease( secCurrentAccess );
             }
 
         // Done, kill them😈.
@@ -457,7 +468,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 	            && currentPromptSelector == secPromptSelector
 	            && currentOperations == secOperations )
 	        {
-	        findingACL = ( __bridge SecACLRef )_ACLRef;
+	        findingACL = ( SecACLRef )CFRetain( ( __bridge CFTypeRef )_ACLRef );
 	        haveSuccessfullyFound = YES;
 	        }
 	

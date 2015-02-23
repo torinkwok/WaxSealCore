@@ -559,9 +559,7 @@
     OSStatus resultCode = errSecSuccess;
     SecAccessRef secCurrentAccess = NULL;
 
-    if ( ( resultCode = SecKeychainItemCopyAccess( self.secKeychainItem, &secCurrentAccess ) ) == errSecSuccess )
-        CFSetAddValue( self->_secAccessAutoReleasePool, secCurrentAccess );
-    else
+    if ( ( resultCode = SecKeychainItemCopyAccess( self.secKeychainItem, &secCurrentAccess ) ) != errSecSuccess )
         *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
 
     return secCurrentAccess;
