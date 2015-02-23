@@ -55,8 +55,14 @@
 // Use for updating the contents of the permitted operation entry represented by receiver.
 - ( void ) p_updatePermittedOperation: ( NSDictionary* )_NewValues;
 
+// Get the ACL entry associated with secCurrentAccess
+// while has the contents that equivalent to the self->_secACL's.
 - ( SecACLRef ) p_retrieveSecACLFromSecAccess: ( SecAccessRef )_HostSecAccess
                                         error: ( NSError** )_Error;
+
+- ( void ) p_writeModifiedAccessBackIntoHostProtectedKeychainItem: ( SecAccessRef )_ModifiedAccess
+                                             withModifiedACLEntry: ( SecACLRef )_ModifiedACLEntry
+                                                            error: ( NSError** )_Error;
 
 @end // WSCAccessPermission + _WSCPermittedOperationPrivateManagment
 

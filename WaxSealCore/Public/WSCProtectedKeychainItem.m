@@ -113,6 +113,8 @@
                                                                                      error: _Error ] autorelease ];
             CFRelease( secNewACL );
             }
+
+        CFRelease( secCurrentAccess );
         }
 
     if ( resultCode != errSecSuccess )
@@ -137,12 +139,13 @@
     OSStatus resultCode = errSecSuccess;
     NSMutableArray* mutablePermittedOperations = nil;
 
-    if ( self.secAccess )
+    SecAccessRef secCurrentAccess = [ self p_secCurrentAccess: &error ];
+    if ( !error )
         {
         CFArrayRef secACLList = NULL;
 
         // Retrieves all the access control list entries of a given access object.
-        if ( ( resultCode = SecAccessCopyACLList( self.secAccess, &secACLList ) ) == errSecSuccess )
+        if ( ( resultCode = SecAccessCopyACLList( secCurrentAccess, &secACLList ) ) == errSecSuccess )
             {
             mutablePermittedOperations = [ NSMutableArray array ];
 
@@ -161,6 +164,8 @@
 
             CFRelease( secACLList );
             }
+
+        CFRelease( secCurrentAccess );
         }
 
     if ( resultCode != errSecSuccess )
