@@ -96,57 +96,6 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
         return nil;
     }
 
-- ( SecACLRef ) p_retrieveSecACLFromSecAccess: ( SecAccessRef )_HostSecAccess
-                                        error: ( NSError** )_Error
-    {
-    OSStatus resultCode = errSecSuccess;
-
-    SecACLRef findingACL = NULL;
-	CFArrayRef allACLs = NULL;
-
-	resultCode = SecAccessCopyACLList( _HostSecAccess, &allACLs );
-	NSSet* currentTrustedApps = [ self trustedApplications ];
-	NSString* currentDescriptor = [ self descriptor ];
-	WSCPermittedOperationPromptContext currentPromptSelector = [ self promptContext ];
-	WSCPermittedOperationTag currentOperations = [ self operations ];
-	for ( id _ACLRef in ( __bridge NSArray* )allACLs )
-	    {
-	    BOOL haveSuccessfullyFound = NO;
-	
-	    CFArrayRef secTrustedApps = NULL;
-	    CFStringRef secDescriptor = NULL;
-	    SecKeychainPromptSelector secPromptSelector = 0;
-	    SecACLCopyContents( ( __bridge SecACLRef )_ACLRef, &secTrustedApps, &secDescriptor, &secPromptSelector );
-	
-	    NSSet* trustedApps = _WSCSetOfTrustedAppsFromSecTrustedApps( secTrustedApps );
-	    WSCPermittedOperationTag secOperations =
-	        _WSCPermittedOperationMasksFromSecAuthorizations( ( __bridge NSArray* )SecACLCopyAuthorizations( ( __bridge SecACLRef )_ACLRef ) );
-	
-	    if ( ( [ currentTrustedApps isEqualToSet: trustedApps ] || currentTrustedApps == trustedApps )
-	            && [ currentDescriptor isEqualToString: ( __bridge NSString* )secDescriptor ]
-	            && currentPromptSelector == secPromptSelector
-	            && currentOperations == secOperations )
-	        {
-	        findingACL = ( __bridge SecACLRef )_ACLRef;
-	        haveSuccessfullyFound = YES;
-	        }
-	
-	    if ( secTrustedApps )
-	        CFRelease( secTrustedApps );
-	
-	    if ( secDescriptor )
-	        CFRelease( secDescriptor );
-	
-	    if ( haveSuccessfullyFound )
-	        break;
-	    }
-	
-	if ( allACLs )
-	    CFRelease( allACLs );
-
-    return findingACL;
-    }
-
 /* Masks that define when using a keychain or a protected keychain item should require a passphrase.
  */
 - ( WSCPermittedOperationPromptContext ) promptContext
@@ -475,6 +424,57 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
     if ( resultCode != errSecSuccess )
         error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
     _WSCPrintNSErrorForLog( error );
+    }
+
+- ( SecACLRef ) p_retrieveSecACLFromSecAccess: ( SecAccessRef )_HostSecAccess
+                                        error: ( NSError** )_Error
+    {
+    OSStatus resultCode = errSecSuccess;
+
+    SecACLRef findingACL = NULL;
+	CFArrayRef allACLs = NULL;
+
+	resultCode = SecAccessCopyACLList( _HostSecAccess, &allACLs );
+	NSSet* currentTrustedApps = [ self trustedApplications ];
+	NSString* currentDescriptor = [ self descriptor ];
+	WSCPermittedOperationPromptContext currentPromptSelector = [ self promptContext ];
+	WSCPermittedOperationTag currentOperations = [ self operations ];
+	for ( id _ACLRef in ( __bridge NSArray* )allACLs )
+	    {
+	    BOOL haveSuccessfullyFound = NO;
+	
+	    CFArrayRef secTrustedApps = NULL;
+	    CFStringRef secDescriptor = NULL;
+	    SecKeychainPromptSelector secPromptSelector = 0;
+	    SecACLCopyContents( ( __bridge SecACLRef )_ACLRef, &secTrustedApps, &secDescriptor, &secPromptSelector );
+	
+	    NSSet* trustedApps = _WSCSetOfTrustedAppsFromSecTrustedApps( secTrustedApps );
+	    WSCPermittedOperationTag secOperations =
+	        _WSCPermittedOperationMasksFromSecAuthorizations( ( __bridge NSArray* )SecACLCopyAuthorizations( ( __bridge SecACLRef )_ACLRef ) );
+	
+	    if ( ( [ currentTrustedApps isEqualToSet: trustedApps ] || currentTrustedApps == trustedApps )
+	            && [ currentDescriptor isEqualToString: ( __bridge NSString* )secDescriptor ]
+	            && currentPromptSelector == secPromptSelector
+	            && currentOperations == secOperations )
+	        {
+	        findingACL = ( __bridge SecACLRef )_ACLRef;
+	        haveSuccessfullyFound = YES;
+	        }
+	
+	    if ( secTrustedApps )
+	        CFRelease( secTrustedApps );
+	
+	    if ( secDescriptor )
+	        CFRelease( secDescriptor );
+	
+	    if ( haveSuccessfullyFound )
+	        break;
+	    }
+	
+	if ( allACLs )
+	    CFRelease( allACLs );
+
+    return findingACL;
     }
 
 @end // WSCAccessPermission + _WSCPermittedOperationPrivateManagment
