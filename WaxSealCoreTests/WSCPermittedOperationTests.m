@@ -129,11 +129,38 @@
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-//    WSCPermittedOperation* restrictedOperation_testCase0 = nil;
-//    for ( WSCPermittedOperation* _PermittedOperation in commonPermittedOperations )
-//        {
-//        if ( [ _PermittedOperation.trustedApplications containsObject: [
-//        }
+    WSCTrustedApplication* trustedApplication_testCase0 = [ WSCTrustedApplication trustedApplicationWithContentsOfURL: nil error: &error ];
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    WSCPermittedOperation* restrictedOperation_testCase0 = nil;
+    for ( WSCPermittedOperation* _PermittedOperation in commonPermittedOperations )
+        {
+        if ( [ _PermittedOperation.trustedApplications containsObject: trustedApplication_testCase0 ] )
+            {
+            restrictedOperation_testCase0 = _PermittedOperation;
+            break;
+            }
+        }
+
+    restrictedOperation_testCase0.trustedApplications = [ NSSet setWithObjects: trustedApplication_testCase0, self.iPhoto, nil ];
+    XCTAssertEqual( restrictedOperation_testCase0.trustedApplications.count, 2 );
+
+    restrictedOperation_testCase0.trustedApplications = [ NSSet setWithObjects: trustedApplication_testCase0, self.iPhoto, self.Grab, nil ];
+    XCTAssertEqual( restrictedOperation_testCase0.trustedApplications.count, 3 );
+
+    restrictedOperation_testCase0.trustedApplications = [ NSSet setWithArray: @[ trustedApplication_testCase0, self.iPhoto, self.Grab, self.AppleContacts ] ];
+    XCTAssertEqual( restrictedOperation_testCase0.trustedApplications.count, 4 );
+
+    restrictedOperation_testCase0.trustedApplications = [ NSSet setWithArray: @[ trustedApplication_testCase0, self.iPhoto, self.Grab, self.AppleContacts ] ];
+    XCTAssertEqual( restrictedOperation_testCase0.trustedApplications.count, 4 );
+
+    NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithData: self.httpsPassphrase_testCase0.passphrase encoding: NSUTF8StringEncoding ] autorelease ] );
+    restrictedOperation_testCase0.promptContext =
+        WSCPermittedOperationPromptContextRequirePassphraseEveryAccess | WSCPermittedOperationPromptContextWhenUnsigned | WSCPermittedOperationPromptContextWhenUnsignedAct
+            | WSCPermittedOperationPromptContextInvalidSigned | WSCPermittedOperationPromptContextInvalidSignedAct;
+
+    NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithData: self.httpsPassphrase_testCase0.passphrase encoding: NSUTF8StringEncoding ] autorelease ] );
 
     // ----------------------------------------------------------------------------------
     // Test Case 2
@@ -167,16 +194,9 @@
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 1 +++++++++ +++++++++ +++++++++\n" );
     _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
 
-//    restrictedOperation_testCase2.promptContext =
-//        WSCPermittedOperationPromptContextRequirePassphraseEveryAccess | WSCPermittedOperationPromptContextWhenUnsigned | WSCPermittedOperationPromptContextWhenUnsignedAct;
-
-    NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithData: self.httpsPassphrase_testCase0.passphrase encoding: NSUTF8StringEncoding ] autorelease ] );
-
     restrictedOperation_testCase2.promptContext =
         WSCPermittedOperationPromptContextRequirePassphraseEveryAccess | WSCPermittedOperationPromptContextWhenUnsigned | WSCPermittedOperationPromptContextWhenUnsignedAct
             | WSCPermittedOperationPromptContextInvalidSigned | WSCPermittedOperationPromptContextInvalidSignedAct;
-
-    NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithData: self.httpsPassphrase_testCase0.passphrase encoding: NSUTF8StringEncoding ] autorelease ] );
 
     restrictedOperation_testCase2.trustedApplications = [ NSSet setWithObjects: self.Grab, self.iPhoto, self.AppleContacts, nil ];
     XCTAssertEqual( restrictedOperation_testCase2.trustedApplications.count, 3 );

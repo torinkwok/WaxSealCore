@@ -114,7 +114,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 - ( void ) setPromptContext: ( WSCPermittedOperationPromptContext )_NewPromptContext
     {
     NSValue* value = [ NSValue valueWithBytes: &_NewPromptContext objCType: @encode( WSCPermittedOperationPromptContext ) ];
-    [ self p_updatePermittedOperation: @{ _WSCPermittedOperationPromptSelector :value } ];
+    [ self p_updatePermittedOperation: @{ _WSCPermittedOperationPromptSelector : value } ];
     }
 
 /* An unsigned integer bit field containing any of the operation tag masks
@@ -502,16 +502,13 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 	    SecKeychainPromptSelector secPromptSelector = 0;
 	    SecACLCopyContents( ( __bridge SecACLRef )_ACLRef, &secTrustedApps, &secDescriptor, &secPromptSelector );
 
-        if ( secPromptSelector > 0xF1 )
-            secPromptSelector >>= 8;
-
 	    NSSet* trustedApps = _WSCSetOfTrustedAppsFromSecTrustedApps( secTrustedApps );
 	    WSCPermittedOperationTag secOperations =
 	        _WSCPermittedOperationMasksFromSecAuthorizations( ( __bridge NSArray* )SecACLCopyAuthorizations( ( __bridge SecACLRef )_ACLRef ) );
 	
 	    if ( ( [ currentTrustedApps isEqualToSet: trustedApps ] || currentTrustedApps == trustedApps )
 	            && [ currentDescriptor isEqualToString: ( __bridge NSString* )secDescriptor ]
-	            && currentPromptSelector == secPromptSelector
+	            && ( currentPromptSelector == secPromptSelector || currentPromptSelector == ( secPromptSelector >> 8 ) )
 	            && currentOperations == secOperations )
 	        {
 	        findingACL = ( SecACLRef )CFRetain( ( __bridge CFTypeRef )_ACLRef );
