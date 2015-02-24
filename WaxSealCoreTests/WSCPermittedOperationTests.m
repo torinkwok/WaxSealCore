@@ -127,6 +127,15 @@
     commonPermittedOperations = [ self.httpsPassphrase_testCase0 permittedOperations ];
 
     // ----------------------------------------------------------------------------------
+    // Test Case 0
+    // ----------------------------------------------------------------------------------
+//    WSCPermittedOperation* restrictedOperation_testCase0 = nil;
+//    for ( WSCPermittedOperation* _PermittedOperation in commonPermittedOperations )
+//        {
+//        if ( [ _PermittedOperation.trustedApplications containsObject: [
+//        }
+
+    // ----------------------------------------------------------------------------------
     // Test Case 2
     // ----------------------------------------------------------------------------------
     int count = 0;
@@ -158,8 +167,19 @@
     fprintf( stdout, "\n+++++++++ +++++++++ +++++++++ +++++++++ DEBUG 1 +++++++++ +++++++++ +++++++++\n" );
     _WSCPrintAccess( self.httpsPassphrase_testCase0.secAccess );
 
-    restrictedOperation_testCase2.promptContext = WSCPermittedOperationPromptContextWhenUnsigned | WSCPermittedOperationPromptContextWhenUnsigned | WSCPermittedOperationPromptContextRequirePassphraseEveryAccess;
+//    restrictedOperation_testCase2.promptContext =
+//        WSCPermittedOperationPromptContextRequirePassphraseEveryAccess | WSCPermittedOperationPromptContextWhenUnsigned | WSCPermittedOperationPromptContextWhenUnsignedAct;
+
+    NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithData: self.httpsPassphrase_testCase0.passphrase encoding: NSUTF8StringEncoding ] autorelease ] );
+
+    restrictedOperation_testCase2.promptContext =
+        WSCPermittedOperationPromptContextRequirePassphraseEveryAccess | WSCPermittedOperationPromptContextWhenUnsigned | WSCPermittedOperationPromptContextWhenUnsignedAct
+            | WSCPermittedOperationPromptContextInvalidSigned | WSCPermittedOperationPromptContextInvalidSignedAct;
+
+    NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithData: self.httpsPassphrase_testCase0.passphrase encoding: NSUTF8StringEncoding ] autorelease ] );
+
     restrictedOperation_testCase2.trustedApplications = [ NSSet setWithObjects: self.Grab, self.iPhoto, self.AppleContacts, nil ];
+    XCTAssertEqual( restrictedOperation_testCase2.trustedApplications.count, 3 );
     NSLog( @"New Prompt Context: %d", restrictedOperation_testCase2.promptContext );
 
     SecACLCopyContents( restrictedOperation_testCase2.secACL, &debugTrustedApps, &debugDescriptor, &debugPromptSel );

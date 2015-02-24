@@ -105,6 +105,8 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 
     WSCPermittedOperationPromptContext currentPromptContext = 0;
     [ wrapperValue getValue: &currentPromptContext ];
+    if ( currentPromptContext > 0xF1 )
+        currentPromptContext >>= 8;
 
     return currentPromptContext;
     }
@@ -499,7 +501,10 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
 	    CFStringRef secDescriptor = NULL;
 	    SecKeychainPromptSelector secPromptSelector = 0;
 	    SecACLCopyContents( ( __bridge SecACLRef )_ACLRef, &secTrustedApps, &secDescriptor, &secPromptSelector );
-	
+
+        if ( secPromptSelector > 0xF1 )
+            secPromptSelector >>= 8;
+
 	    NSSet* trustedApps = _WSCSetOfTrustedAppsFromSecTrustedApps( secTrustedApps );
 	    WSCPermittedOperationTag secOperations =
 	        _WSCPermittedOperationMasksFromSecAuthorizations( ( __bridge NSArray* )SecACLCopyAuthorizations( ( __bridge SecACLRef )_ACLRef ) );

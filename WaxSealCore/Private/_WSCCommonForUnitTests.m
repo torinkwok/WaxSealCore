@@ -255,6 +255,9 @@ void _WSCPrintAccess( SecAccessRef _Access )
             CFArrayRef authTags = SecACLCopyAuthorizations( ( __bridge SecACLRef )_ACL );
             if ( ( resultCode = SecACLCopyContents( ( __bridge SecACLRef )_ACL, &trustedApps, &descriptor, &promptSelector ) ) == errSecSuccess )
                 {
+                if ( promptSelector > 0xF1 )
+                    promptSelector >>= 8;
+
                 NSString* allowedSelectorString[] =
                     { @"kSecKeychainPromptRequirePassphase", @"kSecKeychainPromptUnsigned"
                     , @"kSecKeychainPromptUnsignedAct", @"kSecKeychainPromptInvalid"
