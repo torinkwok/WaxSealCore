@@ -73,6 +73,51 @@
 #pragma mark Creating and Deleting Keychains
 /** @name Creating and Deleting Keychains */
 
+/** Creates and returns a `WSCKeychain` object using the given URL, passphrase, and inital access rights.
+
+  Prior to creating a new keychain, the keychain manager asks its delegate if it should actually do so.
+  It does this by calling the [keychainManager:shouldCreateKeychainWith:passphrase:permittedOperations:becomesDefault:](-[WSCKeychainManagerDelegate keychainManager:shouldCreateKeychainWith:passphrase:permittedOperations:becomesDefault:]) method;
+  If the delegate method returns `YES`, or if the delegate does not implement the appropriate methods, 
+  the keychain manager proceeds to create a keychain with given data.
+  If there is an error creating a new keychain, the keychain manager may also call the delegate’s
+  [keychainManager:shouldProceedAfterError:creatingKeychainWithURL:passphrase:permittedOperations:becomesDefault:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:creatingKeychainWithURL:passphrase:permittedOperations:becomesDefault:]) method to determine how to proceed.
+
+  This method creates an empty keychain. The `_Passphrase` parameter is required, and `_PermittedOperations` parameter is optional.
+  If user interaction to create a keychain is posted, the newly-created keychain is automatically unlocked after creation.
+
+  The system ensures that a default keychain is created for the user at login, thus, in most cases, 
+  you do not need to call this method yourself. Users can create additional keychains, or change the default,
+  by using the Keychain Access application. However, a missing default keychain is not recreated automatically,
+  and you may receive an error from other methods if a default keychain does not exist.
+  In that case, you can use this class method with a `YES` value for `_WillBecomeDefault` parameter, to create a new default keychain.
+  You can also call this method to create a private temporary keychain for your application’s use,
+  in cases where no user interaction can occur.
+
+  @param _URL Specify the URL in which the new keychain should be sotred.
+              The URL in this parameter must not be a file reference URL or an URL other than file scheme
+              This parameter must not be `nil`.
+
+  @param _Passphrase A NSString object containing the passphrase which is used to protect the new keychain.
+                     This parameter must not be `nil`.
+
+  @param _PermittedOperations An array of `WSCPermittedOperation` object indicating the initial access rights for the new keychain,
+                              A keychain's access rights determine which application have permission to user the keychain.
+                              You may pass `nil` for the standard access rights.
+
+  @param _WillBecomeDefault A `BOOL` value representing whether to set the new keychain as default keychain.
+
+  @param _Error On input, a pointer to an error object. 
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+                You may specify `nil` for this parameter if you don't want the error information.
+                
+  @return A `WSCKeychain` object initialized with above parameters.
+  */
+- ( WSCKeychain* ) createKeychainWithURL: ( NSURL* )_URL
+                              passphrase: ( NSString* )_Passphrase
+                     permittedOperations: ( NSArray* )_PermittedOperations
+                          becomesDefault: ( BOOL )_WillBecomeDefault
+                                   error: ( NSError** )_Error;
+
 /** Deletes the specified keychains from the default keychain search list, and removes the keychain itself if it is a keychain file stored locally.
 
   Prior to deleting each keychain, the keychain manager asks its delegate if it should actually do so. 
@@ -398,8 +443,71 @@
 @protocol WSCKeychainManagerDelegate <NSObject>
 
 @optional
-#pragma mark Deleting a Keychain
-/** @name Deleting a Keychain */
+#pragma mark Creating and Deleting a Keychain
+/** @name Creating Deleting a Keychain */
+
+/** Asks the delegate whether the keychain which has the attributes speficied by parameters should be created.
+
+  If you do not implement this method, the keychain manager assumes a repsonse of `YES`.
+
+  @param _KeychainManager The keychain manager that attempted to create a new keychain.
+  
+  @param _URL Specify the URL in which the new keychain should be sotred.
+              The URL in this parameter must not be a file reference URL or an URL other than file scheme
+              This parameter must not be `nil`.
+              
+  @param _Passphrase A NSString object containing the passphrase which is used to protect the new keychain.
+                     This parameter must not be `nil`.
+                     
+  @param _PermittedOperations An array of `WSCPermittedOperation` object indicating the initial access rights for the new keychain,
+                              A keychain's access rights determine which application have permission to user the keychain.
+                              You may pass `nil` for the standard access rights.
+                              
+  @param _WillBecomeDefault A `BOOL` value representing whether to set the new keychain as default keychain.
+  
+  @return `YES` if the specified keychain should be created or `NO` if it should not be created.
+  
+  @sa [– createKeychainWithURL:passphrase:permittedOperations:becomesDefault:error:](-[WSCKeychainManager createKeychainWithURL:passphrase:permittedOperations:becomesDefault:error:])
+  */
+- ( BOOL )   keychainManager: ( WSCKeychainManager* )_KeychainManager
+    shouldCreateKeychainWith: ( NSURL* )_URL
+                  passphrase: ( NSString* )_Passphrase
+         permittedOperations: ( NSArray* )_PermittedOperations
+              becomesDefault: ( BOOL )_WillBecomeDefault;
+
+/** Asks the delegate if the operation should continue after an error occurs while creating a new keychain.
+
+  The keychain manager calls this method when there is a problem creating a new keychain.
+  If you return `YES`, the keychain manager continues creating a keychain with given data.
+
+  @param _KeychainManager The keychain manager that attempted to create a new keychain.
+  
+  @param _Error The error that occurred while attempting to delete the specified keychain.
+  
+  @param _URL Specify the URL in which the new keychain should be sotred.
+              The URL in this parameter must not be a file reference URL or an URL other than file scheme
+              This parameter must not be `nil`.
+              
+  @param _Passphrase A NSString object containing the passphrase which is used to protect the new keychain.
+                     This parameter must not be `nil`.
+                     
+  @param _PermittedOperations An array of `WSCPermittedOperation` object indicating the initial access rights for the new keychain,
+                              A keychain's access rights determine which application have permission to user the keychain.
+                              You may pass `nil` for the standard access rights.
+                              
+  @param _BecomeDefault A `BOOL` value representing whether to set the new keychain as default keychain.
+  
+  @return `YES` if the operation should proceed or `NO` if it should be aborted. 
+          If you do not implement this method, the keychain manager assumes a response of `NO`.
+          
+  @sa [– createKeychainWithURL:passphrase:permittedOperations:becomesDefault:error:](-[WSCKeychainManager createKeychainWithURL:passphrase:permittedOperations:becomesDefault:error:])
+  */
+- ( BOOL )  keychainManager: ( WSCKeychainManager* )_KeychainManager
+    shouldProceedAfterError: ( NSError* )_Error
+    creatingKeychainWithURL: ( NSURL* )_URL
+                 passphrase: ( NSString* )_Passphrase
+        permittedOperations: ( NSArray* )_PermittedOperations
+             becomesDefault: ( BOOL )_BecomeDefault;
 
 /** Asks the delegate whether the specified keychain should be deleted.
 
@@ -415,8 +523,8 @@
   @sa [– deleteKeychain:error:](-[WSCKeychainManager deleteKeychain:error:])
   @sa [– deleteKeychains:error:](-[WSCKeychainManager deleteKeychains:error:])
   */
-- ( BOOL )     keychainManager: ( WSCKeychainManager* )_KeychainManager
-          shouldDeleteKeychain: ( WSCKeychain* )_Keychain;
+- ( BOOL )   keychainManager: ( WSCKeychainManager* )_KeychainManager
+        shouldDeleteKeychain: ( WSCKeychain* )_Keychain;
 
 /** Asks the delegate if the operation should continue after an error occurs while deleting the specified keychain.
 

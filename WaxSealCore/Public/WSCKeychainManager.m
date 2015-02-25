@@ -72,6 +72,103 @@ WSCKeychainManager static* s_defaultManager = nil;
     }
 
 #pragma mark Creating and Deleting Keychains
+/* Creates and returns a `WSCKeychain` object using the given URL, passphrase, and inital access rights.
+ */
+- ( WSCKeychain* ) createKeychainWithURL: ( NSURL* )_URL
+                              passphrase: ( NSString* )_Passphrase
+                     permittedOperations: ( NSArray* )_PermittedOperations
+                          becomesDefault: ( BOOL )_WillBecomeDefault
+                                   error: ( NSError** )_Error
+    {
+    /* If the delegate aborts the setting operation, just returns NO */
+    if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldCreateKeychainWith:passphrase:permittedOperations:becomesDefault: ) ]
+            && ![ self.delegate keychainManager: self
+                       shouldCreateKeychainWith: _URL
+                                     passphrase: _Passphrase
+                            permittedOperations: _PermittedOperations
+                                 becomesDefault: _WillBecomeDefault ] )
+        // If the delegate aborts the creating operation, this method returns YES.
+        return nil;
+
+    WSCKeychain* newKeychain = nil;
+    NSError* errorPassedInDelegateMethod = nil;
+    BOOL shouldProceedIfEncounteredAnyError = NO;
+
+    if ( !_URL /* The _URL and _Passphrase parameters must not be nil */
+            || ![ _URL isFileURL ] /* The _URL must has the file scheme */ )
+        {
+        /* Error Description:
+         * The keychain couldn’t be created because the URL is invalid. */
+        errorPassedInDelegateMethod = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                                           code: WSCKeychainURLIsInvalidError
+                                                       userInfo: nil ];
+        return nil;
+        }
+
+    /* The keychain must be not already exist */
+    if ( [ _URL checkResourceIsReachableAndReturnError: nil ] )
+        {
+        /* Error Description:
+         * The keychain couldn't be created because a file with the same name already exists. */
+        errorPassedInDelegateMethod = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                                           code: WSCKeychainFileExistsError
+                                                       userInfo: nil ];
+        return nil;
+        }
+
+    if ( !_Passphrase && !_WillBecomeDefault  )
+        {
+        /* Error Description:
+         * One or more parameters passed to the method were not valid. */
+        errorPassedInDelegateMethod = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                                           code: WSCCommonInvalidParametersError
+                                                       userInfo: nil ];
+        return nil;
+        }
+
+    if ( errorPassedInDelegateMethod )
+        {
+        shouldProceedIfEncounteredAnyError = [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
+                                                                    occuredIn: _cmd
+                                                                  copiedError: _Error
+                                                                             , s_guard ];
+        }
+
+    OSStatus resultCode = errSecSuccess;
+
+    SecKeychainRef newSecKeychain = NULL;
+    resultCode = SecKeychainCreate( [ _URL path ].UTF8String
+                                  , ( UInt32 )[ _Passphrase length ], _Passphrase.UTF8String
+                                  , ( Boolean )_WillBecomeDefault
+                                  , nil
+                                  , &newSecKeychain
+                                  );
+
+    if ( resultCode == errSecSuccess )
+        {
+        newKeychain = [ WSCKeychain keychainWithSecKeychainRef: newSecKeychain ];
+        CFRelease( newSecKeychain );
+
+        if ( _WillBecomeDefault )
+            [ [ WSCKeychainManager defaultManager ] setDefaultKeychain: newKeychain error: _Error ];
+        }
+    else
+        {
+        _WSCPrintSecErrorCode( resultCode );
+        if ( _Error )
+            {
+            CFStringRef cfErrorDesc = SecCopyErrorMessageString( resultCode, NULL );
+            *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain
+                                           code: resultCode
+                                       userInfo: @{ NSLocalizedDescriptionKey : NSLocalizedString( ( __bridge NSString* )cfErrorDesc, nil ) }
+                                       ];
+            CFRelease( cfErrorDesc );
+            }
+        }
+
+    return newKeychain;
+    }
+
 /* Deletes the specified keychains from the default keychain search list, 
  * and removes the keychain itself if it is a keychain file stored locally.
  */
@@ -681,7 +778,10 @@ WSCKeychainManager static* s_defaultManager = nil;
         {
         SEL delegateMethodSelector = nil;
 
-        if ( _APISelector == @selector( deleteKeychains:error: ) )
+        if ( _APISelector == @selector( createKeychainWithURL:passphrase:permittedOperations:becomesDefault:error: ) )
+            delegateMethodSelector = @selector( keychainManager:shouldCreateKeychainWith:passphrase:permittedOperations:becomesDefault: );
+
+        else if ( _APISelector == @selector( deleteKeychains:error: ) )
             delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:deletingKeychain: );
 
         else if ( _APISelector == @selector( setDefaultKeychain:error: ) )
@@ -689,10 +789,7 @@ WSCKeychainManager static* s_defaultManager = nil;
 
         else if ( _APISelector == @selector( lockKeychain:error: ) )
             delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:lockingKeychain: );
-    #if 0
-        else if ( _APISelector == @selector( lockAllKeychains: ) )
-            delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError );
-    #endif
+
         else if ( _APISelector == @selector( unlockKeychain:withPassphrase:error: ) )
             delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:unlockingKeychain:withPassphrase: );
 
