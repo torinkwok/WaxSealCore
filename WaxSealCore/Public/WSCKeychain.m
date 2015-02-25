@@ -218,49 +218,6 @@ BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     return [ [ [ self alloc ] p_initWithSecKeychainRef: _SecKeychainRef ] autorelease ];
     }
 
-/* Opens a keychain from the location specified by a given URL.
- */
-+ ( instancetype ) keychainWithContentsOfURL: ( NSURL* )_URLOfKeychain
-                                       error: ( NSError** )_Error
-    {
-    if ( [ _URLOfKeychain checkResourceIsReachableAndReturnError: _Error ]  /* If the given URL is reachable... */ )
-        {
-        BOOL isDir = NO;
-        BOOL doesExist = [ [ NSFileManager defaultManager ] fileExistsAtPath: _URLOfKeychain.path isDirectory: &isDir ];
-
-        if ( !isDir /* ... and the given path is NOT a directory */
-                && doesExist /* ... and this file does exist. */ )
-            {
-            OSStatus resultCode = errSecSuccess;
-
-            SecKeychainRef secKeychain = NULL;
-            resultCode = SecKeychainOpen( _URLOfKeychain.path.UTF8String, &secKeychain );
-
-            if ( resultCode == errSecSuccess )
-                {
-                WSCKeychain* keychain = [ WSCKeychain keychainWithSecKeychainRef: secKeychain ];
-                CFRelease( secKeychain );
-
-                return keychain;
-                }
-            else
-                {
-                _WSCPrintSecErrorCode( resultCode );
-                _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
-                }
-            }
-        else
-            {
-            /* If the given path is a directory or the given path is NOT a directory but there is no such file */
-            *_Error = [ NSError errorWithDomain: isDir ? WaxSealCoreErrorDomain : NSCocoaErrorDomain
-                                           code: isDir ? WSCKeychainCannotBeDirectoryError : NSFileNoSuchFileError
-                                       userInfo: nil ];
-            }
-        }
-
-    return nil;
-    }
-
 /* Opens and returns a WSCKeychain object representing the login.keychain for current user. 
  */
 WSCKeychain static* s_login = nil;
@@ -273,8 +230,8 @@ WSCKeychain static* s_login = nil;
                     {
                     NSError* error = nil;
 
-                    s_login = [ WSCKeychain keychainWithContentsOfURL: [ NSURL sharedURLForLoginKeychain ]
-                                                                error: &error ];
+                    s_login = [ [ WSCKeychainManager defaultManager ]
+                        openExistingKeychainAtURL: [ NSURL sharedURLForLoginKeychain ] error: &error ];
                     if ( error )
                         /* Log for easy to debug */
                         NSLog( @"%@", error );
@@ -296,8 +253,8 @@ WSCKeychain static* s_system = nil;
                     {
                     NSError* error = nil;
 
-                    s_system = [ WSCKeychain keychainWithContentsOfURL: [ NSURL sharedURLForSystemKeychain ]
-                                                                 error: &error ];
+                    s_system = [ [ WSCKeychainManager defaultManager ]
+                        openExistingKeychainAtURL: [ NSURL sharedURLForSystemKeychain ] error: &error ];
                     if ( error )
                         /* Log for easy to debug */
                         NSLog( @"%@", error );

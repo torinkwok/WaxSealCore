@@ -104,6 +104,48 @@ WSCKeychainManager static* s_defaultManager = nil;
                                     error: _Error ];
     }
 
+/* Opens an existing keychain from the location specified by a given URL.
+ */
+- ( WSCKeychain* ) openExistingKeychainAtURL: ( NSURL* )_URLOfExistingKeychain
+                                       error: ( NSError** )_Error
+    {
+    NSError* error = nil;
+    WSCKeychain* existingKeychain = nil;
+
+    // If the given URL is reachable...
+    if ( [ _URLOfExistingKeychain checkResourceIsReachableAndReturnError: &error ] )
+        {
+        BOOL isDir = NO;
+        BOOL doesExist = [ [ NSFileManager defaultManager ] fileExistsAtPath: _URLOfExistingKeychain.path
+                                                                 isDirectory: &isDir ];
+        // The given path must be NOT a directory
+        // and this file must be existing
+        if ( !isDir && doesExist )
+            {
+            OSStatus resultCode = errSecSuccess;
+
+            SecKeychainRef secKeychain = NULL;
+            if ( ( resultCode = SecKeychainOpen( _URLOfExistingKeychain.path.UTF8String, &secKeychain ) ) == errSecSuccess )
+                {
+                existingKeychain = [ WSCKeychain keychainWithSecKeychainRef: secKeychain ];
+                CFRelease( secKeychain );
+                }
+            else
+                _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+            }
+        else
+            // If the given path is a directory or the given path is NOT a directory but there is no such file
+            error = [ NSError errorWithDomain: isDir ? WaxSealCoreErrorDomain : NSCocoaErrorDomain
+                                         code: isDir ? WSCKeychainCannotBeDirectoryError : NSFileReadNoSuchFileError
+                                     userInfo: nil ];
+        }
+
+    if ( error && _Error )
+        *_Error = [ [ error copy ] autorelease ];
+
+    return existingKeychain;
+    }
+
 /* Deletes the specified keychains from the default keychain search list, 
  * and removes the keychain itself if it is a keychain file stored locally.
  */

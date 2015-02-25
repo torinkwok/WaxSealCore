@@ -351,25 +351,6 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
                                                          becomesDefault: ( BOOL )_WillBecomeDefault
                                                                   error: ( NSError** )_Error;
 
-/** Opens a keychain from the location specified by a given URL.
-
-  @param _URLOfKeychain The file URL that identifies the keychain file you want to open. 
-                         The URL in this parameter must not be a file reference URL. 
-                         This parameter must not be `nil`.
-  
-  @param _Error On input, a pointer to an error object.
-                If an error occurs, this pointer is set to an actual error object containing the error information.
-                You may specify `nil` for this parameter if you don't want the error information.
-
-  @return A `WSCKeychain` object represented a keychain located at the given URL.
-  
-  @sa +keychainWithURL:passphrase:initialAccess:becomesDefault:error:
-  @sa +keychainWhosePassphraseWillBeObtainedFromUserWithURL:initialAccess:becomesDefault:error:
-  @sa +keychainWithSecKeychainRef:
-  */
-+ ( instancetype ) keychainWithContentsOfURL: ( NSURL* )_URLOfKeychain
-                                       error: ( NSError** )_Error;
-
 /** Opens and returns a `WSCKeychain` object representing the `login.keychain` for current user.
 
   This method will search for the `login.keychain` at `~/Library/Keychains`,

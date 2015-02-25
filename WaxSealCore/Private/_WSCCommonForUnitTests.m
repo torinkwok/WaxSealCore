@@ -191,7 +191,7 @@ NSURL* _WSCURLForTestCase( SEL _TestCase, NSString* _TestCaseDesc, BOOL _DoesPro
 
     if ( _DeleteExits )
         {
-        WSCKeychain* existKeychain = [ WSCKeychain keychainWithContentsOfURL: newURL error: &error ];
+        WSCKeychain* existKeychain = [ [ WSCKeychainManager defaultManager ] openExistingKeychainAtURL: newURL error: &error ];
 
         if ( !error )
             {

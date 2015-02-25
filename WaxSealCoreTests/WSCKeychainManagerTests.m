@@ -387,9 +387,21 @@
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
+    WSCKeychain* newKeychainNonPrompt_testCase0 = nil;
     NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0", NO, YES );
+
+    // first open
+    newKeychainNonPrompt_testCase0 = [ [ WSCKeychainManager defaultManager ] openExistingKeychainAtURL: URLForNewKeychain_testCase0
+                                                                                                 error: &error ];
+    XCTAssertNil( newKeychainNonPrompt_testCase0 );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, NSCocoaErrorDomain );
+    XCTAssertEqual( error.code, NSFileReadNoSuchFileError );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // create
     XCTAssertFalse( [ URLForNewKeychain_testCase0 checkResourceIsReachableAndReturnError: nil ] );
-    WSCKeychain* newKeychainNonPrompt_testCase0 =
+    newKeychainNonPrompt_testCase0 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForNewKeychain_testCase0
                                                   permittedOperations: nil
                                                            passphrase: _WSCTestPassphrase
@@ -401,6 +413,31 @@
     XCTAssertTrue( newKeychainNonPrompt_testCase0.isValid );
     XCTAssertTrue( _WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_testCase0.secKeychain ) );
     XCTAssertFalse( newKeychainNonPrompt_testCase0.isDefault );
+
+    // second open
+    newKeychainNonPrompt_testCase0 = [ [ WSCKeychainManager defaultManager ] openExistingKeychainAtURL: URLForNewKeychain_testCase0
+                                                                                                 error: &error ];
+    XCTAssertNotNil( newKeychainNonPrompt_testCase0 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // third open
+    newKeychainNonPrompt_testCase0 = [ [ WSCKeychainManager defaultManager ] openExistingKeychainAtURL: [ URLForNewKeychain_testCase0 URLByDeletingLastPathComponent ]
+                                                                                                 error: &error ];
+    XCTAssertNil( newKeychainNonPrompt_testCase0 );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainCannotBeDirectoryError );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // fourth open
+    newKeychainNonPrompt_testCase0 = [ [ WSCKeychainManager defaultManager ] openExistingKeychainAtURL: [ NSURL URLWithString: @"www.waxsealcore.org" ]
+                                                                                                 error: &error ];
+    XCTAssertNil( newKeychainNonPrompt_testCase0 );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, NSCocoaErrorDomain );
+    XCTAssertEqual( error.code, NSFileNoSuchFileError );
+    _WSCPrintNSErrorForUnitTest( error );
 
     // ----------------------------------------------------------------------------------
     // Test Case 1: Set the new keychain as default after creating
@@ -594,6 +631,72 @@
     XCTAssertFalse( newKeychainNonPrompt_negativeTestCase2.isValid );
     XCTAssertFalse( _WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_negativeTestCase2.secKeychain ) );
     XCTAssertFalse( newKeychainNonPrompt_negativeTestCase2.isDefault );
+    }
+
+- ( void ) testOpenExistingKeychain
+    {
+    NSError* error = nil;
+
+    // ----------------------------------------------------------------------------------
+    // The URL location of login.keychain. (/Users/${USER_NAME}/Keychains/login.keychain)
+    // ----------------------------------------------------------------------------------
+    NSURL* correctURLForTestCase1 = [ NSURL sharedURLForLoginKeychain ];
+    WSCKeychain* correctKeychain_test1 =
+        [ [ WSCKeychainManager defaultManager ] openExistingKeychainAtURL: correctURLForTestCase1
+                                                                    error: &error ];
+    XCTAssertNil( error );
+    XCTAssertNotNil( correctKeychain_test1 );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // ------------------------------------------------------------------------------------
+    // The URL location of system.keychain. (/Users/${USER_NAME}/Keychains/system.keychain)
+    // ------------------------------------------------------------------------------------
+    NSURL* correctURLForTestCase2 = [ NSURL sharedURLForSystemKeychain ];
+    WSCKeychain* correctKeychain_test2 =
+        [ [ WSCKeychainManager defaultManager ] openExistingKeychainAtURL: correctURLForTestCase2
+                                                                    error: &error ];
+    XCTAssertNil( error );
+    XCTAssertNotNil( correctKeychain_test2 );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // ------------------------------------------------------------------------------------
+    // The URL location is completely wrong. Hum...it's not a URL at all.
+    // ------------------------------------------------------------------------------------
+    NSURL* incorrectURLForNagativeTestCase1 = [ NSURL URLWithString: @"completelyWrong" ];
+    WSCKeychain* incorrectKeychain_nagativeTestCase1 =
+        [ [ WSCKeychainManager defaultManager ] openExistingKeychainAtURL: incorrectURLForNagativeTestCase1
+                                                                    error: &error ];
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, NSCocoaErrorDomain );
+    XCTAssertEqual( error.code, NSFileNoSuchFileError );
+    XCTAssertNil( incorrectKeychain_nagativeTestCase1 );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // ------------------------------------------------------------------------------------
+    // The URL location is not completely wrong, however the format is incorrect.
+    // ------------------------------------------------------------------------------------
+    NSURL* incorrectURLForNagativeTestCase2 = [ NSURL URLWithString:
+        [ NSString stringWithFormat: @"%@/Library/Keychains/login.keychain", NSHomeDirectory() ] ];
+    WSCKeychain* incorrectKeychain_nagativeTestCase2 =
+        [ [ WSCKeychainManager defaultManager ] openExistingKeychainAtURL: incorrectURLForNagativeTestCase2
+                                                                    error: &error ];
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, NSCocoaErrorDomain );
+    XCTAssertEqual( error.code, NSFileNoSuchFileError );
+    XCTAssertNil( incorrectKeychain_nagativeTestCase2 );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // ----------------------------------------------------------------------------------------------------------
+    // The URL location is a directory instead of file with .keychain extention, however the format is incorrect.
+    // ----------------------------------------------------------------------------------------------------------
+    WSCKeychain* incorrectKeychain_negativeTestCase3 =
+        [ [ WSCKeychainManager defaultManager ] openExistingKeychainAtURL: [ NSURL sharedURLForCurrentUserKeychainsDirectory ]
+                                                                    error: &error ];
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainCannotBeDirectoryError );
+    XCTAssertNil( incorrectKeychain_negativeTestCase3 );
+    _WSCPrintNSErrorForUnitTest( error );
     }
 
 - ( void ) testDeletingKeychains

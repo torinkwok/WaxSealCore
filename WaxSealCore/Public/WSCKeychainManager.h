@@ -147,6 +147,21 @@
                                                                becomesDefault: ( BOOL )_WillBecomeDefault
                                                                         error: ( NSError** )_Error;
 
+/** Opens an existing keychain from the location specified by a given URL.
+
+  @param _URLOfExistingKeychain The file URL that identifies the keychain file you want to open.
+                                The URL in this parameter must be a file reference URL.
+                                This parameter must not be `nil`.
+
+  @param _Error On input, a pointer to an error object.
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+                You may specify `nil` for this parameter if you don't want the error information.
+
+  @return A `WSCKeychain` object represented an existing keychain located at the given URL.
+  */
+- ( WSCKeychain* ) openExistingKeychainAtURL: ( NSURL* )_URLOfExistingKeychain
+                                       error: ( NSError** )_Error;
+
 /** Deletes the specified keychains from the default keychain search list, and removes the keychain itself if it is a keychain file stored locally.
 
   Prior to deleting each keychain, the keychain manager asks its delegate if it should actually do so. 
