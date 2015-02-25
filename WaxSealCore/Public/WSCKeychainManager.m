@@ -39,6 +39,7 @@
 
 #import "_WSCKeychainPrivate.h"
 #import "_WSCKeychainErrorPrivate.h"
+#import "_WSCKeychainManagerPrivate.h"
 
 #pragma mark WSCKeychainManager + WSCKeychainManagerPrivate
 @interface WSCKeychainManager ( WSCKeychainManagerPrivate )
@@ -80,51 +81,27 @@ WSCKeychainManager static* s_defaultManager = nil;
                           becomesDefault: ( BOOL )_WillBecomeDefault
                                    error: ( NSError** )_Error
     {
-    NSError* error = nil;
-    WSCKeychain* newKeychain = nil;
+    return [ self p_createKeychainWithURL: _URL
+                               passphrase: _Passphrase
+                      permittedOperations: _PermittedOperations
+                           doesPromptUser: NO
+                           becomesDefault: _WillBecomeDefault
+                                    error: _Error ];
+    }
 
-    if ( !_URL /* The _URL and _Passphrase parameters must not be nil */
-            || ![ _URL isFileURL ] /* The _URL must has the file scheme */ )
-        /* Error Description:
-         * The keychain couldn’t be created because the URL is invalid. */
-        error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCKeychainURLIsInvalidError userInfo: nil ];
-
-    /* The keychain must be not already exist */
-    else if ( [ _URL checkResourceIsReachableAndReturnError: nil ] )
-        /* Error Description:
-         * The keychain couldn't be created because a file with the same name already exists. */
-        error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCKeychainFileExistsError userInfo: nil ];
-
-    else if ( !_Passphrase && !_WillBecomeDefault  )
-        /* Error Description:
-         * One or more parameters passed to the method were not valid. */
-        error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCCommonInvalidParametersError userInfo: nil ];
-
-    if ( !error )
-        {
-        OSStatus resultCode = errSecSuccess;
-
-        // Create the new SecKeychain object
-        SecKeychainRef secNewKeychain = NULL;
-        if ( ( resultCode = SecKeychainCreate( [ _URL path ].UTF8String
-                                             , ( UInt32 )[ _Passphrase length ], _Passphrase.UTF8String
-                                             , ( Boolean )_WillBecomeDefault
-                                             , NULL
-                                             , &secNewKeychain
-                                             ) ) == errSecSuccess )
-            {
-            // Wrap the new SecKeychainRef with WSCKeychain class
-            newKeychain = [ WSCKeychain keychainWithSecKeychainRef: secNewKeychain ];
-            CFRelease( secNewKeychain );
-            }
-        else
-            _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
-        }
-    else
-        if ( _Error )
-            *_Error = [ [ error copy ] autorelease ];
-
-    return newKeychain;
+/* Creates and returns a `WSCKeychain` object using the given URL, interaction prompt and inital access rights.
+ */
+- ( WSCKeychain* ) createKeychainWhosePassphraseWillBeObtainedFromUserWithURL: ( NSURL* )_URL
+                                                          permittedOperations: ( NSArray* )_PermittedOperations
+                                                               becomesDefault: ( BOOL )_WillBecomeDefault
+                                                                        error: ( NSError** )_Error
+    {
+    return [ self p_createKeychainWithURL: _URL
+                               passphrase: nil
+                      permittedOperations: _PermittedOperations
+                           doesPromptUser: YES
+                           becomesDefault: _WillBecomeDefault
+                                    error: _Error ];
     }
 
 /* Deletes the specified keychains from the default keychain search list, 
@@ -801,6 +778,71 @@ WSCKeychainManager static* s_defaultManager = nil;
     }
 
 @end // WSCKeychainManager + WSCKeychainManagerPrivate
+
+#pragma mark WSCKeychainManager + _WSCKeychainManagerPrivateManagingKeychains
+@implementation WSCKeychainManager ( _WSCKeychainManagerPrivateManagingKeychains )
+
+/* Objective-C wrapper of SecKeychainCreate() function in Keychain Services API
+ */
+- ( WSCKeychain* ) p_createKeychainWithURL: ( NSURL* )_URL
+                                passphrase: ( NSString* )_Passphrase
+                       permittedOperations: ( NSArray* )_PermittedOperations
+                            doesPromptUser: ( BOOL )_DoesPromptUser
+                            becomesDefault: ( BOOL )_WillBecomeDefault
+                                     error: ( NSError** )_Error
+    {
+    NSError* error = nil;
+    WSCKeychain* newKeychain = nil;
+
+    if ( !_URL /* The _URL and _Passphrase parameters must not be nil */
+            || ![ _URL isFileURL ] /* The _URL must has the file scheme */ )
+        /* Error Description:
+         * The keychain couldn’t be created because the URL is invalid. */
+        error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCKeychainURLIsInvalidError userInfo: nil ];
+
+    else if ( !_Passphrase && !_DoesPromptUser  )
+        /* Error Description:
+         * One or more parameters passed to the method were not valid. */
+        error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCCommonInvalidParametersError userInfo: nil ];
+
+    if ( !error )
+        {
+        OSStatus resultCode = errSecSuccess;
+
+        // Create the new SecKeychain object
+        SecKeychainRef secNewKeychain = NULL;
+        if ( ( resultCode = SecKeychainCreate( [ _URL path ].UTF8String
+                                             , ( UInt32 )[ _Passphrase length ], _Passphrase.UTF8String
+                                             , ( Boolean )_DoesPromptUser
+                                             , NULL
+                                             , &secNewKeychain
+                                             ) ) == errSecSuccess )
+            {
+            // Wrap the new SecKeychainRef with WSCKeychain class
+            newKeychain = [ WSCKeychain keychainWithSecKeychainRef: secNewKeychain ];
+            CFRelease( secNewKeychain );
+
+            if ( _WillBecomeDefault )
+                [ [ WSCKeychainManager defaultManager ] setDefaultKeychain: newKeychain error: &error ];
+            }
+        else
+            {
+            _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+
+            if ( resultCode == errSecDuplicateKeychain )
+                error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                             code: WSCKeychainFileExistsError
+                                         userInfo: @{ NSUnderlyingErrorKey : error } ];
+            }
+        }
+
+    if ( error && _Error )
+        *_Error = [ [ error copy ] autorelease ];
+
+    return newKeychain;
+    }
+
+@end // WSCKeychainManager + _WSCKeychainManagerPrivateManagingKeychains
 
 //////////////////////////////////////////////////////////////////////////////
 

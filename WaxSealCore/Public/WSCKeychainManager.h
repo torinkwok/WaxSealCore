@@ -73,7 +73,7 @@
 #pragma mark Creating and Deleting Keychains
 /** @name Creating and Deleting Keychains */
 
-/** Creates and returns a `WSCKeychain` object using the given URL, passphrase, and inital access rights.
+/** Creates and returns a `WSCKeychain` object using the given URL, passphrase, and inital permitted operations.
 
   This method creates an empty keychain. The `_Passphrase` parameter is required, and `_PermittedOperations` parameter is optional.
   If user interaction to create a keychain is posted, the newly-created keychain is automatically unlocked after creation.
@@ -93,9 +93,9 @@
   @param _Passphrase A NSString object containing the passphrase which is used to protect the new keychain.
                      This parameter must not be `nil`.
 
-  @param _PermittedOperations An array of `WSCPermittedOperation` object indicating the initial access rights for the new keychain,
-                              A keychain's access rights determine which application have permission to user the keychain.
-                              You may pass `nil` for the standard access rights.
+  @param _PermittedOperations An array of `WSCPermittedOperation` object indicating the initial permitted operations for the new keychain,
+                              A keychain's permitted operations determine which application have permission to user the keychain.
+                              You may pass `nil` for the standard permitted operations.
 
   @param _WillBecomeDefault A `BOOL` value representing whether to set the new keychain as default keychain.
 
@@ -110,6 +110,42 @@
                      permittedOperations: ( NSArray* )_PermittedOperations
                           becomesDefault: ( BOOL )_WillBecomeDefault
                                    error: ( NSError** )_Error;
+
+/** Creates and returns a `WSCKeychain` object using the given URL, interaction prompt and inital permitted operations.
+
+  This class method creates an empty keychain. The and `_PermittedOperations` parameter is optional.
+  And this method will display a passphrase dialog to user.
+  If user interaction to create a keychain is posted, the newly-created keychain is automatically unlocked after creation.
+
+  The system ensures that a default keychain is created for the user at login, thus, in most cases, 
+  you do not need to call this method yourself. Users can create additional keychains, or change the default,
+  by using the Keychain Access application. However, a missing default keychain is not recreated automatically,
+  and you may receive an error from other methods if a default keychain does not exist.
+  In that case, you can use this class method with a `YES` value for `_WillBecomeDefault` parameter, to create a new default keychain.
+  You can also call this method to create a private temporary keychain for your application’s use,
+  in cases where no user interaction can occur.
+
+  @param _URL Specify the URL in which the new keychain should be sotred.
+              The URL in this parameter must not be a file reference URL or an URL other than file scheme
+              This parameter must not be `nil`.
+
+  @param _PermittedOperations An array of `WSCPermittedOperation` object indicating the initial permitted operations for the new keychain,
+                              A keychain's permitted operations determine which application have permission to user the keychain.
+                              You may pass `nil` for the standard permitted operations.
+                       
+  @param _WillBecomeDefault A `BOOL` value representing whether to set the new keychain as default keychain.
+
+  @param _Error On input, a pointer to an error object. 
+                If an error occurs, this pointer is set to an actual error object containing the error information.
+                You may specify `nil` for this parameter if you don't want the error information.
+                
+  @return A `WSCKeychain` object initialized with above parameters as well as a passphrase, 
+          which is obtained from the passphrase dialog.
+  */
+- ( WSCKeychain* ) createKeychainWhosePassphraseWillBeObtainedFromUserWithURL: ( NSURL* )_URL
+                                                          permittedOperations: ( NSArray* )_PermittedOperations
+                                                               becomesDefault: ( BOOL )_WillBecomeDefault
+                                                                        error: ( NSError** )_Error;
 
 /** Deletes the specified keychains from the default keychain search list, and removes the keychain itself if it is a keychain file stored locally.
 

@@ -380,6 +380,222 @@
     [ self->_selectivelyUnlockKeychain release ];
     }
 
+- ( void ) testCreatingKeychainsWithPassphraseString
+    {
+    NSError* error = nil;
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 0
+    // ----------------------------------------------------------------------------------
+    NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0", NO, YES );
+    XCTAssertFalse( [ URLForNewKeychain_testCase0 checkResourceIsReachableAndReturnError: nil ] );
+    WSCKeychain* newKeychainNonPrompt_testCase0 =
+        [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForNewKeychain_testCase0
+                                                           passphrase: _WSCTestPassphrase
+                                                  permittedOperations: nil
+                                                       becomesDefault: NO
+                                                                error: &error ];
+    XCTAssertNotNil( newKeychainNonPrompt_testCase0 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+    XCTAssertTrue( newKeychainNonPrompt_testCase0.isValid );
+    XCTAssertTrue( _WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_testCase0.secKeychain ) );
+    XCTAssertFalse( newKeychainNonPrompt_testCase0.isDefault );
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 1: Set the new keychain as default after creating
+    // ----------------------------------------------------------------------------------
+    NSURL* URLForNewKeychain_testCase1 = _WSCURLForTestCase( _cmd, @"testCase1", NO, YES );
+
+    XCTAssertFalse( [ URLForNewKeychain_testCase1 checkResourceIsReachableAndReturnError: nil ] );
+    WSCKeychain* newKeychainNonPrompt_testCase1 =
+        [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForNewKeychain_testCase1
+                                                           passphrase: _WSCTestPassphrase
+                                                  permittedOperations: nil
+                                                       becomesDefault: YES
+                                                                error: &error ];
+    XCTAssertNotNil( newKeychainNonPrompt_testCase1 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+    XCTAssertTrue( newKeychainNonPrompt_testCase1.isValid );
+    XCTAssertTrue( _WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_testCase1.secKeychain ) );
+    XCTAssertTrue( newKeychainNonPrompt_testCase1.isDefault );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 0
+    // ----------------------------------------------------------------------------------
+    NSURL* URLForNewKeychain_negativeTestCase0 = _WSCURLForTestCase( _cmd, @"negativeTestCase0", NO, YES );
+
+    XCTAssertFalse( [ URLForNewKeychain_negativeTestCase0 checkResourceIsReachableAndReturnError: nil ] );
+    WSCKeychain* newKeychainNonPrompt_negativeTestCase0 =
+        [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForNewKeychain_negativeTestCase0
+                                                           passphrase: nil
+                                                  permittedOperations: nil
+                                                       becomesDefault: NO
+                                                                error: &error ];
+    XCTAssertNil( newKeychainNonPrompt_negativeTestCase0 );
+    XCTAssertNotNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+    XCTAssertFalse( newKeychainNonPrompt_negativeTestCase0.isValid );
+    XCTAssertFalse( _WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_negativeTestCase0.secKeychain ) );
+    XCTAssertFalse( newKeychainNonPrompt_negativeTestCase0.isDefault );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 1: With a non file scheme URL (HTTPS)
+    // ----------------------------------------------------------------------------------
+    NSURL* invalidURLForNewKeychain_negativeTestCase1 = [ NSURL URLWithString: @"https://encrypted.google.com" ];
+    XCTAssertFalse( [ invalidURLForNewKeychain_negativeTestCase1 checkResourceIsReachableAndReturnError: nil ] );
+    XCTAssertFalse( [ invalidURLForNewKeychain_negativeTestCase1 isFileURL ] );
+    WSCKeychain* newKeychainNonPrompt_negativeTestCase1 =
+        [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: invalidURLForNewKeychain_negativeTestCase1
+                                                           passphrase: _WSCTestPassphrase
+                                                  permittedOperations: nil
+                                                       becomesDefault: NO
+                                                                error: &error ];
+    XCTAssertNil( newKeychainNonPrompt_negativeTestCase1 );
+    XCTAssertNotNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+    XCTAssertFalse( newKeychainNonPrompt_negativeTestCase1.isValid );
+    XCTAssertFalse( _WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_negativeTestCase1.secKeychain ) );
+    XCTAssertFalse( newKeychainNonPrompt_negativeTestCase1.isDefault );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 1: With a nil for URL parameter
+    // ----------------------------------------------------------------------------------
+    WSCKeychain* newKeychainNonPrompt_negativeTestCase2 =
+        [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: nil
+                                                           passphrase: _WSCTestPassphrase
+                                                  permittedOperations: nil
+                                                       becomesDefault: NO
+                                                                error: &error ];
+    XCTAssertNil( newKeychainNonPrompt_negativeTestCase2 );
+    XCTAssertNotNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+    XCTAssertFalse( newKeychainNonPrompt_negativeTestCase2.isValid );
+    XCTAssertFalse( _WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_negativeTestCase2.secKeychain ) );
+    XCTAssertFalse( newKeychainNonPrompt_negativeTestCase2.isDefault );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 2: Duplicate Keychain
+    // ----------------------------------------------------------------------------------
+    WSCKeychain* newKeychainNonPrompt_negativeTestCase3 =
+        [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForNewKeychain_testCase0
+                                                           passphrase: _WSCTestPassphrase
+                                                  permittedOperations: nil
+                                                       becomesDefault: NO
+                                                                error: &error ];
+    XCTAssertNil( newKeychainNonPrompt_negativeTestCase3 );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( [ error domain ], WaxSealCoreErrorDomain );
+    XCTAssertEqual( [ error code ], WSCKeychainFileExistsError );
+    XCTAssertEqualObjects( [ error.userInfo[ NSUnderlyingErrorKey ] domain ], NSOSStatusErrorDomain );
+    XCTAssertEqual( [ error.userInfo[ NSUnderlyingErrorKey ] code ], errSecDuplicateKeychain );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    XCTAssertFalse( newKeychainNonPrompt_negativeTestCase3.isValid );
+    XCTAssertFalse( _WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_negativeTestCase3.secKeychain ) );
+    XCTAssertFalse( newKeychainNonPrompt_negativeTestCase3.isDefault );
+    }
+
+- ( void ) testCreatingKeychainsWithInteractionPrompt
+    {
+    NSError* error = nil;
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 0
+    // ----------------------------------------------------------------------------------
+    NSURL* URLForNewKeychain_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0", YES, YES );
+
+    XCTAssertFalse( [ URLForNewKeychain_testCase0 checkResourceIsReachableAndReturnError: nil ] );
+    WSCKeychain* newKeychainNonPrompt_testCase0 =
+        [ [ WSCKeychainManager defaultManager ]
+            createKeychainWhosePassphraseWillBeObtainedFromUserWithURL: URLForNewKeychain_testCase0
+                                                   permittedOperations: nil
+                                                        becomesDefault: NO
+                                                                 error: &error ];
+    XCTAssertNotNil( newKeychainNonPrompt_testCase0 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+    XCTAssertTrue( newKeychainNonPrompt_testCase0.isValid );
+    XCTAssertTrue( _WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_testCase0.secKeychain ) );
+    XCTAssertFalse( newKeychainNonPrompt_testCase0.isDefault );
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 1: Set the new keychain as default after creating
+    // ----------------------------------------------------------------------------------
+    NSURL* URLForNewKeychain_testCase1 = _WSCURLForTestCase( _cmd, @"testCase1", YES, YES );
+
+    XCTAssertFalse( [ URLForNewKeychain_testCase1 checkResourceIsReachableAndReturnError: nil ] );
+    WSCKeychain* newKeychainNonPrompt_testCase1 =
+        [ [ WSCKeychainManager defaultManager ]
+            createKeychainWhosePassphraseWillBeObtainedFromUserWithURL: URLForNewKeychain_testCase1
+                                                   permittedOperations: nil
+                                                        becomesDefault: YES
+                                                                 error: &error ];
+    XCTAssertNotNil( newKeychainNonPrompt_testCase1 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+    XCTAssertTrue( newKeychainNonPrompt_testCase1.isValid );
+    XCTAssertTrue( _WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_testCase1.secKeychain ) );
+    XCTAssertTrue( newKeychainNonPrompt_testCase1.isDefault );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 0: With a non file scheme URL (HTTPS)
+    // ----------------------------------------------------------------------------------
+    NSURL* invalidURLForNewKeychain_negativeTestCase0 = [ NSURL URLWithString: @"https://encrypted.google.com" ];
+    XCTAssertFalse( [ invalidURLForNewKeychain_negativeTestCase0 checkResourceIsReachableAndReturnError: nil ] );
+    XCTAssertFalse( [ invalidURLForNewKeychain_negativeTestCase0 isFileURL ] );
+    WSCKeychain* newKeychainNonPrompt_negativeTestCase0 =
+        [ [ WSCKeychainManager defaultManager ]
+            createKeychainWhosePassphraseWillBeObtainedFromUserWithURL: invalidURLForNewKeychain_negativeTestCase0
+                                                   permittedOperations: nil
+                                                        becomesDefault: NO
+                                                                 error: &error ];
+    XCTAssertNil( newKeychainNonPrompt_negativeTestCase0 );
+    XCTAssertNotNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+    XCTAssertFalse( newKeychainNonPrompt_negativeTestCase0.isValid );
+    XCTAssertFalse( _WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_negativeTestCase0.secKeychain ) );
+    XCTAssertFalse( newKeychainNonPrompt_negativeTestCase0.isDefault );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 1: With a nil for URL parameter
+    // ----------------------------------------------------------------------------------
+    WSCKeychain* newKeychainNonPrompt_negativeTestCase1 =
+        [ [ WSCKeychainManager defaultManager ]
+            createKeychainWhosePassphraseWillBeObtainedFromUserWithURL: nil
+                                                   permittedOperations: nil
+                                                        becomesDefault: NO
+                                                                 error: &error ];
+    XCTAssertNil( newKeychainNonPrompt_negativeTestCase1 );
+    XCTAssertNotNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+    XCTAssertFalse( newKeychainNonPrompt_negativeTestCase1.isValid );
+    XCTAssertFalse( _WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_negativeTestCase1.secKeychain ) );
+    XCTAssertFalse( newKeychainNonPrompt_negativeTestCase1.isDefault );
+
+    // ----------------------------------------------------------------------------------
+    // Negative Test Case 2: Duplicate Keychain
+    // ----------------------------------------------------------------------------------
+    WSCKeychain* newKeychainNonPrompt_negativeTestCase2 =
+        [ [ WSCKeychainManager defaultManager ]
+            createKeychainWhosePassphraseWillBeObtainedFromUserWithURL: URLForNewKeychain_testCase0
+                                                   permittedOperations: nil
+                                                        becomesDefault: NO
+                                                                 error: &error ];
+    XCTAssertNil( newKeychainNonPrompt_negativeTestCase2 );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( [ error domain ], WaxSealCoreErrorDomain );
+    XCTAssertEqual( [ error code ], WSCKeychainFileExistsError );
+    XCTAssertEqualObjects( [ error.userInfo[ NSUnderlyingErrorKey ] domain ], NSOSStatusErrorDomain );
+    XCTAssertEqual( [ error.userInfo[ NSUnderlyingErrorKey ] code ], errSecDuplicateKeychain );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    XCTAssertFalse( newKeychainNonPrompt_negativeTestCase2.isValid );
+    XCTAssertFalse( _WSCKeychainIsSecKeychainValid( newKeychainNonPrompt_negativeTestCase2.secKeychain ) );
+    XCTAssertFalse( newKeychainNonPrompt_negativeTestCase2.isDefault );
+    }
+
 - ( void ) testDeletingKeychains
     {
     NSError* error = nil;
