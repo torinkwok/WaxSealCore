@@ -38,8 +38,8 @@
 
 // Objective-C wrapper of SecKeychainCreate() function in Keychain Services API
 - ( WSCKeychain* ) p_createKeychainWithURL: ( NSURL* )_URL
-                                passphrase: ( NSString* )_Passphrase
                        permittedOperations: ( NSArray* )_PermittedOperations
+                                passphrase: ( NSString* )_Passphrase
                             doesPromptUser: ( BOOL )_DoesPromptUser
                             becomesDefault: ( BOOL )_WillBecomeDefault
                                      error: ( NSError** )_Error;

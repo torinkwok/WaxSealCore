@@ -90,12 +90,12 @@
               The URL in this parameter must not be a file reference URL or an URL other than file scheme
               This parameter must not be `nil`.
 
-  @param _Passphrase A NSString object containing the passphrase which is used to protect the new keychain.
-                     This parameter must not be `nil`.
-
   @param _PermittedOperations An array of `WSCPermittedOperation` object indicating the initial permitted operations for the new keychain,
                               A keychain's permitted operations determine which application have permission to user the keychain.
                               You may pass `nil` for the standard permitted operations.
+                              
+  @param _Passphrase A NSString object containing the passphrase which is used to protect the new keychain.
+                     This parameter must not be `nil`.
 
   @param _WillBecomeDefault A `BOOL` value representing whether to set the new keychain as default keychain.
 
@@ -106,8 +106,8 @@
   @return A `WSCKeychain` object initialized with above parameters.
   */
 - ( WSCKeychain* ) createKeychainWithURL: ( NSURL* )_URL
-                              passphrase: ( NSString* )_Passphrase
                      permittedOperations: ( NSArray* )_PermittedOperations
+                              passphrase: ( NSString* )_Passphrase
                           becomesDefault: ( BOOL )_WillBecomeDefault
                                    error: ( NSError** )_Error;
 

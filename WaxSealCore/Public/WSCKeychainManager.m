@@ -76,14 +76,14 @@ WSCKeychainManager static* s_defaultManager = nil;
 /* Creates and returns a `WSCKeychain` object using the given URL, passphrase, and inital access rights.
  */
 - ( WSCKeychain* ) createKeychainWithURL: ( NSURL* )_URL
-                              passphrase: ( NSString* )_Passphrase
                      permittedOperations: ( NSArray* )_PermittedOperations
+                              passphrase: ( NSString* )_Passphrase
                           becomesDefault: ( BOOL )_WillBecomeDefault
                                    error: ( NSError** )_Error
     {
     return [ self p_createKeychainWithURL: _URL
-                               passphrase: _Passphrase
                       permittedOperations: _PermittedOperations
+                               passphrase: _Passphrase
                            doesPromptUser: NO
                            becomesDefault: _WillBecomeDefault
                                     error: _Error ];
@@ -97,8 +97,8 @@ WSCKeychainManager static* s_defaultManager = nil;
                                                                         error: ( NSError** )_Error
     {
     return [ self p_createKeychainWithURL: _URL
-                               passphrase: nil
                       permittedOperations: _PermittedOperations
+                               passphrase: nil
                            doesPromptUser: YES
                            becomesDefault: _WillBecomeDefault
                                     error: _Error ];
@@ -785,8 +785,8 @@ WSCKeychainManager static* s_defaultManager = nil;
 /* Objective-C wrapper of SecKeychainCreate() function in Keychain Services API
  */
 - ( WSCKeychain* ) p_createKeychainWithURL: ( NSURL* )_URL
-                                passphrase: ( NSString* )_Passphrase
                        permittedOperations: ( NSArray* )_PermittedOperations
+                                passphrase: ( NSString* )_Passphrase
                             doesPromptUser: ( BOOL )_DoesPromptUser
                             becomesDefault: ( BOOL )_WillBecomeDefault
                                      error: ( NSError** )_Error

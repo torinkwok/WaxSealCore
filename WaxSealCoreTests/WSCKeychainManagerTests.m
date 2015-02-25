@@ -391,8 +391,8 @@
     XCTAssertFalse( [ URLForNewKeychain_testCase0 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainNonPrompt_testCase0 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForNewKeychain_testCase0
-                                                           passphrase: _WSCTestPassphrase
                                                   permittedOperations: nil
+                                                           passphrase: _WSCTestPassphrase
                                                        becomesDefault: NO
                                                                 error: &error ];
     XCTAssertNotNil( newKeychainNonPrompt_testCase0 );
@@ -410,8 +410,8 @@
     XCTAssertFalse( [ URLForNewKeychain_testCase1 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainNonPrompt_testCase1 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForNewKeychain_testCase1
-                                                           passphrase: _WSCTestPassphrase
                                                   permittedOperations: nil
+                                                           passphrase: _WSCTestPassphrase
                                                        becomesDefault: YES
                                                                 error: &error ];
     XCTAssertNotNil( newKeychainNonPrompt_testCase1 );
@@ -429,8 +429,8 @@
     XCTAssertFalse( [ URLForNewKeychain_negativeTestCase0 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainNonPrompt_negativeTestCase0 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForNewKeychain_negativeTestCase0
-                                                           passphrase: nil
                                                   permittedOperations: nil
+                                                           passphrase: nil
                                                        becomesDefault: NO
                                                                 error: &error ];
     XCTAssertNil( newKeychainNonPrompt_negativeTestCase0 );
@@ -448,8 +448,8 @@
     XCTAssertFalse( [ invalidURLForNewKeychain_negativeTestCase1 isFileURL ] );
     WSCKeychain* newKeychainNonPrompt_negativeTestCase1 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: invalidURLForNewKeychain_negativeTestCase1
-                                                           passphrase: _WSCTestPassphrase
                                                   permittedOperations: nil
+                                                           passphrase: _WSCTestPassphrase
                                                        becomesDefault: NO
                                                                 error: &error ];
     XCTAssertNil( newKeychainNonPrompt_negativeTestCase1 );
@@ -464,8 +464,8 @@
     // ----------------------------------------------------------------------------------
     WSCKeychain* newKeychainNonPrompt_negativeTestCase2 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: nil
-                                                           passphrase: _WSCTestPassphrase
                                                   permittedOperations: nil
+                                                           passphrase: _WSCTestPassphrase
                                                        becomesDefault: NO
                                                                 error: &error ];
     XCTAssertNil( newKeychainNonPrompt_negativeTestCase2 );
@@ -480,8 +480,8 @@
     // ----------------------------------------------------------------------------------
     WSCKeychain* newKeychainNonPrompt_negativeTestCase3 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForNewKeychain_testCase0
-                                                           passphrase: _WSCTestPassphrase
                                                   permittedOperations: nil
+                                                           passphrase: _WSCTestPassphrase
                                                        becomesDefault: NO
                                                                 error: &error ];
     XCTAssertNil( newKeychainNonPrompt_negativeTestCase3 );
