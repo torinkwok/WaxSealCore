@@ -181,35 +181,6 @@ BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
 
 #pragma mark Public Programmatic Interfaces for Creating Keychains
 
-/* Creates and returns a `WSCKeychain` object using the given URL, passphrase, and inital access rights. */
-+ ( instancetype ) keychainWithURL: ( NSURL* )_URL
-                        passphrase: ( NSString* )_Passphrase
-                     initialAccess: ( WSCAccessPermission* )_InitalAccess
-                    becomesDefault: ( BOOL )_WillBecomeDefault
-                             error: ( NSError** )_Error
-    {
-    return [ self p_keychainWithURL: _URL
-                         passphrase: _Passphrase
-                     doesPromptUser: NO
-                      initialAccess: _InitalAccess
-                     becomesDefault: _WillBecomeDefault
-                              error: _Error ];
-    }
-
-/* Creates and returns a `WSCKeychain` object using the given URL, interaction prompt and inital access rights. */
-+ ( instancetype ) keychainWhosePassphraseWillBeObtainedFromUserWithURL: ( NSURL* )_URL
-                                                          initialAccess: ( WSCAccessPermission* )_InitalAccess
-                                                         becomesDefault: ( BOOL )_WillBecomeDefault
-                                                                  error: ( NSError** )_Error
-    {
-    return [ self p_keychainWithURL: _URL
-                         passphrase: nil
-                     doesPromptUser: YES
-                      initialAccess: _InitalAccess
-                     becomesDefault: _WillBecomeDefault
-                              error: _Error ];
-    }
-
 /* Creates and returns a WSCKeychain object using the 
  * given reference to the instance of *SecKeychain* opaque type. 
  */
@@ -605,89 +576,6 @@ WSCKeychain static* s_system = nil;
         }
 
     return self;
-    }
-
-/* Objective-C wrapper for SecKeychainCreate() function.
- *
- * Creates and returns a WSCKeychain object using the given URL, passphrase,
- * interaction prompt and inital access rights. 
- */
-+ ( instancetype ) p_keychainWithURL: ( NSURL* )_URL
-                          passphrase: ( NSString* )_Passphrase
-                      doesPromptUser: ( BOOL )_DoesPromptUser
-                       initialAccess: ( WSCAccessPermission* )_InitalAccess
-                      becomesDefault: ( BOOL )_WillBecomeDefault
-                               error: ( NSError** )_Error
-    {
-    if ( !_URL /* The _URL and _Passphrase parameters must not be nil */
-            || ![ _URL isFileURL ] /* The _URL must has the file scheme */ )
-        {
-        if ( _Error )
-            /* Error Description: 
-             * The keychain couldn’t be created because the URL is invalid. */
-            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCKeychainURLIsInvalidError
-                                       userInfo: nil ];
-        return nil;
-        }
-
-    /* The keychain must be not already exist */
-    if ( [ _URL checkResourceIsReachableAndReturnError: nil ] )
-        {
-        if ( _Error )
-            /* Error Description: 
-             * The keychain couldn't be created because a file with the same name already exists. */
-            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCKeychainFileExistsError
-                                       userInfo: nil ];
-        return nil;
-        }
-
-    if ( !_Passphrase && !_DoesPromptUser  )
-        {
-        if ( _Error )
-            /* Error Description:
-             * One or more parameters passed to the method were not valid. */
-            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCCommonInvalidParametersError
-                                       userInfo: nil ];
-        return nil;
-        }
-
-    OSStatus resultCode = errSecSuccess;
-
-    SecKeychainRef newSecKeychain = NULL;
-    resultCode = SecKeychainCreate( [ _URL path ].UTF8String
-                                  , ( UInt32 )[ _Passphrase length ], _Passphrase.UTF8String
-                                  , ( Boolean )_DoesPromptUser
-                                  , nil
-                                  , &newSecKeychain
-                                  );
-
-    WSCKeychain* newKeychain = nil;
-    if ( resultCode == errSecSuccess )
-        {
-        newKeychain = [ WSCKeychain keychainWithSecKeychainRef: newSecKeychain ];
-        CFRelease( newSecKeychain );
-
-        if ( _WillBecomeDefault )
-            [ [ WSCKeychainManager defaultManager ] setDefaultKeychain: newKeychain error: _Error ];
-        }
-    else
-        {
-        _WSCPrintSecErrorCode( resultCode );
-        if ( _Error )
-            {
-            CFStringRef cfErrorDesc = SecCopyErrorMessageString( resultCode, NULL );
-            *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain
-                                           code: resultCode
-                                       userInfo: @{ NSLocalizedDescriptionKey : NSLocalizedString( ( __bridge NSString* )cfErrorDesc, nil ) }
-                                       ];
-            CFRelease( cfErrorDesc );
-            }
-        }
-
-    return newKeychain;
     }
 
 @end // WSCKeychain + WSCKeychainPrivateInitialization

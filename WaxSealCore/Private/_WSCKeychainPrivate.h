@@ -38,14 +38,6 @@
 
 - ( instancetype ) p_initWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef;
 
-/* Objective-C wrapper for SecKeychainCreate() function */
-+ ( instancetype ) p_keychainWithURL: ( NSURL* )_URL
-                          passphrase: ( NSString* )_Passphrase
-                      doesPromptUser: ( BOOL )_DoesPromptUser
-                       initialAccess: ( WSCAccessPermission* )_InitalAccess
-                      becomesDefault: ( BOOL )_WillBecomeDefault
-                               error: ( NSError** )_Error;
-
 @end // WSCKeychain + WSCKeychainPrivateInitialization
 
 #pragma mark Private Programmatic Interfaces for Managing Keychains

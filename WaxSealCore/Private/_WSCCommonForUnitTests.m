@@ -110,11 +110,12 @@ static void s_setUpCommonValidKeychain()
                     NSError* error = nil;
 
                     NSURL* URLForKeychain = [ [ NSURL URLForTemporaryDirectory ] URLByAppendingPathComponent: @"CommonValidKeychain.keychain" ];
-                    _WSCCommonValidKeychainForUnitTests = [ [ [ WSCKeychain keychainWithURL: URLForKeychain
-                                                                                 passphrase: @"waxsealcore"
-                                                                              initialAccess: nil
-                                                                             becomesDefault: NO
-                                                                                      error: &error ] retain ] autodelete ];
+                    _WSCCommonValidKeychainForUnitTests =
+                        [ [ [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForKeychain
+                                                                      permittedOperations: nil
+                                                                               passphrase: @"waxsealcore"
+                                                                           becomesDefault: NO
+                                                                                    error: &error ] retain ] autodelete ];
                     _WSCPrintNSErrorForLog( error );
                     } );
     }
@@ -170,12 +171,12 @@ WSCKeychain* _WSCRandomKeychain()
     {
     NSError* error = nil;
     NSURL* randomURL = _WSCRandomURL();
-    WSCKeychain* randomKeychain = [ [ WSCKeychain p_keychainWithURL: randomURL
-                                                         passphrase: @"waxsealcore"
-                                                     doesPromptUser: NO
-                                                      initialAccess: nil
-                                                     becomesDefault: NO
-                                                              error: &error ] autodelete ];
+    WSCKeychain* randomKeychain =
+        [ [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: randomURL
+                                                    permittedOperations: nil
+                                                             passphrase: @"waxsealcore"
+                                                         becomesDefault: NO
+                                                                  error: &error ] autodelete ];
     _WSCPrintNSErrorForLog( error );
     return randomKeychain;
     }

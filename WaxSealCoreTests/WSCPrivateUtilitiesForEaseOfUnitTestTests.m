@@ -125,11 +125,12 @@
     XCTAssertNotNil( URLForTestCase0 );
     XCTAssertNil( error );
 
-    WSCKeychain* keychain_testCase0 = [ WSCKeychain keychainWithURL: URLForTestCase0
-                                                         passphrase: @"waxsealcore"
-                                                      initialAccess: nil
-                                                     becomesDefault: NO
-                                                              error: &error ];
+    WSCKeychain* keychain_testCase0 =
+        [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForTestCase0
+                                                  permittedOperations: nil
+                                                           passphrase: @"waxsealcore"
+                                                       becomesDefault: NO
+                                                                error: &error ];
     XCTAssertNotNil( keychain_testCase0 );
     XCTAssertNil( error );
     XCTAssertTrue( keychain_testCase0.isValid );
