@@ -566,7 +566,7 @@
     }
 
 - ( void ) p_setSecCurrentAccess: ( SecAccessRef )_NewAccessRef
-                           error: ( NSError** )_Error;
+                           error: ( NSError** )_Error
     {
     OSStatus resultCode = errSecSuccess;
 
