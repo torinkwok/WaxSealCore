@@ -302,8 +302,8 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   @return A `WSCKeychain` object initialized with above parameters.
   
   @sa +keychainWhosePassphraseWillBeObtainedFromUserWithURL:initialAccess:becomesDefault:error:
+  @sa [+ openExistingKeychainAtURL:error:](+[WSCKeychainManager openExistingKeychainAtURL:error:])
   @sa +keychainWithSecKeychainRef:
-  @sa +keychainWithContentsOfURL:error:
   */
 + ( instancetype ) keychainWithURL: ( NSURL* )_URL
                         passphrase: ( NSString* )_Passphrase
@@ -343,8 +343,8 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
           which is obtained from the passphrase dialog.
           
   @sa +keychainWithURL:passphrase:initialAccess:becomesDefault:error:
+  @sa [+ openExistingKeychainAtURL:error:](+[WSCKeychainManager openExistingKeychainAtURL:error:])
   @sa +keychainWithSecKeychainRef:
-  @sa +keychainWithContentsOfURL:error:
   */
 + ( instancetype ) keychainWhosePassphraseWillBeObtainedFromUserWithURL: ( NSURL* )_URL
                                                           initialAccess: ( WSCAccessPermission* )_InitalAccess
@@ -660,18 +660,14 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   
   Instead of invoking this method, you should construct a `WSCKeychain` object by invoking:
 
-  + [+ keychainWithURL:passphrase:initialAccess:becomesDefault:error:](+[WSCKeychain keychainWithURL:passphrase:initialAccess:becomesDefault:error:])
-  + [+ keychainWhosePassphraseWillBeObtainedFromUserWithURL:initialAccess:becomesDefault:error:](+[WSCKeychain keychainWhosePassphraseWillBeObtainedFromUserWithURL:initialAccess:becomesDefault:error:])
-  + [+ keychainWithContentsOfURL:error:](+[WSCKeychain keychainWithContentsOfURL:error:])
+  + [+ createKeychainWithURL:permittedOperations:passphrase:becomesDefault:error:](+[WSCKeychainManager createKeychainWithURL:permittedOperations:passphrase:becomesDefault:error:])
+  + [+ createKeychainWhosePassphraseWillBeObtainedFromUserWithURL:permittedOperations:becomesDefault:error:](+[WSCKeychainManager createKeychainWhosePassphraseWillBeObtainedFromUserWithURL:permittedOperations:becomesDefault:error:])
+  + [+ openExistingKeychainAtURL:error:](+[WSCKeychainManager openExistingKeychainAtURL:error:])
 
   @param _SecKeychainRef A reference to the instance of `SecKeychain` opaque type.
   
   @return A `WSCKeychain` object initialized with the given reference to the instance of `SecKeychain` opaque type.
           Return `nil` if *_SecKeychainRef* is `nil` or an error occured.
-
-  @sa +keychainWithURL:passphrase:initialAccess:becomesDefault:error:
-  @sa +keychainWhosePassphraseWillBeObtainedFromUserWithURL:initialAccess:becomesDefault:error:
-  @sa +keychainWithContentsOfURL:error:
   */
 + ( instancetype ) keychainWithSecKeychainRef: ( SecKeychainRef )_SecKeychainRef;
 
