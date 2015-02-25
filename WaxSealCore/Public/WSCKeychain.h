@@ -186,9 +186,6 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
     /// Indicates that the item is an application passphrase.
     , WSCKeychainItemClassApplicationPassphraseItem     = kSecGenericPasswordItemClass
 
-    /// Indicates that the item is an AppleShare passphrase.
-    , WSCKeychainItemClassAppleSharePassphraseItem      = kSecAppleSharePasswordItemClass
-
     /// Indicates that the item is an X509 certificate.
     , WSCKeychainItemClassCertificateItem               = kSecCertificateItemClass
 
