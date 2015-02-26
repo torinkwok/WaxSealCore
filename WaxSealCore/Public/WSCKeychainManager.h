@@ -228,13 +228,6 @@
 /** @name Managing Keychains */
 
 /** Sets the specified keychain as default keychain.
-
-  Prior to making the keychain default, the keychain manager asks its delegate if it should actually do so.
-  It does this by calling the [keychainManager:shouldSetKeychainAsDefault:](-[WSCKeychainManagerDelegate keychainManager:shouldSetKeychainAsDefault:]) method;
-  If the delegate method returns `YES`, or if the delegate does not implement the appropriate methods,
-  the keychain manager proceeds to make the specified keychain default.
-  If there is an error making a keychain default, the keychain manager may also call the delegate's
-  [keychainManager:shouldProceedAfterError:settingKeychainAsDefault:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:settingKeychainAsDefault:]) method to determine how to proceed.
   
   In most cases, your application should not need to set the default keychain, 
   because this is a choice normally made by the user. You may call this method to change where a
@@ -527,43 +520,6 @@
 - ( BOOL )     keychainManager: ( WSCKeychainManager* )_KeychainManager
        shouldProceedAfterError: ( NSError* )_Error
               deletingKeychain: ( WSCKeychain* )_Keychain;
-
-#pragma mark Making a Keychain Default
-/** @name Making a Keychain Default */
-
-/** Asks the delegate whether the specified keychain should be made default.
-
-  @param _KeychainManager The keychain manager that attempted to make the specified keychain default.
-
-  @param _Keychain The keychain that the keychain manager tried to make default.
-
-  @return `YES` if the specified keychain should be made the default; otherwise, `NO`.
-          If you do not implement this method, the keychain manager assumes a response of `YES`.
-
-  @sa [– setDefaultKeychain:error:](-[WSCKeychainManager setDefaultKeychain:error:])
-  */
-- ( BOOL )     keychainManager: ( WSCKeychainManager* )_KeychainManager
-    shouldSetKeychainAsDefault: ( WSCKeychain* )_Keychain;
-
-/** Asks the delegate if the operation should continue after an error occurs while setting the specified keychain as default.
-
-  The keychan manager calls this method when there is a problem setting the specified keychain as default.
-  If you return `YES`, the keychain manager continues returning the older default keychain regardless of what happens.
-
-  @param _KeychainManager The keychain manager that attempted to set the specified keychain as default.
-  
-  @param _Error The error that occured while attempting to set the specified keychain as default.
-  
-  @param _Keychain The keychain that the keychain manager tried to make the default.
-  
-  @return `YES` if the operation should proceed or `NO` if it should be aborted.
-          If you do not implement this method, the keychain manager assumes a response of `NO`.
-
-  @sa [– setDefaultKeychain:error:](-[WSCKeychainManager setDefaultKeychain:error:])
-  */
-- ( BOOL )  keychainManager: ( WSCKeychainManager* )_KeychainManager
-    shouldProceedAfterError: ( NSError* )_Error
-   settingKeychainAsDefault: ( WSCKeychain* )_Keychain;
 
 #pragma mark Locking Keychains
 /** @name Locking Keychains */

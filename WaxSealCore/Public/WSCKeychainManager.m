@@ -232,51 +232,23 @@ WSCKeychainManager static* s_defaultManager = nil;
 - ( WSCKeychain* ) setDefaultKeychain: ( WSCKeychain* )_Keychain
                                 error: ( NSError** )_Error;
     {
-    /* If the delegate aborts the setting operation, just returns nil */
-    if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldSetKeychainAsDefault: ) ]
-            && ![ self.delegate keychainManager: self shouldSetKeychainAsDefault: _Keychain ] )
-        return nil;
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
 
     // Before setting a new default keychain,
     // let us retrieve the older default keychain.
     WSCKeychain* olderDefaultKeychain = [ self currentDefaultKeychain: nil ];
 
-    // ====================================================================================================//
     // Parameters Detection
+    _WSCDontBeABitch( &error, _Keychain, [ WSCKeychain class ], s_guard );
 
-    // If the delegate method returns `YES`,
-    // or the delegate does not implement the keychainManager:shouldSetKeychainAsDefault: method at all,
-    // continue to set the specified keychain as default.
-
-    NSError* errorPassedInMethodDelegate = nil;
-    BOOL shouldProceedIfEncounteredAnyError = NO;
-
-    _WSCDontBeABitch( &errorPassedInMethodDelegate, _Keychain, [ WSCKeychain class ], s_guard );
-
-    if ( !errorPassedInMethodDelegate )
-        {
+    if ( !error )
         if ( !_Keychain.isDefault /* If the specified keychain is not default */ )
-            {
-            OSStatus resultCode = SecKeychainSetDefault( _Keychain.secKeychain );
+            if ( ( resultCode = SecKeychainSetDefault( _Keychain.secKeychain ) ) != errSecSuccess )
+                _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
 
-            if ( resultCode != errSecSuccess )
-                _WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInMethodDelegate );
-            }
-        }
-
-    // If indeed there an error
-    if ( errorPassedInMethodDelegate )
-        {
-        shouldProceedIfEncounteredAnyError = [ self p_shouldProceedAfterError: errorPassedInMethodDelegate
-                                                                    occuredIn: _cmd
-                                                                  copiedError: _Error
-                                                                             , self, errorPassedInMethodDelegate, _Keychain
-                                                                             , s_guard ];
-        // If the delegate implements this delegate method,
-        // and it returned YES, although an error occured, returns the older search list anyway,
-        // otherwise, returns nil
-        return shouldProceedIfEncounteredAnyError ? olderDefaultKeychain : nil;
-        }
+    if ( error && _Error )
+            *_Error = [ [ error copy ] autorelease ];
 
     // If the there is not any error occured while setting the specified keychain as default keychain
     // or the it's already default,
@@ -289,25 +261,21 @@ WSCKeychainManager static* s_defaultManager = nil;
     {
     OSStatus resultCode = errSecSuccess;
 
-    SecKeychainRef currentDefaultSecKeychain = NULL;
-    resultCode = SecKeychainCopyDefault( &currentDefaultSecKeychain );
+    SecKeychainRef secCurrentDefaultKeychain = NULL;
+    WSCKeychain* currentDefaultKeychain = nil;
 
-    if ( resultCode == errSecSuccess )
+    if ( ( resultCode = SecKeychainCopyDefault( &secCurrentDefaultKeychain ) ) == errSecSuccess )
         {
         /* If the keychain file referenced by currentDefaultSecKeychain is invalid or doesn't exist
          * (perhaps it has been deleted, renamed or moved), this method will return nil
          */
-        WSCKeychain* currentDefaultKeychain = [ WSCKeychain keychainWithSecKeychainRef: currentDefaultSecKeychain ];
-
-        CFRelease( currentDefaultSecKeychain );
-        return currentDefaultKeychain;
+        currentDefaultKeychain = [ WSCKeychain keychainWithSecKeychainRef: secCurrentDefaultKeychain ];
+        CFRelease( secCurrentDefaultKeychain );
         }
     else
-        {
         _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
 
-        return nil;
-        }
+    return currentDefaultKeychain;
     }
 
 #pragma mark Locking and Unlocking Keychains
@@ -757,9 +725,6 @@ WSCKeychainManager static* s_defaultManager = nil;
 
         if ( _APISelector == @selector( deleteKeychains:error: ) )
             delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:deletingKeychain: );
-
-        else if ( _APISelector == @selector( setDefaultKeychain:error: ) )
-            delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:settingKeychainAsDefault: );
 
         else if ( _APISelector == @selector( lockKeychain:error: ) )
             delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:lockingKeychain: );

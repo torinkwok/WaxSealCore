@@ -153,28 +153,6 @@
         return NO;
     }
 
-#pragma mark Making a Keychain Default
-- ( BOOL )     keychainManager: ( WSCKeychainManager* )_KeychainManager
-    shouldSetKeychainAsDefault: ( WSCKeychain* )_Keychain
-    {
-    if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
-            || _KeychainManager == self.testManager1
-            || _KeychainManager == self.testManager3 )
-        return YES;
-    else
-        return NO;
-    }
-
-- ( BOOL )  keychainManager: ( WSCKeychainManager* )_KeychainManager
-    shouldProceedAfterError: ( NSError* )_Error
-   settingKeychainAsDefault: ( WSCKeychain* )_Keychain
-    {
-    if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
-            || _KeychainManager == self.testManager1 )
-        return YES;
-    else
-        return NO;
-    }
 
 - ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
         shouldLockKeychain: ( WSCKeychain* )_Keychain
@@ -852,14 +830,14 @@
      * so the delegate method keychainManager:shouldSetKeychainAsDefault: returns NO */
     olderDefault = [ self.testManager2 setDefaultKeychain: keychain_testCase4
                                                     error: &error ];
-    XCTAssertTrue( keychain_testCase3.isDefault );
-    XCTAssertFalse( keychain_testCase4.isDefault );
+    XCTAssertFalse( keychain_testCase3.isDefault );
+    XCTAssertTrue( keychain_testCase4.isDefault );
 
-    XCTAssertNil( olderDefault );
-    XCTAssertNotEqualObjects( olderDefault, keychain_testCase3 );
-    XCTAssertEqualObjects( [ self.testManager3 currentDefaultKeychain: nil ]
-                         , keychain_testCase3
-                         );
+    XCTAssertNotNil( olderDefault );
+    XCTAssertEqualObjects( olderDefault, keychain_testCase3 );
+    XCTAssertNotEqualObjects( [ self.testManager3 currentDefaultKeychain: nil ]
+                            , keychain_testCase3
+                            );
 
     // ----------------------------------------------------------------------------------
     // Test Case 5
@@ -906,14 +884,18 @@
      * so the delegate method keychainManager:shouldSetKeychainAsDefault: returns NO */
     olderDefault = [ self.testManager2 setDefaultKeychain: keychain_testCase6
                                                     error: &error ];
-    XCTAssertFalse( keychain_testCase6.isDefault );
-    XCTAssertTrue( keychain_testCase5.isDefault );
+    XCTAssertTrue( keychain_testCase6.isDefault );
+    XCTAssertFalse( keychain_testCase5.isDefault );
 
-    XCTAssertNil( olderDefault );
+    XCTAssertNotNil( olderDefault );
     XCTAssertNotEqualObjects( keychain_testCase6, olderDefault );
     XCTAssertEqualObjects( [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: nil ]
-                         , keychain_testCase5
+                         , keychain_testCase6
                          );
+
+    XCTAssertNotEqualObjects( [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: nil ]
+                            , keychain_testCase5
+                            );
 
     // ----------------------------------------------------------------------------------
     // Test Case 7
@@ -970,7 +952,7 @@
     olderDefault = [ self.testManager3 setDefaultKeychain: keychain_testCase6
                                                     error: &error ];
     XCTAssertNotNil( error );
-    XCTAssertNil( olderDefault );
+    XCTAssertNotNil( olderDefault );
     /* Because the setting is failure, current keychain has not been changed */
     XCTAssertEqualObjects( keychain_testCase7, [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: nil ] );
     _WSCPrintNSErrorForUnitTest( error );
@@ -990,7 +972,7 @@
      * so the delegate method keychainManager:shouldProceedAfterError:settingKeychainAsDefault: returns YES */
     olderDefault = [ self.testManager1 setDefaultKeychain: keychain_testCase7
                                                     error: &error ];
-    XCTAssertNil( error );
+    XCTAssertNotNil( error );
     /* The olderDefault is nil due to the keychain_testCase7 (older default keychain ) has been deleted
      * it's invalid now. */
     XCTAssertNil( olderDefault );
@@ -1072,30 +1054,24 @@
     XCTAssertEqualObjects( [ WSCKeychain login ], [ self.testManager2 currentDefaultKeychain: nil ] );
 
     olderDefault = [ self.testManager1 setDefaultKeychain: nil error: &error ];
-    /* We are using self.testManager1,
-     * the delegate method keychainManager:shouldProceedAfterError:settingKeychainAsDefault: returns YES
-     * so the olderDefault isn't nil */
     XCTAssertNotNil( olderDefault );
     XCTAssertEqualObjects( olderDefault, [ WSCKeychain login ] );
 
-    XCTAssertNil( error );
+    XCTAssertNotNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
     olderDefault = [ self.testManager2 setDefaultKeychain: nil error: &error ];
-    /* We are using self.testManager2,
-     * the delegate method keychainManager:shouldProceedAfterError:settingKeychainAsDefault: returns NO
-     * so the olderDefault isn't nil */
-    XCTAssertNil( olderDefault );
+    XCTAssertNotNil( olderDefault );
 
     olderDefault = [ self.testManager3 setDefaultKeychain: ( WSCKeychain* )[ NSDate date ] error: &error ];
-    XCTAssertNil( olderDefault );
+    XCTAssertNotNil( olderDefault );
     XCTAssertNotNil( error );
     XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
 
     olderDefault = [ self.testManager3 setDefaultKeychain: [ WSCKeychain system ] error: &error ];
-    XCTAssertNil( olderDefault );
+    XCTAssertNotNil( olderDefault );
     XCTAssertNotNil( error );
     XCTAssertEqualObjects( error.domain, NSOSStatusErrorDomain );
     XCTAssertEqual( error.code, -61 );  // Write Permissions Error
