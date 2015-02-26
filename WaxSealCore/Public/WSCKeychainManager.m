@@ -340,90 +340,54 @@ WSCKeychainManager static* s_defaultManager = nil;
            withPassphrase: ( NSString* )_Passphrase
                     error: ( NSError** )_Error
     {
-    if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldUnlockKeychain:withPassphrase: ) ]
-            && ![ self.delegate keychainManager: self shouldUnlockKeychain: _Keychain withPassphrase: _Passphrase ] )
-        // If the delegate aborts the unlocking operation for a keychain, this method returns YES.
-        return YES;
-
-    NSError* errorPassedInDelegateMethod = nil;
-    _WSCDontBeABitch( &errorPassedInDelegateMethod
-                    , _Keychain, [ WSCKeychain class ]
-                    , _Passphrase, [ NSString class ]
-                    , s_guard
-                    );
-
-    if ( !errorPassedInDelegateMethod )
-        {
-        if ( _Keychain.isLocked /* The keychain must not be unlocked */ )
-            {
-            OSStatus resultCode = errSecSuccess;
-            resultCode = SecKeychainUnlock( _Keychain.secKeychain
-                                          , ( UInt32 )_Passphrase.length
-                                          , _Passphrase.UTF8String
-                                          , YES
-                                          );
-
-            if ( resultCode != errSecSuccess )
-                _WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
-            }
-        }
-
-    // If indeed there an error
-    if ( errorPassedInDelegateMethod )
-        return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
-                                      occuredIn: _cmd
-                                    copiedError: _Error
-                                               , self, errorPassedInDelegateMethod, _Keychain, _Passphrase
-                                               , s_guard ];
-
-    // If every parameters is correct but the keychain has been already unlocked:
-    // do nothing, just returns YES, which means the unlocking operation is successful.
-    return YES;
+    return [ self p_unlockKeychain: _Keychain withPassphrase: _Passphrase usePassphrase: YES error: _Error ];
     }
 
 /* Unlocks a keychain with the user interaction which is used to retrieve passphrase from the user. */
 - ( BOOL ) unlockKeychainWithUserInteraction: ( WSCKeychain* )_Keychain
                                        error: ( NSError** )_Error
     {
-    if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldUnlockKeychainWithUserInteraction: ) ]
-            && ![ self.delegate keychainManager: self shouldUnlockKeychainWithUserInteraction: _Keychain ] )
-        // If the delegate aborts the unlocking operation for a keychain, this method returns YES.
-        return YES;
+    return [ self p_unlockKeychain: _Keychain withPassphrase: nil usePassphrase: NO error: _Error ];
+    }
 
-    NSError* errorPassedInDelegateMethod = nil;
-    _WSCDontBeABitch( &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard );
+- ( BOOL ) p_unlockKeychain: ( WSCKeychain* )_Keychain
+             withPassphrase: ( NSString* )_Passphrase
+              usePassphrase: ( BOOL )_UsePassphrase
+                      error: ( NSError** )_Error
+    {
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
+    BOOL isSuccess = YES;
 
-    if ( !errorPassedInDelegateMethod )
-        {
+    if ( _UsePassphrase )
+        _WSCDontBeABitch( &error, _Keychain, [ WSCKeychain class ], _Passphrase, [ NSString class ], s_guard );
+    else
+        _WSCDontBeABitch( &error, _Keychain, [ WSCKeychain class ], s_guard );
+
+    if ( !error )
         if ( _Keychain.isLocked )
-            {
-            OSStatus resultCode = errSecSuccess;
-            resultCode = SecKeychainUnlock( _Keychain.secKeychain
-                                          , 0
-                                          , NULL
-                                          , NO
-                                          );
+            if ( ( resultCode = SecKeychainUnlock( _Keychain.secKeychain
+                                                 , ( UInt32 )_Passphrase.length
+                                                 , ( const void* )_Passphrase.UTF8String
+                                                 , _UsePassphrase ) ) != errSecSuccess )
+                _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
 
-            if ( resultCode != errSecSuccess )
-                _WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
-            }
+    if ( error )
+        {
+        isSuccess = NO;
+
+        if ( _Error )
+            *_Error = [ [ error copy ] autorelease ];
         }
-
-    if ( errorPassedInDelegateMethod )
-        return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
-                                      occuredIn: _cmd
-                                    copiedError: _Error
-                                               , self, errorPassedInDelegateMethod, _Keychain
-                                               , s_guard ];
 
     // If every parameters is correct but the keychain has been already unlocked:
     // do nothing, just returns YES, which means the unlocking operation is successful.
-    return YES;
+    return isSuccess;
     }
 
 #pragma mark Searching for Keychains Items
 
-/* Specifies the list of keychains to use in the default keychain search list. 
+/* Specifies the list of keychains to use in the default keychain search list.
  */
 - ( NSArray* ) setKeychainSearchList: ( NSArray* )_SearchList
                                error: ( NSError** )_Error;
@@ -728,12 +692,6 @@ WSCKeychainManager static* s_defaultManager = nil;
 
         else if ( _APISelector == @selector( lockKeychain:error: ) )
             delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:lockingKeychain: );
-
-        else if ( _APISelector == @selector( unlockKeychain:withPassphrase:error: ) )
-            delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:unlockingKeychain:withPassphrase: );
-
-        else if ( _APISelector == @selector( unlockKeychainWithUserInteraction:error: ) )
-            delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:unlockingKeychainWithUserInteraction: );
 
         else if ( _APISelector == @selector( setKeychainSearchList:error: ) )
             delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:updatingKeychainSearchList: );

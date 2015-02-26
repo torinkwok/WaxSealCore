@@ -182,63 +182,6 @@
         return NO;
     }
 
-- ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
-      shouldUnlockKeychain: ( WSCKeychain* )_Keychain
-            withPassphrase: ( NSString* )_Passphrase
-    {
-    if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
-            || _KeychainManager == self.testManager1
-            || _KeychainManager == self.testManager3 )
-        return YES;
-    else
-        return NO;
-    }
-
-- ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
-   shouldProceedAfterError: ( NSError* )_Error
-         unlockingKeychain: ( WSCKeychain* )_Keychain
-            withPassphrase: ( NSString* )_Passphrase
-    {
-    if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
-            || _KeychainManager == self.testManager1 )
-        return YES;
-    else
-        return NO;
-    }
-
-- ( BOOL )                  keychainManager: ( WSCKeychainManager* )_KeychainManager
-    shouldUnlockKeychainWithUserInteraction: ( WSCKeychain* )_Keychain
-    {
-    if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
-            || _KeychainManager == self.testManager1
-            || _KeychainManager == self.testManager3 )
-        {
-        if ( [ _Keychain isKindOfClass: [ WSCKeychain class ] ]
-                && [ _Keychain.URL.path contains: @"withPrompt" ] )
-            return NO;
-        else
-            return YES;
-        }
-    else
-        return NO;
-    }
-
-- ( BOOL )               keychainManager: ( WSCKeychainManager* )_KeychainManager
-                 shouldProceedAfterError: ( NSError* )_Error
-    unlockingKeychainWithUserInteraction: ( WSCKeychain* )_Keychain
-    {
-    if ( _KeychainManager == [ WSCKeychainManager defaultManager ]
-            || _KeychainManager == self.testManager1 )
-        {
-        if ( _Error.code == WSCKeychainIsInvalidError )
-            return NO;
-        else
-            return YES;
-        }
-    else
-        return NO;
-    }
-
 - ( BOOL )         keychainManager: ( WSCKeychainManager* )_KeychainManager
     shouldUpdateKeychainSearchList: ( NSArray* )_SearchList
     {
@@ -1377,18 +1320,15 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
     XCTAssertTrue( isSuccess );
-    XCTAssertTrue( _WSCCommonValidKeychainForUnitTests.isLocked );
+    XCTAssertFalse( _WSCCommonValidKeychainForUnitTests.isLocked );
 
+    [ [ WSCKeychainManager defaultManager ] lockKeychain: _WSCCommonValidKeychainForUnitTests error: nil ];
     isSuccess = [ self.testManager1 unlockKeychain: _WSCCommonValidKeychainForUnitTests
-                                    withPassphrase: @"123456"
+                                    withPassphrase: @"123456909"
                                              error: &error ];
-    XCTAssertNil( error );
+    XCTAssertNotNil( error );
     _WSCPrintNSErrorForUnitTest( error );
-
-    /* We are using self.testManager1
-     * so the delegate method keychainManager:shouldProceedAfterError:lockingKeychain: returns YES */
-    XCTAssertTrue( isSuccess );
-    XCTAssertTrue( _WSCCommonValidKeychainForUnitTests.isLocked );
+    XCTAssertFalse( isSuccess );
 
     isSuccess = [ self.testManager3 unlockKeychain: _WSCCommonValidKeychainForUnitTests
                                     withPassphrase: _WSCTestPassphrase
@@ -1396,7 +1336,6 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
     XCTAssertTrue( isSuccess );
-    XCTAssertFalse( _WSCCommonValidKeychainForUnitTests.isLocked );
 
     // ----------------------------------------------------------------------------------
     // Negative Test Case 0: Unlock login.keychain with an incorrect passphrase
@@ -1415,9 +1354,11 @@
     isSuccess = [ self.testManager1 unlockKeychain: [ WSCKeychain login ]
                                     withPassphrase: nil
                                              error: &error ];
-    XCTAssertNil( error );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
-    XCTAssertTrue( isSuccess );
+    XCTAssertFalse( isSuccess );
     XCTAssertTrue( [ WSCKeychain login ].isLocked );
 
     // ----------------------------------------------------------------------------------
@@ -1488,6 +1429,7 @@
                                                                     error: &error ];
         XCTAssertTrue( isSuccess );
         XCTAssertNil( error );
+        _WSCPrintNSErrorForUnitTest( error );
         }
 
     // ----------------------------------------------------------------------------------
@@ -1511,8 +1453,8 @@
 
     isSuccess = [ self.testManager2 unlockKeychainWithUserInteraction: _WSCCommonInvalidKeychainForUnitTests
                                                                 error: &error ];
-    XCTAssertTrue( isSuccess );
-    XCTAssertNil( error );
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
     isSuccess = [ self.testManager3 unlockKeychainWithUserInteraction: _WSCCommonInvalidKeychainForUnitTests
@@ -1544,14 +1486,14 @@
 
     isSuccess = [ self.testManager1 unlockKeychainWithUserInteraction: ( WSCKeychain* )[ NSDate date ]
                                                                 error: &error ];
-    XCTAssertTrue( isSuccess );
-    XCTAssertNil( error );
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
     isSuccess = [ self.testManager2 unlockKeychainWithUserInteraction: ( WSCKeychain* )@214
                                                                 error: &error ];
-    XCTAssertTrue( isSuccess );
-    XCTAssertNil( error );
+    XCTAssertFalse( isSuccess );
+    XCTAssertNotNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
     isSuccess = [ self.testManager3 unlockKeychainWithUserInteraction: nil

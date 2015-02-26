@@ -312,13 +312,6 @@
 
 /** Unlocks a keychain with an explicitly provided passphrase.
 
-  Prior to unlocking the specified keychain with the specified passphrase, the keychain manager asks its delegate if it should actually do so.
-  It does this by calling the [keychainManager:shouldUnlockKeychain:withPassphrase:](-[WSCKeychainManagerDelegate keychainManager:shouldUnlockKeychain:withPassphrase:]) method;
-  If the delegate method returns `YES`, or if the delegate does not implement the appropriate methods,
-  the keychain manager proceeds to unlock the specified keychain with the specified passphrase.
-  If there is an error unlocking a keychain, the keychain manager may also call the delegate's
-  [keychainManager:shouldProceedAfterError:unlockingKeychain:withPassphrase:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:unlockingKeychain:withPassphrase:]) method to determine how to proceed.
-
   In most cases, your application does not need to invoke this method directly, 
   since most *WaxSealCore* API and the underlying *Keychain Services* functions that require an unlocked keychain do so for you.
   If your application needs to verify that a keychain is unlocked, inspect the [isLocked]([WSCKeychain isLocked]) property.
@@ -343,13 +336,6 @@
 
   This method will display an Unlock Keychain dialog box.
   If the specified keychain is currently unlocked, the Unlock Keychain dialog won't be displayed.
-
-  Prior to unlocking the specified keychain with user interaction, the keychain manager asks its delegate if it should actually do so.
-  It does this by calling the [keychainManager:shouldUnlockKeychainWithUserInteraction:](-[WSCKeychainManagerDelegate keychainManager:shouldUnlockKeychainWithUserInteraction:]) method;
-  If the delegate method returns `YES`, or if the delegate does not implement the appropriate methods,
-  the keychain manager proceeds to unlock the specified keychain with user interaction.
-  If there is an error unlocking a keychain, the keychain manager may also call the delegate's
-  [keychainManager:shouldUnlockKeychainWithUserInteraction:](-[WSCKeychainManagerDelegate keychainManager:shouldUnlockKeychainWithUserInteraction:]) method to determine how to proceed.
 
   In most cases, your application does not need to invoke this method directly, 
   since most *WaxSealCore* API and underlying *Keychain Services* functions that require an unlocked keychain do so for you.
@@ -555,79 +541,6 @@
 - ( BOOL )  keychainManager: ( WSCKeychainManager* )_KeychainManager
     shouldProceedAfterError: ( NSError* )_Error
             lockingKeychain: ( WSCKeychain* )_Keychain;
-
-#pragma mark Unlocking Keychains
-/** @name Unlocking Keychains */
-
-/** Asks the delegate whether the specified keychain should be unlocked with the specified passphrase.
-
-  If you do not implement this method, the keychain manager assumes a repsonse of `YES`.
-
-  @param _KeychainManager The keychain manager that attempted to unlock the specified keychain with the specified passphrase.
-  
-  @param _Keychain The keychain that the keychain manager tried to unlock.
-  
-  @param _Passphrase A string containing the passphrase for the keychain that the keychain manager tried to unlock.
-  
-  @return `YES` if the specified keychain should be unlocked or `NO` if it should not be unlocked.
-
-  @sa [- unlockKeychain:withPassphrase:error:](-[WSCKeychainManager unlockKeychain:withPassphrase:error:])
-  */
-- ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
-      shouldUnlockKeychain: ( WSCKeychain* )_Keychain
-            withPassphrase: ( NSString* )_Passphrase;
-
-/** Asks the delegate if the operation should continue after an error occurs while unlocking the specified keychain with the specified passphrase.
-
-  @param _KeychainManager The keychain manager that attempted to unlock the specified keychain with the specified passphrase.
-  
-  @param _Error The error that occurred while attempting to unlock the specified keychain with the specified passphrase.
-
-  @param _Keychain The keychain that the keychain manager tried to unlock.
-  
-  @param _Passphrase A string containing the passphrase for the keychain that the keychain manager tried to unlock.
-  
-  @return `YES` if the operation should proceed or `NO` if it should be aborted. 
-          If you do not implement this method, the keychain manager assumes a response of `NO`.
-          
-  @sa [- unlockKeychain:withPassphrase:error:](-[WSCKeychainManager unlockKeychain:withPassphrase:error:])
-  */
-- ( BOOL )  keychainManager: ( WSCKeychainManager* )_KeychainManager
-    shouldProceedAfterError: ( NSError* )_Error
-          unlockingKeychain: ( WSCKeychain* )_Keychain
-             withPassphrase: ( NSString* )_Passphrase;
-
-/** Asks the delegate whether the specified keychain should be unlocked with user interaction.
-
-  If you do not implement this method, the keychain manager assumes a repsonse of `YES`.
-
-  @param _KeychainManager The keychain manager that attempted to unlock the specified keychain with user interaction.
-  
-  @param _Keychain The keychain that the keychain manager tried to unlock.
-  
-  @return `YES` if the specified keychain should be unlocked or `NO` if it should not be unlocked.
-
-  @sa [- unlockKeychainWithUserInteraction:error:](-[WSCKeychainManager unlockKeychainWithUserInteraction:error:])
-  */
-- ( BOOL )                    keychainManager: ( WSCKeychainManager* )_KeychainManager
-      shouldUnlockKeychainWithUserInteraction: ( WSCKeychain* )_Keychain;
-
-/** Asks the delegate if the operation should continue after an error occurs while unlocking the specified keychain with user interaction.
-
-  @param _KeychainManager The keychain manager that attempted to unlock the specified keychain with user interaction.
-  
-  @param _Error The error that occurred while attempting to unlock the specified keychain with user interaction.
-
-  @param _Keychain The keychain that the keychain manager tried to unlock.
-  
-  @return `YES` if the operation should proceed or `NO` if it should be aborted. 
-          If you do not implement this method, the keychain manager assumes a response of `NO`.
-          
-  @sa [- unlockKeychainWithUserInteraction:error:](-[WSCKeychainManager unlockKeychainWithUserInteraction:error:])
-  */
-- ( BOOL )               keychainManager: ( WSCKeychainManager* )_KeychainManager
-                 shouldProceedAfterError: ( NSError* )_Error
-    unlockingKeychainWithUserInteraction: ( WSCKeychain* )_Keychain;
 
 #pragma mark Searching for Keychains Items
 /** @name Searching for Keychains Items */
