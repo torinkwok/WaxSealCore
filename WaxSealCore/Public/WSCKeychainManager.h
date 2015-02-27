@@ -404,13 +404,6 @@
                                error: ( NSError** )_Error;
 
 /** Addes the specified keychain to the current default search list.
-
-  Prior to adding the specified keychain to the current default keychain search list, the keychain manager asks its delegate if it should actually do so.
-  It does this by calling the [keychainManager:shouldAddKeychain:toSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldAddKeychain:toSearchList:]) method;
-  If the delegate method returns `YES`, or if the delegate does not implement the appropriate methods,
-  the keychain manager proceeds to add the specified keychain.
-  If there is an error removing the specified keychain, the keychain manager may also call the delegate's
-  [keychainManager:shouldProceedAfterError:addingKeychain:toSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:addingKeychain:toSearchList:]) method to determine how to proceed.
   
   @warning If the specified keychain already exists in default search list, this method will do nothing.
 
@@ -428,13 +421,6 @@
                                     error: ( NSError** )_Error;
 
 /** Removes the specified keychain from the current default search list.
-
-  Prior to removing the specified keychain from the current default keychain search list, the keychain manager asks its delegate if it should actually do so.
-  It does this by calling the [keychainManager:shouldRemoveKeychain:fromSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldRemoveKeychain:fromSearchList:]) method;
-  If the delegate method returns `YES`, or if the delegate does not implement the appropriate methods,
-  the keychain manager proceeds to remove the specified keychain.
-  If there is an error removing the specified keychain, the keychain manager may also call the delegate's
-  [keychainManager:shouldProceedAfterError:removingKeychain:fromSearchList:](-[WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:removingKeychain:fromSearchList:]) method to determine how to proceed.
   
   @warning If the specified keychain does not exist in default search list, this method will do nothing.
 
@@ -577,45 +563,6 @@
      shouldProceedAfterError: ( NSError* )_Error
   updatingKeychainSearchList: ( NSArray* )_SearchList;
 
-/** Asks the delegate whether the specified keychain should be added to the current default search list.
-
-  If you do not implement this method, the keychain manager assumes a repsonse of `YES`.
-
-  @param _KeychainManager The keychain manager that attempted to add the specified keychain to default search lsit.
-  
-  @param _Keychain The keychain that the keychain manager tried to add.
-  
-  @param _SearchList An array of keychain objects (of class WSCKeychain) 
-                     specifying the list of keychains to which you want to add the specified keychain.
-  
-  @return `YES` if the current specified keychain should be added or `NO` if it should not be added.
-  
-  @sa [- keychainManager:shouldProceedAfterError:addingKeychain:toSearchList:]([WSCKeychainManagerDelegate keychainManager:shouldProceedAfterError:addingKeychain:toSearchList:])
-  */
-- ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
-         shouldAddKeychain: ( WSCKeychain* )_Keychain
-              toSearchList: ( NSArray* )_SearchList;
-
-/** Asks the delegate if the operation should continue after an error occurs while adding the specified keychain to default keychain search list.
-
-  @param _KeychainManager The keychain manager that attempted to add the specified keychain to default search lsit.
-  
-  @param _Error The error that occurred while attempting to add the specified keychain to the default keychain search list.
-
-  @param _Keychain The keychain that the keychain manager tried to add.
-  
-  @param _SearchList An array of keychain objects (of class WSCKeychain) 
-                     specifying the list of keychains to which you want to add the specified keychain.
-  
-  @return `YES` if the operation should proceed or `NO` if it should be aborted. 
-          If you do not implement this method, the keychain manager assumes a response of `NO`.
-          
-  @sa [- keychainManager:shouldAddKeychain:toSearchList:]([WSCKeychainManagerDelegate keychainManager:shouldAddKeychain:toSearchList:])
-  */
-- ( BOOL ) keychainManager: ( WSCKeychainManager* )_KeychainManager
-   shouldProceedAfterError: ( NSError* )_Error
-            addingKeychain: ( WSCKeychain* )_Keychain
-              toSearchList: ( NSArray* )_SearchList;
 
 /** Asks the delegate whether the specified keychain should be removed from the current default search list.
 

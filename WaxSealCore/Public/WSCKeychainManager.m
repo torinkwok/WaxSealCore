@@ -454,8 +454,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     //====================================================================================//
     // Okay, if there is NOT any problem so far, update the search list
 
-    resultCode = SecKeychainSetSearchList( ( __bridge CFArrayRef )secSearchList );
-    if ( resultCode != errSecSuccess )
+    if ( ( resultCode = SecKeychainSetSearchList( ( __bridge CFArrayRef )secSearchList ) ) != errSecSuccess )
         {
         _WSCFillErrorParamWithSecErrorCode( resultCode, &errorPassedInDelegateMethod );
 
@@ -516,34 +515,7 @@ WSCKeychainManager static* s_defaultManager = nil;
 - ( BOOL ) addKeychainToDefaultSearchList: ( WSCKeychain* )_Keychain
                                     error: ( NSError** )_Error
     {
-    NSMutableArray* defaultSearchList = [ [ self keychainSearchList ] mutableCopy ];
-
-    if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldRemoveKeychain:fromSearchList: ) ]
-            && ![ self.delegate keychainManager: self shouldAddKeychain: _Keychain toSearchList: defaultSearchList ] )
-        // If the delegate aborts the adding operation for a keychain, this method returns YES.
-        return YES;
-
-    NSError* errorPassedInDelegateMethod = nil;
-    /* _Keychain parameter must be kind of WSCKeychain class, and it must not be invalid or nil */
-    _WSCDontBeABitch( &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard );
-
-    if ( !errorPassedInDelegateMethod )
-        {
-        // If the parameter is no problem so far
-        [ defaultSearchList addObject: _Keychain ];
-        [ self setKeychainSearchList: defaultSearchList error: &errorPassedInDelegateMethod ];
-        }
-
-    // If indeed there an error
-    if ( errorPassedInDelegateMethod )
-        return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
-                                      occuredIn: _cmd
-                                    copiedError: _Error
-                                               , self, errorPassedInDelegateMethod, _Keychain, defaultSearchList
-                                               , s_guard ];
-
-    // If everything is okay, successful operation.
-    return YES;
+    return [ self p_updateSingleKeychain: _Keychain operation: kAdd error: _Error ];
     }
 
 /* Removes the specified keychain from the current default search list.
@@ -551,33 +523,7 @@ WSCKeychainManager static* s_defaultManager = nil;
 - ( BOOL ) removeKeychainFromDefaultSearchList: ( WSCKeychain* )_Keychain
                                          error: ( NSError** )_Error
     {
-    NSMutableArray* defaultSearchList = [ [ self keychainSearchList ] mutableCopy ];
-
-    if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldRemoveKeychain:fromSearchList: ) ]
-            && ![ self.delegate keychainManager: self shouldRemoveKeychain: _Keychain fromSearchList: defaultSearchList ] )
-        // If the delegate aborts the removing operation for a keychain, this method returns YES.
-        return YES;
-
-    NSError* errorPassedInDelegateMethod = nil;
-    _WSCDontBeABitch( &errorPassedInDelegateMethod, _Keychain, [ WSCKeychain class ], s_guard );
-
-    if ( !errorPassedInDelegateMethod )
-        {
-        // If the parameter is no problem so far
-        [ defaultSearchList removeObject: _Keychain ];
-        [ self setKeychainSearchList: defaultSearchList error: &errorPassedInDelegateMethod ];
-        }
-
-    // If indeed there an error
-    if ( errorPassedInDelegateMethod )
-        return [ self p_shouldProceedAfterError: errorPassedInDelegateMethod
-                                      occuredIn: _cmd
-                                    copiedError: _Error
-                                               , self, errorPassedInDelegateMethod, _Keychain, defaultSearchList
-                                               , s_guard ];
-
-    // If everything is okay, successful operation.
-    return YES;
+    return [ self p_updateSingleKeychain: _Keychain operation: kRemove error: _Error ];
     }
 
 #pragma mark Overrides for Singleton Objects
@@ -696,9 +642,6 @@ WSCKeychainManager static* s_defaultManager = nil;
         else if ( _APISelector == @selector( setKeychainSearchList:error: ) )
             delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:updatingKeychainSearchList: );
 
-        else if ( _APISelector == @selector( addKeychainToDefaultSearchList:error: ) )
-            delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:addingKeychain:toSearchList: );
-
         else if ( _APISelector == @selector( removeKeychainFromDefaultSearchList:error: ) )
             delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:removingKeychain:fromSearchList: );
 
@@ -805,6 +748,52 @@ WSCKeychainManager static* s_defaultManager = nil;
         *_Error = [ [ error copy ] autorelease ];
 
     return newKeychain;
+    }
+
+- ( BOOL ) p_updateSingleKeychain: ( WSCKeychain* )_Keychain
+                        operation: ( enum kOperation )_Operation
+                            error: ( NSError** )_Error
+    {
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
+    BOOL isSuccess = YES;
+
+    // _Keychain parameter must be kind of WSCKeychain class, and it must not be invalid or nil
+    _WSCDontBeABitch( &error, _Keychain, [ WSCKeychain class ], s_guard );
+
+    // If the parameter is no problem so far
+    if ( !error )
+        {
+        NSMutableArray* defaultSearchList = [ [ self keychainSearchList ] mutableCopy ];
+
+        SEL updateOperation = nil;
+        if ( _Operation == kAdd )           updateOperation = @selector( addObject: );
+        else if ( _Operation == kRemove )   updateOperation = @selector( removeObjects: );
+
+        [ defaultSearchList performSelectorOnMainThread: updateOperation withObject: _Keychain waitUntilDone: YES ];
+
+        NSMutableArray* secNewSearchList = [ NSMutableArray array ];
+        [ defaultSearchList enumerateObjectsUsingBlock:
+            ^( WSCKeychain* _Keychain, NSUInteger _Index, BOOL* _Stop )
+                {
+                [ secNewSearchList addObject: ( __bridge id )_Keychain.secKeychain ];
+                } ];
+
+        if ( ( resultCode = SecKeychainSetSearchList( ( __bridge CFArrayRef )secNewSearchList ) ) != errSecSuccess )
+            _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+        }
+
+    // If indeed there an error
+    if ( error )
+        {
+        isSuccess = NO;
+
+        if ( _Error )
+            *_Error = [ [ error copy ] autorelease ];
+        }
+
+    // If everything is okay, successful operation.
+    return isSuccess;
     }
 
 @end // WSCKeychainManager + _WSCKeychainManagerPrivateManagingKeychains
