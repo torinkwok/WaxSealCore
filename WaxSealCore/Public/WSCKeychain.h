@@ -576,8 +576,8 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   
   Instead of invoking this method, you should construct a `WSCKeychain` object by invoking:
 
-  + [+ createKeychainWithURL:permittedOperations:passphrase:becomesDefault:error:](+[WSCKeychainManager createKeychainWithURL:permittedOperations:passphrase:becomesDefault:error:])
-  + [+ createKeychainWhosePassphraseWillBeObtainedFromUserWithURL:permittedOperations:becomesDefault:error:](+[WSCKeychainManager createKeychainWhosePassphraseWillBeObtainedFromUserWithURL:permittedOperations:becomesDefault:error:])
+  + [+ createKeychainWithURL:passphrase:becomesDefault:error:](+[WSCKeychainManager createKeychainWithURL:passphrase:becomesDefault:error:])
+  + [+ createKeychainWhosePassphraseWillBeObtainedFromUserWithURL:becomesDefault:error:](+[WSCKeychainManager createKeychainWhosePassphraseWillBeObtainedFromUserWithURL:becomesDefault:error:])
   + [+ openExistingKeychainAtURL:error:](+[WSCKeychainManager openExistingKeychainAtURL:error:])
 
   @param _SecKeychainRef A reference to the instance of `SecKeychain` opaque type.

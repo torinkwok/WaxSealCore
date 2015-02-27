@@ -112,7 +112,6 @@ static void s_setUpCommonValidKeychain()
                     NSURL* URLForKeychain = [ [ NSURL URLForTemporaryDirectory ] URLByAppendingPathComponent: @"CommonValidKeychain.keychain" ];
                     _WSCCommonValidKeychainForUnitTests =
                         [ [ [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForKeychain
-                                                                      permittedOperations: nil
                                                                                passphrase: @"waxsealcore"
                                                                            becomesDefault: NO
                                                                                     error: &error ] retain ] autodelete ];
@@ -173,7 +172,6 @@ WSCKeychain* _WSCRandomKeychain()
     NSURL* randomURL = _WSCRandomURL();
     WSCKeychain* randomKeychain =
         [ [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: randomURL
-                                                    permittedOperations: nil
                                                              passphrase: @"waxsealcore"
                                                          becomesDefault: NO
                                                                   error: &error ] autodelete ];

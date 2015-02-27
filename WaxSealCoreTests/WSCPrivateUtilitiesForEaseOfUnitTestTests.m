@@ -127,7 +127,6 @@
 
     WSCKeychain* keychain_testCase0 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForTestCase0
-                                                  permittedOperations: nil
                                                            passphrase: @"waxsealcore"
                                                        becomesDefault: NO
                                                                 error: &error ];

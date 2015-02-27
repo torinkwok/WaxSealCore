@@ -266,7 +266,6 @@
     XCTAssertFalse( [ URLForNewKeychain_testCase0 checkResourceIsReachableAndReturnError: nil ] );
     newKeychainNonPrompt_testCase0 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForNewKeychain_testCase0
-                                                  permittedOperations: nil
                                                            passphrase: _WSCTestPassphrase
                                                        becomesDefault: NO
                                                                 error: &error ];
@@ -310,7 +309,6 @@
     XCTAssertFalse( [ URLForNewKeychain_testCase1 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainNonPrompt_testCase1 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForNewKeychain_testCase1
-                                                  permittedOperations: nil
                                                            passphrase: _WSCTestPassphrase
                                                        becomesDefault: YES
                                                                 error: &error ];
@@ -329,7 +327,6 @@
     XCTAssertFalse( [ URLForNewKeychain_negativeTestCase0 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainNonPrompt_negativeTestCase0 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForNewKeychain_negativeTestCase0
-                                                  permittedOperations: nil
                                                            passphrase: nil
                                                        becomesDefault: NO
                                                                 error: &error ];
@@ -348,7 +345,6 @@
     XCTAssertFalse( [ invalidURLForNewKeychain_negativeTestCase1 isFileURL ] );
     WSCKeychain* newKeychainNonPrompt_negativeTestCase1 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: invalidURLForNewKeychain_negativeTestCase1
-                                                  permittedOperations: nil
                                                            passphrase: _WSCTestPassphrase
                                                        becomesDefault: NO
                                                                 error: &error ];
@@ -364,7 +360,6 @@
     // ----------------------------------------------------------------------------------
     WSCKeychain* newKeychainNonPrompt_negativeTestCase2 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: nil
-                                                  permittedOperations: nil
                                                            passphrase: _WSCTestPassphrase
                                                        becomesDefault: NO
                                                                 error: &error ];
@@ -380,7 +375,6 @@
     // ----------------------------------------------------------------------------------
     WSCKeychain* newKeychainNonPrompt_negativeTestCase3 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForNewKeychain_testCase0
-                                                  permittedOperations: nil
                                                            passphrase: _WSCTestPassphrase
                                                        becomesDefault: NO
                                                                 error: &error ];
@@ -410,7 +404,6 @@
     WSCKeychain* newKeychainNonPrompt_testCase0 =
         [ [ WSCKeychainManager defaultManager ]
             createKeychainWhosePassphraseWillBeObtainedFromUserWithURL: URLForNewKeychain_testCase0
-                                                   permittedOperations: nil
                                                         becomesDefault: NO
                                                                  error: &error ];
     XCTAssertNotNil( newKeychainNonPrompt_testCase0 );
@@ -429,7 +422,6 @@
     WSCKeychain* newKeychainNonPrompt_testCase1 =
         [ [ WSCKeychainManager defaultManager ]
             createKeychainWhosePassphraseWillBeObtainedFromUserWithURL: URLForNewKeychain_testCase1
-                                                   permittedOperations: nil
                                                         becomesDefault: YES
                                                                  error: &error ];
     XCTAssertNotNil( newKeychainNonPrompt_testCase1 );
@@ -448,7 +440,6 @@
     WSCKeychain* newKeychainNonPrompt_negativeTestCase0 =
         [ [ WSCKeychainManager defaultManager ]
             createKeychainWhosePassphraseWillBeObtainedFromUserWithURL: invalidURLForNewKeychain_negativeTestCase0
-                                                   permittedOperations: nil
                                                         becomesDefault: NO
                                                                  error: &error ];
     XCTAssertNil( newKeychainNonPrompt_negativeTestCase0 );
@@ -464,7 +455,6 @@
     WSCKeychain* newKeychainNonPrompt_negativeTestCase1 =
         [ [ WSCKeychainManager defaultManager ]
             createKeychainWhosePassphraseWillBeObtainedFromUserWithURL: nil
-                                                   permittedOperations: nil
                                                         becomesDefault: NO
                                                                  error: &error ];
     XCTAssertNil( newKeychainNonPrompt_negativeTestCase1 );
@@ -480,7 +470,6 @@
     WSCKeychain* newKeychainNonPrompt_negativeTestCase2 =
         [ [ WSCKeychainManager defaultManager ]
             createKeychainWhosePassphraseWillBeObtainedFromUserWithURL: URLForNewKeychain_testCase0
-                                                   permittedOperations: nil
                                                         becomesDefault: NO
                                                                  error: &error ];
     XCTAssertNil( newKeychainNonPrompt_negativeTestCase2 );
@@ -606,7 +595,6 @@
     NSURL* URLForKeychan_testCase0 = _WSCURLForTestCase( _cmd, @"testCase0", NO, YES );
     WSCKeychain* keychain_testCase0 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForKeychan_testCase0
-                                                  permittedOperations: nil
                                                            passphrase: _WSCTestPassphrase
                                                        becomesDefault: NO
                                                                 error: &error ];
@@ -631,7 +619,6 @@
 
     WSCKeychain* keychain_testCase1 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForKeychan_testCase1
-                                                  permittedOperations: nil
                                                            passphrase: _WSCTestPassphrase
                                                        becomesDefault: NO
                                                                 error: &error ];
@@ -656,7 +643,6 @@
 
     WSCKeychain* keychain_testCase2 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForKeychan_testCase2
-                                                  permittedOperations: nil
                                                            passphrase: _WSCTestPassphrase
                                                        becomesDefault: YES
                                                                 error: &error ];
@@ -678,7 +664,6 @@
 
     WSCKeychain* keychain_testCase3 = 
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForKeychan_testCase3
-                                                  permittedOperations: nil
                                                            passphrase: _WSCTestPassphrase
                                                        becomesDefault: NO
                                                                 error: &error ];
@@ -702,7 +687,6 @@
     NSURL* URLForKeychan_testCase4 = _WSCURLForTestCase( _cmd, @"testCase4", NO, YES );
     WSCKeychain* keychain_testCase4 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForKeychan_testCase4
-                                                  permittedOperations: nil
                                                            passphrase: _WSCTestPassphrase
                                                        becomesDefault: NO
                                                                 error: &error ];
@@ -731,7 +715,6 @@
 
     WSCKeychain* keychain_testCase5 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForKeychan_testCase5
-                                                  permittedOperations: nil
                                                            passphrase: _WSCTestPassphrase
                                                        becomesDefault: YES
                                                                 error: &error ];
@@ -756,7 +739,6 @@
 
     WSCKeychain* keychain_testCase6 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForKeychan_testCase6
-                                                  permittedOperations: nil
                                                            passphrase: _WSCTestPassphrase
                                                        becomesDefault: NO
                                                                 error: &error ];
@@ -788,7 +770,6 @@
     NSURL* URLForKeychan_testCase7 = _WSCURLForTestCase( _cmd, @"testCase7", NO, YES );
     WSCKeychain* keychain_testCase7 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForKeychan_testCase7
-                                                  permittedOperations: nil
                                                            passphrase: _WSCTestPassphrase
                                                        becomesDefault: NO
                                                                 error: &error ];
@@ -1123,7 +1104,6 @@
     NSURL* URLForKeychain_negativeTestCase2 = _WSCURLForTestCase( _cmd, @"negativeCase2", NO, YES );
     WSCKeychain* keychain_negativeTestCase2 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForKeychain_negativeTestCase2
-                                                  permittedOperations: nil
                                                            passphrase: _WSCTestPassphrase
                                                        becomesDefault: NO
                                                                 error: &error ];
@@ -1321,7 +1301,6 @@
 
     WSCKeychain* keychain_negativeTestCase3 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForKeychain_negativeTestCase3
-                                                  permittedOperations: nil
                                                            passphrase: _WSCTestPassphrase
                                                        becomesDefault: NO
                                                                 error: &error ];
@@ -1493,7 +1472,6 @@
 
     WSCKeychain* keychain_negativeTestCase1 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForKeychain_negativeTestCase1
-                                                  permittedOperations: nil
                                                            passphrase: _WSCTestPassphrase
                                                        becomesDefault: NO
                                                                 error: &error ];
@@ -1750,7 +1728,6 @@
 
     WSCKeychain* keychain_negativeTestCase1 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForKeychain_negativeTestCase1
-                                                  permittedOperations: nil
                                                            passphrase: _WSCTestPassphrase
                                                        becomesDefault: NO
                                                                 error: &error ];
@@ -1957,7 +1934,6 @@
     NSURL* URLForKeychain_negativeTestCase1 = _WSCURLForTestCase( _cmd, @"negativeCase1", NO, YES );
     WSCKeychain* keychain_negativeTestCase1 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForKeychain_negativeTestCase1
-                                                  permittedOperations: nil
                                                            passphrase: _WSCTestPassphrase
                                                        becomesDefault: NO
                                                                 error: &error ];

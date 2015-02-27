@@ -713,7 +713,6 @@
     NSURL* randomURL_negativeTestCase2 = _WSCRandomURL();
     WSCKeychain* randomKeychain_negativeTest2 =
         [ [ WSCKeychainManager defaultManager ] p_createKeychainWithURL: randomURL_negativeTestCase2
-                                                    permittedOperations: nil
                                                              passphrase: _WSCTestPassphrase
                                                          doesPromptUser: NO
                                                          becomesDefault: NO
@@ -741,7 +740,6 @@
     NSURL* randomURL_negativeTestCase3 = _WSCRandomURL();
     WSCKeychain* randomKeychain_negativeTest3 =
         [ [ WSCKeychainManager defaultManager ] p_createKeychainWithURL: randomURL_negativeTestCase3
-                                                    permittedOperations: nil
                                                              passphrase: _WSCTestPassphrase
                                                          doesPromptUser: NO
                                                          becomesDefault: NO
@@ -776,7 +774,6 @@
     XCTAssertFalse( [ URLForNewKeychain_testCase0 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainNonPrompt_testCase0 =
         [ [ WSCKeychainManager defaultManager ] p_createKeychainWithURL: URLForNewKeychain_testCase0
-                                                    permittedOperations: nil
                                                              passphrase: _WSCTestPassphrase
                                                          doesPromptUser: NO
                                                          becomesDefault: NO
@@ -796,7 +793,6 @@
     XCTAssertFalse( [ URLForNewKeychain_testCase1 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainWithPrompt_testCase1 =
         [ [ WSCKeychainManager defaultManager ] p_createKeychainWithURL: URLForNewKeychain_testCase1
-                                                    permittedOperations: nil
                                                              passphrase: nil // Will be ignored
                                                          doesPromptUser: YES
                                                          becomesDefault: YES   // Sets the new keychain as default
@@ -818,7 +814,6 @@
     XCTAssertTrue( [ URLForNewKeychain_negativeTestCase0 checkResourceIsReachableAndReturnError: nil ] );
     WSCKeychain* newKeychainNonPrompt_negativeCase0 =
         [ [ WSCKeychainManager defaultManager ] p_createKeychainWithURL: URLForNewKeychain_negativeTestCase0
-                                                    permittedOperations: nil
                                                              passphrase: _WSCTestPassphrase
                                                          doesPromptUser: NO
                                                          becomesDefault: NO
@@ -838,7 +833,6 @@
     XCTAssertFalse( [ invalidURLForNewKeychain_negativeTestCase1 isFileURL ] );
     WSCKeychain* newKeychainWithPrompt_negativeCase1 =
         [ [ WSCKeychainManager defaultManager ] p_createKeychainWithURL: invalidURLForNewKeychain_negativeTestCase1
-                                                    permittedOperations: nil
                                                              passphrase: _WSCTestPassphrase /* Will be ignored */
                                                          doesPromptUser: YES
                                                          becomesDefault: NO
@@ -855,7 +849,6 @@
     // ----------------------------------------------------------------------------------
     WSCKeychain* newKeychainWithPrompt_negativeCase2 =
         [ [ WSCKeychainManager defaultManager ] p_createKeychainWithURL: nil
-                                                    permittedOperations: nil
                                                              passphrase: _WSCTestPassphrase /* Will be ignored */
                                                          doesPromptUser: YES
                                                          becomesDefault: NO
@@ -874,7 +867,6 @@
 
     WSCKeychain* newKeychainWithPrompt_negativeCase3 =
         [ [ WSCKeychainManager defaultManager ] p_createKeychainWithURL: URLForNewKeychain_negativeTestCase3
-                                                    permittedOperations: nil
                                                              passphrase: nil /* Will be ignored */
                                                          doesPromptUser: NO
                                                          becomesDefault: NO
@@ -914,7 +906,6 @@
     NSURL* randomURL_negativeTestCase1 = _WSCRandomURL();
     WSCKeychain* randomKeychain_negativeTestCase1 =
         [ [ WSCKeychainManager defaultManager ] p_createKeychainWithURL: randomURL_negativeTestCase1
-                                                    permittedOperations: nil
                                                              passphrase: _WSCTestPassphrase
                                                          doesPromptUser: NO
                                                          becomesDefault: NO
@@ -1270,7 +1261,6 @@
     NSURL* URLForKeychain_testCase2 = _WSCURLForTestCase( _cmd, @"testCase2", NO, YES );
     WSCKeychain* keychain_testCase2 =
         [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URLForKeychain_testCase2
-                                                  permittedOperations: nil
                                                            passphrase: @"waxsealcore"
                                                        becomesDefault: NO
                                                                 error: &error ];

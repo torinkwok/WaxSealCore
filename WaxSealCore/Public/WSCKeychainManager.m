@@ -76,13 +76,11 @@ WSCKeychainManager static* s_defaultManager = nil;
 /* Creates and returns a `WSCKeychain` object using the given URL, passphrase, and inital access rights.
  */
 - ( WSCKeychain* ) createKeychainWithURL: ( NSURL* )_URL
-                     permittedOperations: ( NSArray* )_PermittedOperations
                               passphrase: ( NSString* )_Passphrase
                           becomesDefault: ( BOOL )_WillBecomeDefault
                                    error: ( NSError** )_Error
     {
     return [ self p_createKeychainWithURL: _URL
-                      permittedOperations: _PermittedOperations
                                passphrase: _Passphrase
                            doesPromptUser: NO
                            becomesDefault: _WillBecomeDefault
@@ -92,12 +90,10 @@ WSCKeychainManager static* s_defaultManager = nil;
 /* Creates and returns a `WSCKeychain` object using the given URL, interaction prompt and inital access rights.
  */
 - ( WSCKeychain* ) createKeychainWhosePassphraseWillBeObtainedFromUserWithURL: ( NSURL* )_URL
-                                                          permittedOperations: ( NSArray* )_PermittedOperations
                                                                becomesDefault: ( BOOL )_WillBecomeDefault
                                                                         error: ( NSError** )_Error
     {
     return [ self p_createKeychainWithURL: _URL
-                      permittedOperations: _PermittedOperations
                                passphrase: nil
                            doesPromptUser: YES
                            becomesDefault: _WillBecomeDefault
@@ -690,7 +686,6 @@ WSCKeychainManager static* s_defaultManager = nil;
 /* Objective-C wrapper of SecKeychainCreate() function in Keychain Services API
  */
 - ( WSCKeychain* ) p_createKeychainWithURL: ( NSURL* )_URL
-                       permittedOperations: ( NSArray* )_PermittedOperations
                                 passphrase: ( NSString* )_Passphrase
                             doesPromptUser: ( BOOL )_DoesPromptUser
                             becomesDefault: ( BOOL )_WillBecomeDefault
