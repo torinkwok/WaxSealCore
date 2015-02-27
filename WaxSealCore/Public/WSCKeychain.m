@@ -196,7 +196,6 @@ BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     {
     OSStatus resultCode = errSecSuccess;
 
-//    SecKeychainSettings settings = { SEC_KEYCHAIN_SETTINGS_VERS1, FALSE, FALSE, INT_MAX };
     if ( ( resultCode = SecKeychainSetSettings( self.secKeychain, &_SecKeychainSettings ) ) != errSecSuccess )
         _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
     }
@@ -224,7 +223,8 @@ BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     if ( !error )
         {
         SecKeychainSettings settings = { SEC_KEYCHAIN_SETTINGS_VERS1
-                                       , FALSE, secCurrentKeychainSettings.useLockInterval
+                                       , FALSE
+                                       , secCurrentKeychainSettings.useLockInterval
                                        , secCurrentKeychainSettings.lockInterval
                                        };
 

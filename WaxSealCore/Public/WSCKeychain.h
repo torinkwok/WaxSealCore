@@ -264,6 +264,9 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 @property ( assign, readonly ) BOOL isWritable;
 
 /** A `BOOL` value indicating whether the keychain locks when the system sleeps.
+
+  @bug So far this API doesn't work properly due to the bug of underlying *Keychain Services*
+       or my mistake, **FIGHT ON!**
   */
 @property ( assign, readwrite ) BOOL enableLockOnSleep;
 
