@@ -97,6 +97,7 @@ BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
 @dynamic isLocked;
 @dynamic isReadable;
 @dynamic isWritable;
+@dynamic enableLockOnSleep;
 
 - ( NSString* ) description
     {
@@ -177,6 +178,60 @@ BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
         _WSCPrintNSErrorForLog( error );
 
     return ( keychainStatus & kSecWritePermStatus ) != 0;
+    }
+
+- ( SecKeychainSettings ) p_retrieveSecSettingsStructOfReceiver: ( NSError** )_Error
+    {
+    OSStatus resultCode = errSecSuccess;
+
+    SecKeychainSettings secKeychainSettings;
+    if ( ( resultCode = SecKeychainCopySettings( self.secKeychain, &secKeychainSettings ) ) != errSecSuccess )
+        _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+
+    return secKeychainSettings;
+    }
+
+- ( void ) p_backIntoSecSettingsStructOfReceiver: ( SecKeychainSettings )_SecKeychainSettings
+                                           error: ( NSError** )_Error
+    {
+    OSStatus resultCode = errSecSuccess;
+
+//    SecKeychainSettings settings = { SEC_KEYCHAIN_SETTINGS_VERS1, FALSE, FALSE, INT_MAX };
+    if ( ( resultCode = SecKeychainSetSettings( self.secKeychain, &_SecKeychainSettings ) ) != errSecSuccess )
+        _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
+    }
+
+/* A `BOOL` value indicating whether the keychain locks when the system sleeps.
+ */
+- ( BOOL ) enableLockOnSleep
+    {
+    NSError* error = nil;
+    BOOL enable = NO;
+
+    SecKeychainSettings secKeychainSettings = [ self p_retrieveSecSettingsStructOfReceiver: &error ];
+    if ( !error )
+        enable = secKeychainSettings.lockOnSleep;
+
+    _WSCPrintNSErrorForLog( error );
+    return enable;
+    }
+
+- ( void ) setEnableLockOnSleep: ( BOOL )_DoesEnable
+    {
+    NSError* error = nil;
+
+    SecKeychainSettings secCurrentKeychainSettings = [ self p_retrieveSecSettingsStructOfReceiver: &error ];
+    if ( !error )
+        {
+        SecKeychainSettings settings = { SEC_KEYCHAIN_SETTINGS_VERS1
+                                       , FALSE, secCurrentKeychainSettings.useLockInterval
+                                       , secCurrentKeychainSettings.lockInterval
+                                       };
+
+        [ self p_backIntoSecSettingsStructOfReceiver: settings error: &error ];
+        }
+
+    _WSCPrintNSErrorForLog( error );
     }
 
 #pragma mark Public Programmatic Interfaces for Creating Keychains

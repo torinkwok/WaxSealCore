@@ -263,6 +263,10 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   */
 @property ( assign, readonly ) BOOL isWritable;
 
+/** A `BOOL` value indicating whether the keychain locks when the system sleeps.
+  */
+@property ( assign, readwrite ) BOOL enableLockOnSleep;
+
 #pragma mark Public Programmatic Interfaces for Creating Keychains
 /** @name Creating Keychains */
 

@@ -1423,6 +1423,25 @@
     _WSCPrintNSErrorForUnitTest( error );
     }
 
+- ( void ) testLockOnSleep
+    {
+    NSError* error = nil;
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 0
+    // ----------------------------------------------------------------------------------
+    WSCKeychain* randomKeychain_testCase0 = _WSCRandomKeychain();
+    [ [ WSCKeychainManager defaultManager ] addKeychainToDefaultSearchList: randomKeychain_testCase0 error: &error ];
+    XCTAssertNotNil( randomKeychain_testCase0 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    XCTAssertTrue( randomKeychain_testCase0.enableLockOnSleep );
+
+    randomKeychain_testCase0.enableLockOnSleep = NO;
+    XCTAssertFalse( randomKeychain_testCase0.enableLockOnSleep );
+    }
+
 @end // WSCKeychainTests case
 
 //////////////////////////////////////////////////////////////////////////////
