@@ -96,6 +96,7 @@
           otherwise *NO*.
 
   **One more thing**
+
    When you know both objects are keychains, this method is a faster way to check equality than method `isEqual:`.
   */
 - ( BOOL ) isEqualToTrustedApplication: ( WSCTrustedApplication* )_AnotherTrustedApplication;

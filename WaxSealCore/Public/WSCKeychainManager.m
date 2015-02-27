@@ -763,21 +763,26 @@ WSCKeychainManager static* s_defaultManager = nil;
         {
         NSMutableArray* defaultSearchList = [ [ self keychainSearchList ] mutableCopy ];
 
-        SEL updateOperation = nil;
-        if ( _Operation == kAdd )           updateOperation = @selector( addObject: );
-        else if ( _Operation == kRemove )   updateOperation = @selector( removeObject: );
+        // If the given keychain already exists,
+        // we should not perform the add operation
+        if ( !( [ defaultSearchList containsObject: _Keychain ] && ( _Operation == kAdd ) ) )
+            {
+            SEL updateOperation = nil;
+            if ( _Operation == kAdd )           updateOperation = @selector( addObject: );
+            else if ( _Operation == kRemove )   updateOperation = @selector( removeObject: );
 
-        [ defaultSearchList performSelectorOnMainThread: updateOperation withObject: _Keychain waitUntilDone: YES ];
+            [ defaultSearchList performSelectorOnMainThread: updateOperation withObject: _Keychain waitUntilDone: YES ];
 
-        NSMutableArray* secNewSearchList = [ NSMutableArray array ];
-        [ defaultSearchList enumerateObjectsUsingBlock:
-            ^( WSCKeychain* _Keychain, NSUInteger _Index, BOOL* _Stop )
-                {
-                [ secNewSearchList addObject: ( __bridge id )_Keychain.secKeychain ];
-                } ];
+            NSMutableArray* secNewSearchList = [ NSMutableArray array ];
+            [ defaultSearchList enumerateObjectsUsingBlock:
+                ^( WSCKeychain* _Keychain, NSUInteger _Index, BOOL* _Stop )
+                    {
+                    [ secNewSearchList addObject: ( __bridge id )_Keychain.secKeychain ];
+                    } ];
 
-        if ( ( resultCode = SecKeychainSetSearchList( ( __bridge CFArrayRef )secNewSearchList ) ) != errSecSuccess )
-            _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+            if ( ( resultCode = SecKeychainSetSearchList( ( __bridge CFArrayRef )secNewSearchList ) ) != errSecSuccess )
+                _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+            }
         }
 
     // If indeed there an error

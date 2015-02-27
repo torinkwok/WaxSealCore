@@ -1688,6 +1688,20 @@
     XCTAssertNotNil( olderSearchList );
     _WSCPrintNSErrorForUnitTest( error );
 
+    WSCKeychain* randomKeychain_testCase1 = _WSCRandomKeychain();
+    [ [ WSCKeychainManager defaultManager ] addKeychainToDefaultSearchList: randomKeychain_testCase1 error: &error ];
+    NSUInteger count = [ [ WSCKeychainManager defaultManager ].keychainSearchList count ];
+    XCTAssertEqual( [ WSCKeychainManager defaultManager ].keychainSearchList.count, count );
+
+    [ [ WSCKeychainManager defaultManager ] addKeychainToDefaultSearchList: randomKeychain_testCase1 error: &error ];
+    XCTAssertEqual( [ WSCKeychainManager defaultManager ].keychainSearchList.count, count );
+
+    [ [ WSCKeychainManager defaultManager ] addKeychainToDefaultSearchList: randomKeychain_testCase1 error: &error ];
+    XCTAssertEqual( [ WSCKeychainManager defaultManager ].keychainSearchList.count, count );
+
+    [ [ WSCKeychainManager defaultManager ] addKeychainToDefaultSearchList: randomKeychain_testCase1 error: &error ];
+    XCTAssertEqual( [ WSCKeychainManager defaultManager ].keychainSearchList.count, count );
+
     // -------------------------------------------------------------------------------------------------------
     // Negative Test Case 0: add keychain with nil
     // -------------------------------------------------------------------------------------------------------
@@ -1748,7 +1762,6 @@
                                                                                  error: &error ];
     XCTAssertTrue( isSuccess );
     NSLog( @"%@", [ [ WSCKeychainManager defaultManager ] keychainSearchList ] );
-    XCTAssertEqual( [ [ WSCKeychainManager defaultManager ] keychainSearchList ].count, 2 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 

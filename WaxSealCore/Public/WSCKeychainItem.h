@@ -77,6 +77,7 @@
   in *WaxSealCore* framework and *Keychain Services* API, as the value you specify will be overwritten with the current time.
 
   **One more thing**
+
   If you want to change the modification date to something other than the current time,
   use a [CSSM (Common Security Services Manager)](https://developer.apple.com/library/mac/documentation/Security/Conceptual/cryptoservices/CDSA/CDSA.html) function to do so.
   */
