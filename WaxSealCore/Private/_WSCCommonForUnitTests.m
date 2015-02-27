@@ -51,7 +51,7 @@ WSCKeychainSelectivelyUnlockKeychainBlock _WSCSelectivelyUnlockKeychainsBasedOnP
 
         CFArrayRef secSearchList = NULL;
         SecKeychainCopySearchList( &secSearchList );
-        NSArray* searchList = [ [ WSCKeychainManager defaultManager ] keychainSearchList ];
+        NSSet* searchList = [ [ WSCKeychainManager defaultManager ] keychainSearchList ];
 
         NSLog( @"SecKeychain SearchList Count: %lu", CFArrayGetCount( secSearchList ) );
         NSLog( @"Keychain SearchList Count: %lu", searchList.count );

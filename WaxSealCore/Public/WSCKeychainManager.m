@@ -323,7 +323,7 @@ WSCKeychainManager static* s_defaultManager = nil;
 /* Locks all keychains lying in the current default search list belonging to the current user. */
 - ( BOOL ) lockAllKeychains: ( NSError** )_Error
     {
-    NSArray* searchList = [ self keychainSearchList ];
+    NSSet* searchList = [ self keychainSearchList ];
     for ( WSCKeychain* _Keychain in searchList )
         {
         if ( [ self lockKeychain: _Keychain error: _Error ] )
@@ -389,8 +389,8 @@ WSCKeychainManager static* s_defaultManager = nil;
 
 /* Specifies the list of keychains to use in the default keychain search list.
  */
-- ( NSArray* ) setKeychainSearchList: ( NSArray* )_SearchList
-                               error: ( NSError** )_Error;
+- ( NSSet* ) setKeychainSearchList: ( NSSet* )_SearchList
+                             error: ( NSError** )_Error;
     {
     // If the delegate aborts the operation for the keychain, this method returns `nil`.
     if ( [ self.delegate respondsToSelector: @selector( keychainManager:shouldUpdateKeychainSearchList: ) ]
@@ -399,12 +399,12 @@ WSCKeychainManager static* s_defaultManager = nil;
 
     // Before updating the default keychain search list
     // let's retrieve the older search list in order to return it
-    NSArray* olderSearchList = [ self keychainSearchList ];
+    NSSet* olderSearchList = [ self keychainSearchList ];
 
     NSError* errorPassedInDelegateMethod = nil;
     BOOL shouldProceedIfEncounteredAnyError = NO;
 
-    _WSCDontBeABitch( &errorPassedInDelegateMethod, _SearchList, [ NSArray class ], s_guard );
+    _WSCDontBeABitch( &errorPassedInDelegateMethod, _SearchList, [ NSSet class ], s_guard );
 
     if ( errorPassedInDelegateMethod )
         {
@@ -476,7 +476,7 @@ WSCKeychainManager static* s_defaultManager = nil;
 
 /* Retrieves a keychain search list. 
  */
-- ( NSArray* ) keychainSearchList
+- ( NSSet* ) keychainSearchList
     {
     OSStatus resultCode = errSecSuccess;
     NSError* error = nil;
@@ -494,7 +494,7 @@ WSCKeychainManager static* s_defaultManager = nil;
         return nil;
         }
 
-    NSMutableArray* newSearchList = [ NSMutableArray array ];
+    NSMutableSet* newSearchList = [ NSMutableSet set ];
     [ ( __bridge NSArray* )secSearchList enumerateObjectsUsingBlock:
         ^( id _SecKeychain /* The SecKeychain object waiting for be encapsulated with WSCKeychain class */
          , NSUInteger _Index
@@ -642,9 +642,6 @@ WSCKeychainManager static* s_defaultManager = nil;
         else if ( _APISelector == @selector( setKeychainSearchList:error: ) )
             delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:updatingKeychainSearchList: );
 
-        else if ( _APISelector == @selector( removeKeychainFromDefaultSearchList:error: ) )
-            delegateMethodSelector = @selector( keychainManager:shouldProceedAfterError:removingKeychain:fromSearchList: );
-
         // delegateMethodSelector must not be nil
         if ( delegateMethodSelector
                 // and the delegate must implement the method that be represented by delegateMethodSelector
@@ -768,7 +765,7 @@ WSCKeychainManager static* s_defaultManager = nil;
 
         SEL updateOperation = nil;
         if ( _Operation == kAdd )           updateOperation = @selector( addObject: );
-        else if ( _Operation == kRemove )   updateOperation = @selector( removeObjects: );
+        else if ( _Operation == kRemove )   updateOperation = @selector( removeObject: );
 
         [ defaultSearchList performSelectorOnMainThread: updateOperation withObject: _Keychain waitUntilDone: YES ];
 

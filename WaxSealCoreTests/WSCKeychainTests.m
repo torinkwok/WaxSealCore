@@ -940,7 +940,7 @@
     BOOL isSucess = NO;
 
     WSCKeychainManager* defaultManager = [ WSCKeychainManager defaultManager ];
-    NSArray* currentDefaultSearchList = [ defaultManager keychainSearchList ];
+    NSSet* currentDefaultSearchList = [ defaultManager keychainSearchList ];
 
     isSucess = [ defaultManager lockAllKeychains: &error ];
     XCTAssertNil( error );
