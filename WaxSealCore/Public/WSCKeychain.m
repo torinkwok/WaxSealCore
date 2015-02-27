@@ -137,13 +137,13 @@ BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     return yesOrNo;
     }
 
-/* Returns a Boolean value that indicates whether the receiver is currently valid. */
+/* Returns a `BOOL` value that indicates whether the receiver is currently valid. */
 - ( BOOL ) isValid
     {
     return self.URL ? YES : NO;
     }
 
-/* Returns a Boolean value that indicates whether the receiver is currently locked. */
+/* Returns a `BOOL` value that indicates whether the receiver is currently locked. */
 - ( BOOL ) isLocked
     {
     NSError* error = nil;
@@ -155,7 +155,7 @@ BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     return ( keychainStatus & kSecUnlockStateStatus ) == 0;
     }
 
-/* Boolean value that indicates whether the receiver is readable. */
+/* `BOOL` value that indicates whether the receiver is readable. */
 - ( BOOL ) isReadable
     {
     NSError* error = nil;
@@ -167,7 +167,7 @@ BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     return ( keychainStatus & kSecReadPermStatus ) != 0;
     }
 
-/* Boolean value that indicates whether the receiver is writable. */
+/* `BOOL` value that indicates whether the receiver is writable. */
 - ( BOOL ) isWritable
     {
     NSError* error = nil;
@@ -235,7 +235,7 @@ WSCKeychain static* s_system = nil;
     }
 
 #pragma mark Comparing Keychains
-/* Returns a Boolean value that indicates 
+/* Returns a `BOOL` value that indicates 
  * whether a given keychain is equal to receiver using an URL comparision. 
  */
 - ( BOOL ) isEqualToKeychain: ( WSCKeychain* )_AnotherKeychain

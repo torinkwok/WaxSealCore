@@ -239,25 +239,25 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   */
 @property ( assign, readonly ) BOOL isDefault;
 
-/** Boolean value that indicates whether the receiver is currently valid. (read-only)
+/** `BOOL` value that indicates whether the receiver is currently valid. (read-only)
 
   `YES` if the receiver is still capable of referring to a valid keychain file; otherwise, *NO*.
   */
 @property ( assign, readonly ) BOOL isValid;
 
-/** Boolean value that indicates whether the receiver is currently locked. (read-only)
+/** `BOOL` value that indicates whether the receiver is currently locked. (read-only)
 
   `YES` if the receiver is currently locked, otherwise, `NO`.
   */
 @property ( assign, readonly ) BOOL isLocked;
 
-/** Boolean value that indicates whether the receiver is readable. (read-only)
+/** `BOOL` value that indicates whether the receiver is readable. (read-only)
 
   `YES` if the receiver is readable, otherwise, `NO`.
   */
 @property ( assign, readonly ) BOOL isReadable;
 
-/** Boolean value that indicates whether the receiver is writable. (read-only)
+/** `BOOL` value that indicates whether the receiver is writable. (read-only)
 
   `YES` if the receiver is writable, otherwise, `NO`.
   */
@@ -291,7 +291,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 #pragma mark Comparing Keychains
 /** @name Comparing Keychains */
 
-/** Returns a Boolean value that indicates whether a given keychain is equal to receiver using an URL comparision.
+/** Returns a `BOOL` value that indicates whether a given keychain is equal to receiver using an URL comparision.
 
   @param _AnotherKeychain The keychain with which to compare the receiver.
 
@@ -424,10 +424,10 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   The corresponding value is an `NSString` object that identifies the label of a keychain item.
 
   + `WSCKeychainItemAttributeInvisible`
-  The corresponding value is an Boolean value that indicates whether the item is invisible.
+  The corresponding value is a `BOOL` value that indicates whether the item is invisible.
 
   + `WSCKeychainItemAttributeNegative`
-  The corresponding value is an Boolean value that indicates whether there is a valid passphrase associated with this keychain item.
+  The corresponding value is a `BOOL` value that indicates whether there is a valid passphrase associated with this keychain item.
 
   + `WSCKeychainItemAttributeAccount`
   The corresponding value is an `NSString` object that identifies the user account of a passphrase item.

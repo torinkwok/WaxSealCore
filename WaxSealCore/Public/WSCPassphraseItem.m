@@ -261,7 +261,7 @@
 
 #pragma mark Overrides
 /* Overrides the implementation in WSCKeychainItem class.
- * Boolean value that indicates whether the receiver is currently valid. (read-only)
+ * `BOOL` value that indicates whether the receiver is currently valid. (read-only)
  */
 - ( BOOL ) isValid
     {

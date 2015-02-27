@@ -86,7 +86,7 @@
 #pragma mark Managing Keychain Items
 /** @name Managing Keychain Items */
 
-/** Boolean value that indicates whether the receiver is currently valid. (read-only)
+/** `BOOL` value that indicates whether the receiver is currently valid. (read-only)
 
   `YES` if the receiver is still capable of referring to a valid keychain item; otherwise, *NO*.
   */

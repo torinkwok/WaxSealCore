@@ -88,7 +88,7 @@
 #pragma mark Comparing Trusted Application
 /** @name Comparing Trusted Application */
 
-/** Returns a Boolean value that indicates whether a given trusted application is equal to receiver.
+/** Returns a `BOOL` value that indicates whether a given trusted application is equal to receiver.
 
   @param _AnotherTrustedApplication The trusted application with which to compare the receiver.
 
