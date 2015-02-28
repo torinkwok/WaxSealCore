@@ -70,7 +70,7 @@ WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
 
 ***Find the following Internet passphrase***
 
-![IMDb-passphrase](http://i.imgbox.com/eeiU5Ymr.png)
+<img src="http://i.imgbox.com/eeiU5Ymr.png" title="IMDb Passphrase" border="0" height="498" width="501" />
 
 * using pure C API of *Keychain Services*:
 
