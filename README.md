@@ -15,8 +15,6 @@ The *Keychain Services* API provides a solution to this problem. By making a sin
 
 ### How to Use
 
-I hope, it is really easy:
+* Check out [Wiki](https://github.com/TongG/WaxSealCore/wiki)
 
-```objective-c
-
-```
+* Ceck out the [online documentation](https://tongg.github.io/WaxSealCore-Doc/)
