@@ -37,6 +37,7 @@
 #import "WSCKeychainManager.h"
 #import "NSURL+WSCKeychainURL.h"
 #import "WSCKeychainError.h"
+#import "WSCPassphraseItem.h"
 #import "NSString+_OMCString.h"
 
 #import "_WSCKeychainPrivate.h"
@@ -307,6 +308,28 @@
         // Delete it permanently
         [ [ WSCKeychainManager defaultManager ] deleteKeychain: emptyKeychain error: &error ];
     NSAssert( !error, error.description );
+    }
+
+- ( void ) testForWiki_findKeychainItem
+    {
+    NSError* error = nil;
+
+    WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"secure.imdb.com"
+                                                        , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPS )
+                                                        , WSCKeychainItemAttributeComment : @"👺👹👺👹"
+                                                        }
+                                            itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                                error: &error ];
+    if ( IMDbLoginPassphrase )
+        {
+        NSLog( @"Huh, found it!" );
+        NSLog( @"IMDb User Name: %@", IMDbLoginPassphrase.account );
+
+        IMDbLoginPassphrase.comment = @"👿👿👿👿👿👿";
+        }
+    else
+        NSLog( @"I'm so sorry!" );
     }
 
 - ( void ) testCreatingKeychainsWithPassphraseString

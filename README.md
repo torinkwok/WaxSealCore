@@ -67,6 +67,38 @@ WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
 // You have no need for managing the memory manually,
 // emptyKeychain will be released automatically.
 ```
+
+2. Find an Internet passphrase
+
+* using pure C API of *Keychain Services*:
+
+```objective-c
+
+```
+
+* using *WaxSealCore*:
+
+```objective-c
+NSError* error = nil;
+
+WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain login ]
+    findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"secure.imdb.com"
+                                                    , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPS )
+                                                    , WSCKeychainItemAttributeComment : @"👺👹👺👹"
+                                                    }
+                                        itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                            error: &error ];
+if ( IMDbLoginPassphrase )
+    {
+    NSLog( @"Huh, found it!" );
+    NSLog( @"IMDb User Name: %@", IMDbLoginPassphrase.account );
+
+    IMDbLoginPassphrase.comment = @"👿👿👿👿👿👿";
+    }
+else
+    NSLog( @"I'm so sorry!" );
+```
+
 ### How to Use
 
 * Check out [Wiki](https://github.com/TongG/WaxSealCore/wiki)
