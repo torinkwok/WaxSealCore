@@ -13,6 +13,45 @@ The *Keychain Services* API provides a solution to this problem. By making a sin
 
 *Keychain Services* is powerful, **HOWEVER**, *Keychain Services*'s API is pure C, it's very ugly and hard to use, we need a OOP wrapper of this API to make life easier. There are some repos about this, like [EMKeychain](https://github.com/irons/EMKeychain) and [SSKeychain](https://github.com/soffes/sskeychain), I admit, they are cool. But they aren't **full feature** (in other words, too simple). We need a full feature wrapper of *Keychain Services* which can create and delete a keychain or passphrase item quickly, while can also take advantage of the advanced feature of *Keychain Services* such as **Access Control List**. Therefore, I wrote WaxSealCore.
 
+Few examples:
+
+Create an empty keychain with user interaction:
+
+use pure C API of *Keychain Services*:
+
+```objective-c
+OSStatus resultCode = errSecSuccess;
+SecKeychainRef secEmptyKeychain = NULL;
+NSURL* URL = [ [ [ NSBundle mainBundle ] bundleURL ] URLByAppendingPathComponent: @"EmptyKeychainForWiki.keychain" ];
+char* passphrase = "waxsealcore";
+resultCode = SecKeychainCreate( URL.path.UTF8String
+                              , ( UInt32 )strlen( passphrase )
+                              , ( void const* )passphrase
+                              , ( Boolean )YES
+                              , NULL
+                              , &secEmptyKeychain
+                              );
+
+NSAssert( resultCode == errSecSuccess, @"Failed to create new empty keychain" );
+
+resultCode = SecKeychainDelete( secEmptyKeychain );
+NSAssert( resultCode == errSecSuccess, @"Failed to delete the given keychain" );
+
+if ( secEmptyKeychain )
+    CFRelease( secEmptyKeychain );
+```
+
+use *WaxSealCore*:
+
+```objective-c
+NSError* error = nil;
+
+// Create an empty keychain
+WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
+    createKeychainWhosePassphraseWillBeObtainedFromUserWithURL: [ [ [ NSBundle mainBundle ] bundleURL ] URLByAppendingPathComponent: @"EmptyKeychainForWiki.keychain" ]
+                                                becomesDefault: NO
+                                                         error: &error ];
+```
 ### How to Use
 
 * Check out [Wiki](https://github.com/TongG/WaxSealCore/wiki)
