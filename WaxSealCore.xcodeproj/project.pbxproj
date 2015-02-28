@@ -18,6 +18,7 @@
 		83663D6F1A8A64C6005CE439 /* WSCProtectedKeychainItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 83663D6E1A8A64C6005CE439 /* WSCProtectedKeychainItem.m */; };
 		8368A0011A58FE90000CF7ED /* WSCKeychainManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8368A0001A58FE90000CF7ED /* WSCKeychainManagerTests.m */; };
 		8368A0071A596F70000CF7ED /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723861A4C1AA60084221A /* XCTest.framework */; };
+		8368EC0E1AA1CBF400B6A3BE /* WSCCertificateItemTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8368EC0D1AA1CBF400B6A3BE /* WSCCertificateItemTests.m */; };
 		837C8B501A6D4D7700FFE4FF /* _WSCKeychainErrorPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C8B4D1A6D4D7700FFE4FF /* _WSCKeychainErrorPrivate.m */; };
 		837C8B511A6D4D7700FFE4FF /* _WSCKeychainItemPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C8B4E1A6D4D7700FFE4FF /* _WSCKeychainItemPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		837C8B521A6D4D7700FFE4FF /* _WSCKeychainPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C8B4F1A6D4D7700FFE4FF /* _WSCKeychainPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -90,6 +91,7 @@
 		83663D691A88B79B005CE439 /* WSCPermittedOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WSCPermittedOperation.m; path = Public/WSCPermittedOperation.m; sourceTree = "<group>"; };
 		83663D6E1A8A64C6005CE439 /* WSCProtectedKeychainItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCProtectedKeychainItem.m; sourceTree = "<group>"; };
 		8368A0001A58FE90000CF7ED /* WSCKeychainManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCKeychainManagerTests.m; sourceTree = "<group>"; };
+		8368EC0D1AA1CBF400B6A3BE /* WSCCertificateItemTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSCCertificateItemTests.m; sourceTree = "<group>"; };
 		837C8B4D1A6D4D7700FFE4FF /* _WSCKeychainErrorPrivate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _WSCKeychainErrorPrivate.m; path = Private/_WSCKeychainErrorPrivate.m; sourceTree = "<group>"; };
 		837C8B4E1A6D4D7700FFE4FF /* _WSCKeychainItemPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _WSCKeychainItemPrivate.h; path = Private/_WSCKeychainItemPrivate.h; sourceTree = "<group>"; };
 		837C8B4F1A6D4D7700FFE4FF /* _WSCKeychainPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _WSCKeychainPrivate.h; path = Private/_WSCKeychainPrivate.h; sourceTree = "<group>"; };
@@ -355,6 +357,7 @@
 		83C7238C1A4C1AA60084221A /* WaxSealCoreTests */ = {
 			isa = PBXGroup;
 			children = (
+				8368EC0D1AA1CBF400B6A3BE /* WSCCertificateItemTests.m */,
 				83663D6E1A8A64C6005CE439 /* WSCProtectedKeychainItem.m */,
 				83DBD7DF1A6E25E800D0D107 /* WSCKeychainItemTests.m */,
 				83D9C8781A6A685700B31F25 /* WSCTrustedApplicationTests.m */,
@@ -562,6 +565,7 @@
 				83663D6F1A8A64C6005CE439 /* WSCProtectedKeychainItem.m in Sources */,
 				83D9C8791A6A685700B31F25 /* WSCTrustedApplicationTests.m in Sources */,
 				834D20EE1A4EEF7900539F49 /* NSURL+WSCKeychainURLTests.m in Sources */,
+				8368EC0E1AA1CBF400B6A3BE /* WSCCertificateItemTests.m in Sources */,
 				83F8E10E1A69FE4A00201BF6 /* WSCPermittedOperationTests.m in Sources */,
 				83DBD7E01A6E25E800D0D107 /* WSCKeychainItemTests.m in Sources */,
 				83C723931A4C1AA60084221A /* WSCKeychainTests.m in Sources */,
