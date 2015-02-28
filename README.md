@@ -149,8 +149,6 @@ If you encounter any issue, you can:
  * If you are using S/MIME, you can retrieve my S/MIME certificate and its related intermediate certificates in [here](https://www.dropbox.com/sh/hicq0v0hhepqvdg/AAB7hLeZRg1XPw9cGea1rtkla?dl=0)
  * If you are using GnuPG, you can send me encrypt email, my GnuPG pub key's email is **0x5604FA90**, you can retrieve it from keyserver.
 
-<span style="font-size:10pt;line-height:1.5;background-color:#FFE500;"> Oh My Cal! is free software, you are free to use, copy, modify, merge, publish, distribute, sublicense, the source code of Oh My Cal!. If you don't want to compile the source code or you want to donate, you can [ buy this app at Mac App Store ](https://itunes.apple.com/app/oh-my-cal!/id916544190?l=en&mt=12) </span>
-
 ### License
 > Copyright (c) 2014 Tong Guo
 
