@@ -15,7 +15,7 @@ The *Keychain Services* API provides a solution to this problem. By making a sin
 
 **Few examples:**
 
-Create an empty keychain with user interaction:
+1. Create an empty keychain with user interaction:
 
 * using pure C API of *Keychain Services*:
 
