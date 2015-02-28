@@ -38,6 +38,8 @@ resultCode = SecKeychainDelete( secEmptyKeychain );
 NSAssert( resultCode == errSecSuccess, @"Failed to delete the given keychain" );
 
 if ( secEmptyKeychain )
+    // Keychain Services is based on Core Foundation,
+    // you have to manage the memory manually
     CFRelease( secEmptyKeychain );
 ```
 
@@ -51,6 +53,9 @@ WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
     createKeychainWhosePassphraseWillBeObtainedFromUserWithURL: [ [ [ NSBundle mainBundle ] bundleURL ] URLByAppendingPathComponent: @"EmptyKeychainForWiki.keychain" ]
                                                 becomesDefault: NO
                                                          error: &error ];
+                                                                       
+// You have no need for managing the memory
+// emptyKeychain will be released automatically.
 ```
 ### How to Use
 
