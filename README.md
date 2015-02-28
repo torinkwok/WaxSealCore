@@ -24,10 +24,12 @@ OSStatus resultCode = errSecSuccess;
 SecKeychainRef secEmptyKeychain = NULL;
 NSURL* URL = [ [ [ NSBundle mainBundle ] bundleURL ] URLByAppendingPathComponent: @"EmptyKeychainForWiki.keychain" ];
 char* passphrase = "waxsealcore";
+
+// Create an empty keychain with given passphrase
 resultCode = SecKeychainCreate( URL.path.UTF8String
                               , ( UInt32 )strlen( passphrase )
                               , ( void const* )passphrase
-                              , ( Boolean )YES
+                              , ( Boolean )NO
                               , NULL
                               , &secEmptyKeychain
                               );
@@ -38,8 +40,6 @@ resultCode = SecKeychainDelete( secEmptyKeychain );
 NSAssert( resultCode == errSecSuccess, @"Failed to delete the given keychain" );
 
 if ( secEmptyKeychain )
-    // Keychain Services is based on Core Foundation,
-    // you have to manage the memory manually
     CFRelease( secEmptyKeychain );
 ```
 
@@ -48,13 +48,14 @@ if ( secEmptyKeychain )
 ```objective-c
 NSError* error = nil;
 
-// Create an empty keychain
+// Create an empty keychain with given passphrase
 WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
-    createKeychainWhosePassphraseWillBeObtainedFromUserWithURL: [ [ [ NSBundle mainBundle ] bundleURL ] URLByAppendingPathComponent: @"EmptyKeychainForWiki.keychain" ]
-                                                becomesDefault: NO
-                                                         error: &error ];
-                                                                       
-// You have no need for managing the memory
+    createKeychainWithURL: [ [ [ NSBundle mainBundle ] bundleURL ] URLByAppendingPathComponent: @"EmptyKeychainForWiki.keychain" ]
+               passphrase: @"waxsealcore"
+           becomesDefault: NO
+                    error: &error ];
+                           
+// You have no need for managing the memory manually,
 // emptyKeychain will be released automatically.
 ```
 ### How to Use

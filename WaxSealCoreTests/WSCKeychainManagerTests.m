@@ -243,20 +243,68 @@
     [ self->_selectivelyUnlockKeychain release ];
     }
 
-- ( void ) testForWiki
+- ( void ) testForWiki_CreateKeychainWithPassphrase
     {
     NSError* error = nil;
 
+    // Create an empty keychain
     WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
         createKeychainWithURL: [ [ [ NSBundle mainBundle ] bundleURL ] URLByAppendingPathComponent: @"EmptyKeychainForWiki.keychain" ]
                    passphrase: @"waxsealcore"
-               becomesDefault: YES
+               becomesDefault: NO
                         error: &error ];
 
+    // If creation is success
     if ( !error )
+        // Add the new keychain to current default search list,
+        // that means we can see this keychain in the Keychains list of Keychain Access utilities
         [ [ WSCKeychainManager defaultManager ] addKeychainToDefaultSearchList: emptyKeychain error: &error ];
 
+    // If the keychain is still valid
     if ( emptyKeychain.isValid )
+        // Delete it permanently
+        [ [ WSCKeychainManager defaultManager ] deleteKeychain: emptyKeychain error: &error ];
+    NSAssert( !error, error.description );
+
+    OSStatus resultCode = errSecSuccess;
+    SecKeychainRef secEmptyKeychain = NULL;
+    NSURL* URL = [ [ [ NSBundle mainBundle ] bundleURL ] URLByAppendingPathComponent: @"EmptyKeychainForWiki.keychain" ];
+    char* passphrase = "waxsealcore";
+    resultCode = SecKeychainCreate( URL.path.UTF8String
+                                  , ( UInt32 )strlen( passphrase )
+                                  , ( void const* )passphrase
+                                  , ( Boolean )NO
+                                  , NULL
+                                  , &secEmptyKeychain
+                                  );
+
+    NSAssert( resultCode == errSecSuccess, @"Failed to create new empty keychain" );
+
+    resultCode = SecKeychainDelete( secEmptyKeychain );
+    NSAssert( resultCode == errSecSuccess, @"Failed to delete the given keychain" );
+
+    if ( secEmptyKeychain )
+        CFRelease( secEmptyKeychain );
+    }
+
+- ( void ) testForWiki_CreateKeychainWithUserInteraction
+    {
+    NSError* error = nil;
+
+    // Create an empty keychain
+    WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
+        createKeychainWhosePassphraseWillBeObtainedFromUserWithURL: [ [ [ NSBundle mainBundle ] bundleURL ] URLByAppendingPathComponent: @"EmptyKeychainForWiki.keychain" ]
+                                                    becomesDefault: NO
+                                                             error: &error ];
+    // If creation is success
+    if ( !error )
+        // Add the new keychain to current default search list,
+        // that means we can see this keychain in the Keychains list of Keychain Access utilities
+        [ [ WSCKeychainManager defaultManager ] addKeychainToDefaultSearchList: emptyKeychain error: &error ];
+
+    // If the keychain is still valid
+    if ( emptyKeychain.isValid )
+        // Delete it permanently
         [ [ WSCKeychainManager defaultManager ] deleteKeychain: emptyKeychain error: &error ];
     NSAssert( !error, error.description );
     }
