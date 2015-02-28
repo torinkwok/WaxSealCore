@@ -147,7 +147,7 @@ If you encounter any issue, you can:
  * Email me: <Tong-G@outlook.com>
  * DM me on Twitter: [@NSTongG]( https://twitter.com/NSTongG )
  * If you are using S/MIME, you can retrieve my S/MIME certificate and its related intermediate certificates in [here](https://www.dropbox.com/sh/hicq0v0hhepqvdg/AAB7hLeZRg1XPw9cGea1rtkla?dl=0)
- * If you are using GnuPG, you can send me encrypt email, my GnuPG pub key's email is **0x5604FA90**, you can retrieve it from keyserver.
+ * If you are using GnuPG, you can send me encrypt email, my GnuPG pub key is **0x5604FA90**, you can retrieve it from keyserver.
 
 ### License
 > Copyright (c) 2014 Tong Guo
