@@ -90,6 +90,10 @@ WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain l
                                                     }
                                         itemClass: WSCKeychainItemClassInternetPassphraseItem
                                             error: &error ];
+                                            
+// WaxSealCore supports **Unicode-based** search, so you can use Emoji or Chinese in your search criteria.
+// One step. So easy, is not it?
+                                            
 if ( IMDbLoginPassphrase )
     {
     NSLog( @"Huh, found it!" );
@@ -100,8 +104,10 @@ if ( IMDbLoginPassphrase )
     }
 else
     NSLog( @"I'm so sorry!" );
-    
+
+// Find all the Internet passphrases that met the given search criteria
 NSArray* passphrases = [ [ WSCKeychain login ]
+    // Batch search
     findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"secure.imdb.com"
                                                    , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPS )
                                                    , WSCKeychainItemAttributeComment : @"👿👿👿👿👿👿"
