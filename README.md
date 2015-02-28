@@ -15,7 +15,7 @@ The *Keychain Services* API provides a solution to this problem. By making a sin
 
 **Few examples:**
 
-1. Create an empty keychain with user interaction:
+1. Create an empty keychain with given passphrase
 
 * using pure C API of *Keychain Services*:
 
@@ -40,6 +40,8 @@ resultCode = SecKeychainDelete( secEmptyKeychain );
 NSAssert( resultCode == errSecSuccess, @"Failed to delete the given keychain" );
 
 if ( secEmptyKeychain )
+    // Keychain Services is based on Core Foundation,
+    // you have to manage the memory manually
     CFRelease( secEmptyKeychain );
 ```
 
