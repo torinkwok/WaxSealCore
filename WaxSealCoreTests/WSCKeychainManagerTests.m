@@ -243,6 +243,24 @@
     [ self->_selectivelyUnlockKeychain release ];
     }
 
+- ( void ) testForWiki
+    {
+    NSError* error = nil;
+
+    WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
+        createKeychainWithURL: [ [ [ NSBundle mainBundle ] bundleURL ] URLByAppendingPathComponent: @"EmptyKeychainForWiki.keychain" ]
+                   passphrase: @"waxsealcore"
+               becomesDefault: YES
+                        error: &error ];
+
+    if ( !error )
+        [ [ WSCKeychainManager defaultManager ] addKeychainToDefaultSearchList: emptyKeychain error: &error ];
+
+    if ( emptyKeychain.isValid )
+        [ [ WSCKeychainManager defaultManager ] deleteKeychain: emptyKeychain error: &error ];
+    NSAssert( !error, error.description );
+    }
+
 - ( void ) testCreatingKeychainsWithPassphraseString
     {
     NSError* error = nil;
