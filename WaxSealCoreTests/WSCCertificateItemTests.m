@@ -39,7 +39,6 @@
 #import "WSCTrustedApplication.h"
 #import "WSCPermittedOperation.h"
 #import "WSCKeychainManager.h"
-#import "WSCCertificateItem.h"
 
 #import "_WSCTrustedApplicationPrivate.h"
 #import "_WSCPermittedOperationPrivate.h"
@@ -72,8 +71,6 @@
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-    WSCCertificateItem* certificate_testCase0 =
-        [ [ WSCKeychain login ] findFirstKeychainItemSatisfyingSearchCriteria: @{  itemClass:<#(WSCKeychainItemClass)#> error:<#(NSError **)#>
     }
 
 @end // WSCCertificateItemTests test case

@@ -41,9 +41,9 @@
   classes descend from this class and WSCProtectedKeychainItem:
 
   + WSCPassphraseItem
-  + WSCCertificate
-  + WSCKey
-  + WSCIdentity
+  + WSCCertificate (Not supported, will be supported in next version 2.0)
+  + WSCKey (Not supported, be will supported in version 2.0)
+  + WSCIdentity (Not supported, will be supported in version 2.0)
   */
 @interface WSCKeychainItem : NSObject
     {
@@ -143,11 +143,6 @@ NSString extern* const WSCKeychainItemAttributeAuthenticationType;
 NSString extern* const WSCKeychainItemAttributePort;
 NSString extern* const WSCKeychainItemAttributeRelativePath;
 NSString extern* const WSCKeychainItemAttributeProtocol;
-NSString extern* const WSCKeychainItemAttributeCertificateType;
-NSString extern* const WSCKeychainItemAttributeCertificateEncoding;
-NSString extern* const WSCKeychainItemAttributeCRLType;
-NSString extern* const WSCKeychainItemAttributeCRLEncoding;
-NSString extern* const WSCKeychainItemAttributeAlias;
 
 //////////////////////////////////////////////////////////////////////////////
 

@@ -592,11 +592,6 @@ NSString* const WSCKeychainItemAttributeAuthenticationType          = @"'atyp'";
 NSString* const WSCKeychainItemAttributePort                        = @"'port'";
 NSString* const WSCKeychainItemAttributeRelativePath                = @"'path'";
 NSString* const WSCKeychainItemAttributeProtocol                    = @"'ptcl'";
-NSString* const WSCKeychainItemAttributeCertificateType             = @"'ctyp'";
-NSString* const WSCKeychainItemAttributeCertificateEncoding         = @"'cenc'";
-NSString* const WSCKeychainItemAttributeCRLType                     = @"'crtp'";
-NSString* const WSCKeychainItemAttributeCRLEncoding                 = @"'crnc'";
-NSString* const WSCKeychainItemAttributeAlias                       = @"'alis'";
 
 //////////////////////////////////////////////////////////////////////////////
 
