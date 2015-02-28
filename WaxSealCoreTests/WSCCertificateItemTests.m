@@ -72,7 +72,8 @@
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-    
+    WSCCertificateItem* certificate_testCase0 =
+        [ [ WSCKeychain login ] findFirstKeychainItemSatisfyingSearchCriteria: @{  itemClass:<#(WSCKeychainItemClass)#> error:<#(NSError **)#>
     }
 
 @end // WSCCertificateItemTests test case
