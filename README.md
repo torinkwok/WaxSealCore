@@ -68,7 +68,9 @@ WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
 // emptyKeychain will be released automatically.
 ```
 
-***Find an Internet passphrase***
+***Find the following Internet passphrase***
+
+![IMDb-passphrase](http://i.imgbox.com/eeiU5Ymr.png)
 
 * using pure C API of *Keychain Services*:
 
