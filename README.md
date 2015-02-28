@@ -1,4 +1,14 @@
 WaxSealCore [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/TongG/WaxSealCore?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 ===========
 
-Core of WaxSeal, a modern and full feature Objective-C wrapper for [*Keychain Services*](https://developer.apple.com/library/mac/documentation/Security/Reference/keychainservices/index.html), [*Certificate, Key, and Trust Services*](https://developer.apple.com/library/mac/documentation/Security/Conceptual/CertKeyTrustProgGuide/01introduction/introduction.html) API.
+### What's WaxSealCore
+
+WaxSealCore is a modern and full feature Objective-C wrapper for Keychain Services [*Keychain Services*](https://developer.apple.com/library/mac/documentation/Security/Reference/keychainservices/index.html) API.
+
+### Why WaxSealCore
+
+Computer users typically have to manage multiple accounts that require logins with user IDs and passwords. Secure HTTP servers, database servers, secure websites, instant messaging accounts, and many other services require authentication before they can be used. Users often respond to this situation by making up very simple, easily remembered passwords, by using the same password over and over, or by writing passwords down where they can be easily found. Any of these cases compromises security.
+
+The *Keychain Services* API provides a solution to this problem. By making a single call to this API, an application can store login information on a keychain where the application can retrieve the information—also with a single call—when needed. A **keychain** is an encrypted container that holds passwords for multiple applications and secure services. Keychains are secure storage containers, which means that when the keychain is locked, no one can access its protected contents. In OS X, users can unlock a keychain—thus providing trusted applications access to the contents—by entering a single master password.
+
+*Keychain Services* is powerful, **HOWEVER**, *Keychain Services*'s API is pure C, it's very ugly and hard to use, we need a OOP wrapper of this API to make life easier. There are some repos about this, like [EMKeychain](https://github.com/irons/EMKeychain) and [SSKeychain](https://github.com/soffes/sskeychain), I admit, they are cool. But they aren't **full feature** (in other words, too simple). We need a full feature wrapper of *Keychain Services* which can create and delete a keychain or passphrase item quickly, while we can also take advantage of the advanced feature of *Keychain Services* such as **Access Control List**. Therefore, I wrote WaxSealCore.
