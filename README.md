@@ -133,7 +133,7 @@ else
 
 * Check out [Wiki](https://github.com/TongG/WaxSealCore/wiki)
 
-* Ceck out the [online documentation](https://tongg.github.io/WaxSealCore-Doc/)
+* Check out the [online documentation](https://tongg.github.io/WaxSealCore-Doc/)
 
 ### Minimum System Requirements
 
@@ -146,11 +146,11 @@ If you encounter any issue, you can:
 
  * Email me: <Tong-G@outlook.com>
  * DM me on Twitter: [@NSTongG]( https://twitter.com/NSTongG )
- * If you are using S/MIME, you can retrieve my S/MIME certificate and its related intermediate certificates in [here](https://www.dropbox.com/sh/hicq0v0hhepqvdg/AAB7hLeZRg1XPw9cGea1rtkla?dl=0)
- * If you are using GnuPG, you can send me encrypt email, my GnuPG pub key is **0x5604FA90**, you can retrieve it from keyserver.
+ * If you are using S/MIME, you can send me encrypted email by retrieving my S/MIME certificate and its related intermediate certificates in [here](https://www.dropbox.com/sh/hicq0v0hhepqvdg/AAB7hLeZRg1XPw9cGea1rtkla?dl=0)
+ * If you are using GnuPG, you can send me encrypted email, my GnuPG pub key is **0x5604FA90**, you can retrieve it from keyserver.
 
 ### License
-> Copyright (c) 2014 Tong Guo
+> Copyright (c) 2015 Tong Guo
 
 > Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
