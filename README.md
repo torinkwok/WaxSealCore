@@ -20,9 +20,9 @@ The *Keychain Services* API provides a solution to this problem. By making a sin
 
 we need a OOP wrapper of this API to make life easier. There are some repos about this, like [EMKeychain](https://github.com/irons/EMKeychain) and [SSKeychain](https://github.com/soffes/sskeychain). I admit, they are cool. But they aren't **full feature** (in other words, too simple). We need a full feature wrapper of *Keychain Services* which can create and delete a keychain or passphrase item quickly, while can also take advantage of the advanced feature of *Keychain Services* such as **Access Control List**. Therefore, I wrote WaxSealCore.
 
-**Few examples:**
+### Comparison Between Keychain Services and WaxSealCore
 
-***Create an empty keychain with given passphrase***
+**Create an empty keychain with given passphrase:**
 
 * using pure C API of *Keychain Services*:
 
@@ -68,7 +68,7 @@ WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
 // emptyKeychain will be released automatically.
 ```
 
-***Find the following Internet passphrase***
+**Find the following Internet passphrase:**
 
 <img src="http://i.imgbox.com/eeiU5Ymr.png" title="IMDb Passphrase" border="0" height="498" width="501" />
 
