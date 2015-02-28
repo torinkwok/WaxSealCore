@@ -325,11 +325,35 @@
         {
         NSLog( @"Huh, found it!" );
         NSLog( @"IMDb User Name: %@", IMDbLoginPassphrase.account );
+        NSLog( @"Comment: %@", IMDbLoginPassphrase.comment );
 
         IMDbLoginPassphrase.comment = @"👿👿👿👿👿👿";
         }
     else
         NSLog( @"I'm so sorry!" );
+
+    NSArray* passphrases = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"secure.imdb.com"
+                                                       , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPS )
+                                                       , WSCKeychainItemAttributeComment : @"👿👿👿👿👿👿"
+                                                       }
+                                           itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                               error: &error ];
+    if ( passphrases.count != 0 )
+        {
+        for ( WSCPassphraseItem* _Passphrase in passphrases )
+            {
+            NSLog( @"Huh, got one!" );
+            NSLog( @"IMDb User Name: %@", _Passphrase.account );
+            NSLog( @"Comment: %@", _Passphrase.comment );
+
+            _Passphrase.comment = @"👺👹👺👹";
+            }
+        }
+    else
+        NSLog( @"I'm so sorry!" );
+
+//    OSStatus resultCode = errSuccess;
     }
 
 - ( void ) testCreatingKeychainsWithPassphraseString
