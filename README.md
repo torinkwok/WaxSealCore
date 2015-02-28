@@ -13,11 +13,11 @@ The *Keychain Services* API provides a solution to this problem. By making a sin
 
 *Keychain Services* is powerful, **HOWEVER**, *Keychain Services*'s API is pure C, it's very ugly and hard to use, we need a OOP wrapper of this API to make life easier. There are some repos about this, like [EMKeychain](https://github.com/irons/EMKeychain) and [SSKeychain](https://github.com/soffes/sskeychain), I admit, they are cool. But they aren't **full feature** (in other words, too simple). We need a full feature wrapper of *Keychain Services* which can create and delete a keychain or passphrase item quickly, while can also take advantage of the advanced feature of *Keychain Services* such as **Access Control List**. Therefore, I wrote WaxSealCore.
 
-Few examples:
+**Few examples:**
 
 Create an empty keychain with user interaction:
 
-use pure C API of *Keychain Services*:
+* using pure C API of *Keychain Services*:
 
 ```objective-c
 OSStatus resultCode = errSecSuccess;
@@ -41,7 +41,7 @@ if ( secEmptyKeychain )
     CFRelease( secEmptyKeychain );
 ```
 
-use *WaxSealCore*:
+* using *WaxSealCore*:
 
 ```objective-c
 NSError* error = nil;
