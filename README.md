@@ -131,9 +131,9 @@ else
 
 ### How to Use
 
-* Check out [Wiki](https://github.com/TongG/WaxSealCore/wiki)
+* Look at the [Wiki of this repo](https://github.com/TongG/WaxSealCore/wiki)
 
-* Check out the [online documentation](https://tongg.github.io/WaxSealCore-Doc/)
+* Look at the [online documentation](https://tongg.github.io/WaxSealCore-Doc/)
 
 ### Minimum System Requirements
 
