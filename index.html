@@ -1,0 +1,311 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>WaxSealCore by TongG</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/TongG/WaxSealCore">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/TongG/WaxSealCore/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/TongG/WaxSealCore/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>WaxSealCore</h1>
+          <p>A simple and full feature Objective-C wrapper for Keychain Services API  that works on Mac</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/TongG">TongG</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a id="waxsealcore-" class="anchor" href="#waxsealcore-" aria-hidden="true"><span class="octicon octicon-link"></span></a>WaxSealCore <a href="https://gitter.im/TongG/WaxSealCore?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Gitter"></a>
+</h1>
+
+<h3>
+<a id="whats-waxsealcore" class="anchor" href="#whats-waxsealcore" aria-hidden="true"><span class="octicon octicon-link"></span></a>What's WaxSealCore</h3>
+
+<p>WaxSealCore is a modern and full feature Objective-C wrapper for Keychain Services <a href="https://developer.apple.com/library/mac/documentation/Security/Reference/keychainservices/index.html"><em>Keychain Services</em></a> API.</p>
+
+<h3>
+<a id="why-waxsealcore" class="anchor" href="#why-waxsealcore" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why WaxSealCore</h3>
+
+<p>Computer users typically have to manage multiple accounts that require logins with user IDs and passwords. Secure FTP servers, database servers, secure websites, instant messaging accounts, and many other services require authentication before they can be used. Users often respond to this situation by making up very simple, easily remembered passwords, by using the same password over and over, or by writing passwords down where they can be easily found. Any of these cases compromises security.</p>
+
+<p>The <em>Keychain Services</em> API provides a solution to this problem. By making a single call to this API, an application can store login information on a keychain where the application can retrieve the information—also with a single call—when needed. A <strong>keychain</strong> is an encrypted container that holds passwords for multiple applications and secure services. Keychains are secure storage containers, which means that when the keychain is locked, no one can access its protected contents. In OS X, users can unlock a keychain—thus providing trusted applications access to the contents—by entering a single master password.</p>
+
+<p><em>Keychain Services</em> is powerful, <strong>HOWEVER</strong>:</p>
+
+<ul>
+<li>
+<em>Keychain Services</em>'s API is pure C, it's very ugly and hard to use</li>
+<li>
+<em>Keychain Services</em> doesn't support Unicode</li>
+<li>
+<em>Keychain Services</em> is based on <em>Core Foundation</em>, so you have to manage memory manually</li>
+<li>The Apple official documentation of <em>Keychain Services</em> is <strong>old</strong> and <strong>riddled with errors</strong>
+</li>
+</ul>
+
+<p>we need a OOP wrapper of this API to make life easier. There are some repos about this, like <a href="https://github.com/irons/EMKeychain">EMKeychain</a> and <a href="https://github.com/soffes/sskeychain">SSKeychain</a>. I admit, they are cool. But they aren't <strong>full feature</strong> (in other words, too simple). We need a full feature wrapper of <em>Keychain Services</em> which can create and delete a keychain or passphrase item quickly, while can also take advantage of the advanced feature of <em>Keychain Services</em> such as <strong>Access Control List</strong>. Therefore, I wrote WaxSealCore.</p>
+
+<h3>
+<a id="comparison-between-keychain-services-and-waxsealcore" class="anchor" href="#comparison-between-keychain-services-and-waxsealcore" aria-hidden="true"><span class="octicon octicon-link"></span></a>Comparison Between Keychain Services and WaxSealCore</h3>
+
+<p><strong>Create an empty keychain with given passphrase:</strong></p>
+
+<ul>
+<li>using pure C API of <em>Keychain Services</em>:</li>
+</ul>
+
+<div class="highlight highlight-objective-c"><pre><span class="pl-s3">OSStatus</span> resultCode = errSecSuccess;
+SecKeychainRef secEmptyKeychain = <span class="pl-c1">NULL</span>;
+<span class="pl-s3">NSURL</span>* URL = [ [ [ <span class="pl-s3">NSBundle</span> mainBundle ] bundleURL ] <span class="pl-s3">URLByAppendingPathComponent:</span> <span class="pl-s1"><span class="pl-pds">@"</span>EmptyKeychainForWiki.keychain<span class="pl-pds">"</span></span> ];
+<span class="pl-st">char</span>* passphrase = <span class="pl-s1"><span class="pl-pds">"</span>waxsealcore<span class="pl-pds">"</span></span>;
+
+<span class="pl-c">// Create an empty keychain with given passphrase</span>
+resultCode = SecKeychainCreate( URL.path.UTF8String
+                              , ( <span class="pl-s3">UInt32</span> )strlen( passphrase )
+                              , ( <span class="pl-st">void</span> <span class="pl-s">const</span>* )passphrase
+                              , ( <span class="pl-s3">Boolean</span> )<span class="pl-c1">NO</span>
+                              , <span class="pl-c1">NULL</span>
+                              , &amp;secEmptyKeychain
+                              );
+
+<span class="pl-en">NSAssert</span>( resultCode == errSecSuccess, <span class="pl-s1"><span class="pl-pds">@"</span>Failed to create new empty keychain<span class="pl-pds">"</span></span> );
+
+resultCode = SecKeychainDelete( secEmptyKeychain );
+<span class="pl-en">NSAssert</span>( resultCode == errSecSuccess, <span class="pl-s1"><span class="pl-pds">@"</span>Failed to delete the given keychain<span class="pl-pds">"</span></span> );
+
+<span class="pl-k">if</span> ( secEmptyKeychain )
+    <span class="pl-c">// Keychain Services is based on Core Foundation,</span>
+    <span class="pl-c">// you have to manage the memory manually</span>
+    <span class="pl-en">CFRelease</span>( secEmptyKeychain );</pre></div>
+
+<ul>
+<li>using <em>WaxSealCore</em>:</li>
+</ul>
+
+<div class="highlight highlight-objective-c"><pre><span class="pl-s3">NSError</span>* error = <span class="pl-c1">nil</span>;
+
+<span class="pl-c">// Create an empty keychain with given passphrase</span>
+WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
+    createKeychainWithURL: [ [ [ <span class="pl-s3">NSBundle</span> mainBundle ] bundleURL ] <span class="pl-s3">URLByAppendingPathComponent:</span> <span class="pl-s1"><span class="pl-pds">@"</span>EmptyKeychainForWiki.keychain<span class="pl-pds">"</span></span> ]
+               passphrase: <span class="pl-s1"><span class="pl-pds">@"</span>waxsealcore<span class="pl-pds">"</span></span>
+           becomesDefault: <span class="pl-c1">NO</span>
+                    error: &amp;error ];
+
+<span class="pl-c">// You have no need for managing the memory manually,</span>
+<span class="pl-c">// emptyKeychain will be released automatically.</span></pre></div>
+
+<p><strong>Find the following Internet passphrase then print its Account Name, Passphrase and Comment</strong></p>
+
+<p><img src="http://i.imgbox.com/eeiU5Ymr.png" title="IMDb Passphrase" border="0" height="498" width="501"></p>
+
+<ul>
+<li>using pure C API of <em>Keychain Services</em> (OMG! Give me a break!<g-emoji alias="astonished" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f632.png">😲</g-emoji><g-emoji alias="gun" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f52b.png">🔫</g-emoji>):</li>
+</ul>
+
+<div class="highlight highlight-objective-c"><pre><span class="pl-s3">OSStatus</span> resultCode = errSecSuccess;
+
+<span class="pl-c">// Attributes that will be used for constructing search criteria</span>
+<span class="pl-st">char</span>* label = <span class="pl-s1"><span class="pl-pds">"</span>secure.imdb.com<span class="pl-pds">"</span></span>;
+SecProtocolType* ptrProtocolType = malloc( <span class="pl-k">sizeof</span>( SecProtocolType ) );
+*ptrProtocolType = <span class="pl-c1">kSecProtocolTypeHTTPS</span>;
+
+SecKeychainAttribute attrs[] = { { <span class="pl-c1">kSecLabelItemAttr</span>, ( <span class="pl-s3">UInt32</span> )<span class="pl-s3">strlen</span>( label ), ( <span class="pl-st">void</span>* )label }
+                               , { <span class="pl-c1">kSecProtocolItemAttr</span>, ( <span class="pl-s3">UInt32</span> )<span class="pl-k">sizeof</span>( SecProtocolType ), ( <span class="pl-st">void</span>* )ptrProtocolType }
+                               };
+
+SecKeychainAttributeList attrsList = { <span class="pl-k">sizeof</span>( attrs ) / <span class="pl-k">sizeof</span>( attrs[ <span class="pl-c1">0</span> ] ), attrs };
+
+<span class="pl-c">// Creates a search object matching the given list of search criteria.</span>
+SecKeychainSearchRef searchObject = <span class="pl-c1">NULL</span>;
+<span class="pl-k">if</span> ( ( resultCode = SecKeychainSearchCreateFromAttributes( <span class="pl-c1">NULL</span>
+                                                         , <span class="pl-c1">kSecInternetPasswordItemClass</span>
+                                                         , &amp;attrsList
+                                                         , &amp;searchObject
+                                                         ) ) == errSecSuccess )
+    {
+    SecKeychainItemRef matchedItem = <span class="pl-c1">NULL</span>;
+
+    <span class="pl-c">// Finds the next keychain item matching the given search criteria.</span>
+    <span class="pl-k">while</span> ( ( resultCode = <span class="pl-s3">SecKeychainSearchCopyNext</span>( searchObject, &amp;matchedItem ) ) != errSecItemNotFound )
+        {
+        SecKeychainAttribute theAttributes[] = { { <span class="pl-c1">kSecAccountItemAttr</span>, <span class="pl-c1">0</span>, <span class="pl-c1">NULL</span> }
+                                               , { <span class="pl-c1">kSecCommentItemAttr</span>, <span class="pl-c1">0</span>, <span class="pl-c1">NULL</span> }
+                                               };
+
+        SecKeychainAttributeList theAttrList = { <span class="pl-k">sizeof</span>( theAttributes ) / <span class="pl-k">sizeof</span>( theAttributes[ <span class="pl-c1">0</span> ] ), theAttributes };
+        <span class="pl-s3">UInt32</span> lengthOfPassphrase = <span class="pl-c1">0</span>;
+        <span class="pl-st">char</span>* passphraseBuffer = <span class="pl-c1">NULL</span>;
+        <span class="pl-k">if</span> ( ( resultCode = <span class="pl-s3">SecKeychainItemCopyContent</span>( matchedItem
+                                                      , <span class="pl-c1">NULL</span>
+                                                      , &amp;theAttrList
+                                                      , &amp;lengthOfPassphrase
+                                                      , ( <span class="pl-st">void</span>** )&amp;passphraseBuffer
+                                                      ) ) == errSecSuccess )
+            {
+            <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span><span class="pl-cce">\n</span>==============================<span class="pl-cce">\n</span><span class="pl-pds">"</span></span> );
+            <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>Passphrase: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, [ [ [ <span class="pl-s3">NSString</span> alloc ] <span class="pl-s3">initWithBytes:</span> passphraseBuffer <span class="pl-s3">length:</span> lengthOfPassphrase <span class="pl-s3">encoding:</span> NSUTF8StringEncoding ] autorelease ] );
+
+            <span class="pl-k">for</span> ( <span class="pl-st">int</span> _Index = <span class="pl-c1">0</span>; _Index &lt; theAttrList.<span class="pl-vo">count</span>; _Index++ )
+                {
+                SecKeychainAttribute attrStruct = theAttrList.<span class="pl-vo">attr</span>[ _Index ];
+                <span class="pl-s3">NSString</span>* attributeValue = [ [ [ <span class="pl-s3">NSString</span> alloc ] <span class="pl-s3">initWithBytes:</span> attrStruct.data <span class="pl-s3">length:</span> attrStruct.length <span class="pl-s3">encoding:</span> NSUTF8StringEncoding ] autorelease ];
+
+                <span class="pl-k">if</span> ( attrStruct.<span class="pl-vo">tag</span> == <span class="pl-c1">kSecAccountItemAttr</span> )
+                    <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>IMDb User Name: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, attributeValue );
+                <span class="pl-k">else</span> <span class="pl-k">if</span> ( attrStruct.<span class="pl-vo">tag</span> == <span class="pl-c1">kSecCommentItemAttr</span> )
+                    <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>Comment: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, attributeValue );
+                }
+
+            <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span><span class="pl-cce">\n</span>==============================<span class="pl-cce">\n</span><span class="pl-pds">"</span></span> );
+            }
+
+        <span class="pl-s3">SecKeychainItemFreeContent</span>( &amp;theAttrList, passphraseBuffer );
+        <span class="pl-s3">CFRelease</span>( matchedItem );
+        }
+    }
+
+<span class="pl-k">if</span> ( ptrProtocolType )
+    <span class="pl-en">free</span>( ptrProtocolType );
+
+<span class="pl-k">if</span> ( searchObject )
+    <span class="pl-en">CFRelease</span>( searchObject );</pre></div>
+
+<ul>
+<li>using <em>WaxSealCore</em> (Just a few lines of Objective-C code):</li>
+</ul>
+
+<div class="highlight highlight-objective-c"><pre><span class="pl-s3">NSError</span>* error = <span class="pl-c1">nil</span>;
+
+WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain login ]
+    findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : <span class="pl-s1"><span class="pl-pds">@"</span>secure.imdb.com<span class="pl-pds">"</span></span>
+                                                    , WSCKeychainItemAttributeProtocol : <span class="pl-s3">WSCInternetProtocolCocoaValue</span>( WSCInternetProtocolTypeHTTPS )
+                                                    , WSCKeychainItemAttributeComment : <span class="pl-s1"><span class="pl-pds">@"</span>👺👹👺👹<span class="pl-pds">"</span></span>
+                                                    }
+                                        itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                            error: &amp;error ];
+
+<span class="pl-c">// WaxSealCore supports Unicode-based search, so you can use Emoji or Chinese in your search criteria.</span>
+<span class="pl-c">// One step. So easy, is not it?</span></pre></div>
+
+<p>Print its Account Name, Passphrase and Comment:</p>
+
+<div class="highlight highlight-objective-c"><pre><span class="pl-k">if</span> ( IMDbLoginPassphrase )
+    {
+    <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>==============================<span class="pl-pds">"</span></span> );
+    <span class="pl-c">// Use the `account` property</span>
+    <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>IMDb User Name: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, IMDbLoginPassphrase.<span class="pl-vo">account</span> );
+
+    <span class="pl-c">// Use the `passphrase` property</span>
+    <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>Passphrase: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, [ [ [ <span class="pl-s3">NSString</span> alloc ] <span class="pl-s3">initWithData:</span> IMDbLoginPassphrase.passphrase <span class="pl-s3">encoding:</span> NSUTF8StringEncoding ] autorelease ] );
+
+    <span class="pl-c">// Use the `comment` property</span>
+    <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>Comment: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, IMDbLoginPassphrase.<span class="pl-vo">comment</span> );
+    <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>==============================<span class="pl-pds">"</span></span> );
+
+    <span class="pl-c">// -setComment:</span>
+    IMDbLoginPassphrase.<span class="pl-vo">comment</span> = <span class="pl-s1"><span class="pl-pds">@"</span>👿👿👿👿👿👿<span class="pl-pds">"</span></span>;
+    }
+<span class="pl-k">else</span>
+    <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>I'm so sorry!<span class="pl-pds">"</span></span> );</pre></div>
+
+<p>Batch Search:</p>
+
+<div class="highlight highlight-objective-c"><pre><span class="pl-c">// Find all the Internet passphrases that met the given search criteria</span>
+<span class="pl-s3">NSArray</span>* passphrases = [ [ WSCKeychain login ]
+    <span class="pl-c">// Batch search</span>
+    findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : <span class="pl-s1"><span class="pl-pds">@"</span>secure.imdb.com<span class="pl-pds">"</span></span>
+                                                   , WSCKeychainItemAttributeProtocol : <span class="pl-s3">WSCInternetProtocolCocoaValue</span>( WSCInternetProtocolTypeHTTPS )
+                                                   , WSCKeychainItemAttributeComment : <span class="pl-s1"><span class="pl-pds">@"</span>👿👿👿👿👿👿<span class="pl-pds">"</span></span>
+                                                   }
+                                       itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                           error: &amp;error ];
+<span class="pl-k">if</span> ( passphrases.count != <span class="pl-c1">0</span> )
+    {
+    <span class="pl-k">for</span> ( WSCPassphraseItem* _Passphrase in passphrases )
+        {
+        <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>==============================<span class="pl-pds">"</span></span> );
+        <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>IMDb User Name: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, IMDbLoginPassphrase.<span class="pl-vo">account</span> );
+        <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>Passphrase: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, [ [ [ <span class="pl-s3">NSString</span> alloc ] <span class="pl-s3">initWithData:</span> IMDbLoginPassphrase.passphrase <span class="pl-s3">encoding:</span> NSUTF8StringEncoding ] autorelease ] );
+        <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>Comment: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, IMDbLoginPassphrase.<span class="pl-vo">comment</span> );
+        <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>==============================<span class="pl-pds">"</span></span> );
+
+        _Passphrase.<span class="pl-vo">comment</span> = <span class="pl-s1"><span class="pl-pds">@"</span>👺👹👺👹<span class="pl-pds">"</span></span>;
+        }
+    }
+<span class="pl-k">else</span>
+    <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>I'm so sorry!<span class="pl-pds">"</span></span> );</pre></div>
+
+<h3>
+<a id="how-to-use" class="anchor" href="#how-to-use" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to Use</h3>
+
+<ul>
+<li><p>Look at the <a href="https://github.com/TongG/WaxSealCore/wiki">Wiki of this repo</a></p></li>
+<li><p>Look at the <a href="https://tongg.github.io/WaxSealCore-Doc/">online documentation</a></p></li>
+</ul>
+
+<h3>
+<a id="minimum-system-requirements" class="anchor" href="#minimum-system-requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Minimum System Requirements</h3>
+
+<ul>
+<li><p>Xcode 5.x or greater for compiling</p></li>
+<li><p>OS X 10.7 for compiling and running</p></li>
+</ul>
+
+<h3>
+<a id="contact-me" class="anchor" href="#contact-me" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contact Me</h3>
+
+<p>If you encounter any issue, you can: </p>
+
+<ul>
+<li>Email me: <a href="mailto:Tong-G@outlook.com">Tong-G@outlook.com</a>
+</li>
+<li>DM me on Twitter: <a href="https://twitter.com/NSTongG">@NSTongG</a>
+</li>
+<li>If you are using S/MIME, you can send me encrypted email by retrieving my S/MIME certificate and its related intermediate certificates in <a href="https://www.dropbox.com/sh/hicq0v0hhepqvdg/AAB7hLeZRg1XPw9cGea1rtkla?dl=0">here</a>
+</li>
+<li>If you are using GnuPG, you can send me encrypted email, my GnuPG pub key is <strong>0x5604FA90</strong>, you can retrieve it from keyserver.</li>
+</ul>
+
+<h3>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h3>
+
+<blockquote>
+<p>Copyright (c) 2015 Tong Guo</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+</blockquote>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
