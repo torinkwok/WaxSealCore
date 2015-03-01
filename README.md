@@ -166,9 +166,11 @@ Print its Account Name, Passphrase and Comment:
 ```objective-c
 if ( IMDbLoginPassphrase )
     {
-    NSLog( @"Huh, found it!" );
+    NSLog( @"==============================" );
     NSLog( @"IMDb User Name: %@", IMDbLoginPassphrase.account );
+    NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithData: IMDbLoginPassphrase.passphrase encoding: NSUTF8StringEncoding ] autorelease ] );
     NSLog( @"Comment: %@", IMDbLoginPassphrase.comment );
+    NSLog( @"==============================" );
 
     IMDbLoginPassphrase.comment = @"👿👿👿👿👿👿";
     }
@@ -192,9 +194,11 @@ if ( passphrases.count != 0 )
     {
     for ( WSCPassphraseItem* _Passphrase in passphrases )
         {
-        NSLog( @"Huh, got one!" );
-        NSLog( @"IMDb User Name: %@", _Passphrase.account );
-        NSLog( @"Comment: %@", _Passphrase.comment );
+        NSLog( @"==============================" );
+        NSLog( @"IMDb User Name: %@", IMDbLoginPassphrase.account );
+        NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithData: IMDbLoginPassphrase.passphrase encoding: NSUTF8StringEncoding ] autorelease ] );
+        NSLog( @"Comment: %@", IMDbLoginPassphrase.comment );
+        NSLog( @"==============================" );
 
         _Passphrase.comment = @"👺👹👺👹";
         }
