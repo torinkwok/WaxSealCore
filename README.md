@@ -75,7 +75,59 @@ WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
 * using pure C API of *Keychain Services*:
 
 ```objective-c
-OMG! Give me a break!
+OSStatus resultCode = errSecSuccess;
+char* label = "secure.imdb.com";
+SecProtocolType protocolType = kSecProtocolTypeHTTPS;
+SecKeychainAttribute attrs[] = { { kSecLabelItemAttr, ( UInt32 )strlen( label ), ( void* )label }
+                               , { kSecProtocolItemAttr, ( UInt32 )sizeof( SecProtocolType ), ( void* )&protocolType }
+                               };
+
+SecKeychainAttributeList attrsList = { sizeof( attrs ) / sizeof( attrs[ 0 ] ), attrs };
+SecKeychainSearchRef searchObject = NULL;
+if ( ( resultCode = SecKeychainSearchCreateFromAttributes( NULL
+                                                         , kSecInternetPasswordItemClass
+                                                         , &attrsList
+                                                         , &searchObject )
+                                                         ) == errSecSuccess )
+    {
+    SecKeychainItemRef item = NULL;
+    while ( ( resultCode = SecKeychainSearchCopyNext( searchObject, &item ) ) != errSecItemNotFound )
+        {
+        SecKeychainAttributeList* attributeList = NULL;
+        SecItemClass itemClass = CSSM_DL_DB_RECORD_ALL_KEYS;
+        UInt32 passphraseLength = 0;
+        char const* passphrase = NULL;
+
+        SecKeychainAttributeInfo* attributeInfo = NULL;
+        if ( ( resultCode = SecKeychainAttributeInfoForItemID( NULL
+                                                             , CSSM_DL_DB_RECORD_INTERNET_PASSWORD
+                                                             , &attributeInfo )
+                                                             ) == errSecSuccess )
+            {
+            if ( ( resultCode = SecKeychainItemCopyAttributesAndData( item
+                                                                    , attributeInfo
+                                                                    , &itemClass
+                                                                    , &attributeList
+                                                                    , &passphraseLength
+                                                                    , (void* )&passphrase
+                                                                    ) ) == errSecSuccess )
+                {
+                fprintf( stdout, "\nPassphrase: %s\n", passphrase );
+                fprintf( stdout, "\nPassphrase Length: %u\n", passphraseLength );
+
+                SecKeychainAttribute* attrs = attributeList->attr;
+                for ( int _Index = 0; _Index < attributeList->count; _Index++ )
+                    {
+                    SecKeychainAttrType tag = attrs[ _Index ].tag;
+                    if ( tag == kSecAccountItemAttr )
+                        fprintf( stdout, "\nIMDb User Name: %s\n", attrs[ _Index ].data );
+                    else if ( tag == kSecCommentItemAttr)
+                        fprintf( stdout, "\nComment: %s\n", attrs[ _Index ].data );
+                    }
+                }
+            }
+        }
+    }
 ```
 
 * using *WaxSealCore*:
