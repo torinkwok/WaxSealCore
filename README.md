@@ -76,58 +76,72 @@ WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
 
 ```objective-c
 OSStatus resultCode = errSecSuccess;
+
+// Attributes that will be used for constructing search criteria
 char* label = "secure.imdb.com";
-SecProtocolType protocolType = kSecProtocolTypeHTTPS;
+SecProtocolType* ptrProtocolType = malloc( sizeof( SecProtocolType ) );
+*ptrProtocolType = kSecProtocolTypeHTTPS;
+
 SecKeychainAttribute attrs[] = { { kSecLabelItemAttr, ( UInt32 )strlen( label ), ( void* )label }
-                               , { kSecProtocolItemAttr, ( UInt32 )sizeof( SecProtocolType ), ( void* )&protocolType }
+                               , { kSecProtocolItemAttr, ( UInt32 )sizeof( SecProtocolType ), ( void* )ptrProtocolType }
                                };
 
 SecKeychainAttributeList attrsList = { sizeof( attrs ) / sizeof( attrs[ 0 ] ), attrs };
+
+// Creates a search object matching the given list of search criteria.
 SecKeychainSearchRef searchObject = NULL;
-if ( ( resultCode = SecKeychainSearchCreateFromAttributes( NULL
-                                                         , kSecInternetPasswordItemClass
-                                                         , &attrsList
-                                                         , &searchObject )
-                                                         ) == errSecSuccess )
+resultCode = SecKeychainSearchCreateFromAttributes( NULL
+                                                  , kSecInternetPasswordItemClass
+                                                  , &attrsList
+                                                  , &searchObject
+                                                  );
+if ( resultCode == errSecSuccess )
     {
-    SecKeychainItemRef item = NULL;
-    while ( ( resultCode = SecKeychainSearchCopyNext( searchObject, &item ) ) != errSecItemNotFound )
+    SecKeychainItemRef matchedItem = NULL;
+
+    // Finds the next keychain item matching the given search criteria.
+    while ( ( resultCode = SecKeychainSearchCopyNext( searchObject, &matchedItem ) ) != errSecItemNotFound )
         {
-        SecKeychainAttributeList* attributeList = NULL;
-        SecItemClass itemClass = CSSM_DL_DB_RECORD_ALL_KEYS;
-        UInt32 passphraseLength = 0;
-        char const* passphrase = NULL;
+        SecKeychainAttribute theAttributes[] = { { kSecAccountItemAttr, 0, NULL }
+                                               , { kSecCommentItemAttr, 0, NULL }
+                                               };
 
-        SecKeychainAttributeInfo* attributeInfo = NULL;
-        if ( ( resultCode = SecKeychainAttributeInfoForItemID( NULL
-                                                             , CSSM_DL_DB_RECORD_INTERNET_PASSWORD
-                                                             , &attributeInfo )
-                                                             ) == errSecSuccess )
+        SecKeychainAttributeList theAttrList = { sizeof( theAttributes ) / sizeof( theAttributes[ 0 ] ), theAttributes };
+        UInt32 lengthOfPassphrase = 0;
+        char* passphraseBuffer = NULL;
+        if ( ( resultCode = SecKeychainItemCopyContent( matchedItem
+                                                      , NULL
+                                                      , &theAttrList
+                                                      , &lengthOfPassphrase
+                                                      , ( void** )&passphraseBuffer
+                                                      ) ) == errSecSuccess )
             {
-            if ( ( resultCode = SecKeychainItemCopyAttributesAndData( item
-                                                                    , attributeInfo
-                                                                    , &itemClass
-                                                                    , &attributeList
-                                                                    , &passphraseLength
-                                                                    , (void* )&passphrase
-                                                                    ) ) == errSecSuccess )
-                {
-                fprintf( stdout, "\nPassphrase: %s\n", passphrase );
-                fprintf( stdout, "\nPassphrase Length: %u\n", passphraseLength );
+            NSLog( @"\n==============================\n" );
+            NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithBytes: passphraseBuffer length: lengthOfPassphrase encoding: NSUTF8StringEncoding ] autorelease ] );
 
-                SecKeychainAttribute* attrs = attributeList->attr;
-                for ( int _Index = 0; _Index < attributeList->count; _Index++ )
-                    {
-                    SecKeychainAttrType tag = attrs[ _Index ].tag;
-                    if ( tag == kSecAccountItemAttr )
-                        fprintf( stdout, "\nIMDb User Name: %s\n", attrs[ _Index ].data );
-                    else if ( tag == kSecCommentItemAttr)
-                        fprintf( stdout, "\nComment: %s\n", attrs[ _Index ].data );
-                    }
+            for ( int _Index = 0; _Index < theAttrList.count; _Index++ )
+                {
+                SecKeychainAttribute attrStruct = theAttrList.attr[ _Index ];
+                NSString* attributeValue = [ [ [ NSString alloc ] initWithBytes: attrStruct.data length: attrStruct.length encoding: NSUTF8StringEncoding ] autorelease ];
+
+                if ( attrStruct.tag == kSecAccountItemAttr )
+                    NSLog( @"IMDb User Name: %@", attributeValue );
+                else if ( attrStruct.tag == kSecCommentItemAttr )
+                    NSLog( @"Comment: %@", attributeValue );
                 }
+
+            NSLog( @"\n==============================\n" );
             }
+
+        CFRelease( matchedItem );
         }
     }
+
+if ( ptrProtocolType )
+    free( ptrProtocolType );
+
+if ( searchObject )
+    CFRelease( searchObject );
 ```
 
 * using *WaxSealCore*:
