@@ -63,6 +63,77 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+- ( void ) testForWiki_findKeychainItem
+    {
+    OSStatus resultCode = errSecSuccess;
+
+    // Attributes that will be used for constructing search criteria
+    char* label = "secure.imdb.com";
+    SecProtocolType* ptrProtocolType = malloc( sizeof( SecProtocolType ) );
+    *ptrProtocolType = kSecProtocolTypeHTTPS;
+
+    SecKeychainAttribute attrs[] = { { kSecLabelItemAttr, ( UInt32 )strlen( label ), ( void* )label }
+                                   , { kSecProtocolItemAttr, ( UInt32 )sizeof( SecProtocolType ), ( void* )ptrProtocolType }
+                                   };
+
+    SecKeychainAttributeList attrsList = { sizeof( attrs ) / sizeof( attrs[ 0 ] ), attrs };
+
+    // Creates a search object matching the given list of search criteria.
+    SecKeychainSearchRef searchObject = NULL;
+    resultCode = SecKeychainSearchCreateFromAttributes( NULL
+                                                      , kSecInternetPasswordItemClass
+                                                      , &attrsList
+                                                      , &searchObject
+                                                      );
+    if ( resultCode == errSecSuccess )
+        {
+        SecKeychainItemRef matchedItem = NULL;
+
+        // Finds the next keychain item matching the given search criteria.
+        while ( ( resultCode = SecKeychainSearchCopyNext( searchObject, &matchedItem ) ) != errSecItemNotFound )
+            {
+            SecKeychainAttribute theAttributes[] = { { kSecAccountItemAttr, 0, NULL }
+                                                   , { kSecCommentItemAttr, 0, NULL }
+                                                   };
+
+            SecKeychainAttributeList theAttrList = { sizeof( theAttributes ) / sizeof( theAttributes[ 0 ] ), theAttributes };
+            UInt32 lengthOfPassphrase = 0;
+            char* passphraseBuffer = NULL;
+            if ( ( resultCode = SecKeychainItemCopyContent( matchedItem
+                                                          , NULL
+                                                          , &theAttrList
+                                                          , &lengthOfPassphrase
+                                                          , ( void** )&passphraseBuffer
+                                                          ) ) == errSecSuccess )
+                {
+                NSLog( @"\n==============================\n" );
+                NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithBytes: passphraseBuffer length: lengthOfPassphrase encoding: NSUTF8StringEncoding ] autorelease ] );
+
+                for ( int _Index = 0; _Index < theAttrList.count; _Index++ )
+                    {
+                    SecKeychainAttribute attrStruct = theAttrList.attr[ _Index ];
+                    NSString* attributeValue = [ [ [ NSString alloc ] initWithBytes: attrStruct.data length: attrStruct.length encoding: NSUTF8StringEncoding ] autorelease ];
+
+                    if ( attrStruct.tag == kSecAccountItemAttr )
+                        NSLog( @"IMDb User Name: %@", attributeValue );
+                    else if ( attrStruct.tag == kSecCommentItemAttr )
+                        NSLog( @"Comment: %@", attributeValue );
+                    }
+
+                NSLog( @"\n==============================\n" );
+                }
+
+            CFRelease( matchedItem );
+            }
+        }
+
+    if ( ptrProtocolType )
+        free( ptrProtocolType );
+
+    if ( searchObject )
+        CFRelease( searchObject );
+    }
+
 - ( void ) testDeletingKeychainItem
     {
     NSError* error = nil;
