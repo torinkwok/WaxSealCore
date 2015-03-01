@@ -18,7 +18,6 @@
 		83663D6B1A88B79B005CE439 /* WSCPermittedOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 83663D691A88B79B005CE439 /* WSCPermittedOperation.m */; };
 		83663D6F1A8A64C6005CE439 /* WSCProtectedKeychainItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 83663D6E1A8A64C6005CE439 /* WSCProtectedKeychainItem.m */; };
 		8368A0011A58FE90000CF7ED /* WSCKeychainManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8368A0001A58FE90000CF7ED /* WSCKeychainManagerTests.m */; };
-		8368A0071A596F70000CF7ED /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C723861A4C1AA60084221A /* XCTest.framework */; };
 		8368EC0E1AA1CBF400B6A3BE /* WSCCertificateItemTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8368EC0D1AA1CBF400B6A3BE /* WSCCertificateItemTests.m */; };
 		837C8B501A6D4D7700FFE4FF /* _WSCKeychainErrorPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C8B4D1A6D4D7700FFE4FF /* _WSCKeychainErrorPrivate.m */; };
 		837C8B511A6D4D7700FFE4FF /* _WSCKeychainItemPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 837C8B4E1A6D4D7700FFE4FF /* _WSCKeychainItemPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -144,7 +143,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8368A0071A596F70000CF7ED /* XCTest.framework in Frameworks */,
 				83C7239E1A4C1B240084221A /* Foundation.framework in Frameworks */,
 				83C723A21A4C1B2C0084221A /* SecurityFoundation.framework in Frameworks */,
 				83C723A01A4C1B280084221A /* Security.framework in Frameworks */,
