@@ -68,17 +68,83 @@ WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
 // emptyKeychain will be released automatically.
 ```
 
-**Find the following Internet passphrase:**
+**Find the following Internet passphrase then print its Account Name, Passphrase and Comment**
 
 <img src="http://i.imgbox.com/eeiU5Ymr.png" title="IMDb Passphrase" border="0" height="498" width="501" />
 
-* using pure C API of *Keychain Services*:
+* using pure C API of *Keychain Services* (OMG! Give me a break!😲🔫):
 
 ```objective-c
-OMG! Give me a break!
+OSStatus resultCode = errSecSuccess;
+
+// Attributes that will be used for constructing search criteria
+char* label = "secure.imdb.com";
+SecProtocolType* ptrProtocolType = malloc( sizeof( SecProtocolType ) );
+*ptrProtocolType = kSecProtocolTypeHTTPS;
+
+SecKeychainAttribute attrs[] = { { kSecLabelItemAttr, ( UInt32 )strlen( label ), ( void* )label }
+                               , { kSecProtocolItemAttr, ( UInt32 )sizeof( SecProtocolType ), ( void* )ptrProtocolType }
+                               };
+
+SecKeychainAttributeList attrsList = { sizeof( attrs ) / sizeof( attrs[ 0 ] ), attrs };
+
+// Creates a search object matching the given list of search criteria.
+SecKeychainSearchRef searchObject = NULL;
+if ( ( resultCode = SecKeychainSearchCreateFromAttributes( NULL
+                                                         , kSecInternetPasswordItemClass
+                                                         , &attrsList
+                                                         , &searchObject
+                                                         ) ) == errSecSuccess )
+    {
+    SecKeychainItemRef matchedItem = NULL;
+
+    // Finds the next keychain item matching the given search criteria.
+    while ( ( resultCode = SecKeychainSearchCopyNext( searchObject, &matchedItem ) ) != errSecItemNotFound )
+        {
+        SecKeychainAttribute theAttributes[] = { { kSecAccountItemAttr, 0, NULL }
+                                               , { kSecCommentItemAttr, 0, NULL }
+                                               };
+
+        SecKeychainAttributeList theAttrList = { sizeof( theAttributes ) / sizeof( theAttributes[ 0 ] ), theAttributes };
+        UInt32 lengthOfPassphrase = 0;
+        char* passphraseBuffer = NULL;
+        if ( ( resultCode = SecKeychainItemCopyContent( matchedItem
+                                                      , NULL
+                                                      , &theAttrList
+                                                      , &lengthOfPassphrase
+                                                      , ( void** )&passphraseBuffer
+                                                      ) ) == errSecSuccess )
+            {
+            NSLog( @"\n==============================\n" );
+            NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithBytes: passphraseBuffer length: lengthOfPassphrase encoding: NSUTF8StringEncoding ] autorelease ] );
+
+            for ( int _Index = 0; _Index < theAttrList.count; _Index++ )
+                {
+                SecKeychainAttribute attrStruct = theAttrList.attr[ _Index ];
+                NSString* attributeValue = [ [ [ NSString alloc ] initWithBytes: attrStruct.data length: attrStruct.length encoding: NSUTF8StringEncoding ] autorelease ];
+
+                if ( attrStruct.tag == kSecAccountItemAttr )
+                    NSLog( @"IMDb User Name: %@", attributeValue );
+                else if ( attrStruct.tag == kSecCommentItemAttr )
+                    NSLog( @"Comment: %@", attributeValue );
+                }
+
+            NSLog( @"\n==============================\n" );
+            }
+
+        SecKeychainItemFreeContent( &theAttrList, passphraseBuffer );
+        CFRelease( matchedItem );
+        }
+    }
+
+if ( ptrProtocolType )
+    free( ptrProtocolType );
+
+if ( searchObject )
+    CFRelease( searchObject );
 ```
 
-* using *WaxSealCore*:
+* using *WaxSealCore* (Just a few lines of Objective-C code):
 
 ```objective-c
 NSError* error = nil;
@@ -91,20 +157,36 @@ WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain l
                                         itemClass: WSCKeychainItemClassInternetPassphraseItem
                                             error: &error ];
                                             
-// WaxSealCore supports **Unicode-based** search, so you can use Emoji or Chinese in your search criteria.
+// WaxSealCore supports Unicode-based search, so you can use Emoji or Chinese in your search criteria.
 // One step. So easy, is not it?
-                                            
+```
+
+Print its Account Name, Passphrase and Comment:
+
+```objective-c
 if ( IMDbLoginPassphrase )
     {
-    NSLog( @"Huh, found it!" );
+    NSLog( @"==============================" );
+    // Use the `account` property
     NSLog( @"IMDb User Name: %@", IMDbLoginPassphrase.account );
-    NSLog( @"Comment: %@", IMDbLoginPassphrase.comment );
 
+    // Use the `passphrase` property
+    NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithData: IMDbLoginPassphrase.passphrase encoding: NSUTF8StringEncoding ] autorelease ] );
+
+    // Use the `comment` property
+    NSLog( @"Comment: %@", IMDbLoginPassphrase.comment );
+    NSLog( @"==============================" );
+
+    // -setComment:
     IMDbLoginPassphrase.comment = @"👿👿👿👿👿👿";
     }
 else
     NSLog( @"I'm so sorry!" );
+```
 
+Batch Search:
+
+```objective-c
 // Find all the Internet passphrases that met the given search criteria
 NSArray* passphrases = [ [ WSCKeychain login ]
     // Batch search
@@ -118,9 +200,11 @@ if ( passphrases.count != 0 )
     {
     for ( WSCPassphraseItem* _Passphrase in passphrases )
         {
-        NSLog( @"Huh, got one!" );
-        NSLog( @"IMDb User Name: %@", _Passphrase.account );
-        NSLog( @"Comment: %@", _Passphrase.comment );
+        NSLog( @"==============================" );
+        NSLog( @"IMDb User Name: %@", IMDbLoginPassphrase.account );
+        NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithData: IMDbLoginPassphrase.passphrase encoding: NSUTF8StringEncoding ] autorelease ] );
+        NSLog( @"Comment: %@", IMDbLoginPassphrase.comment );
+        NSLog( @"==============================" );
 
         _Passphrase.comment = @"👺👹👺👹";
         }
