@@ -81,11 +81,18 @@
     if ( IMDbLoginPassphrase )
         {
         NSLog( @"==============================" );
+
+        // Use the `account` property
         NSLog( @"IMDb User Name: %@", IMDbLoginPassphrase.account );
+
+        // Use the `passphrase` property
         NSLog( @"Passphrase: %@", [ [ [ NSString alloc ] initWithData: IMDbLoginPassphrase.passphrase encoding: NSUTF8StringEncoding ] autorelease ] );
+
+        // Use the `comment` property
         NSLog( @"Comment: %@", IMDbLoginPassphrase.comment );
         NSLog( @"==============================" );
 
+        // -setComment:
         IMDbLoginPassphrase.comment = @"👿👿👿👿👿👿";
         }
     else
