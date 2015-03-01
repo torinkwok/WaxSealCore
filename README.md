@@ -213,11 +213,11 @@ else
     NSLog( @"I'm so sorry!" );
 ```
 
-### How to Use
+### Documentation
 
-* Look at the [Wiki of this repo](https://github.com/TongG/WaxSealCore/wiki)
+* [Read online](https://tongg.github.io/WaxSealCore-Doc)
 
-* Look at the [online documentation](https://tongg.github.io/WaxSealCore-Doc/)
+* [Download the offline docset for Dash or Xcode Documentation Viewer](https://github.com/TongG/WaxSealCore-Doc)
 
 ### Minimum System Requirements
 
