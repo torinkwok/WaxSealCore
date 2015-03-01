@@ -68,7 +68,7 @@ WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
 // emptyKeychain will be released automatically.
 ```
 
-**Find the following Internet passphrase:**
+**Find the following Internet passphrase then print its Account Name, Passphrase and Comment**
 
 <img src="http://i.imgbox.com/eeiU5Ymr.png" title="IMDb Passphrase" border="0" height="498" width="501" />
 
@@ -90,12 +90,11 @@ SecKeychainAttributeList attrsList = { sizeof( attrs ) / sizeof( attrs[ 0 ] ), a
 
 // Creates a search object matching the given list of search criteria.
 SecKeychainSearchRef searchObject = NULL;
-resultCode = SecKeychainSearchCreateFromAttributes( NULL
-                                                  , kSecInternetPasswordItemClass
-                                                  , &attrsList
-                                                  , &searchObject
-                                                  );
-if ( resultCode == errSecSuccess )
+if ( ( resultCode = SecKeychainSearchCreateFromAttributes( NULL
+                                                         , kSecInternetPasswordItemClass
+                                                         , &attrsList
+                                                         , &searchObject
+                                                         ) ) == errSecSuccess )
     {
     SecKeychainItemRef matchedItem = NULL;
 
@@ -133,6 +132,7 @@ if ( resultCode == errSecSuccess )
             NSLog( @"\n==============================\n" );
             }
 
+        SecKeychainItemFreeContent( &theAttrList, passphraseBuffer );
         CFRelease( matchedItem );
         }
     }
@@ -157,9 +157,13 @@ WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain l
                                         itemClass: WSCKeychainItemClassInternetPassphraseItem
                                             error: &error ];
                                             
-// WaxSealCore supports **Unicode-based** search, so you can use Emoji or Chinese in your search criteria.
+// WaxSealCore supports Unicode-based search, so you can use Emoji or Chinese in your search criteria.
 // One step. So easy, is not it?
-                                            
+```
+
+Print its Account Name, Passphrase and Comment:
+
+```objective-c
 if ( IMDbLoginPassphrase )
     {
     NSLog( @"Huh, found it!" );
@@ -170,7 +174,11 @@ if ( IMDbLoginPassphrase )
     }
 else
     NSLog( @"I'm so sorry!" );
+```
 
+Batch Search:
+
+```objective-c
 // Find all the Internet passphrases that met the given search criteria
 NSArray* passphrases = [ [ WSCKeychain login ]
     // Batch search

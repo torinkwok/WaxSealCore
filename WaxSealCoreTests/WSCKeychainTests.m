@@ -80,12 +80,11 @@
 
     // Creates a search object matching the given list of search criteria.
     SecKeychainSearchRef searchObject = NULL;
-    resultCode = SecKeychainSearchCreateFromAttributes( NULL
-                                                      , kSecInternetPasswordItemClass
-                                                      , &attrsList
-                                                      , &searchObject
-                                                      );
-    if ( resultCode == errSecSuccess )
+    if ( ( resultCode = SecKeychainSearchCreateFromAttributes( NULL
+                                                             , kSecInternetPasswordItemClass
+                                                             , &attrsList
+                                                             , &searchObject
+                                                             ) ) == errSecSuccess )
         {
         SecKeychainItemRef matchedItem = NULL;
 
@@ -123,6 +122,7 @@
                 NSLog( @"\n==============================\n" );
                 }
 
+            SecKeychainItemFreeContent( &theAttrList, passphraseBuffer );
             CFRelease( matchedItem );
             }
         }
