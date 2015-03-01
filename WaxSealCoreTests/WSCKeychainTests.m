@@ -81,7 +81,6 @@
     if ( IMDbLoginPassphrase )
         {
         NSLog( @"==============================" );
-
         // Use the `account` property
         NSLog( @"IMDb User Name: %@", IMDbLoginPassphrase.account );
 

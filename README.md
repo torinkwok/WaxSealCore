@@ -72,7 +72,7 @@ WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
 
 <img src="http://i.imgbox.com/eeiU5Ymr.png" title="IMDb Passphrase" border="0" height="498" width="501" />
 
-* using pure C API of *Keychain Services*:
+* using pure C API of *Keychain Services* (OMG! Give me a break!😲🔫):
 
 ```objective-c
 OSStatus resultCode = errSecSuccess;
@@ -144,7 +144,7 @@ if ( searchObject )
     CFRelease( searchObject );
 ```
 
-* using *WaxSealCore*:
+* using *WaxSealCore* (Just a few lines of Objective-C code):
 
 ```objective-c
 NSError* error = nil;
@@ -167,7 +167,6 @@ Print its Account Name, Passphrase and Comment:
 if ( IMDbLoginPassphrase )
     {
     NSLog( @"==============================" );
-
     // Use the `account` property
     NSLog( @"IMDb User Name: %@", IMDbLoginPassphrase.account );
 
