@@ -1,45 +1,38 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>WaxSealCore by TongG</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="WaxSealCore : A simple and full feature Objective-C wrapper for Keychain Services API  that works on Mac">
 
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>WaxSealCore</title>
   </head>
+
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/TongG/WaxSealCore">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/TongG/WaxSealCore/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/TongG/WaxSealCore/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
 
-    <div class="wrapper">
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/TongG/WaxSealCore">View on GitHub</a>
 
-      <section>
-        <div id="title">
-          <h1>WaxSealCore</h1>
-          <p>A simple and full feature Objective-C wrapper for Keychain Services API  that works on Mac</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/TongG">TongG</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
-        </div>
+          <h1 id="project_title">WaxSealCore</h1>
+          <h2 id="project_tagline">A simple and full feature Objective-C wrapper for Keychain Services API  that works on Mac</h2>
 
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/TongG/WaxSealCore/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/TongG/WaxSealCore/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h1>
-<a id="" class="anchor" href="#" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://gitter.im/TongG/WaxSealCore?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Gitter"></a>
+<a id="waxsealcore-" class="anchor" href="#waxsealcore-" aria-hidden="true"><span class="octicon octicon-link"></span></a>WaxSealCore <a href="https://gitter.im/TongG/WaxSealCore?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Gitter"></a>
 </h1>
 
 <h3>
@@ -78,29 +71,7 @@
 <li>using pure C API of <em>Keychain Services</em>:</li>
 </ul>
 
-<div class="highlight highlight-objective-c"><pre><span class="pl-s3">OSStatus</span> resultCode = errSecSuccess;
-SecKeychainRef secEmptyKeychain = <span class="pl-c1">NULL</span>;
-<span class="pl-s3">NSURL</span>* URL = [ [ [ <span class="pl-s3">NSBundle</span> mainBundle ] bundleURL ] <span class="pl-s3">URLByAppendingPathComponent:</span> <span class="pl-s1"><span class="pl-pds">@"</span>EmptyKeychainForWiki.keychain<span class="pl-pds">"</span></span> ];
-<span class="pl-st">char</span>* passphrase = <span class="pl-s1"><span class="pl-pds">"</span>waxsealcore<span class="pl-pds">"</span></span>;
 
-<span class="pl-c">// Create an empty keychain with given passphrase</span>
-resultCode = SecKeychainCreate( URL.path.UTF8String
-                              , ( <span class="pl-s3">UInt32</span> )strlen( passphrase )
-                              , ( <span class="pl-st">void</span> <span class="pl-s">const</span>* )passphrase
-                              , ( <span class="pl-s3">Boolean</span> )<span class="pl-c1">NO</span>
-                              , <span class="pl-c1">NULL</span>
-                              , &amp;secEmptyKeychain
-                              );
-
-<span class="pl-en">NSAssert</span>( resultCode == errSecSuccess, <span class="pl-s1"><span class="pl-pds">@"</span>Failed to create new empty keychain<span class="pl-pds">"</span></span> );
-
-resultCode = SecKeychainDelete( secEmptyKeychain );
-<span class="pl-en">NSAssert</span>( resultCode == errSecSuccess, <span class="pl-s1"><span class="pl-pds">@"</span>Failed to delete the given keychain<span class="pl-pds">"</span></span> );
-
-<span class="pl-k">if</span> ( secEmptyKeychain )
-    <span class="pl-c">// Keychain Services is based on Core Foundation,</span>
-    <span class="pl-c">// you have to manage the memory manually</span>
-    <span class="pl-en">CFRelease</span>( secEmptyKeychain );</pre></div>
 
 <ul>
 <li>using <em>WaxSealCore</em>:</li>
@@ -260,11 +231,11 @@ WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain l
     <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>I'm so sorry!<span class="pl-pds">"</span></span> );</pre></div>
 
 <h3>
-<a id="how-to-use" class="anchor" href="#how-to-use" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to Use</h3>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h3>
 
 <ul>
-<li><p>Look at the <a href="https://github.com/TongG/WaxSealCore/wiki">Wiki of this repo</a></p></li>
-<li><p>Look at the <a href="https://tongg.github.io/WaxSealCore-Doc/">online documentation</a></p></li>
+<li><p><a href="https://tongg.github.io/WaxSealCore-Doc">Read online</a></p></li>
+<li><p><a href="https://github.com/TongG/WaxSealCore-Doc">Download the offline docset for Dash or Xcode Documentation Viewer</a></p></li>
 </ul>
 
 <h3>
@@ -303,9 +274,16 @@ WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain l
 <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
 </blockquote>
       </section>
-
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">WaxSealCore maintained by <a href="https://github.com/TongG">TongG</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
               <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -316,6 +294,7 @@ WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain l
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
+
 
   </body>
 </html>
