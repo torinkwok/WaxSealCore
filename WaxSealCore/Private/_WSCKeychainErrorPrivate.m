@@ -38,16 +38,16 @@
 #import "WSCKeychainError.h"
 #import "_WSCKeychainErrorPrivate.h"
 
-NSString* const WSCKeychainCannotBeDirectoryErrorDescription        = @"The URL of a keychain file cannot be a directory";
-NSString* const WSCKeychainIsInvalidErrorDescription                = @"Current keychain is no longer valid, it may has been deleted, moved or renamed";
-NSString* const WSCKeychainFileExistsErrorDescription               = @"The keychain couldn't be created because a file with the same name already exists";
-NSString* const WSCKeychainURLIsInvalidErrorDescription             = @"The keychain couldn’t be created because the URL is invalid";
-NSString* const WSCCommonInvalidParametersErrorDescription          = @"One or more parameters passed to the method were not valid";
-NSString* const WSCKeychainItemIsInvalidErrorDescription            = @"Current keychain item is no longer valid, it may has been deleted, or the keychain in which it residing may has been deleted, moved or renamed";
-NSString* const WSCKeychainItemAttributeIsUniqueToInternetPassphraseErrorDescription    = @"The specified attribute was not be supported since this attribute is unique to the Internet passphrase";
-NSString* const WSCKeychainItemAttributeIsUniqueToApplicationPassphraseErrorDescription = @"The specified attribute was not be supported since this attribute is unique to the application passphrase";
-NSString* const WSCKeychainItemPermissionDeniedErrorDescription     = @"Do not have permission to access the secret data of keychain item";
-NSString* const WSCPermittedOperationFailedToChangeTheOwnerOfPermittedOperationErrorDescription = @"An invalid attempt to change the owner of a permitted operation entry";
+NSString* const WSCKeychainCannotBeDirectoryErrorDescription        = @"The URL of a keychain file cannot be a directory.";
+NSString* const WSCKeychainIsInvalidErrorDescription                = @"Current keychain is no longer valid, it may has been deleted, moved or renamed.";
+NSString* const WSCKeychainFileExistsErrorDescription               = @"The keychain couldn't be created because a file with the same name already exists.";
+NSString* const WSCKeychainURLIsInvalidErrorDescription             = @"The keychain couldn’t be created because the URL is invalid.";
+NSString* const WSCCommonInvalidParametersErrorDescription          = @"One or more parameters passed to the method were not valid.";
+NSString* const WSCKeychainItemIsInvalidErrorDescription            = @"Current keychain item is no longer valid, it may has been deleted, or the keychain in which it residing may has been deleted, moved or renamed.";
+NSString* const WSCKeychainItemAttributeIsUniqueToInternetPassphraseErrorDescription    = @"The specified attribute was not be supported since this attribute is unique to the Internet passphrase.";
+NSString* const WSCKeychainItemAttributeIsUniqueToApplicationPassphraseErrorDescription = @"The specified attribute was not be supported since this attribute is unique to the application passphrase.";
+NSString* const WSCKeychainItemPermissionDeniedErrorDescription     = @"Do not have permission to access the secret data of keychain item.";
+NSString* const WSCPermittedOperationFailedToChangeTheOwnerOfPermittedOperationErrorDescription = @"An invalid attempt to change the owner of a permitted operation entry.";
 
 id const s_guard = ( id )'sgrd';
 void _WSCDontBeABitch( NSError** _Error, ... )

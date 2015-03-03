@@ -128,6 +128,8 @@
 
 @end // WSCKeychainItem class
 
+
+// Common Attributes
 NSString extern* const WSCKeychainItemAttributeCreationDate;
 NSString extern* const WSCKeychainItemAttributeModificationDate;
 NSString extern* const WSCKeychainItemAttributeKindDescription;
@@ -136,13 +138,17 @@ NSString extern* const WSCKeychainItemAttributeLabel;
 NSString extern* const WSCKeychainItemAttributeInvisible;
 NSString extern* const WSCKeychainItemAttributeNegative;
 NSString extern* const WSCKeychainItemAttributeAccount;
-NSString extern* const WSCKeychainItemAttributeServiceName;
-NSString extern* const WSCKeychainItemAttributeUserDefinedDataAttribute;
+
+// Unique to the Internet Passphrase Items
 NSString extern* const WSCKeychainItemAttributeHostName;
 NSString extern* const WSCKeychainItemAttributeAuthenticationType;
 NSString extern* const WSCKeychainItemAttributePort;
 NSString extern* const WSCKeychainItemAttributeRelativePath;
 NSString extern* const WSCKeychainItemAttributeProtocol;
+
+// Unique to the Application Passphrase Items
+NSString extern* const WSCKeychainItemAttributeServiceName;
+NSString extern* const WSCKeychainItemAttributeUserDefinedDataAttribute;
 
 //////////////////////////////////////////////////////////////////////////////
 

@@ -53,6 +53,7 @@
 @dynamic port;
 
 @dynamic serviceName;
+@dynamic userDefinedData;
 
 /* The `NSString` object that identifies the account of keychain item represented by receiver. */
 - ( NSString* ) account
@@ -248,7 +249,8 @@
     [ self p_modifyAttribute: kSecPortItemAttr withNewValue: ( id )_PortNumber ];
     }
 
-/* The `NSString` object that identifies the service name of an application passphrase item represented by receiver. */
+/* The `NSString` object that identifies the service name of an application passphrase item represented by receiver. 
+ */
 - ( NSString* ) serviceName
     {
     return [ self p_extractAttributeWithCheckingParameter: kSecServiceItemAttr ];
@@ -257,6 +259,18 @@
 - ( void ) setServiceName: ( NSString* )_ServiceName
     {
     [ self p_modifyAttribute: kSecServiceItemAttr withNewValue: _ServiceName ];
+    }
+
+/* The `NSData` object that contains a user-defined attribute.
+ */
+- ( NSData* ) userDefinedData
+    {
+    return [ self p_extractAttributeWithCheckingParameter: kSecGenericItemAttr ];
+    }
+
+- ( void ) setUserDefinedData: ( NSData* )_NewData
+    {
+    [ self p_modifyAttribute: kSecGenericItemAttr withNewValue: _NewData ];
     }
 
 #pragma mark Overrides

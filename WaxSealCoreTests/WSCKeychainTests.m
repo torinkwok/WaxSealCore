@@ -563,7 +563,7 @@
     // --------------------------------------------------------------------------------------------------------------------
     // Positive Test Case 0
     // --------------------------------------------------------------------------------------------------------------------
-    WSCKeychainItem* matchedItem_testCase0 = [ [ WSCKeychain login ]
+    WSCPassphraseItem* matchedItem_testCase0 = ( WSCPassphraseItem* )[ [ WSCKeychain login ]
         findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeAccount : @"TongGuo"
                                                         , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPS )
                                                         }
@@ -571,6 +571,7 @@
                                                 error: &error ];
     XCTAssertNotNil( matchedItem_testCase0 );
     XCTAssertNil( error );
+
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
     NSArray* matchedItems_testCase0 = [ [ WSCKeychain login ]
@@ -709,6 +710,70 @@
     XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 2
+    // --------------------------------------------------------------------------------------------------------------------
+    WSCPassphraseItem* matchedItem_positiveTestCase2 = ( WSCPassphraseItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Safari 表单自动填充😂"
+                                                        , WSCKeychainItemAttributeComment : @"用来解码加密文件，该文件包含以前在网页表单中输入的非密码数据。"
+                                                        }
+                                            itemClass: WSCKeychainItemClassApplicationPassphraseItem
+                                                error: &error ];
+
+    XCTAssertNotNil( matchedItem_positiveTestCase2 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    NSData* userDefinedData_positiveTestCase2 = [ @"waxsealcore" dataUsingEncoding: NSUTF8StringEncoding ];
+    matchedItem_positiveTestCase2.userDefinedData = userDefinedData_positiveTestCase2;
+    XCTAssertNotNil( matchedItem_positiveTestCase2.userDefinedData );
+    XCTAssertEqualObjects( matchedItem_positiveTestCase2.userDefinedData, userDefinedData_positiveTestCase2 );
+
+    matchedItem_positiveTestCase2 = ( WSCPassphraseItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Safari 表单自动填充😂"
+                                                        , WSCKeychainItemAttributeComment : @"用来解码加密文件，该文件包含以前在网页表单中输入的非密码数据。"
+                                                        , WSCKeychainItemAttributeUserDefinedDataAttribute : userDefinedData_positiveTestCase2
+                                                        }
+                                            itemClass: WSCKeychainItemClassApplicationPassphraseItem
+                                                error: &error ];
+    XCTAssertNotNil( matchedItem_positiveTestCase2 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    matchedItem_positiveTestCase2 = ( WSCPassphraseItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeUserDefinedDataAttribute : userDefinedData_positiveTestCase2 }
+                                            itemClass: WSCKeychainItemClassApplicationPassphraseItem
+                                                error: &error ];
+    XCTAssertNotNil( matchedItem_positiveTestCase2 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    matchedItem_positiveTestCase2.userDefinedData = nil;
+    XCTAssertNotNil( matchedItem_positiveTestCase2.userDefinedData );
+    XCTAssertEqualObjects( matchedItem_positiveTestCase2.userDefinedData, [ NSData data ] );
+
+    matchedItem_positiveTestCase2 = ( WSCPassphraseItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Safari 表单自动填充😂"
+                                                        , WSCKeychainItemAttributeComment : @"用来解码加密文件，该文件包含以前在网页表单中输入的非密码数据。"
+                                                        , WSCKeychainItemAttributeUserDefinedDataAttribute : userDefinedData_positiveTestCase2
+                                                        }
+                                            itemClass: WSCKeychainItemClassApplicationPassphraseItem
+                                                error: &error ];
+    XCTAssertNil( matchedItem_positiveTestCase2 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    matchedItem_positiveTestCase2 = ( WSCPassphraseItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Safari 表单自动填充😂"
+                                                        , WSCKeychainItemAttributeComment : @"用来解码加密文件，该文件包含以前在网页表单中输入的非密码数据。"
+                                                        , WSCKeychainItemAttributeUserDefinedDataAttribute : [ NSData data ]
+                                                        }
+                                            itemClass: WSCKeychainItemClassApplicationPassphraseItem
+                                                error: &error ];
+    XCTAssertNotNil( matchedItem_positiveTestCase2 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
 
     // --------------------------------------------------------------------------------------------------------------------
     // Negative Test Case 2

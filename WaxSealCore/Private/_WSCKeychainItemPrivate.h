@@ -60,6 +60,10 @@
 - ( NSDate* ) p_extractDateFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
                                        error: ( NSError** )_Error;
 
+// Extract NSData object from the SecKeychainAttribute struct.
+- ( NSData* ) p_extractDataFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
+                                       error: ( NSError** )_Error;
+
 // Extract NSString object from the SecKeychainAttribute struct.
 - ( NSString* ) p_extractStringFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
                                            error: ( NSError** )_Error;
@@ -84,6 +88,10 @@
 // Construct SecKeychainAttribute struct with UInt32 and Four Char Code.
 - ( SecKeychainAttribute ) p_attrForUInt32: ( UInt32 )_UInt32Value
                                    forAttr: ( SecItemAttr )_Attr;
+
+// Construct SecKeychainAttribute struct with Cocoa Data.
+- ( SecKeychainAttribute ) p_attrForData: ( NSData* )_CocoaData
+                                 forAttr: ( SecItemAttr )_Attr;
 
 // Objective-C wrapper of SecKeychainItemCopyAccess() function in Keychain Services
 // Use for copying the access of the protected keychain item represented by receiver.
