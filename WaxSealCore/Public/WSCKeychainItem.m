@@ -263,8 +263,8 @@
                     attribute = [ self p_extractStringFromSecAttrStruct: attrStruct error: &error ];
                     } break;
 
-                case kSecPortItemAttr:  case kSecAuthenticationTypeItemAttr:    case kSecProtocolItemAttr:
-                case kSecInvisibleItemAttr:
+                case kSecPortItemAttr:          case kSecAuthenticationTypeItemAttr:    case kSecProtocolItemAttr:
+                case kSecInvisibleItemAttr:     case kSecNegativeItemAttr:
                     {
                     // Extracts the UInt32 value from the keychain attribute struct (SecKeychainAttribute)
                     // Ignore the warning, cast the UInt32 to id explicitly.
@@ -339,7 +339,8 @@
     if ( _SecKeychainAttrStruct.tag == kSecPortItemAttr
             || _SecKeychainAttrStruct.tag == kSecAuthenticationTypeItemAttr
             || _SecKeychainAttrStruct.tag == kSecProtocolItemAttr
-            || _SecKeychainAttrStruct.tag == kSecInvisibleItemAttr )
+            || _SecKeychainAttrStruct.tag == kSecInvisibleItemAttr
+            || _SecKeychainAttrStruct.tag == kSecNegativeItemAttr )
         {
         UInt32* data = _SecKeychainAttrStruct.data;
 
@@ -476,7 +477,7 @@
                 break;
 
             case kSecAuthenticationTypeItemAttr:    case kSecProtocolItemAttr:  case kSecPortItemAttr:
-            case kSecInvisibleItemAttr:
+            case kSecInvisibleItemAttr:             case kSecNegativeItemAttr:
                 newAttr = [ self p_attrForUInt32: ( UInt32 )_NewValue forAttr: _AttributeTag ];
                 break;
 

@@ -41,7 +41,7 @@
   classes descend from this class and WSCProtectedKeychainItem:
 
   + WSCPassphraseItem
-  + WSCCertificate (Not supported, will be supported in next version 2.0)
+  + WSCCertificate (Not supported, will be supported in version 2.0)
   + WSCKey (Not supported, be will supported in version 2.0)
   + WSCIdentity (Not supported, will be supported in version 2.0)
   */
@@ -127,7 +127,6 @@
 + ( instancetype ) keychainItemWithSecKeychainItemRef: ( SecKeychainItemRef )_SecKeychainItemRef;
 
 @end // WSCKeychainItem class
-
 
 // Common Attributes
 NSString extern* const WSCKeychainItemAttributeCreationDate;

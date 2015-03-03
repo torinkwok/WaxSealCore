@@ -78,9 +78,16 @@
   */
 @property ( retain, readwrite ) NSData* passphrase;
 
-/** `BOOL` value that indivates whether this passphrase item is invisible (that is, should not be displayed).
+/** `BOOL` value that indicates whether this passphrase item is invisible (that is, should not be displayed).
   */
 @property ( assign, readwrite, setter = setInvisible: ) BOOL isInvisible;
+
+/** `BOOL` value that indicates whether there is a valid password associated with this passphrase item.
+     
+  @discussion This is useful if your application doesn’t want a password for some particular service to be stored in the keychain,
+              but prefers that it always be entered by the user.
+  */
+@property ( assign, readwrite, setter = setNegative: ) BOOL isNegative;
 
 #pragma mark Unique to Internet Passphrase
 /** @name Unique to Internet Passphrase */
