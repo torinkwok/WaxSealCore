@@ -670,13 +670,11 @@ WSCKeychain static* s_system = nil;
     if ( self.isValid )
         {
         SecKeychainSearchRef secSearch = NULL;
-        resultCode =
-            SecKeychainSearchCreateFromAttributes( self.secKeychain
-                                                 , ( SecItemClass )_ItemClass
-                                                 , NULL
-                                                 , &secSearch
-                                                 );
-        if ( resultCode == errSecSuccess )
+        if ( ( resultCode = SecKeychainSearchCreateFromAttributes( self.secKeychain
+                                                                 , ( SecItemClass )_ItemClass
+                                                                 , NULL
+                                                                 , &secSearch
+                                                                 ) ) == errSecSuccess )
             {
             SecKeychainItemRef secMatchedItem = NULL;
             allItems = [ NSMutableArray array ];
@@ -694,18 +692,11 @@ WSCKeychain static* s_system = nil;
                 CFRelease( secSearch );
             }
         else
-            {
-            if ( _Error )
-                *_Error = [ NSError errorWithDomain: NSOSStatusErrorDomain code: resultCode userInfo: nil ];
-            }
+            _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
         }
     else
-        {
         if ( _Error )
-            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCKeychainIsInvalidError
-                                       userInfo: nil ];
-        }
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCKeychainIsInvalidError userInfo: nil ];
 
     return allItems ? [ [ allItems copy ] autorelease ] : nil;
     }
@@ -813,6 +804,13 @@ WSCKeychain static* s_system = nil;
                         NSUInteger unsignedIntegerData = ( NSUInteger )[ _Item p_extractAttribute: attrTag error: nil ];
 
                         if ( unsignedIntegerData != [ _SearchCriteriaDict[ _SearchKey ] unsignedIntegerValue ] )
+                            [ matchedItems removeObject: _Item ];
+                        } break;
+
+                    case kSecGenericItemAttr:
+                        {
+                        NSData* cocoaData = ( NSData* )[ _Item p_extractAttribute: attrTag error: nil ];
+                        if ( ![ cocoaData isEqualToData: _SearchCriteriaDict[ _SearchKey ] ] )
                             [ matchedItems removeObject: _Item ];
                         } break;
                     }
