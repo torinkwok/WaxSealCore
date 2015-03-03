@@ -63,6 +63,20 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+- ( void ) testForWiki_createKeychain
+    {
+    NSError* error = nil;
+
+    NSURL* URL = [ [ [ NSBundle mainBundle ] bundleURL ] URLByAppendingPathComponent: @"Empty Keychain For Wiki.keychain" ];
+    WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
+        createKeychainWithURL: URL
+                   passphrase: @"waxsealcore"
+               becomesDefault: NO
+                        error: &error ];
+
+    XCTAssertTrue( emptyKeychain.isValid );
+    }
+
 - ( void ) testForWiki_findKeychainItemInCocoa
     {
     NSError* error = nil;
