@@ -119,7 +119,72 @@ NSString* _WSCPassphrases[] =
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-- ( void ) testUserDefinedData
+- ( void ) testInvisibleProperty
+    {
+    NSError* error = nil;
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 0: for Application passphrase item
+    // -------------------------------------------------------------------------------
+    WSCPassphraseItem* applicationPassphrase_testCase0 =
+        [ [ WSCKeychain login ] addApplicationPassphraseWithServiceName: @"WaxSealCore Unit Tests"
+                                                            accountName: @"NSTongG"
+                                                             passphrase: @"waxsealcore"
+                                                                  error: &error ];
+    XCTAssertFalse( applicationPassphrase_testCase0.isInvisible );
+    applicationPassphrase_testCase0.isInvisible = YES;
+    XCTAssertTrue( applicationPassphrase_testCase0.isInvisible );
+
+    [ applicationPassphrase_testCase0.keychain deleteKeychainItem: applicationPassphrase_testCase0 error: nil ];
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 1: for Internet passphrase item
+    // -------------------------------------------------------------------------------
+    WSCPassphraseItem* internetPassphrase_testCase1 =
+        [ [ WSCKeychain login ] addInternetPassphraseWithServerName: @"www.waxsealcore.org"
+                                                    URLRelativePath: @"/positive/test/case/1"
+                                                        accountName: @"NSTongG"
+                                                           protocol: WSCInternetProtocolTypeHTTPS
+                                                         passphrase: @"waxsealcore"
+                                                              error: &error ];
+    XCTAssertFalse( internetPassphrase_testCase1.isInvisible );
+    internetPassphrase_testCase1.isInvisible = YES;
+    XCTAssertTrue( internetPassphrase_testCase1.isInvisible );
+
+    // Search for it
+    internetPassphrase_testCase1 = ( WSCPassphraseItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"www.waxsealcore.org"
+                                                        , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPS )
+                                                        , WSCKeychainItemAttributeInvisible : @YES
+                                                        }
+                                            itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                                error: &error ];
+    XCTAssertNotNil( internetPassphrase_testCase1 );
+
+    [ internetPassphrase_testCase1 setInvisible: NO ];
+
+    internetPassphrase_testCase1 = ( WSCPassphraseItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"www.waxsealcore.org"
+                                                        , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPS )
+                                                        , WSCKeychainItemAttributeInvisible : @YES
+                                                        }
+                                            itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                                error: &error ];
+    XCTAssertNil( internetPassphrase_testCase1 );
+
+    internetPassphrase_testCase1 = ( WSCPassphraseItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"www.waxsealcore.org"
+                                                        , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPS )
+                                                        , WSCKeychainItemAttributeInvisible : @NO
+                                                        }
+                                            itemClass: WSCKeychainItemClassInternetPassphraseItem
+                                                error: &error ];
+    XCTAssertNotNil( internetPassphrase_testCase1 );
+
+    [ internetPassphrase_testCase1.keychain deleteKeychainItem: internetPassphrase_testCase1 error: nil ];
+    }
+
+- ( void ) testUserDefinedDataProperty
     {
     NSError* error = nil;
 

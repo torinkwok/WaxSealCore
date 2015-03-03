@@ -799,6 +799,14 @@ WSCKeychain static* s_system = nil;
                             [ matchedItems removeObject: _Item ];
                         } break;
 
+                    case kSecInvisibleItemAttr:
+                        {
+                        BOOL booleanData = ( BOOL )[ _Item p_extractAttribute: attrTag error: nil ];
+
+                        if ( booleanData != [ _SearchCriteriaDict[ _SearchKey ] boolValue ] )
+                            [ matchedItems removeObject: _Item ];
+                        } break;
+
                     case kSecPortItemAttr:
                         {
                         NSUInteger unsignedIntegerData = ( NSUInteger )[ _Item p_extractAttribute: attrTag error: nil ];
