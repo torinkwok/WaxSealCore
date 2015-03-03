@@ -60,6 +60,10 @@
 - ( NSDate* ) p_extractDateFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
                                        error: ( NSError** )_Error;
 
+// Extract NSData object from the SecKeychainAttribute struct.
+- ( NSData* ) p_extractDataFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
+                                       error: ( NSError** )_Error;
+
 // Extract NSString object from the SecKeychainAttribute struct.
 - ( NSString* ) p_extractStringFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
                                            error: ( NSError** )_Error;

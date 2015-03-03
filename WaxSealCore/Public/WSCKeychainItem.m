@@ -409,6 +409,8 @@
     return dateWithCorrectTimeZone;
     }
 
+/* Extract NSData object from the SecKeychainAttribute struct.
+ */
 - ( NSData* ) p_extractDataFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
                                        error: ( NSError** )_Error
     {
