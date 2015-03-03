@@ -137,7 +137,7 @@ WSCKeychainManager static* s_defaultManager = nil;
         }
 
     if ( error && _Error )
-        *_Error = [ [ error copy ] autorelease ];
+        *_Error = [ error copy ];
 
     return existingKeychain;
     }
@@ -244,7 +244,7 @@ WSCKeychainManager static* s_defaultManager = nil;
                 _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
 
     if ( error && _Error )
-            *_Error = [ [ error copy ] autorelease ];
+            *_Error = [ error copy ];
 
     // If the there is not any error occured while setting the specified keychain as default keychain
     // or the it's already default,
@@ -373,7 +373,7 @@ WSCKeychainManager static* s_defaultManager = nil;
         isSuccess = NO;
 
         if ( _Error )
-            *_Error = [ [ error copy ] autorelease ];
+            *_Error = [ error copy ];
         }
 
     // If every parameters is correct but the keychain has been already unlocked:
@@ -737,7 +737,7 @@ WSCKeychainManager static* s_defaultManager = nil;
         }
 
     if ( error && _Error )
-        *_Error = [ [ error copy ] autorelease ];
+        *_Error = [ error copy ];
 
     return newKeychain;
     }
@@ -786,7 +786,7 @@ WSCKeychainManager static* s_defaultManager = nil;
         isSuccess = NO;
 
         if ( _Error )
-            *_Error = [ [ error copy ] autorelease ];
+            *_Error = [ error copy ];
         }
 
     // If everything is okay, successful operation.

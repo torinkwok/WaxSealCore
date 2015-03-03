@@ -298,7 +298,7 @@
         SecKeychainItemFreeContent( &attrList, NULL );
 
     if ( _Error && error )
-        *_Error = [ [ error copy ] autorelease ];
+        *_Error = [ error copy ];
 
     return attribute;
     }

@@ -59,7 +59,7 @@
     if ( error )
         {
         if ( _Error )
-            *_Error = [ [ error copy ] autorelease ];
+            *_Error = [ error copy ];
 
         return nil;
         }

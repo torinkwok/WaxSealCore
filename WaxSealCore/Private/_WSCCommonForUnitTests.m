@@ -217,7 +217,7 @@ WSCPassphraseItem* _WSC_www_waxsealcore_org_InternetKeychainItem( NSError** _Err
                                                            passphrase: @"waxsealcore"
                                                                 error: &error ] autodelete ];
     if ( _Error )
-        *_Error = [ [ error copy ] autorelease ];
+        *_Error = [ error copy ];
 
     return www_waxsealcore_org;
     }
@@ -233,7 +233,7 @@ WSCPassphraseItem* _WSC_WaxSealCoreTests_ApplicationKeychainItem( NSError** _Err
                                                                passphrase: @"waxsealcore"
                                                                     error: &error ] autodelete ];
     if ( _Error )
-        *_Error = [ [ error copy ] autorelease ];
+        *_Error = [ error copy ];
 
     return applicationPassphrase_testCase0;
     }

@@ -347,7 +347,7 @@ WSCKeychain static* s_system = nil;
         }
     else
         if ( _Error )
-            *_Error = [ [ error copy ] autorelease ];
+            *_Error = [ error copy ];
 
     return nil;
     }
@@ -399,7 +399,7 @@ WSCKeychain static* s_system = nil;
         }
     else
         if ( _Error )
-            *_Error = [ [ error copy ] autorelease ];
+            *_Error = [ error copy ];
 
     return nil;
     }
@@ -751,7 +751,7 @@ WSCKeychain static* s_system = nil;
     if ( error )
         {
         if ( _Error )
-            *_Error = [ [ error copy ] autorelease ];
+            *_Error = [ error copy ];
 
         return nil;
         }
