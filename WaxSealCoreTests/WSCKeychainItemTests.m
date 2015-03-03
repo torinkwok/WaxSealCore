@@ -132,8 +132,11 @@ NSString* _WSCPassphrases[] =
                                                              passphrase: @"waxsealcore"
                                                                   error: &error ];
     XCTAssertFalse( applicationPassphrase_testCase0.isInvisible );
+    XCTAssertFalse( applicationPassphrase_testCase0.isNegative );
     applicationPassphrase_testCase0.isInvisible = YES;
+    applicationPassphrase_testCase0.isNegative = YES;
     XCTAssertTrue( applicationPassphrase_testCase0.isInvisible );
+    XCTAssertTrue( applicationPassphrase_testCase0.isNegative );
 
     [ applicationPassphrase_testCase0.keychain deleteKeychainItem: applicationPassphrase_testCase0 error: nil ];
 
@@ -148,25 +151,31 @@ NSString* _WSCPassphrases[] =
                                                          passphrase: @"waxsealcore"
                                                               error: &error ];
     XCTAssertFalse( internetPassphrase_testCase1.isInvisible );
+    XCTAssertFalse( internetPassphrase_testCase1.isNegative );
     internetPassphrase_testCase1.isInvisible = YES;
+    [ internetPassphrase_testCase1 setNegative: YES ];
     XCTAssertTrue( internetPassphrase_testCase1.isInvisible );
+    XCTAssertTrue( internetPassphrase_testCase1.isNegative );
 
     // Search for it
     internetPassphrase_testCase1 = ( WSCPassphraseItem* )[ [ WSCKeychain login ]
         findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"www.waxsealcore.org"
                                                         , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPS )
                                                         , WSCKeychainItemAttributeInvisible : @YES
+                                                        , WSCKeychainItemAttributeNegative : @YES
                                                         }
                                             itemClass: WSCKeychainItemClassInternetPassphraseItem
                                                 error: &error ];
     XCTAssertNotNil( internetPassphrase_testCase1 );
 
     [ internetPassphrase_testCase1 setInvisible: NO ];
+    [ internetPassphrase_testCase1 setNegative: NO ];
 
     internetPassphrase_testCase1 = ( WSCPassphraseItem* )[ [ WSCKeychain login ]
         findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"www.waxsealcore.org"
                                                         , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPS )
                                                         , WSCKeychainItemAttributeInvisible : @YES
+                                                        , WSCKeychainItemAttributeNegative : @YES
                                                         }
                                             itemClass: WSCKeychainItemClassInternetPassphraseItem
                                                 error: &error ];
@@ -176,6 +185,7 @@ NSString* _WSCPassphrases[] =
         findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"www.waxsealcore.org"
                                                         , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPS )
                                                         , WSCKeychainItemAttributeInvisible : @NO
+                                                        , WSCKeychainItemAttributeNegative : @NO
                                                         }
                                             itemClass: WSCKeychainItemClassInternetPassphraseItem
                                                 error: &error ];

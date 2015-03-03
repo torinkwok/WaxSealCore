@@ -45,6 +45,7 @@
 @dynamic kindDescription;
 @dynamic passphrase;
 @dynamic isInvisible;
+@dynamic isNegative;
 
 @dynamic URL;
 @dynamic hostName;
@@ -167,6 +168,18 @@
 - ( void ) setInvisible: ( BOOL )_IsInvisible
     {
     [ self p_modifyAttribute: kSecInvisibleItemAttr withNewValue: ( id )_IsInvisible ];
+    }
+
+/* `BOOL` value that indicates whether there is a valid password associated with this passphrase item.
+ */
+- ( BOOL ) isNegative
+    {
+    return ( BOOL )[ self p_extractAttributeWithCheckingParameter: kSecNegativeItemAttr ];
+    }
+
+- ( void ) setNegative: ( BOOL )_IsNegative
+    {
+    [ self p_modifyAttribute: kSecNegativeItemAttr withNewValue: ( id )_IsNegative ];
     }
 
 /* The URL for the an Internet passphrase represented by receiver. */
