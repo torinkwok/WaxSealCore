@@ -139,6 +139,12 @@
   */
 @property ( copy, readwrite ) NSString* serviceName;
 
+/** The `NSData` object that contains a user-defined attribute.
+
+  @warning This attribute is unique to **application** passphrase item.
+  */
+@property ( retain, readwrite ) NSData* userDefinedData;
+
 @end // WSCPassphraseItem class
 
 //////////////////////////////////////////////////////////////////////////////

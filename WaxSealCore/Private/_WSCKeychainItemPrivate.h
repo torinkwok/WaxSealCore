@@ -85,6 +85,10 @@
 - ( SecKeychainAttribute ) p_attrForUInt32: ( UInt32 )_UInt32Value
                                    forAttr: ( SecItemAttr )_Attr;
 
+// Construct SecKeychainAttribute struct with Cocoa Data.
+- ( SecKeychainAttribute ) p_attrForData: ( NSData* )_CocoaData
+                                 forAttr: ( SecItemAttr )_Attr;
+
 // Objective-C wrapper of SecKeychainItemCopyAccess() function in Keychain Services
 // Use for copying the access of the protected keychain item represented by receiver.
 - ( SecAccessRef ) p_secCurrentAccess: ( NSError** )_Error;

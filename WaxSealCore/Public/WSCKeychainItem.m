@@ -218,9 +218,7 @@
 
     if ( !error )
         attribute = [ self p_extractAttribute: _AttributeTag error: &error ];
-
-    if ( error )
-        _WSCPrintNSErrorForLog( error );
+    _WSCPrintNSErrorForLog( error );
 
     return attribute;
     }
@@ -243,15 +241,11 @@
                                                   , NULL
                                                   ) ) == errSecSuccess )
         {
-        BOOL supportsAttr = NO;
-
         // Get the only attr struct.
         SecKeychainAttribute attrStruct = attrList.attr[ 0 ];
 
         if ( attrStruct.tag == _AttrbuteTag )
             {
-            supportsAttr = YES;
-
             // TODO: Waiting for the new attribute
             switch ( _AttrbuteTag )
                 {
@@ -275,22 +269,29 @@
                     // Ignore the warning, cast the UInt32 to id explicitly.
                     attribute = ( id )[ self p_extractUInt32FromSecAttrStruct: attrStruct error: &error ];
                     } break;
-                }
-            }
 
-        if ( !supportsAttr )
-            {
-            WSCKeychainItemClass classOfReceiver = [ self p_itemClass: nil ];
-            error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                         code: ( classOfReceiver == WSCKeychainItemClassApplicationPassphraseItem )
-                                                    ? WSCKeychainItemAttributeIsUniqueToInternetPassphraseError
-                                                    : WSCKeychainItemAttributeIsUniqueToApplicationPassphraseError
-                                     userInfo: nil ];
+                case kSecGenericItemAttr:
+                    {
+                    attribute = [ self p_extractDataFromSecAttrStruct: attrStruct error: &error ];
+                    } break;
+                }
             }
         }
     else
+        {
         // If we failed to retrieves the attributes.
         _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+
+        if ( error && [ error.domain isEqualToString: NSOSStatusErrorDomain ] && error.code == errSecNoSuchAttr )
+            {
+            WSCKeychainItemClass receiverClass = [ self p_itemClass: nil ];
+            error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                         code: ( receiverClass == WSCKeychainItemClassApplicationPassphraseItem )
+                                                    ? WSCKeychainItemAttributeIsUniqueToInternetPassphraseError
+                                                    : WSCKeychainItemAttributeIsUniqueToApplicationPassphraseError
+                                     userInfo: @{ NSUnderlyingErrorKey : error } ];
+            }
+        }
 
     if ( attrList.attr->data )
         SecKeychainItemFreeContent( &attrList, NULL );
@@ -358,7 +359,7 @@
     {
     NSDate* dateWithCorrectTimeZone = nil;
 
-    // The _SecKeychainAttr must be a creation date attribute.
+    // The _SecKeychainAttr must be a valid attribute.
     if ( _SecKeychainAttrStruct.tag == kSecCreationDateItemAttr
             || _SecKeychainAttrStruct.tag == kSecModDateItemAttr )
         {
@@ -408,6 +409,22 @@
     return dateWithCorrectTimeZone;
     }
 
+- ( NSData* ) p_extractDataFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
+                                       error: ( NSError** )_Error
+    {
+    NSData* cocoaData = nil;
+
+    // The _SecKeychainAttr must be a valid attribute.
+    if ( _SecKeychainAttrStruct.tag == kSecGenericItemAttr )
+        cocoaData = [ NSData dataWithBytes: _SecKeychainAttrStruct.data length: _SecKeychainAttrStruct.length ];
+    else
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                           code: WSCCommonInvalidParametersError
+                                       userInfo: nil ];
+    return cocoaData;
+    }
+
 - ( WSCKeychain* ) p_keychainWithoutCheckingValidity: ( NSError** )_Error
     {
     SecKeychainRef secKeychainResidingIn = NULL;
@@ -451,22 +468,23 @@
             case kSecLabelItemAttr:         case kSecCommentItemAttr:   case kSecAccountItemAttr:
             case kSecDescriptionItemAttr:   case kSecServiceItemAttr:   case kSecServerItemAttr:
             case kSecPathItemAttr:
-                newAttr = [ self p_attrForStringValue: ( NSString* )_NewValue
-                                              forAttr: _AttributeTag ];
+                newAttr = [ self p_attrForStringValue: ( NSString* )_NewValue forAttr: _AttributeTag ];
                 break;
 
             case kSecAuthenticationTypeItemAttr:    case kSecProtocolItemAttr:  case kSecPortItemAttr:
-                newAttr = [ self p_attrForUInt32: ( UInt32 )_NewValue
-                                         forAttr: _AttributeTag ];
+                newAttr = [ self p_attrForUInt32: ( UInt32 )_NewValue forAttr: _AttributeTag ];
+                break;
+
+            case kSecGenericItemAttr:
+                newAttr = [ self p_attrForData: ( NSData* )_NewValue forAttr: _AttributeTag ];
                 break;
             }
 
         SecKeychainAttributeList newAttributeList = { 1 /* Only one attr */, &newAttr };
-        resultCode = SecKeychainItemModifyAttributesAndData( self.secKeychainItem
-                                                           , &newAttributeList
-                                                           , 0, NULL
-                                                           );
-        if ( resultCode != errSecSuccess )
+        if ( ( resultCode = SecKeychainItemModifyAttributesAndData( self.secKeychainItem
+                                                                  , &newAttributeList
+                                                                  , 0, NULL
+                                                                  ) ) != errSecSuccess )
             {
             _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
 
@@ -482,8 +500,7 @@
             }
         }
 
-    if ( error )
-        _WSCPrintNSErrorForLog( error );
+    _WSCPrintNSErrorForLog( error );
     }
 
 // Construct SecKeychainAttribute struct with the NSDate object.
@@ -551,6 +568,18 @@
     return attrStruct;
     }
 
+// Construct SecKeychainAttribute struct with Cocoa Data.
+- ( SecKeychainAttribute ) p_attrForData: ( NSData* )_CocoaData
+                                 forAttr: ( SecItemAttr )_Attr
+    {
+    void* dataBuffer = malloc( _CocoaData.length );
+    [ _CocoaData getBytes: dataBuffer length: _CocoaData.length ];
+
+    SecKeychainAttribute attrStruct = { _Attr, ( UInt32 )_CocoaData.length, dataBuffer };
+
+    return attrStruct;
+    }
+
 /* Objective-C wrapper of SecKeychainItemCopyAccess() function in Keychain Services
  * Use for copying the access of the protected keychain item represented by receiver.
  */
@@ -577,6 +606,7 @@
 
 @end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes
 
+// Common Attributes
 NSString* const WSCKeychainItemAttributeCreationDate                = @"'cdat'";
 NSString* const WSCKeychainItemAttributeModificationDate            = @"'mdat'";
 NSString* const WSCKeychainItemAttributeKindDescription             = @"'desc'";
@@ -585,13 +615,17 @@ NSString* const WSCKeychainItemAttributeLabel                       = @"'labl'";
 NSString* const WSCKeychainItemAttributeInvisible                   = @"'invi'";
 NSString* const WSCKeychainItemAttributeNegative                    = @"'nega'";
 NSString* const WSCKeychainItemAttributeAccount                     = @"'acct'";
-NSString* const WSCKeychainItemAttributeServiceName                 = @"'svce'";
-NSString* const WSCKeychainItemAttributeUserDefinedDataAttribute    = @"'gena'";
+
+// Unique to the Internet Passphrase Items
 NSString* const WSCKeychainItemAttributeHostName                    = @"'srvr'";
 NSString* const WSCKeychainItemAttributeAuthenticationType          = @"'atyp'";
 NSString* const WSCKeychainItemAttributePort                        = @"'port'";
 NSString* const WSCKeychainItemAttributeRelativePath                = @"'path'";
 NSString* const WSCKeychainItemAttributeProtocol                    = @"'ptcl'";
+
+// Unique to the Application Passphrase Items
+NSString* const WSCKeychainItemAttributeServiceName                 = @"'svce'";
+NSString* const WSCKeychainItemAttributeUserDefinedDataAttribute    = @"'gena'";
 
 //////////////////////////////////////////////////////////////////////////////
 

@@ -119,6 +119,62 @@ NSString* _WSCPassphrases[] =
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+- ( void ) testUserDefinedData
+    {
+    NSError* error = nil;
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 0: for Application passphrase item
+    // -------------------------------------------------------------------------------
+    WSCPassphraseItem* applicationPassphrase_testCase0 =
+        [ [ WSCKeychain login ] addApplicationPassphraseWithServiceName: @"WaxSealCore Unit Tests"
+                                                            accountName: @"NSTongG"
+                                                             passphrase: @"waxsealcore"
+                                                                  error: &error ];
+    XCTAssertNotNil( applicationPassphrase_testCase0 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    NSData* userDefinedData_testCase0 = nil;
+
+    userDefinedData_testCase0 = [ NSData dataWithContentsOfURL: applicationPassphrase_testCase0.keychain.URL ];
+    applicationPassphrase_testCase0.userDefinedData = userDefinedData_testCase0;
+    XCTAssertNotNil( applicationPassphrase_testCase0.userDefinedData );
+    XCTAssertEqualObjects( userDefinedData_testCase0, applicationPassphrase_testCase0.userDefinedData );
+
+    userDefinedData_testCase0 = [ @"waxsealcore" dataUsingEncoding: NSUTF8StringEncoding ];
+    applicationPassphrase_testCase0.userDefinedData = userDefinedData_testCase0;
+    XCTAssertNotNil( applicationPassphrase_testCase0.userDefinedData );
+    XCTAssertEqualObjects( userDefinedData_testCase0, applicationPassphrase_testCase0.userDefinedData );
+    XCTAssertEqualObjects( @"waxsealcore", [ [ [ NSString alloc ] initWithData: applicationPassphrase_testCase0.userDefinedData encoding: NSUTF8StringEncoding ] autorelease ] );
+
+    [ applicationPassphrase_testCase0.keychain deleteKeychainItem: applicationPassphrase_testCase0 error: nil ];
+    applicationPassphrase_testCase0.userDefinedData = userDefinedData_testCase0;
+    XCTAssertNil( applicationPassphrase_testCase0.userDefinedData );
+
+    // -------------------------------------------------------------------------------
+    // Negative Test Case 0: for Internet passphrase item
+    // -------------------------------------------------------------------------------
+    WSCPassphraseItem* internetPassphrase_negativeTestCase0 =
+        [ [ WSCKeychain login ] addInternetPassphraseWithServerName: @"www.waxsealcore.org"
+                                                       URLRelativePath: @"negative/test/case/1"
+                                                           accountName: @"NSTongG"
+                                                              protocol: WSCInternetProtocolTypeHTTPS
+                                                            passphrase: @"waxsealcore"
+                                                                 error: &error ];
+    XCTAssertNotNil( internetPassphrase_negativeTestCase0 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    NSData* userDefinedData_negativeTestCase0 = nil;
+
+    userDefinedData_negativeTestCase0 = [ NSData dataWithContentsOfURL: internetPassphrase_negativeTestCase0.keychain.URL ];
+    internetPassphrase_negativeTestCase0.userDefinedData = userDefinedData_negativeTestCase0;
+    XCTAssertNil( internetPassphrase_negativeTestCase0.userDefinedData );
+
+    [ internetPassphrase_negativeTestCase0.keychain deleteKeychainItem: internetPassphrase_negativeTestCase0 error: nil ];
+    }
+
 - ( void ) testLabelProperty
     {
     NSError* error = nil;
