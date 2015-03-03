@@ -119,7 +119,43 @@ NSString* _WSCPassphrases[] =
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-- ( void ) testUserDefinedData
+- ( void ) testInvisibleProperty
+    {
+    NSError* error = nil;
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 0: for Application passphrase item
+    // -------------------------------------------------------------------------------
+    WSCPassphraseItem* applicationPassphrase_testCase0 =
+        [ [ WSCKeychain login ] addApplicationPassphraseWithServiceName: @"WaxSealCore Unit Tests"
+                                                            accountName: @"NSTongG"
+                                                             passphrase: @"waxsealcore"
+                                                                  error: &error ];
+    XCTAssertFalse( applicationPassphrase_testCase0.isInvisible );
+    applicationPassphrase_testCase0.isInvisible = YES;
+    XCTAssertTrue( applicationPassphrase_testCase0.isInvisible );
+
+    [ applicationPassphrase_testCase0.keychain deleteKeychainItem: applicationPassphrase_testCase0 error: nil ];
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 1: for Internet passphrase item
+    // -------------------------------------------------------------------------------
+    WSCPassphraseItem* internetPassphrase_testCase0 =
+        [ [ WSCKeychain login ] addInternetPassphraseWithServerName: @"www.waxsealcore.org"
+                                                    URLRelativePath: @"/positive/test/case/1"
+                                                        accountName: @"NSTongG"
+                                                           protocol: WSCInternetProtocolTypeHTTPS
+                                                         passphrase: @"waxsealcore"
+                                                              error: &error ];
+
+    XCTAssertFalse( internetPassphrase_testCase0.isInvisible );
+    internetPassphrase_testCase0.isInvisible = YES;
+    XCTAssertTrue( internetPassphrase_testCase0.isInvisible );
+
+    [ internetPassphrase_testCase0.keychain deleteKeychainItem: internetPassphrase_testCase0 error: nil ];
+    }
+
+- ( void ) testUserDefinedDataProperty
     {
     NSError* error = nil;
 

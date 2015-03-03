@@ -78,6 +78,10 @@
   */
 @property ( retain, readwrite ) NSData* passphrase;
 
+/** `BOOL` value that indivates whether this passphrase item is invisible (that is, should not be displayed).
+  */
+@property ( assign, readwrite, setter = setInvisible: ) BOOL isInvisible;
+
 #pragma mark Unique to Internet Passphrase
 /** @name Unique to Internet Passphrase */
 

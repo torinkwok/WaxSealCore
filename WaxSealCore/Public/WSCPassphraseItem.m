@@ -44,6 +44,7 @@
 @dynamic comment;
 @dynamic kindDescription;
 @dynamic passphrase;
+@dynamic isInvisible;
 
 @dynamic URL;
 @dynamic hostName;
@@ -156,6 +157,18 @@
                                  userInfo: nil ];
     }
 
+/* `BOOL` value that indivates whether this passphrase item is invisible (that is, should not be displayed).
+ */
+- ( BOOL ) isInvisible
+    {
+    return ( BOOL )[ self p_extractAttributeWithCheckingParameter: kSecInvisibleItemAttr ];
+    }
+
+- ( void ) setInvisible: ( BOOL )_IsInvisible
+    {
+    [ self p_modifyAttribute: kSecInvisibleItemAttr withNewValue: ( id )_IsInvisible ];
+    }
+
 /* The URL for the an Internet passphrase represented by receiver. */
 - ( NSURL* ) URL
     {
@@ -217,7 +230,7 @@
  */
 - ( WSCInternetAuthenticationType ) authenticationType
     {
-    return ( WSCInternetAuthenticationType )( [ self p_extractAttributeWithCheckingParameter: kSecAuthenticationTypeItemAttr ] );
+    return ( WSCInternetAuthenticationType )[ self p_extractAttributeWithCheckingParameter: kSecAuthenticationTypeItemAttr ];
     }
 
 - ( void ) setAuthenticationType: ( WSCInternetAuthenticationType )_AuthType
