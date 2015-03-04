@@ -224,7 +224,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
     if ( error )
         {
         if ( _Error )
-            *_Error = [ error copy ];
+            *_Error = [ [ error copy ] autorelease ];
 
         return nil;
         }
@@ -468,7 +468,7 @@ NSString static* const _WSCPermittedOperationPromptSelector = @"Prompt Selector"
         }
 
     if ( error && _Error )
-        *_Error = [ error copy ];
+        *_Error = [ [ error copy ] autorelease ];
 
     if ( secCurrentAccess )
         CFRelease( secCurrentAccess );

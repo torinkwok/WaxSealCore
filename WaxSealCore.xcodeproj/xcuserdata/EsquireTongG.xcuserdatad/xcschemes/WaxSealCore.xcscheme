@@ -41,6 +41,12 @@
                <Test
                   Identifier = "WSCCertificateItemTests">
                </Test>
+               <Test
+                  Identifier = "WSCKeychainTests/testForWiki_createKeychain">
+               </Test>
+               <Test
+                  Identifier = "WSCKeychainTests/testLockOnSleep">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>
