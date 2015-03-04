@@ -213,6 +213,11 @@ else
     NSLog( @"I'm so sorry!" );
 ```
 
+### What's New in This Version (v1.01)
+* Supports `isInvisible` property for passphrase items
+* Supports `isNegative` property for passphrase items
+* Bug fixes
+
 ### Documentation
 
 * [Read online](https://tongg.github.io/WaxSealCore-Doc)
