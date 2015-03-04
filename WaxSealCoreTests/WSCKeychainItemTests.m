@@ -123,6 +123,9 @@ NSString* _WSCPassphrases[] =
     {
     NSError* error = nil;
 
+    _WSCFillErrorParamWithSecErrorCode( errSecUnimplemented, &error );
+    NSLog( @"%@", error );
+
     // -------------------------------------------------------------------------------
     // Positive Test Case 0: for Application passphrase item
     // -------------------------------------------------------------------------------

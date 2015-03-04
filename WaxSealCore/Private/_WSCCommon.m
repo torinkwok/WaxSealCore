@@ -42,9 +42,10 @@ inline void _WSCFillErrorParamWithSecErrorCode( OSStatus _ResultCode, NSError** 
     if ( _ErrorParam )
         {
         CFStringRef cfErrorDesc = SecCopyErrorMessageString( _ResultCode, NULL );
-        *_ErrorParam = [ [ NSError errorWithDomain: NSOSStatusErrorDomain
-                                              code: _ResultCode
-                                          userInfo: @{ NSLocalizedDescriptionKey : [ ( __bridge NSString* )cfErrorDesc copy ] } ] copy ];
+        *_ErrorParam = [ [ [ NSError errorWithDomain: NSOSStatusErrorDomain
+                                                code: _ResultCode
+                                            userInfo: @{ NSLocalizedDescriptionKey : [ [ ( __bridge NSString* )cfErrorDesc copy ] autorelease ] }
+                                                    ] copy ] autorelease ];
         CFRelease( cfErrorDesc );
         }
     }

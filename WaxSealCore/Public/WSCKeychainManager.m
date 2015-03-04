@@ -673,7 +673,7 @@ WSCKeychainManager static* s_defaultManager = nil;
 
     if ( !shouldProceed )
         if ( _CopiedError )
-            *_CopiedError = [ _Error copy ];
+            *_CopiedError = [ [ _Error copy ] autorelease ];
 
     return shouldProceed;
     }
