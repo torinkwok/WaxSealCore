@@ -585,7 +585,6 @@
     olderDefault = [ [ WSCKeychainManager defaultManager ] setDefaultKeychain: [ WSCKeychain login ]
                                                                         error: &error ];
     XCTAssertNotNil( olderDefault );
-    XCTAssertEqualObjects( olderDefault, [ WSCKeychain login ] );
     XCTAssertEqualObjects( [ [ WSCKeychainManager defaultManager ] currentDefaultKeychain: nil ]
                          , [ WSCKeychain login ]
                          );
