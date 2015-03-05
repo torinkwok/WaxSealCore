@@ -75,7 +75,6 @@ WSCInternetProtocolType _WSCProtocols[] =
     , WSCInternetProtocolTypePOP3S
     , WSCInternetProtocolTypeCVSpserver
     , WSCInternetProtocolTypeSVN
-    , WSCInternetProtocolTypeAny
     };
 
 NSString* _WSCHostsForPositiveTests[] =
@@ -661,31 +660,46 @@ NSString* _WSCPassphrases[] =
     NSError* error = nil;
     size_t size = sizeof( _WSCProtocols ) / sizeof( _WSCProtocols[ 0 ] );
 
+    WSCPassphraseItem* internetPassphraseItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
+    NSString* schemeString = nil;
+
     // -------------------------------------------------------------------------------
     // Positive Test Case 0
     // -------------------------------------------------------------------------------
-    for ( size_t _Index = 0; _Index < size; _Index++ )
-        {
-        NSLog( @"Loop #0: %lu", _Index );
-        @autoreleasepool
-            {
-            WSCPassphraseItem* internetPassphraseItem = _WSC_www_waxsealcore_org_InternetKeychainItem( &error );
-            XCTAssertNil( error );
-            _WSCPrintNSErrorForUnitTest( error );
+    internetPassphraseItem.protocol = WSCInternetProtocolTypeHTTPS;
+    schemeString = [ internetPassphraseItem.URL scheme ];
+    NSLog( @"Scheme String: %@", schemeString );
 
-            internetPassphraseItem.protocol = _WSCProtocols[ _Index ];
+    XCTAssertEqual( internetPassphraseItem.protocol, WSCInternetProtocolTypeHTTPS );
+    XCTAssertEqualObjects( _WSCSchemeStringForProtocol( internetPassphraseItem.protocol )
+                         , _WSCSchemeStringForProtocol( WSCInternetProtocolTypeHTTPS ) );
+    XCTAssertEqualObjects( _WSCSchemeStringForProtocol( internetPassphraseItem.protocol ), schemeString );
 
-            NSString* schemeString = [ internetPassphraseItem.URL scheme ];
-            NSLog( @"Scheme String #%lu: %@", _Index, schemeString );
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 1
+    // -------------------------------------------------------------------------------
+    internetPassphraseItem.protocol = WSCInternetProtocolTypeHTTPSProxy;
+    schemeString = [ internetPassphraseItem.URL scheme ];
+    NSLog( @"Scheme String: %@", schemeString );
 
-            XCTAssertEqual( internetPassphraseItem.protocol, _WSCProtocols[ _Index ] );
-            XCTAssertEqualObjects( _WSCSchemeStringForProtocol( internetPassphraseItem.protocol )
-                                 , _WSCSchemeStringForProtocol( _WSCProtocols[ _Index ] ) );
-            XCTAssertEqualObjects( _WSCSchemeStringForProtocol( internetPassphraseItem.protocol ), schemeString );
+    XCTAssertEqual( internetPassphraseItem.protocol, WSCInternetProtocolTypeHTTPSProxy );
+    XCTAssertEqualObjects( _WSCSchemeStringForProtocol( internetPassphraseItem.protocol )
+                         , _WSCSchemeStringForProtocol( WSCInternetProtocolTypeHTTPSProxy ) );
+    XCTAssertEqualObjects( _WSCSchemeStringForProtocol( internetPassphraseItem.protocol ), schemeString );
 
-            SecKeychainItemDelete( internetPassphraseItem.secKeychainItem );
-            }
-        }
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 2
+    // -------------------------------------------------------------------------------
+    internetPassphraseItem.protocol = WSCInternetProtocolTypeHTTP;
+    schemeString = [ internetPassphraseItem.URL scheme ];
+    NSLog( @"Scheme String: %@", schemeString );
+
+    XCTAssertEqual( internetPassphraseItem.protocol, WSCInternetProtocolTypeHTTP );
+    XCTAssertEqualObjects( _WSCSchemeStringForProtocol( internetPassphraseItem.protocol )
+                         , _WSCSchemeStringForProtocol( WSCInternetProtocolTypeHTTP ) );
+    XCTAssertEqualObjects( _WSCSchemeStringForProtocol( internetPassphraseItem.protocol ), schemeString );
+
+    [ internetPassphraseItem.keychain deleteKeychainItem: internetPassphraseItem error: nil ];
 
     // -------------------------------------------------------------------------------
     // Negative Test Case 0

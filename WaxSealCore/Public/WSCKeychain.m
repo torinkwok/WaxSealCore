@@ -716,9 +716,9 @@ WSCKeychain static* s_system = nil;
         samples = self->p_uniqueToAppPassphraseItemAttributesSearchKeys;
     // TODO: Waiting for the other item class, Certificates, Keys, etc.
 
-    BOOL doesBlong = [ samples containsObject: _SearchKey ];
+    BOOL doesBelongTo = [ samples containsObject: _SearchKey ];
 
-    if ( !doesBlong )
+    if ( !doesBelongTo )
         {
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
@@ -729,44 +729,7 @@ WSCKeychain static* s_system = nil;
                                                            "which does not belong to the given item class." } ];
         }
 
-    return doesBlong;
-    }
-
-CFTypeRef _WSCModernClassFromOriginal( WSCKeychainItemClass _ItemClass )
-    {
-    CFTypeRef modernClass = NULL;
-
-    switch ( _ItemClass )
-        {
-        case WSCKeychainItemClassInternetPassphraseItem:
-            modernClass = kSecClassInternetPassword;
-            break;
-
-        case WSCKeychainItemClassApplicationPassphraseItem:
-            modernClass = kSecClassGenericPassword;
-            break;
-
-        case WSCKeychainItemClassCertificateItem:
-            modernClass = kSecClassCertificate;
-            break;
-
-//        case WSCKeychainItemClassPublicKeyItem:
-//        case WSCKeychainItemClassPrivateKeyItem:
-//        case WSCKeychainItemClassSymmetricKeyItem:
-
-        default: ;
-        }
-
-    return modernClass;
-    }
-
-CFTypeRef _WSCModernTypeStringFromOriginal( FourCharCode _AuthType )
-    {
-    NSMutableString* typeString = [ [ NSFileTypeForHFSTypeCode( _AuthType ) mutableCopy ] autorelease ];
-    [ typeString deleteCharactersInRange: NSMakeRange( 0, 1 ) ];
-    [ typeString deleteCharactersInRange: NSMakeRange( typeString.length - 1, 1 ) ];
-
-    return ( __bridge CFTypeRef )typeString;
+    return doesBelongTo;
     }
 
 - ( NSArray* ) p_findKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
@@ -782,60 +745,71 @@ CFTypeRef _WSCModernTypeStringFromOriginal( FourCharCode _AuthType )
         return matchedItems;
         }
 
-//    for ( NSString* _Key in _SearchCriteriaDict )
-//        if ( ![ self p_doesItemAttributeSearchKey: _Key blongToItemClass: _ItemClass error: _Error ] )
-//            return matchedItems;
+    for ( NSString* _Key in _SearchCriteriaDict )
+        if ( ![ self p_doesItemAttributeSearchKey: _Key blongToItemClass: _ItemClass error: _Error ] )
+            return matchedItems;
 
-    matchedItems = [ NSMutableArray array ];
-
-    OSStatus resultCode = errSecSuccess;
-    NSMutableDictionary* queryDictionary =
-        [ NSMutableDictionary dictionaryWithObjectsAndKeys:
-              ( __bridge id )_WSCModernClassFromOriginal( _ItemClass ), ( __bridge id )kSecClass
-            , ( __bridge id )kSecMatchLimitAll, ( __bridge id )kSecMatchLimit
-            , @[ ( __bridge id )self.secKeychain ], ( __bridge id )kSecMatchSearchList
-            , ( __bridge id )kCFBooleanTrue, ( __bridge id )kSecReturnRef
-            , nil ];
-
-    NSMutableDictionary* newSearchCriteriaDict = [ NSMutableDictionary dictionary ];
-    for ( NSString* _SearchKey in _SearchCriteriaDict )
+    if ( self.isValid )
         {
-        if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeAuthenticationType ]
-                || [ _SearchKey isEqualToString: WSCKeychainItemAttributeProtocol ] )
+        matchedItems = [ NSMutableArray array ];
+
+        OSStatus resultCode = errSecSuccess;
+        NSMutableDictionary* queryDictionary =
+            [ NSMutableDictionary dictionaryWithObjectsAndKeys:
+                  ( __bridge id )_WSCModernClassFromOriginal( _ItemClass ), ( __bridge id )kSecClass
+                , ( __bridge id )kSecMatchLimitAll, ( __bridge id )kSecMatchLimit
+                , @[ ( __bridge id )self.secKeychain ], ( __bridge id )kSecMatchSearchList
+                , ( __bridge id )kCFBooleanTrue, ( __bridge id )kSecReturnRef
+                , nil ];
+
+        NSMutableDictionary* newSearchCriteriaDict = [ NSMutableDictionary dictionary ];
+        for ( NSString* _SearchKey in _SearchCriteriaDict )
             {
-            FourCharCode searchValue = 0;
-            [ _SearchCriteriaDict[ _SearchKey ] getValue: &searchValue ];
+            if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeAuthenticationType ]
+                    || [ _SearchKey isEqualToString: WSCKeychainItemAttributeProtocol ] )
+                {
+                FourCharCode searchValue = 0;
+                [ _SearchCriteriaDict[ _SearchKey ] getValue: &searchValue ];
 
-            NSString* newSearchValue = _WSCModernTypeStringFromOriginal( searchValue );
-            newSearchCriteriaDict[ _SearchKey ] = newSearchValue;
-            }
-        else
-            newSearchCriteriaDict[ _SearchKey ] = _SearchCriteriaDict[ _SearchKey ];
-        }
-
-    [ queryDictionary addEntriesFromDictionary: newSearchCriteriaDict ];
-
-    CFTypeRef secSearchResult = NULL;
-    if ( ( resultCode = SecItemCopyMatching( ( __bridge CFDictionaryRef )queryDictionary
-                                           , &secSearchResult ) ) == errSecSuccess )
-        {
-        for ( id _MatchedItem in ( __bridge NSArray* )secSearchResult )
-            {
-            Class wrapperClass = nil;
-            SEL initSelector = @selector( keychainItemWithSecKeychainItemRef: );
-
-            SecItemClass itemClass = _WSCSecKeychainItemClass( ( __bridge SecKeychainItemRef )_MatchedItem );
-            if ( itemClass == kSecInternetPasswordItemClass || itemClass == kSecGenericPasswordItemClass )
-                wrapperClass = [ WSCPassphraseItem class ];
-            // TODO: Waiting for the other item class, Certificates, Keys, etc.
-            NSAssert( wrapperClass, @"Failed to determine the concrete Class of new object" );
-
-            id keychainItem = objc_msgSend( wrapperClass, initSelector, ( __bridge SecKeychainRef )_MatchedItem );
-            [ matchedItems addObject: keychainItem ];
+                if ( searchValue )
+                    {
+                    NSString* newSearchValue = _WSCModernTypeStringFromOriginal( searchValue );
+                    newSearchCriteriaDict[ _SearchKey ] = newSearchValue;
+                    }
+                }
+            else
+                newSearchCriteriaDict[ _SearchKey ] = _SearchCriteriaDict[ _SearchKey ];
             }
 
-        CFRelease( secSearchResult );
+        [ queryDictionary addEntriesFromDictionary: newSearchCriteriaDict ];
+
+        CFTypeRef secSearchResult = NULL;
+        if ( ( resultCode = SecItemCopyMatching( ( __bridge CFDictionaryRef )queryDictionary
+                                               , &secSearchResult ) ) == errSecSuccess )
+            {
+            for ( id _MatchedItem in ( __bridge NSArray* )secSearchResult )
+                {
+                Class wrapperClass = nil;
+                SEL initSelector = @selector( keychainItemWithSecKeychainItemRef: );
+
+                SecItemClass itemClass = _WSCSecKeychainItemClass( ( __bridge SecKeychainItemRef )_MatchedItem );
+                if ( itemClass == kSecInternetPasswordItemClass || itemClass == kSecGenericPasswordItemClass )
+                    wrapperClass = [ WSCPassphraseItem class ];
+                // TODO: Waiting for the other item class, Certificates, Keys, etc.
+                NSAssert( wrapperClass, @"Failed to determine the concrete Class of new object" );
+
+                id keychainItem = objc_msgSend( wrapperClass, initSelector, ( __bridge SecKeychainRef )_MatchedItem );
+                [ matchedItems addObject: keychainItem ];
+                }
+
+            CFRelease( secSearchResult );
+            }
         }
+    else
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                           code: WSCKeychainIsInvalidError
+                                       userInfo: nil ];
 #if 0
     NSError* error = nil;
     NSArray* allItems = [ self p_allItemsConformsTheClass: _ItemClass error: &error ];

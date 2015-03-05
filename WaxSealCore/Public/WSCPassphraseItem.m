@@ -349,8 +349,8 @@
     {
     NSString* cocoaStringData = ( NSString* )[ self p_extractAttribute: _ItemAttr error: nil ];
 
-    if ( cocoaStringData )
-        _SearchCriteriaDict[ NSFileTypeForHFSTypeCode( _ItemAttr ) ] = cocoaStringData;
+    if ( cocoaStringData && cocoaStringData.length )
+        _SearchCriteriaDict[ _WSCModernTypeStringFromOriginal( _ItemAttr ) ] = cocoaStringData;
     }
 
 - ( void ) p_addSearchCriteriaWithUInt32Data: ( NSMutableDictionary* )_SearchCriteriaDict
@@ -361,7 +361,7 @@
     if ( UInt32Data != 0 )
         {
         NSNumber* cocoaUInt32Data = @( UInt32Data );
-        _SearchCriteriaDict[ NSFileTypeForHFSTypeCode( _ItemAttr ) ] = cocoaUInt32Data;
+        _SearchCriteriaDict[ _WSCModernTypeStringFromOriginal( _ItemAttr ) ] = cocoaUInt32Data;
         }
     }
 
@@ -373,7 +373,7 @@
     if ( fourCharCodeData != '\0\0\0\0' )
         {
         NSValue* cocoaValueData = WSCFourCharCodeValue( fourCharCodeData );
-        _SearchCriteriaDict[ NSFileTypeForHFSTypeCode( _ItemAttr ) ] = cocoaValueData;
+        _SearchCriteriaDict[ _WSCModernTypeStringFromOriginal( _ItemAttr ) ] = cocoaValueData;
         }
     }
 

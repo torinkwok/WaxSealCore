@@ -224,6 +224,43 @@ WSCPermittedOperationTag _WSCPermittedOperationMasksFromSecAuthorizations( NSArr
     return operationTag;
     }
 
+CFTypeRef _WSCModernClassFromOriginal( WSCKeychainItemClass _ItemClass )
+    {
+    CFTypeRef modernClass = NULL;
+
+    switch ( _ItemClass )
+        {
+        case WSCKeychainItemClassInternetPassphraseItem:
+            modernClass = kSecClassInternetPassword;
+            break;
+
+        case WSCKeychainItemClassApplicationPassphraseItem:
+            modernClass = kSecClassGenericPassword;
+            break;
+
+        case WSCKeychainItemClassCertificateItem:
+            modernClass = kSecClassCertificate;
+            break;
+
+        // TODO: Waiting for the other item class, Certificates, Keys, etc.
+        // case WSCKeychainItemClassPublicKeyItem:
+        // case WSCKeychainItemClassPrivateKeyItem:
+        // case WSCKeychainItemClassSymmetricKeyItem:
+        default: ;
+        }
+
+    return modernClass;
+    }
+
+NSString* _WSCModernTypeStringFromOriginal( FourCharCode _AuthType )
+    {
+    NSMutableString* typeString = [ [ NSFileTypeForHFSTypeCode( _AuthType ) mutableCopy ] autorelease ];
+    [ typeString deleteCharactersInRange: NSMakeRange( 0, 1 ) ];
+    [ typeString deleteCharactersInRange: NSMakeRange( typeString.length - 1, 1 ) ];
+
+    return ( __bridge CFTypeRef )typeString;
+    }
+
 SecItemClass _WSCSecKeychainItemClass( SecKeychainItemRef _SecKeychainItemRef )
     {
     OSStatus resultCode = errSecSuccess;
