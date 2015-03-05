@@ -97,6 +97,7 @@
 
 void _WSCFillErrorParamWithSecErrorCode( OSStatus _ResultCode, NSError** _ErrorParam );
 NSString* _WSCFourCharCode2NSString( FourCharCode _FourCharCodeValue );
+NSString* _WSCStringFromFourCharCode( FourCharCode _AuthType );
 NSString* _WSCSchemeStringForProtocol( WSCInternetProtocolType _Protocol );
 
 // Convert the given unsigned integer bit field containing any of the operation tag masks
@@ -108,7 +109,6 @@ NSArray* _WACSecAuthorizationsFromPermittedOperationMasks( WSCPermittedOperation
 WSCPermittedOperationTag _WSCPermittedOperationMasksFromSecAuthorizations( NSArray* _Authorizations );
 
 CFTypeRef _WSCModernClassFromOriginal( WSCKeychainItemClass _ItemClass );
-NSString* _WSCModernTypeStringFromOriginal( FourCharCode _AuthType );
 SecItemClass _WSCSecKeychainItemClass( SecKeychainItemRef _SecKeychainItemRef );
 
 //////////////////////////////////////////////////////////////////////////////

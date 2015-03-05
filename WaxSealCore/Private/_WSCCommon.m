@@ -74,6 +74,15 @@ inline NSString* _WSCFourCharCode2NSString( FourCharCode _FourCharCodeValue )
     return stringValue;
     }
 
+NSString* _WSCStringFromFourCharCode( FourCharCode _AuthType )
+    {
+    NSMutableString* typeString = [ [ NSFileTypeForHFSTypeCode( _AuthType ) mutableCopy ] autorelease ];
+    [ typeString deleteCharactersInRange: NSMakeRange( 0, 1 ) ];
+    [ typeString deleteCharactersInRange: NSMakeRange( typeString.length - 1, 1 ) ];
+
+    return ( __bridge CFTypeRef )typeString;
+    }
+
 NSString* _WSCSchemeStringForProtocol( WSCInternetProtocolType _Protocol )
     {
     switch ( _Protocol )
@@ -250,15 +259,6 @@ CFTypeRef _WSCModernClassFromOriginal( WSCKeychainItemClass _ItemClass )
         }
 
     return modernClass;
-    }
-
-NSString* _WSCModernTypeStringFromOriginal( FourCharCode _AuthType )
-    {
-    NSMutableString* typeString = [ [ NSFileTypeForHFSTypeCode( _AuthType ) mutableCopy ] autorelease ];
-    [ typeString deleteCharactersInRange: NSMakeRange( 0, 1 ) ];
-    [ typeString deleteCharactersInRange: NSMakeRange( typeString.length - 1, 1 ) ];
-
-    return ( __bridge CFTypeRef )typeString;
     }
 
 SecItemClass _WSCSecKeychainItemClass( SecKeychainItemRef _SecKeychainItemRef )
