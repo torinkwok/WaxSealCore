@@ -82,12 +82,11 @@
 
     CFTypeRef result = NULL;
     CFDictionaryRef queryCertificate = ( __bridge CFDictionaryRef )
-        @{ ( __bridge id )kSecClass                         : ( __bridge id )kSecClassInternetPassword
+        @{ ( __bridge id )kSecClass                         : ( __bridge id )kSecClassCertificate
          , ( __bridge id )kSecMatchLimit                    : ( __bridge id )kSecMatchLimitAll
          , ( __bridge id )kSecMatchSearchList               : ( __bridge NSArray* )searchList
-//         , ( __bridge id )kSecMatchTrustedOnly
-         , ( __bridge id )kSecAttrComment                   : @"IMDb Passphrase👹"
-//         , ( __bridge id )kSecMatchSubjectContains          : ( __bridge NSString* )CFSTR( "Mac Developer" )
+//         , ( __bridge id )kSecAttrComment                   : @"IMDb Passphrase👹"
+         , ( __bridge id )kSecMatchSubjectContains          : @"Mac Developer"
          , ( __bridge id )kSecMatchCaseInsensitive          : ( __bridge id )kCFBooleanTrue
          , ( __bridge id )kSecMatchDiacriticInsensitive     : ( __bridge id )kCFBooleanTrue
          , ( __bridge id )kSecMatchTrustedOnly              : ( __bridge id )kCFBooleanTrue
@@ -127,7 +126,7 @@
                     CFStringRef cfCommonName = NULL;
                     SecCertificateCopyCommonName( ( SecCertificateRef )( _Elem[ @"v_Ref" ] ), &cfCommonName );
                     NSLog( @"Common Name: %@", ( __bridge NSString* )cfCommonName );
-                    CFRelease( cfCommonName );
+//                    CFRelease( cfCommonName );
                     } ];
 
             NSLog( @"%@", certificates );

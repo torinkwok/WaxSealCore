@@ -613,25 +613,25 @@
 @end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes
 
 // Common Attributes
-NSString* const WSCKeychainItemAttributeCreationDate                = @"'cdat'";
-NSString* const WSCKeychainItemAttributeModificationDate            = @"'mdat'";
-NSString* const WSCKeychainItemAttributeKindDescription             = @"'desc'";
-NSString* const WSCKeychainItemAttributeComment                     = @"'icmt'";
-NSString* const WSCKeychainItemAttributeLabel                       = @"'labl'";
-NSString* const WSCKeychainItemAttributeInvisible                   = @"'invi'";
-NSString* const WSCKeychainItemAttributeNegative                    = @"'nega'";
-NSString* const WSCKeychainItemAttributeAccount                     = @"'acct'";
+NSString* const WSCKeychainItemAttributeCreationDate                = @"cdat";
+NSString* const WSCKeychainItemAttributeModificationDate            = @"mdat";
+NSString* const WSCKeychainItemAttributeKindDescription             = @"desc";
+NSString* const WSCKeychainItemAttributeComment                     = @"icmt";
+NSString* const WSCKeychainItemAttributeLabel                       = @"labl";
+NSString* const WSCKeychainItemAttributeInvisible                   = @"invi";
+NSString* const WSCKeychainItemAttributeNegative                    = @"nega";
+NSString* const WSCKeychainItemAttributeAccount                     = @"acct";
 
 // Unique to the Internet Passphrase Items
-NSString* const WSCKeychainItemAttributeHostName                    = @"'srvr'";
-NSString* const WSCKeychainItemAttributeAuthenticationType          = @"'atyp'";
-NSString* const WSCKeychainItemAttributePort                        = @"'port'";
-NSString* const WSCKeychainItemAttributeRelativePath                = @"'path'";
-NSString* const WSCKeychainItemAttributeProtocol                    = @"'ptcl'";
+NSString* const WSCKeychainItemAttributeHostName                    = @"srvr";
+NSString* const WSCKeychainItemAttributeAuthenticationType          = @"atyp";
+NSString* const WSCKeychainItemAttributePort                        = @"port";
+NSString* const WSCKeychainItemAttributeRelativePath                = @"path";
+NSString* const WSCKeychainItemAttributeProtocol                    = @"ptcl";
 
 // Unique to the Application Passphrase Items
-NSString* const WSCKeychainItemAttributeServiceName                 = @"'svce'";
-NSString* const WSCKeychainItemAttributeUserDefinedDataAttribute    = @"'gena'";
+NSString* const WSCKeychainItemAttributeServiceName                 = @"svce";
+NSString* const WSCKeychainItemAttributeUserDefinedDataAttribute    = @"gena";
 
 //////////////////////////////////////////////////////////////////////////////
 

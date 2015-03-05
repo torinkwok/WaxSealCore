@@ -729,6 +729,43 @@ WSCKeychain static* s_system = nil;
     return doesBlong;
     }
 
+CFTypeRef _WSCModernClassFromOriginal( WSCKeychainItemClass _ItemClass )
+    {
+    CFTypeRef modernClass = NULL;
+
+    switch ( _ItemClass )
+        {
+        case WSCKeychainItemClassInternetPassphraseItem:
+            modernClass = kSecClassInternetPassword;
+            break;
+
+        case WSCKeychainItemClassApplicationPassphraseItem:
+            modernClass = kSecClassGenericPassword;
+            break;
+
+        case WSCKeychainItemClassCertificateItem:
+            modernClass = kSecClassCertificate;
+            break;
+
+//        case WSCKeychainItemClassPublicKeyItem:
+//        case WSCKeychainItemClassPrivateKeyItem:
+//        case WSCKeychainItemClassSymmetricKeyItem:
+
+        default: ;
+        }
+
+    return modernClass;
+    }
+
+CFTypeRef _WSCModernTypeStringFromOriginal( FourCharCode _AuthType )
+    {
+    NSMutableString* typeString = [ [ NSFileTypeForHFSTypeCode( _AuthType ) mutableCopy ] autorelease ];
+    [ typeString deleteCharactersInRange: NSMakeRange( 0, 1 ) ];
+    [ typeString deleteCharactersInRange: NSMakeRange( typeString.length - 1, 1 ) ];
+
+    return ( __bridge CFTypeRef )typeString;
+    }
+
 - ( NSArray* ) p_findKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
                                                  itemClass: ( WSCKeychainItemClass )_ItemClass
                                                      error: ( NSError** )_Error
@@ -745,6 +782,42 @@ WSCKeychain static* s_system = nil;
         if ( ![ self p_doesItemAttributeSearchKey: _Key blongToItemClass: _ItemClass error: _Error ] )
             return nil;
 
+    OSStatus resultCode = errSecSuccess;
+    NSMutableDictionary* queryDictionary =
+        [ NSMutableDictionary dictionaryWithObjectsAndKeys:
+              ( __bridge id )_WSCModernClassFromOriginal( _ItemClass ), ( __bridge id )kSecClass
+            , ( __bridge id )kSecMatchLimitAll, ( __bridge id )kSecMatchLimit
+            , @[ ( __bridge id )self.secKeychain ], ( __bridge id )kSecMatchSearchList
+            , ( __bridge id )kCFBooleanTrue, ( __bridge id )kSecReturnRef
+            , nil ];
+
+    NSMutableDictionary* newSearchCriteriaDict = [ NSMutableDictionary dictionary ];
+    for ( NSString* _SearchKey in _SearchCriteriaDict )
+        {
+        if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeAuthenticationType ]
+                || [ _SearchKey isEqualToString: WSCKeychainItemAttributePort ]
+                || [ _SearchKey isEqualToString: WSCKeychainItemAttributeProtocol ] )
+            {
+            FourCharCode searchValue = 0;
+            [ _SearchCriteriaDict[ _SearchKey ] getValue: &searchValue ];
+
+            NSString* newSearchValue = _WSCModernTypeStringFromOriginal( searchValue );
+            newSearchCriteriaDict[ _SearchKey ] = newSearchValue;
+            }
+        else
+            newSearchCriteriaDict[ _SearchKey ] = _SearchCriteriaDict[ _SearchKey ];
+        }
+
+    [ queryDictionary addEntriesFromDictionary: newSearchCriteriaDict ];
+
+    CFTypeRef secSearchResult = NULL;
+    if ( ( resultCode = SecItemCopyMatching( ( __bridge CFDictionaryRef )queryDictionary
+                                           , &secSearchResult ) ) == errSecSuccess )
+        {
+        
+        }
+
+#if 1
     NSError* error = nil;
     NSArray* allItems = [ self p_allItemsConformsTheClass: _ItemClass error: &error ];
 
@@ -836,6 +909,7 @@ WSCKeychain static* s_system = nil;
                                        userInfo: nil ];
 
     return [ [ matchedItems copy ] autorelease ];
+#endif
     }
 
 @end // WSCKeychain + WSCKeychainPrivateFindingKeychainItems
