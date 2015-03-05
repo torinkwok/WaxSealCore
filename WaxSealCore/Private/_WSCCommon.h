@@ -107,6 +107,8 @@ NSArray* _WACSecAuthorizationsFromPermittedOperationMasks( WSCPermittedOperation
 // to an unsigned integer bit field containing any of the operation tag masks.
 WSCPermittedOperationTag _WSCPermittedOperationMasksFromSecAuthorizations( NSArray* _Authorizations );
 
+SecItemClass _WSCSecKeychainItemClass( SecKeychainItemRef _SecKeychainItemRef );
+
 //////////////////////////////////////////////////////////////////////////////
 
 /*****************************************************************************

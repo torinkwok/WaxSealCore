@@ -224,6 +224,22 @@ WSCPermittedOperationTag _WSCPermittedOperationMasksFromSecAuthorizations( NSArr
     return operationTag;
     }
 
+SecItemClass _WSCSecKeychainItemClass( SecKeychainItemRef _SecKeychainItemRef )
+    {
+    OSStatus resultCode = errSecSuccess;
+    SecItemClass class = 0;
+
+    resultCode = SecKeychainItemCopyAttributesAndData( _SecKeychainItemRef
+                                                     , NULL
+                                                     , &class
+                                                     , NULL
+                                                     , 0, NULL
+                                                     );
+
+    assert( resultCode == errSecSuccess /* Failed to determine the class of an SecKeychainItem object */ );
+    return class;
+    }
+
 //////////////////////////////////////////////////////////////////////////////
 
 /*****************************************************************************

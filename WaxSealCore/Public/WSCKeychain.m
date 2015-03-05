@@ -31,6 +31,9 @@
  **                                                                         **
  ****************************************************************************/
 
+#import <objc/objc.h>
+#import <objc/message.h>
+
 #import "WSCKeychain.h"
 #import "WSCPassphraseItem.h"
 #import "NSURL+WSCKeychainURL.h"
@@ -770,17 +773,20 @@ CFTypeRef _WSCModernTypeStringFromOriginal( FourCharCode _AuthType )
                                                  itemClass: ( WSCKeychainItemClass )_ItemClass
                                                      error: ( NSError** )_Error
     {
+    NSMutableArray* matchedItems = nil;
     if ( !_SearchCriteriaDict || ( _SearchCriteriaDict.count == 0 ) )
         {
         *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                        code: WSCCommonInvalidParametersError
                                    userInfo: @{ NSLocalizedFailureReasonErrorKey : @"The search criteria must not be empty or nil." } ];
-        return nil;
+        return matchedItems;
         }
 
-    for ( NSString* _Key in _SearchCriteriaDict )
-        if ( ![ self p_doesItemAttributeSearchKey: _Key blongToItemClass: _ItemClass error: _Error ] )
-            return nil;
+//    for ( NSString* _Key in _SearchCriteriaDict )
+//        if ( ![ self p_doesItemAttributeSearchKey: _Key blongToItemClass: _ItemClass error: _Error ] )
+//            return matchedItems;
+
+    matchedItems = [ NSMutableArray array ];
 
     OSStatus resultCode = errSecSuccess;
     NSMutableDictionary* queryDictionary =
@@ -795,7 +801,6 @@ CFTypeRef _WSCModernTypeStringFromOriginal( FourCharCode _AuthType )
     for ( NSString* _SearchKey in _SearchCriteriaDict )
         {
         if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeAuthenticationType ]
-                || [ _SearchKey isEqualToString: WSCKeychainItemAttributePort ]
                 || [ _SearchKey isEqualToString: WSCKeychainItemAttributeProtocol ] )
             {
             FourCharCode searchValue = 0;
@@ -814,10 +819,24 @@ CFTypeRef _WSCModernTypeStringFromOriginal( FourCharCode _AuthType )
     if ( ( resultCode = SecItemCopyMatching( ( __bridge CFDictionaryRef )queryDictionary
                                            , &secSearchResult ) ) == errSecSuccess )
         {
-        
-        }
+        for ( id _MatchedItem in ( __bridge NSArray* )secSearchResult )
+            {
+            Class wrapperClass = nil;
+            SEL initSelector = @selector( keychainItemWithSecKeychainItemRef: );
 
-#if 1
+            SecItemClass itemClass = _WSCSecKeychainItemClass( ( __bridge SecKeychainItemRef )_MatchedItem );
+            if ( itemClass == kSecInternetPasswordItemClass || itemClass == kSecGenericPasswordItemClass )
+                wrapperClass = [ WSCPassphraseItem class ];
+            // TODO: Waiting for the other item class, Certificates, Keys, etc.
+            NSAssert( wrapperClass, @"Failed to determine the concrete Class of new object" );
+
+            id keychainItem = objc_msgSend( wrapperClass, initSelector, ( __bridge SecKeychainRef )_MatchedItem );
+            [ matchedItems addObject: keychainItem ];
+            }
+
+        CFRelease( secSearchResult );
+        }
+#if 0
     NSError* error = nil;
     NSArray* allItems = [ self p_allItemsConformsTheClass: _ItemClass error: &error ];
 
@@ -828,9 +847,6 @@ CFTypeRef _WSCModernTypeStringFromOriginal( FourCharCode _AuthType )
 
         return nil;
         }
-
-    // Suppose that all the passphrase items conforming the given item class are the matched items
-    NSMutableArray* matchedItems = [ [ allItems mutableCopy ] autorelease ];
 
     if ( self.isValid )
         {
@@ -907,9 +923,8 @@ CFTypeRef _WSCModernTypeStringFromOriginal( FourCharCode _AuthType )
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                            code: WSCKeychainIsInvalidError
                                        userInfo: nil ];
-
-    return [ [ matchedItems copy ] autorelease ];
 #endif
+    return [ [ matchedItems copy ] autorelease ];
     }
 
 @end // WSCKeychain + WSCKeychainPrivateFindingKeychainItems

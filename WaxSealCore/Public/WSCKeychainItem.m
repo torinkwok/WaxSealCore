@@ -34,6 +34,7 @@
 #import "WSCKeychain.h"
 #import "WSCKeychainItem.h"
 #import "WSCKeychainError.h"
+#import "WSCPassphraseItem.h"
 #import "NSString+_OMCString.h"
 
 #import "_WSCKeychainErrorPrivate.h"
@@ -191,8 +192,7 @@
 - ( WSCKeychainItemClass ) p_itemClass: ( NSError** )_Error
     {
     OSStatus resultCode = errSecSuccess;
-
-    SecItemClass class = CSSM_DL_DB_RECORD_ALL_KEYS;
+    SecItemClass class = 0;
 
     // We just need the class of receiver,
     // so any other parameter will be ignored.
