@@ -43,7 +43,7 @@
  */
 - ( SecCertificateRef ) secCertificateItem
     {
-    return ( __bridge SecCertificateRef )[ self secKeychainItem ];
+    return ( SecCertificateRef )( self->_secKeychainItem );
     }
 
 @end // WSCCertificateItem class
