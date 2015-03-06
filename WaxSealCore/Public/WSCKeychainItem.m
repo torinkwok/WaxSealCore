@@ -634,7 +634,7 @@ NSString* const WSCKeychainItemAttributeServiceName                 = @"svce";
 NSString* const WSCKeychainItemAttributeUserDefinedDataAttribute    = @"gena";
 
 // Unique to the Certificate Items
-NSString* const WSCKeychainItemAttributeSubjectName                 = @"kSecAttrIssuer";
+NSString* const WSCKeychainItemAttributeCommonName                  = @"kSecAttrIssuer";
 NSString* const WSCKeychainItemAttributeIssuer                      = @"issr";
 NSString* const WSCKeychainItemAttributeSerialNumber                = @"slnr";
 NSString* const WSCKeychainItemAttributeSubjectKeyID                = @"skid";

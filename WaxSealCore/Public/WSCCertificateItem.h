@@ -95,6 +95,13 @@
   */
 @interface WSCCertificateItem : WSCKeychainItem
 
+#pragma mark Certificate Attributes
+/** @name Certificate Attributes */
+
+/** The common name of the subject of a certificate.
+ */
+@property ( copy, readonly ) NSString* commonName;
+
 #pragma mark Certificate, Key, and Trust Services Bridge
 /** @name Certificate, Key, and Trust Services Bridge */
 

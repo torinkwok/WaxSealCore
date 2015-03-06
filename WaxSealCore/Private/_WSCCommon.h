@@ -111,6 +111,10 @@ WSCPermittedOperationTag _WSCPermittedOperationMasksFromSecAuthorizations( NSArr
 CFTypeRef _WSCModernClassFromOriginal( WSCKeychainItemClass _ItemClass );
 SecItemClass _WSCSecKeychainItemClass( SecKeychainItemRef _SecKeychainItemRef );
 
+@class WSCCertificateItem;
+
+NSString* _WSCCertificateGetIssuerName( WSCCertificateItem* _Certificate );
+
 //////////////////////////////////////////////////////////////////////////////
 
 /*****************************************************************************

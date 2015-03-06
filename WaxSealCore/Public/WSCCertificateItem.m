@@ -35,7 +35,38 @@
 
 @implementation WSCCertificateItem
 
+@dynamic commonName;
+
 @dynamic secCertificateItem;
+
+#pragma mark Certificate Attributes
+/* The common name of the subject of a certificate.
+ */
+- ( NSString* ) commonName
+    {
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
+
+    NSString* cocoaCommonName = nil;
+    CFStringRef secCommonName = NULL;
+    if ( ( resultCode = SecCertificateCopyCommonName( self.secCertificateItem, &secCommonName ) ) == errSecSuccess )
+        {
+        if ( secCommonName )
+            {
+            cocoaCommonName = [ [ ( __bridge NSString* )secCommonName copy ] autorelease ];
+            CFRelease( secCommonName );
+            }
+        else
+            cocoaCommonName = @"";
+        }
+    else
+        {
+        _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+        _WSCPrintNSErrorForLog( error );
+        }
+
+    return cocoaCommonName;
+    }
 
 #pragma mark Certificate, Key, and Trust Services Bridge
 

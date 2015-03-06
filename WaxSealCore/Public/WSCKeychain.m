@@ -638,7 +638,7 @@ WSCKeychain static* s_system = nil;
                      ] arrayByAddingObjectsFromArray: uniqueToPassphraseItemAttributesSearchKeys ] retain ];
 
             self->p_uniqueToCertificateItemAttributesSearchKeys =
-                [ [ @[ WSCKeychainItemAttributeSubjectName, WSCKeychainItemAttributeIssuer
+                [ [ @[ WSCKeychainItemAttributeCommonName, WSCKeychainItemAttributeIssuer
                      , WSCKeychainItemAttributeSerialNumber, WSCKeychainItemAttributeSubjectKeyID
                      , WSCKeychainItemAttributePublicKeyHash ] arrayByAddingObjectsFromArray: self->p_commonAttributesSearchKeys ] retain ];
             }
@@ -780,6 +780,16 @@ WSCKeychain static* s_system = nil;
                 , ( __bridge id )kCFBooleanTrue, ( __bridge id )kSecReturnRef
                 , nil ];
 
+    #if 1 // DEBUG
+        NSMutableDictionary* finalQueryDictionary_debug =
+            [ NSMutableDictionary dictionaryWithObjectsAndKeys:
+                  ( __bridge id )_WSCModernClassFromOriginal( _ItemClass ), ( __bridge id )kSecClass
+                , ( __bridge id )kSecMatchLimitAll, ( __bridge id )kSecMatchLimit
+                , @[ ( __bridge id )self.secKeychain ], ( __bridge id )kSecMatchSearchList
+                , ( __bridge id )kCFBooleanTrue, ( __bridge id )kSecReturnAttributes
+                , nil ];
+    #endif
+
         // Adapt the passed-in search criteria (_SearchCriteriaDict)
         NSMutableDictionary* adaptedSearchCriteriaDict = [ NSMutableDictionary dictionary ];
         for ( NSString* _SearchKey in _SearchCriteriaDict )
@@ -798,10 +808,26 @@ WSCKeychain static* s_system = nil;
                     adaptedSearchCriteriaDict[ _SearchKey ] = newSearchValue;
                     }
                 }
+            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeCommonName ]
+                        || [ _SearchKey isEqualToString: WSCKeychainItemAttributeIssuer ]
+                        || [ _SearchKey isEqualToString: WSCKeychainItemAttributeSerialNumber ]
+                        || [ _SearchKey isEqualToString: WSCKeychainItemAttributeSubjectKeyID ]
+                        || [ _SearchKey isEqualToString: WSCKeychainItemAttributePublicKeyHash ] )
+                {
+                NSString* searchValue = ( NSString* )( _SearchCriteriaDict[ _SearchKey ] );
+                adaptedSearchCriteriaDict[ _SearchKey ] = [ searchValue dataUsingEncoding: NSUTF8StringEncoding ];
+                }
             else
                 // On the other hand, values of other types may be inserted directly
                 adaptedSearchCriteriaDict[ _SearchKey ] = _SearchCriteriaDict[ _SearchKey ];
             }
+
+    #if 1
+        CFTypeRef attributes_debug = NULL;
+        [ finalQueryDictionary_debug addEntriesFromDictionary: adaptedSearchCriteriaDict ];
+        SecItemCopyMatching( ( __bridge CFDictionaryRef )finalQueryDictionary_debug, &attributes_debug );
+        NSLog( @"Debug Attributes %lu: %@", CFDictionaryGetCount( attributes_debug ), ( NSDictionary* )attributes_debug );
+    #endif
 
         [ finalQueryDictionary addEntriesFromDictionary: adaptedSearchCriteriaDict ];
 
