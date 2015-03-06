@@ -99,47 +99,6 @@
 
 @end // WSCCertificateItem class
 
-/** Defines the certificate type the certificate item representing.
-  */
-typedef NS_ENUM( CSSM_CERT_TYPE, WSCCertificateType )
-    {
-    /// Unknown certificate type.
-      WSCCertificateTypeUnknown         = CSSM_CERT_UNKNOWN
-
-    /// Indicates X.509 version 1.
-    , WSCCertificateTypeX590v1          = CSSM_CERT_X_509v1
-
-    /// Indicates X.509 version 2.
-    , WSCCertificateTypeX509v2          = CSSM_CERT_X_509v2
-
-    /// Indicates X.509 version 3.
-    , WSCCertificateTypeX509v3          = CSSM_CERT_X_509v3
-
-    /// Indicates PGP.
-    , WSCCertificateTypePGP             = CSSM_CERT_PGP
-
-    /// Indicates SPKI.
-    , WSCCertificateTypeSPKI            = CSSM_CERT_SPKI
-
-    /// Indicates SDSI version 1.
-    , WSCCertificateTypeSDSIv1          = CSSM_CERT_SDSIv1
-
-    /// Indicates Intel.
-    , WSCCertificateTypeIntel           = CSSM_CERT_Intel
-
-    /// Indicates X.509 attribute certificate.
-    , WSCCertificateTypeX509Attribute   = CSSM_CERT_X_509_ATTRIBUTE
-
-    /// Indicates X9 attribute certificate.
-    , WSCCertificateTypeX9Attribute     = CSSM_CERT_X9_ATTRIBUTE
-
-    /// Indicates Tuple.
-    , WSCCertificateTypeTuple           = CSSM_CERT_TUPLE
-
-    /// Indicates ALC Entry.
-    , WSCCertificateTypeACLEntry        = CSSM_CERT_ACL_ENTRY
-    };
-
 //////////////////////////////////////////////////////////////////////////////
 
 /*****************************************************************************
