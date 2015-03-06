@@ -478,6 +478,10 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   + `WSCKeychainItemAttributeUserDefinedDataAttribute`
   The corresponding value is an `NSData` object that identifies the service name of an application passphrase item.
   For example, "WaxSeal". This search key is unique to the application passphrase item.
+  
+  *Unique to the Application Passphrase Items:*
+  
+  + `WSCKeychainItemAttributeCertificateType`
 
   @warning After invoking this method, the passphrase item returned by this method may become invalid
            (perhaps it has been deleted or modified by user or by other applications),

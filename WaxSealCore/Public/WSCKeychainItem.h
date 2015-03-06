@@ -41,7 +41,7 @@
   classes descend from this class and WSCProtectedKeychainItem:
 
   + WSCPassphraseItem
-  + WSCCertificate (Not supported, will be supported in version 2.0)
+  + WSCCertificate
   + WSCKey (Not supported, be will supported in version 2.0)
   + WSCIdentity (Not supported, will be supported in version 2.0)
   */
@@ -148,6 +148,15 @@ NSString extern* const WSCKeychainItemAttributeProtocol;
 // Unique to the Application Passphrase Items
 NSString extern* const WSCKeychainItemAttributeServiceName;
 NSString extern* const WSCKeychainItemAttributeUserDefinedDataAttribute;
+
+// Unique to the Certificate Items
+NSString* const WSCKeychainItemAttributeCertificateType;
+NSString* const WSCKeychainItemAttributeCertificateEncoding;
+NSString* const WSCKeychainItemAttributeSubjectName;
+NSString* const WSCKeychainItemAttributeIssuer;
+NSString* const WSCKeychainItemAttributeSerialNumber;
+NSString* const WSCKeychainItemAttributeSubjectKeyID;
+NSString* const WSCKeychainItemAttributePublicKeyHash;
 
 //////////////////////////////////////////////////////////////////////////////
 

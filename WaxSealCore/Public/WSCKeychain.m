@@ -36,6 +36,7 @@
 
 #import "WSCKeychain.h"
 #import "WSCPassphraseItem.h"
+#import "WSCCertificateItem.h"
 #import "NSURL+WSCKeychainURL.h"
 #import "WSCKeychainError.h"
 #import "WSCKeychainManager.h"
@@ -802,6 +803,9 @@ WSCKeychain static* s_system = nil;
                 SecItemClass itemClass = _WSCSecKeychainItemClass( ( __bridge SecKeychainItemRef )_MatchedItem );
                 if ( itemClass == kSecInternetPasswordItemClass || itemClass == kSecGenericPasswordItemClass )
                     wrapperClass = [ WSCPassphraseItem class ];
+                else if ( itemClass == kSecCertificateItemClass )
+                    wrapperClass = [ WSCCertificateItem class ];
+
                 // TODO: Waiting for the other item class, Certificates, Keys, etc.
                 NSAssert( wrapperClass, @"Failed to determine the concrete Class of new object" );
 
