@@ -102,6 +102,10 @@
  */
 @property ( copy, readonly ) NSString* commonName;
 
+/** The issuer name of a certificate.
+ */
+@property ( copy, readonly ) NSString* issuerName;
+
 #pragma mark Certificate, Key, and Trust Services Bridge
 /** @name Certificate, Key, and Trust Services Bridge */
 

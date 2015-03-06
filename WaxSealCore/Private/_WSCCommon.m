@@ -32,9 +32,6 @@
  ****************************************************************************/
 
 #import <Foundation/Foundation.h>
-#import <openssl/x509.h>
-#import <openssl/objects.h>
-#import <openssl/asn1.h>
 
 #import "WSCTrustedApplication.h"
 #import "WSCCertificateItem.h"
@@ -279,40 +276,6 @@ SecItemClass _WSCSecKeychainItemClass( SecKeychainItemRef _SecKeychainItemRef )
 
     assert( resultCode == errSecSuccess /* Failed to determine the class of an SecKeychainItem object */ );
     return class;
-    }
-
-NSString* _WSCCertificateGetIssuerName( WSCCertificateItem* _Certificate )
-    {
-    NSData* certificateData = ( __bridge NSData* )SecCertificateCopyData( _Certificate.secCertificateItem );
-    unsigned char const* certificateDataBytes = ( unsigned char const* )[ certificateData bytes ];
-    X509* X509Certificate = d2i_X509( NULL, &certificateDataBytes, [ certificateData length ] );
-
-    NSString* issuer = nil;
-    if (X509Certificate != NULL)
-        {
-        X509_NAME* issuerX509Name = X509_get_issuer_name( X509Certificate );
-
-        if (issuerX509Name != NULL)
-            {
-            int nid = OBJ_txt2nid( "O" ); // organization
-            int index = X509_NAME_get_index_by_NID( issuerX509Name, nid, -1 );
-
-            X509_NAME_ENTRY* issuerNameEntry = X509_NAME_get_entry( issuerX509Name, index );
-
-            if ( issuerNameEntry )
-                {
-                ASN1_STRING* issuerNameASN1 = X509_NAME_ENTRY_get_data( issuerNameEntry );
-
-                if ( issuerNameASN1 != NULL )
-                    {
-                    unsigned char* issuerName = ASN1_STRING_data( issuerNameASN1 );
-                    issuer = [ NSString stringWithUTF8String: ( char* )issuerName ];
-                    }
-                }
-            }
-        }
-
-    return issuer;
     }
 
 //////////////////////////////////////////////////////////////////////////////

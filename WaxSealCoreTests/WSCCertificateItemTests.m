@@ -43,6 +43,7 @@
 
 #import "_WSCTrustedApplicationPrivate.h"
 #import "_WSCPermittedOperationPrivate.h"
+#import "_WSCCertificateItemPrivate.h"
 
 // --------------------------------------------------------
 #pragma mark Interface of WSCCertificateItemTests Test Case
@@ -74,7 +75,7 @@
     // ----------------------------------------------------------------------------------
     // Positive Test Case 0
     // ----------------------------------------------------------------------------------
-    NSString* searchKey_label_testCase0 = @"COMODO SHA-256 Client Authentication and Secure Email CA";
+    NSString* searchKey_label_testCase0 = @"tong-g@outlook.com";
     WSCCertificateItem* certificate_testCase0 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
         findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : searchKey_label_testCase0 }
                                             itemClass: WSCKeychainItemClassCertificateItem
@@ -86,8 +87,26 @@
     XCTAssertEqualObjects( searchKey_label_testCase0, commonName_testCase0 );
     NSLog( @"Common Name #PositiveTestCase0: %@", commonName_testCase0 );
 
-    NSString* issuerName = _WSCCertificateGetIssuerName( certificate_testCase0 );
-    NSLog( @"Issuer Name: %@", issuerName );
+    NSString* issuerName_testCase0 = certificate_testCase0.issuerName;
+    NSLog( @"Issuer Name #PositiveTestCase0: %@", issuerName_testCase0 );
+
+    NSDictionary* values = ( __bridge NSDictionary* )
+        SecCertificateCopyValues( certificate_testCase0.secCertificateItem
+                                , ( __bridge CFArrayRef )@[ ( __bridge id )kSecOIDX509V1IssuerName
+                                                          , ( __bridge id )kSecOIDX509V1Version
+//                                                          , ( __bridge id )kSecOIDX509V1Signature
+//                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
+//                                                          , ( __bridge id )kSecOIDX509V1SubjectName
+//                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKey
+//                                                          , ( __bridge id )kSecOIDX509V1SerialNumber
+//                                                          , ( __bridge id )kSecOIDX509V1SubjectName
+                                                          ]
+                                , nil );
+
+    NSDictionary* issuerNames = values[ ( __bridge NSString* )kSecOIDX509V1IssuerName ];
+
+    NSLog( @"Values: %@", values );
+
 //    CFDataRef serialNumber = SecCertificateCopySerialNumber( certificate_testCase0.secCertificateItem, nil );
 //    void* buffer = malloc( [ ( __bridge NSData* )serialNumber length ] );
 //    [ ( __bridge NSData* )serialNumber getBytes: buffer length: [ ( __bridge NSData* )serialNumber length ] ];
@@ -108,6 +127,9 @@
     XCTAssertNotNil( commonName_testCase1 );
     XCTAssert( commonName_testCase1.length == 0 );
     NSLog( @"Common Name #PositiveTestCase1: %@", commonName_testCase1 );
+
+    NSString* issuerName_testCase1 = certificate_testCase1.issuerName;
+    NSLog( @"Issuer Name #PositiveTestCase1: %@", issuerName_testCase1 );
 
     // ----------------------------------------------------------------------------------
     // Positive Test Case 2
