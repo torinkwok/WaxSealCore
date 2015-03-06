@@ -69,11 +69,20 @@
 
 - ( void ) testFindCertificateItem
     {
+    NSError* error = nil;
+
     // ----------------------------------------------------------------------------------
     // Test Case 0
     // ----------------------------------------------------------------------------------
-    WSCCertificateItem* certificate_testCase0 = [ WSCKeychain login ];
-//        findFirstKeychainItemSatisfyingSearchCriteria: @{  itemClass:<#(WSCKeychainItemClass)#> error:<#(NSError **)#>
+    WSCCertificateItem* certificate_testCase0 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Mac Developer: Tong Guo (8ZDY95NQGT)" }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+    XCTAssertNotNil( certificate_testCase0 );
+
+    CFStringRef subjectName = NULL;
+    SecCertificateCopyCommonName( certificate_testCase0.secCertificateItem, &subjectName );
+    NSLog( @"Subject Name: %@", ( __bridge NSString* )subjectName );
     }
 
 @end // WSCCertificateItemTests test case

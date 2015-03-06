@@ -91,6 +91,7 @@ BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     NSArray* p_commonAttributesSearchKeys;
     NSArray* p_uniqueToInternetPassphraseItemAttributesSearchKeys;
     NSArray* p_uniqueToAppPassphraseItemAttributesSearchKeys;
+    NSArray* p_uniqueToCertificateItemAttributesSearchKeys;
     }
 
 @synthesize secKeychain = _secKeychain;
@@ -540,6 +541,9 @@ WSCKeychain static* s_system = nil;
     if ( self->p_uniqueToAppPassphraseItemAttributesSearchKeys )
         [ self->p_uniqueToAppPassphraseItemAttributesSearchKeys release ];
 
+    if ( self->p_uniqueToCertificateItemAttributesSearchKeys )
+        [ self->p_uniqueToCertificateItemAttributesSearchKeys release ];
+
     [ super dealloc ];
     }
 
@@ -619,16 +623,24 @@ WSCKeychain static* s_system = nil;
                 [ @[ WSCKeychainItemAttributeCreationDate, WSCKeychainItemAttributeModificationDate
                    , WSCKeychainItemAttributeKindDescription, WSCKeychainItemAttributeComment
                    , WSCKeychainItemAttributeLabel, WSCKeychainItemAttributeInvisible
-                   , WSCKeychainItemAttributeNegative, WSCKeychainItemAttributeAccount ] retain ];
+                   , WSCKeychainItemAttributeNegative ] retain ];
+
+            NSArray* uniqueToPassphraseItemAttributesSearchKeys = [ @[ WSCKeychainItemAttributeAccount ] arrayByAddingObjectsFromArray: self->p_commonAttributesSearchKeys ];
 
             self->p_uniqueToInternetPassphraseItemAttributesSearchKeys =
                 [ [ @[ WSCKeychainItemAttributeHostName, WSCKeychainItemAttributeAuthenticationType
                      , WSCKeychainItemAttributePort, WSCKeychainItemAttributeRelativePath
-                     , WSCKeychainItemAttributeProtocol ] arrayByAddingObjectsFromArray: self->p_commonAttributesSearchKeys ] retain ];
+                     , WSCKeychainItemAttributeProtocol
+                     ] arrayByAddingObjectsFromArray: uniqueToPassphraseItemAttributesSearchKeys ] retain ];
 
             self->p_uniqueToAppPassphraseItemAttributesSearchKeys =
-                [ [ @[ WSCKeychainItemAttributeServiceName, WSCKeychainItemAttributeUserDefinedDataAttribute ]
-                    arrayByAddingObjectsFromArray: self->p_commonAttributesSearchKeys ] retain ];
+                [ [ @[ WSCKeychainItemAttributeServiceName, WSCKeychainItemAttributeUserDefinedDataAttribute
+                     ] arrayByAddingObjectsFromArray: uniqueToPassphraseItemAttributesSearchKeys ] retain ];
+
+            self->p_uniqueToCertificateItemAttributesSearchKeys =
+                [ [ @[ WSCKeychainItemAttributeSubjectName, WSCKeychainItemAttributeIssuer
+                     , WSCKeychainItemAttributeSerialNumber, WSCKeychainItemAttributeSubjectKeyID
+                     , WSCKeychainItemAttributePublicKeyHash ] arrayByAddingObjectsFromArray: self->p_commonAttributesSearchKeys ] retain ];
             }
         else
             return nil;
@@ -715,6 +727,8 @@ WSCKeychain static* s_system = nil;
         samples = self->p_uniqueToInternetPassphraseItemAttributesSearchKeys;
     else if ( _ItemClass == WSCKeychainItemClassApplicationPassphraseItem )
         samples = self->p_uniqueToAppPassphraseItemAttributesSearchKeys;
+    else if ( _ItemClass == WSCKeychainItemClassCertificateItem )
+        samples = self->p_uniqueToCertificateItemAttributesSearchKeys;
     // TODO: Waiting for the other item class, Certificates, Keys, etc.
 
     BOOL doesBelongTo = [ samples containsObject: _SearchKey ];

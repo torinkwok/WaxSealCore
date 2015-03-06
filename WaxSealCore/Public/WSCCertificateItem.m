@@ -35,7 +35,16 @@
 
 @implementation WSCCertificateItem
 
+@dynamic secCertificateItem;
 
+#pragma mark Certificate, Key, and Trust Services Bridge
+
+/* The reference of the `SecCertificate` opaque object, which wrapped by `WSCCertificateItem` object. (read-only)
+ */
+- ( SecCertificateRef ) secCertificateItem
+    {
+    return ( __bridge SecCertificateRef )[ self secKeychainItem ];
+    }
 
 @end // WSCCertificateItem class
 

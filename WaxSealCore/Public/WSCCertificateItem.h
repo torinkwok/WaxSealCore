@@ -95,7 +95,15 @@
   */
 @interface WSCCertificateItem : WSCKeychainItem
 
+#pragma mark Certificate, Key, and Trust Services Bridge
+/** @name Certificate, Key, and Trust Services Bridge */
 
+/** The reference of the `SecCertificate` opaque object, which wrapped by `WSCCertificateItem` object. (read-only)
+  
+  @discussion If you are familiar with the underlying *Certificate, Key, and Trust Services* API,
+              you can move freely back and forth between *WaxSealCore* framework and *Certificate, Key, and Trust Services* API with this property.
+  */
+@property ( unsafe_unretained, readonly ) SecCertificateRef secCertificateItem;
 
 @end // WSCCertificateItem class
 
