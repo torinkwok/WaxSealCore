@@ -634,11 +634,11 @@ NSString* const WSCKeychainItemAttributeServiceName                 = @"svce";
 NSString* const WSCKeychainItemAttributeUserDefinedDataAttribute    = @"gena";
 
 // Unique to the Certificate Items
-NSString* const WSCKeychainItemAttributeCommonName                  = @"kSecAttrIssuer";
-NSString* const WSCKeychainItemAttributeIssuer                      = @"issr";
-NSString* const WSCKeychainItemAttributeSerialNumber                = @"slnr";
-NSString* const WSCKeychainItemAttributeSubjectKeyID                = @"skid";
-NSString* const WSCKeychainItemAttributePublicKeyHash               = @"pkhh";
+NSString* const WSCKeychainItemAttributeSubjectCommonName           = @"2.16.840.1.113741.2.1.1.1.8/2.5.4.3 (Subject Common Name)";
+NSString* const WSCKeychainItemAttributeIssuerCommonName            = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.3 (Issuer Common Name)";
+NSString* const WSCKeychainItemAttributeSerialNumber                = @"2.16.840.1.113741.2.1.1.1.3 (Serial Number)";
+NSString* const WSCKeychainItemAttributeSubjectKeyID                = @"Subject Key ID";
+NSString* const WSCKeychainItemAttributePublicKeyHash               = @"Public Key Hash";
 
 //////////////////////////////////////////////////////////////////////////////
 

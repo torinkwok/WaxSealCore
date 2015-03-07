@@ -100,7 +100,7 @@
 
 /** The common name of the subject of a certificate.
  */
-@property ( copy, readonly ) NSString* commonName;
+@property ( copy, readonly ) NSString* subjectCommonName;
 
 /** The issuer name of a certificate.
  */

@@ -35,6 +35,15 @@
 
 NSString* _WSCSecCertificateGetIssuerName( SecCertificateRef _SecCertificateRef );
 
+#pragma mark WSCCertificateItem + _WSCCertificateItemPrivateAccessAttributes
+@interface WSCCertificateItem ( _WSCCertificateItemPrivateAccessAttributes )
+
++ ( id ) p_retrieveAttributeFromSecCertificate: ( SecCertificateRef )_SecCertificateRef
+                                  attributeKey: ( NSString* )_AttributeKey
+                                         error: ( NSError** )_Error;
+
+@end // WSCCertificateItem + _WSCCertificateItemPrivateAccessAttributes
+
 //////////////////////////////////////////////////////////////////////////////
 
 /*****************************************************************************

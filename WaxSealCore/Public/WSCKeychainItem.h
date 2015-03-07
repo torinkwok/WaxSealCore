@@ -150,8 +150,8 @@ NSString extern* const WSCKeychainItemAttributeServiceName;
 NSString extern* const WSCKeychainItemAttributeUserDefinedDataAttribute;
 
 // Unique to the Certificate Items
-NSString extern* const WSCKeychainItemAttributeCommonName;
-NSString extern* const WSCKeychainItemAttributeIssuer;
+NSString extern* const WSCKeychainItemAttributeSubjectCommonName;
+NSString extern* const WSCKeychainItemAttributeIssuerCommonName;
 NSString extern* const WSCKeychainItemAttributeSerialNumber;
 NSString extern* const WSCKeychainItemAttributeSubjectKeyID;
 NSString extern* const WSCKeychainItemAttributePublicKeyHash;

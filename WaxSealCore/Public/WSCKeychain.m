@@ -638,7 +638,7 @@ WSCKeychain static* s_system = nil;
                      ] arrayByAddingObjectsFromArray: uniqueToPassphraseItemAttributesSearchKeys ] retain ];
 
             self->p_uniqueToCertificateItemAttributesSearchKeys =
-                [ [ @[ WSCKeychainItemAttributeCommonName, WSCKeychainItemAttributeIssuer
+                [ [ @[ WSCKeychainItemAttributeSubjectCommonName, WSCKeychainItemAttributeIssuerCommonName
                      , WSCKeychainItemAttributeSerialNumber, WSCKeychainItemAttributeSubjectKeyID
                      , WSCKeychainItemAttributePublicKeyHash ] arrayByAddingObjectsFromArray: self->p_commonAttributesSearchKeys ] retain ];
             }
@@ -808,8 +808,8 @@ WSCKeychain static* s_system = nil;
                     adaptedSearchCriteriaDict[ _SearchKey ] = newSearchValue;
                     }
                 }
-            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeCommonName ]
-                        || [ _SearchKey isEqualToString: WSCKeychainItemAttributeIssuer ]
+            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeSubjectCommonName ]
+                        || [ _SearchKey isEqualToString: WSCKeychainItemAttributeIssuerCommonName ]
                         || [ _SearchKey isEqualToString: WSCKeychainItemAttributeSerialNumber ]
                         || [ _SearchKey isEqualToString: WSCKeychainItemAttributeSubjectKeyID ]
                         || [ _SearchKey isEqualToString: WSCKeychainItemAttributePublicKeyHash ] )

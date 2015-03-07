@@ -41,7 +41,7 @@
 
 @implementation WSCCertificateItem
 
-@dynamic commonName;
+@dynamic subjectCommonName;
 @dynamic issuerName;
 
 @dynamic secCertificateItem;
@@ -50,7 +50,7 @@
 
 /* The common name of the subject of a certificate.
  */
-- ( NSString* ) commonName
+- ( NSString* ) subjectCommonName
     {
     NSError* error = nil;
     OSStatus resultCode = errSecSuccess;
@@ -93,6 +93,67 @@
     }
 
 @end // WSCCertificateItem class
+
+#pragma mark WSCCertificateItem + _WSCCertificateItemPrivateAccessAttributes
+@implementation WSCCertificateItem ( _WSCCertificateItemPrivateAccessAttributes )
+
++ ( id ) p_retrieveAttributeFromSecCertificate: ( SecCertificateRef )_SecCertificateRef
+                                  attributeKey: ( NSString* )_AttributeKey
+                                         error: ( NSError** )_Error
+    {
+    CFErrorRef cfError = NULL;
+
+    id attribute = nil;
+
+    NSString* masterOID = nil;
+    NSString* subOID = nil;
+    if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectCommonName ] )
+        {
+        masterOID = ( __bridge id )kSecOIDX509V1SubjectName;
+        subOID = ( __bridge id )kSecOIDCommonName;
+        }
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerCommonName ] )
+        {
+        masterOID = ( __bridge id )kSecOIDX509V1IssuerName;
+        subOID = ( __bridge id )kSecOIDCommonName;
+        }
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSerialNumber ] )
+        masterOID = ( __bridge id )kSecOIDX509V1SerialNumber;
+
+    CFDictionaryRef secResultValuesMatchingOIDs =
+        SecCertificateCopyValues( _SecCertificateRef, ( __bridge CFArrayRef )@[ masterOID ] , &cfError );
+
+    if ( !cfError )
+        {
+        NSDictionary* valuesDict = [ ( __bridge NSDictionary* )secResultValuesMatchingOIDs objectForKey: masterOID ];
+        if ( valuesDict )
+            {
+            NSString* valueType = valuesDict[ ( __bridge NSString* )kSecPropertyKeyType ];
+            id valueOrValues = valuesDict[ ( __bridge NSString* )kSecPropertyKeyValue ];
+
+            if ( [ valueType isEqualToString: ( __bridge NSString* )kSecPropertyTypeSection ] )
+                {
+                for ( NSDictionary* _DictElem in ( NSArray* )valueOrValues )
+                    {
+                    if ( [ _DictElem[ ( __bridge NSString* )kSecPropertyKeyLabel ] isEqualToString: subOID ] )
+                        {
+                        attribute = _DictElem[ ( __bridge NSString* )kSecPropertyKeyValue ];
+                        break;
+                        }
+                    }
+                }
+            else
+                attribute = valueOrValues;
+            }
+        }
+    else
+        if ( _Error )
+            *_Error = [ [ ( __bridge NSError* )cfError copy ] autorelease ];
+
+    return attribute;
+    }
+
+@end // WSCCertificateItem + _WSCCertificateItemPrivateAccessAttributes
 
 //static NSString* _WSCSecCertificateGetStringValue( SecCertificateRef _SecCertificateRef
 //                                                 , 
