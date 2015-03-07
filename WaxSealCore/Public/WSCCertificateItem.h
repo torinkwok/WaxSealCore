@@ -118,6 +118,10 @@
   */
 @property ( copy, readonly ) NSString* subjectCountryAbbreviation;
 
+/** The state or province name of the subject of a certificate. (read-only)
+  */
+@property ( copy, readonly ) NSString* subjectStateOrProvince;
+
 #pragma mark Issuer Attributes of a Certificate
 /** @name Issuer Attributes of a Certificate */
 
@@ -136,6 +140,10 @@
 /** The country abbreviation of the issuer of a certificate. (read-only)
   */
 @property ( copy, readonly ) NSString* issuerCountryAbbreviation;
+
+/** The state or province name of the issuer of a certificate. (read-only)
+  */
+@property ( copy, readonly ) NSString* issuerStateOrProvince;
 
 #pragma mark General Attributes of a Certificate
 /** @name General Attributes of a Certificate */

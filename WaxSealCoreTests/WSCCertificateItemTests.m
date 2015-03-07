@@ -123,6 +123,13 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
+    // Subject State/Province
+    NSString* stateOrProvince_testCase0 = certificate_testCase0.subjectStateOrProvince;
+    XCTAssertNotNil( stateOrProvince_testCase0 );
+    XCTAssertEqualObjects( stateOrProvince_testCase0, @"Greater Manchester" );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
     // Issuer Common Name
     NSString* issuerCommonName_testCase0 = certificate_testCase0.issuerCommonName;
     XCTAssertNotNil( issuerCommonName_testCase0 );
@@ -148,6 +155,12 @@
     NSString* countryAbbreviation_testCase1 = certificate_testCase0.issuerCountryAbbreviation;
     XCTAssertNotNil( countryAbbreviation_testCase1 );
     XCTAssertEqualObjects( countryAbbreviation_testCase1, @"SE" );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Issuer State/Province
+    NSString* stateOrProvince_testCase1 = certificate_testCase0.issuerStateOrProvince;
+    XCTAssertNil( stateOrProvince_testCase1 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 

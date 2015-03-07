@@ -42,11 +42,13 @@
 @dynamic subjectOrganization;
 @dynamic subjectOrganizationalUnit;
 @dynamic subjectCountryAbbreviation;
+@dynamic subjectStateOrProvince;
 
 @dynamic issuerCommonName;
 @dynamic issuerOrganization;
 @dynamic issuerOrganizationalUnit;
 @dynamic issuerCountryAbbreviation;
+@dynamic issuerStateOrProvince;
 
 @dynamic serialNumber;
 
@@ -89,6 +91,13 @@
     return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeSubjectCountryAbbreviation ];
     }
 
+/** The country abbreviation of the subject of a certificate. (read-only)
+  */
+- ( NSString* ) subjectStateOrProvince
+    {
+    return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeSubjectStateOrProvince ];
+    }
+
 #pragma mark Issuer Attributes of a Certificate
 
 /* The common name of the issuer of a certificate.
@@ -117,6 +126,13 @@
 - ( NSString* ) issuerCountryAbbreviation
     {
     return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeIssuerCountryAbbreviation ];
+    }
+
+/** The country abbreviation of the issuer of a certificate. (read-only)
+  */
+- ( NSString* ) issuerStateOrProvince
+    {
+    return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeIssuerStateOrProvince ];
     }
 
 #pragma mark General Attributes of a Certificate
@@ -246,6 +262,13 @@ NSString static* kSubOIDKey = @"subOID";
         OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDCountryName;
         }
 
+    // Subject State/Province
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectStateOrProvince ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SubjectName;
+        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDStateProvinceName;
+        }
+
     // Issuer Common Name
     else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerCommonName ] )
         {
@@ -272,6 +295,13 @@ NSString static* kSubOIDKey = @"subOID";
         {
         OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1IssuerName;
         OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDCountryName;
+        }
+
+    // Issuer State/Province
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerStateOrProvince ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1IssuerName;
+        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDStateProvinceName;
         }
 
     // Serial Number
