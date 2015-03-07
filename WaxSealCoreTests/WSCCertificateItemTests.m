@@ -291,12 +291,12 @@
                                                 error: &error ];
     XCTAssertNotNil( certificate_testCase2 );
 
-    NSString* issuerName_testCase1 = certificate_testCase2.issuerCommonName;
-    NSLog( @"Issuer Name #PositiveTestCase1: %@", issuerName_testCase1 );
+    NSString* issuerName_testCase2 = certificate_testCase2.issuerCommonName;
+    NSLog( @"Issuer Name #PositiveTestCase1: %@", issuerName_testCase2 );
 
     // Subject Email Address
-    NSString* subjectEmailAddress_testCase1 = certificate_testCase2.subjectEmailAddress;
-    XCTAssertNil( subjectEmailAddress_testCase1 );
+    NSString* subjectEmailAddress_testCase2 = certificate_testCase2.subjectEmailAddress;
+    XCTAssertNil( subjectEmailAddress_testCase2 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
