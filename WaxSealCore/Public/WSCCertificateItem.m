@@ -31,10 +31,6 @@
  **                                                                         **
  ****************************************************************************/
 
-#import <openssl/x509.h>
-#import <openssl/objects.h>
-#import <openssl/asn1.h>
-
 #import "WSCCertificateItem.h"
 
 #import "_WSCCertificateItemPrivate.h"
@@ -42,7 +38,7 @@
 @implementation WSCCertificateItem
 
 @dynamic subjectCommonName;
-@dynamic issuerName;
+@dynamic issuerCommonName;
 
 @dynamic secCertificateItem;
 
@@ -52,35 +48,14 @@
  */
 - ( NSString* ) subjectCommonName
     {
-    NSError* error = nil;
-    OSStatus resultCode = errSecSuccess;
-
-    NSString* cocoaCommonName = nil;
-    CFStringRef secCommonName = NULL;
-    if ( ( resultCode = SecCertificateCopyCommonName( self.secCertificateItem, &secCommonName ) ) == errSecSuccess )
-        {
-        if ( secCommonName )
-            {
-            cocoaCommonName = [ [ ( __bridge NSString* )secCommonName copy ] autorelease ];
-            CFRelease( secCommonName );
-            }
-        else
-            cocoaCommonName = @"";
-        }
-    else
-        {
-        _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
-        _WSCPrintNSErrorForLog( error );
-        }
-
-    return cocoaCommonName;
+    return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeSubjectCommonName ];
     }
 
-/* The issuer name of a certificate.
+/* The common name of the issuer of a certificate.
  */
-- ( NSString* ) issuerName
+- ( NSString* ) issuerCommonName
     {
-    return _WSCSecCertificateGetIssuerName( self.secCertificateItem );
+    return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeIssuerCommonName ];
     }
 
 #pragma mark Certificate, Key, and Trust Services Bridge
@@ -99,6 +74,19 @@
 
 NSString static* kMasterOIDKey = @"masterOID";
 NSString static* kSubOIDKey = @"subOID";
+
+/* Extract attribute from the receiver itself
+ */
+- ( id ) p_retriveAttributeOfReceiverItselfWithKey: ( NSString* )_AttributeKey
+    {
+    NSError* error = nil;
+    id attributeValue =
+        [ [ self class ] p_retrieveAttributeFromSecCertificate: self.secCertificateItem
+                                                  attributeKey: _AttributeKey
+                                                         error: &error ];
+    _WSCPrintNSErrorForLog( error );
+    return attributeValue;
+    }
 
 /* Extract attributes from the given SecCertificateRef
  */
@@ -210,40 +198,6 @@ NSString static* kSubOIDKey = @"subOID";
     }
 
 @end // WSCCertificateItem + _WSCCertificateItemPrivateAccessAttributes
-
-NSString* _WSCSecCertificateGetIssuerName( SecCertificateRef _SecCertificateRef )
-    {
-    NSData* certificateDERRepresentation = ( __bridge NSData* )SecCertificateCopyData( _SecCertificateRef );
-    unsigned char const* DERRepresentationDataBytes = ( unsigned char const* )[ certificateDERRepresentation bytes ];
-    X509* X509Certificate = d2i_X509( NULL, &DERRepresentationDataBytes, [ certificateDERRepresentation length ] );
-
-    NSString* issuer = nil;
-    if ( X509Certificate != NULL )
-        {
-        X509_NAME* issuerX509Name = X509_get_issuer_name( X509Certificate );
-
-        if (issuerX509Name != NULL)
-            {
-            int nid = OBJ_txt2nid( "O" ); // organization
-            int index = X509_NAME_get_index_by_NID( issuerX509Name, nid, -1 );
-
-            X509_NAME_ENTRY* issuerNameEntry = X509_NAME_get_entry( issuerX509Name, index );
-
-            if ( issuerNameEntry )
-                {
-                ASN1_STRING* issuerNameASN1 = X509_NAME_ENTRY_get_data( issuerNameEntry );
-
-                if ( issuerNameASN1 != NULL )
-                    {
-                    unsigned char* issuerName = ASN1_STRING_data( issuerNameASN1 );
-                    issuer = [ NSString stringWithUTF8String: ( char* )issuerName ];
-                    }
-                }
-            }
-        }
-
-    return issuer;
-    }
 
 //////////////////////////////////////////////////////////////////////////////
 

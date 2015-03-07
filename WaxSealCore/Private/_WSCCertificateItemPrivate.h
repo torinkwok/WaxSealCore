@@ -33,10 +33,11 @@
 
 #import "WSCCertificateItem.h"
 
-NSString* _WSCSecCertificateGetIssuerName( SecCertificateRef _SecCertificateRef );
-
 #pragma mark WSCCertificateItem + _WSCCertificateItemPrivateAccessAttributes
 @interface WSCCertificateItem ( _WSCCertificateItemPrivateAccessAttributes )
+
+// Extract attribute from the receiver itself
+- ( id ) p_retriveAttributeOfReceiverItselfWithKey: ( NSString* )_AttributeKey;
 
 // Extract attributes from the given SecCertificateRef
 + ( id ) p_retrieveAttributeFromSecCertificate: ( SecCertificateRef )_SecCertificateRef

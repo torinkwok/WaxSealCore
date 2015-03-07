@@ -87,7 +87,7 @@
     XCTAssertEqualObjects( searchKey_label_testCase0, commonName_testCase0 );
     NSLog( @"Common Name #PositiveTestCase0: %@", commonName_testCase0 );
 
-    NSString* issuerName_testCase0 = certificate_testCase0.issuerName;
+    NSString* issuerName_testCase0 = certificate_testCase0.issuerCommonName;
     NSLog( @"Issuer Name #PositiveTestCase0: %@", issuerName_testCase0 );
 
     // Subject Email Address
@@ -183,7 +183,7 @@
     XCTAssert( commonName_testCase1.length == 0 );
     NSLog( @"Common Name #PositiveTestCase1: %@", commonName_testCase1 );
 
-    NSString* issuerName_testCase1 = certificate_testCase1.issuerName;
+    NSString* issuerName_testCase1 = certificate_testCase1.issuerCommonName;
     NSLog( @"Issuer Name #PositiveTestCase1: %@", issuerName_testCase1 );
 
     // Subject Email Address
