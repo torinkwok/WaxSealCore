@@ -288,28 +288,8 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    NSDictionary* values = ( __bridge NSDictionary* )
-        SecCertificateCopyValues( certificate_testCase1.secCertificateItem, NULL, NULL );
-//                                , ( __bridge CFArrayRef )@[ ( __bridge id )kSecOIDX509V1IssuerName
-////                                                          , ( __bridge id )kSecOIDX509V1Version
-////                                                          , ( __bridge id )kSecOIDX509V1Signature
-////                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
-//                                                          , ( __bridge id )kSecOIDX509V1SubjectName
-//                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
-//                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithmParameters
-////                                                          , ( __bridge id )kSecOIDSubjectEmailAddress
-////                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKey
-//                                                          , ( __bridge id )kSecOIDX509V1SerialNumber
-////                                                          , ( __bridge id )kSecOIDX509V1SubjectName
-//                                                          ]
-//                                , nil );
-
     // ----------------------------------------------------------------------------------
     // Positive Test Case 2
-    // ----------------------------------------------------------------------------------
-{
-    // ----------------------------------------------------------------------------------
-    // Positive Test Case 1
     // ----------------------------------------------------------------------------------
     NSString* searchKey_label_testCase2 = @"Mac Developer: Tong Guo (8ZDY95NQGT)";
     WSCCertificateItem* certificate_testCase2 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
@@ -406,7 +386,22 @@
     XCTAssertNil( issuerLocality_testCase2 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
-}
+
+    NSDictionary* values = ( __bridge NSDictionary* )
+        SecCertificateCopyValues( certificate_testCase1.secCertificateItem, NULL, NULL );
+//                                , ( __bridge CFArrayRef )@[ ( __bridge id )kSecOIDX509V1IssuerName
+////                                                          , ( __bridge id )kSecOIDX509V1Version
+////                                                          , ( __bridge id )kSecOIDX509V1Signature
+////                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
+//                                                          , ( __bridge id )kSecOIDX509V1SubjectName
+//                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
+//                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithmParameters
+////                                                          , ( __bridge id )kSecOIDSubjectEmailAddress
+////                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKey
+//                                                          , ( __bridge id )kSecOIDX509V1SerialNumber
+////                                                          , ( __bridge id )kSecOIDX509V1SubjectName
+//                                                          ]
+//                                , nil );
     }
 
 @end // WSCCertificateItemTests test case
