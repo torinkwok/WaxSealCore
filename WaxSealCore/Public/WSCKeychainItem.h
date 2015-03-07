@@ -41,7 +41,7 @@
   classes descend from this class and WSCProtectedKeychainItem:
 
   + WSCPassphraseItem
-  + WSCCertificate (Not supported, will be supported in version 2.0)
+  + WSCCertificate
   + WSCKey (Not supported, be will supported in version 2.0)
   + WSCIdentity (Not supported, will be supported in version 2.0)
   */
@@ -148,6 +148,26 @@ NSString extern* const WSCKeychainItemAttributeProtocol;
 // Unique to the Application Passphrase Items
 NSString extern* const WSCKeychainItemAttributeServiceName;
 NSString extern* const WSCKeychainItemAttributeUserDefinedDataAttribute;
+
+// Unique to the Certificate Items
+NSString extern* const WSCKeychainItemAttributeSubjectEmailAddress;
+NSString extern* const WSCKeychainItemAttributeSubjectCommonName;
+NSString extern* const WSCKeychainItemAttributeSubjectOrganization;
+NSString extern* const WSCKeychainItemAttributeSubjectOrganizationalUnit;
+NSString extern* const WSCKeychainItemAttributeSubjectCountryAbbreviation;
+NSString extern* const WSCKeychainItemAttributeSubjectStateOrProvince;
+NSString extern* const WSCKeychainItemAttributeSubjectLocality;
+
+NSString extern* const WSCKeychainItemAttributeIssuerCommonName;
+NSString extern* const WSCKeychainItemAttributeIssuerOrganization;
+NSString extern* const WSCKeychainItemAttributeIssuerOrganizationalUnit;
+NSString extern* const WSCKeychainItemAttributeIssuerCountryAbbreviation;
+NSString extern* const WSCKeychainItemAttributeIssuerStateOrProvince;
+NSString extern* const WSCKeychainItemAttributeIssuerLocality;
+
+NSString extern* const WSCKeychainItemAttributeSerialNumber;
+NSString extern* const WSCKeychainItemAttributeSubjectKeyID;
+NSString extern* const WSCKeychainItemAttributePublicKeyHash;
 
 //////////////////////////////////////////////////////////////////////////////
 

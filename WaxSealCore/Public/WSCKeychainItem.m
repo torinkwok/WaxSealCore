@@ -34,6 +34,7 @@
 #import "WSCKeychain.h"
 #import "WSCKeychainItem.h"
 #import "WSCKeychainError.h"
+#import "WSCPassphraseItem.h"
 #import "NSString+_OMCString.h"
 
 #import "_WSCKeychainErrorPrivate.h"
@@ -191,8 +192,7 @@
 - ( WSCKeychainItemClass ) p_itemClass: ( NSError** )_Error
     {
     OSStatus resultCode = errSecSuccess;
-
-    SecItemClass class = CSSM_DL_DB_RECORD_ALL_KEYS;
+    SecItemClass class = 0;
 
     // We just need the class of receiver,
     // so any other parameter will be ignored.
@@ -613,25 +613,45 @@
 @end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes
 
 // Common Attributes
-NSString* const WSCKeychainItemAttributeCreationDate                = @"'cdat'";
-NSString* const WSCKeychainItemAttributeModificationDate            = @"'mdat'";
-NSString* const WSCKeychainItemAttributeKindDescription             = @"'desc'";
-NSString* const WSCKeychainItemAttributeComment                     = @"'icmt'";
-NSString* const WSCKeychainItemAttributeLabel                       = @"'labl'";
-NSString* const WSCKeychainItemAttributeInvisible                   = @"'invi'";
-NSString* const WSCKeychainItemAttributeNegative                    = @"'nega'";
-NSString* const WSCKeychainItemAttributeAccount                     = @"'acct'";
+NSString* const WSCKeychainItemAttributeCreationDate                = @"cdat";
+NSString* const WSCKeychainItemAttributeModificationDate            = @"mdat";
+NSString* const WSCKeychainItemAttributeKindDescription             = @"desc";
+NSString* const WSCKeychainItemAttributeComment                     = @"icmt";
+NSString* const WSCKeychainItemAttributeLabel                       = @"labl";
+NSString* const WSCKeychainItemAttributeInvisible                   = @"invi";
+NSString* const WSCKeychainItemAttributeNegative                    = @"nega";
+NSString* const WSCKeychainItemAttributeAccount                     = @"acct";
 
 // Unique to the Internet Passphrase Items
-NSString* const WSCKeychainItemAttributeHostName                    = @"'srvr'";
-NSString* const WSCKeychainItemAttributeAuthenticationType          = @"'atyp'";
-NSString* const WSCKeychainItemAttributePort                        = @"'port'";
-NSString* const WSCKeychainItemAttributeRelativePath                = @"'path'";
-NSString* const WSCKeychainItemAttributeProtocol                    = @"'ptcl'";
+NSString* const WSCKeychainItemAttributeHostName                    = @"srvr";
+NSString* const WSCKeychainItemAttributeAuthenticationType          = @"atyp";
+NSString* const WSCKeychainItemAttributePort                        = @"port";
+NSString* const WSCKeychainItemAttributeRelativePath                = @"path";
+NSString* const WSCKeychainItemAttributeProtocol                    = @"ptcl";
 
 // Unique to the Application Passphrase Items
-NSString* const WSCKeychainItemAttributeServiceName                 = @"'svce'";
-NSString* const WSCKeychainItemAttributeUserDefinedDataAttribute    = @"'gena'";
+NSString* const WSCKeychainItemAttributeServiceName                 = @"svce";
+NSString* const WSCKeychainItemAttributeUserDefinedDataAttribute    = @"gena";
+
+// Unique to the Certificate Items
+NSString* const WSCKeychainItemAttributeSubjectEmailAddress         = @"2.16.840.1.113741.2.1.1.1.8/1.2.840.113549.1.9.1 (Subject Email Address)";
+NSString* const WSCKeychainItemAttributeSubjectCommonName           = @"2.16.840.1.113741.2.1.1.1.8/2.5.4.3 (Subject Common Name)";
+NSString* const WSCKeychainItemAttributeSubjectOrganization         = @"2.16.840.1.113741.2.1.1.1.8/2.5.4.10 (Subject Organization)";
+NSString* const WSCKeychainItemAttributeSubjectOrganizationalUnit   = @"2.16.840.1.113741.2.1.1.1.8/2.5.4.11 (Subject Organizational Unit)";
+NSString* const WSCKeychainItemAttributeSubjectCountryAbbreviation  = @"2.16.840.1.113741.2.1.1.1.8/2.5.4.6 (Subject Country Abbreviation)";
+NSString* const WSCKeychainItemAttributeSubjectStateOrProvince      = @"2.16.840.1.113741.2.1.1.1.8/2.5.4.8 (Subject State/Province)";
+NSString* const WSCKeychainItemAttributeSubjectLocality             = @"2.16.840.1.113741.2.1.1.1.8/2.5.4.7 (Subject Locality)";
+
+NSString* const WSCKeychainItemAttributeIssuerCommonName            = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.3 (Issuer Common Name)";
+NSString* const WSCKeychainItemAttributeIssuerOrganization          = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.10 (Issuer Organization)";
+NSString* const WSCKeychainItemAttributeIssuerOrganizationalUnit    = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.11 (Issuer Organizational Unit)";
+NSString* const WSCKeychainItemAttributeIssuerCountryAbbreviation   = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.6 (Issuer Country Abbreviation)";
+NSString* const WSCKeychainItemAttributeIssuerStateOrProvince       = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.8 (Issuer State/Province)";
+NSString* const WSCKeychainItemAttributeIssuerLocality              = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.7 (Issuer Locality)";
+
+NSString* const WSCKeychainItemAttributeSerialNumber                = @"2.16.840.1.113741.2.1.1.1.3 (Serial Number)";
+NSString* const WSCKeychainItemAttributeSubjectKeyID                = @"Subject Key ID";
+NSString* const WSCKeychainItemAttributePublicKeyHash               = @"Public Key Hash";
 
 //////////////////////////////////////////////////////////////////////////////
 
