@@ -97,61 +97,72 @@
 #pragma mark WSCCertificateItem + _WSCCertificateItemPrivateAccessAttributes
 @implementation WSCCertificateItem ( _WSCCertificateItemPrivateAccessAttributes )
 
+NSString static* kMasterOIDKey = @"masterOID";
+NSString static* kSubOIDKey = @"subOID";
+
++ ( id ) p_OIDsCorrespondingGivenAttributeKey: ( NSString* )_AttributeKey
+    {
+    NSMutableDictionary* OIDs = [ NSMutableDictionary dictionary ];
+
+    if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectEmailAddress ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SubjectName;
+        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDEmailAddress;
+        }
+
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectCommonName ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SubjectName;
+        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDCommonName;
+        }
+
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectOrganization ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SubjectName;
+        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDOrganizationName;
+        }
+
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectOrganizationalUnit ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SubjectName;
+        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDOrganizationalUnitName;
+        }
+
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerCommonName ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1IssuerName;
+        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDCommonName;
+        }
+    //
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerOrganization ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1IssuerName;
+        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDOrganizationName;
+        }
+
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerOrganizationalUnit ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1IssuerName;
+        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDOrganizationalUnitName;
+        }
+
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSerialNumber ] )
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SerialNumber;
+
+    return OIDs;
+    }
+
 + ( id ) p_retrieveAttributeFromSecCertificate: ( SecCertificateRef )_SecCertificateRef
                                   attributeKey: ( NSString* )_AttributeKey
                                          error: ( NSError** )_Error
     {
     CFErrorRef cfError = NULL;
 
+    NSDictionary* OIDs = [ self p_OIDsCorrespondingGivenAttributeKey: _AttributeKey ];
+    NSString* masterOID = OIDs[ kMasterOIDKey ];
+    NSString* subOID = OIDs[ kSubOIDKey ];
+
     id attribute = nil;
-
-    NSString* masterOID = nil;
-    NSString* subOID = nil;
-
-    if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectEmailAddress ] )
-        {
-        masterOID = ( __bridge id )kSecOIDX509V1SubjectName;
-        subOID = ( __bridge id )kSecOIDEmailAddress;
-        }
-
-    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectCommonName ] )
-        {
-        masterOID = ( __bridge id )kSecOIDX509V1SubjectName;
-        subOID = ( __bridge id )kSecOIDCommonName;
-        }
-
-    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectOrganization ] )
-        {
-        masterOID = ( __bridge id )kSecOIDX509V1SubjectName;
-        subOID = ( __bridge id )kSecOIDOrganizationName;
-        }
-
-    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectOrganizationalUnit ] )
-        {
-        masterOID = ( __bridge id )kSecOIDX509V1SubjectName;
-        subOID = ( __bridge id )kSecOIDOrganizationalUnitName;
-        }
-
-    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerCommonName ] )
-        {
-        masterOID = ( __bridge id )kSecOIDX509V1IssuerName;
-        subOID = ( __bridge id )kSecOIDCommonName;
-        }
-    //
-    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerOrganization ] )
-        {
-        masterOID = ( __bridge id )kSecOIDX509V1IssuerName;
-        subOID = ( __bridge id )kSecOIDOrganizationName;
-        }
-
-    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerOrganizationalUnit ] )
-        {
-        masterOID = ( __bridge id )kSecOIDX509V1IssuerName;
-        subOID = ( __bridge id )kSecOIDOrganizationalUnitName;
-        }
-
-    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSerialNumber ] )
-        masterOID = ( __bridge id )kSecOIDX509V1SerialNumber;
 
     CFDictionaryRef secResultValuesMatchingOIDs =
         SecCertificateCopyValues( _SecCertificateRef, ( __bridge CFArrayRef )@[ masterOID ] , &cfError );
@@ -161,22 +172,22 @@
         NSDictionary* valuesDict = [ ( __bridge NSDictionary* )secResultValuesMatchingOIDs objectForKey: masterOID ];
         if ( valuesDict )
             {
-            NSString* valueType = valuesDict[ ( __bridge NSString* )kSecPropertyKeyType ];
-            id valueOrValues = valuesDict[ ( __bridge NSString* )kSecPropertyKeyValue ];
+            NSString* dataType = valuesDict[ ( __bridge NSString* )kSecPropertyKeyType ];
+            id data = valuesDict[ ( __bridge NSString* )kSecPropertyKeyValue ];
 
-            if ( [ valueType isEqualToString: ( __bridge NSString* )kSecPropertyTypeSection ] )
+            if ( [ dataType isEqualToString: ( __bridge NSString* )kSecPropertyTypeSection ] )
                 {
-                for ( NSDictionary* _DictElem in ( NSArray* )valueOrValues )
+                for ( NSDictionary* _Entry in ( NSArray* )data )
                     {
-                    if ( [ _DictElem[ ( __bridge NSString* )kSecPropertyKeyLabel ] isEqualToString: subOID ] )
+                    if ( [ _Entry[ ( __bridge NSString* )kSecPropertyKeyLabel ] isEqualToString: subOID ] )
                         {
-                        attribute = _DictElem[ ( __bridge NSString* )kSecPropertyKeyValue ];
+                        attribute = _Entry[ ( __bridge NSString* )kSecPropertyKeyValue ];
                         break;
                         }
                     }
                 }
             else
-                attribute = valueOrValues;
+                attribute = data;
             }
         }
     else
