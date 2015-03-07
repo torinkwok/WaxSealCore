@@ -91,78 +91,68 @@
     NSLog( @"Issuer Name #PositiveTestCase0: %@", issuerName_testCase0 );
 
     // Subject Email Address
-    NSString* subjectEmailAddress_testCase0 =
-        [ WSCCertificateItem p_retrieveAttributeFromSecCertificate: certificate_testCase0.secCertificateItem
-                                                      attributeKey: WSCKeychainItemAttributeSubjectEmailAddress
-                                                             error: &error ];
+    NSString* subjectEmailAddress_testCase0 = certificate_testCase0.subjectEmailAddress;
     XCTAssertNil( subjectEmailAddress_testCase0 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
     // Subject Common Name
-    NSString* subjectCommonName_testCase0 =
-        [ WSCCertificateItem p_retrieveAttributeFromSecCertificate: certificate_testCase0.secCertificateItem
-                                                      attributeKey: WSCKeychainItemAttributeSubjectCommonName
-                                                             error: &error ];
+    NSString* subjectCommonName_testCase0 = certificate_testCase0.subjectCommonName;
     XCTAssertNotNil( subjectCommonName_testCase0 );
     XCTAssertEqualObjects( subjectCommonName_testCase0, @"COMODO SHA-256 Client Authentication and Secure Email CA" );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    // Orgnization Name
-    NSString* organization_testCase0 =
-        [ WSCCertificateItem p_retrieveAttributeFromSecCertificate: certificate_testCase0.secCertificateItem
-                                                      attributeKey: WSCKeychainItemAttributeSubjectOrganization
-                                                             error: &error ];
+    // Subject Orgnization Name
+    NSString* organization_testCase0 = certificate_testCase0.subjectOrganization;
     XCTAssertNotNil( organization_testCase0 );
     XCTAssertEqualObjects( organization_testCase0, @"COMODO CA Limited" );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    // Orgnization Unit Name
-    NSString* organizationUnit_testCase0 =
-        [ WSCCertificateItem p_retrieveAttributeFromSecCertificate: certificate_testCase0.secCertificateItem
-                                                      attributeKey: WSCKeychainItemAttributeSubjectOrganizationalUnit
-                                                             error: &error ];
+    // Subject Orgnization Unit Name
+    NSString* organizationUnit_testCase0 = certificate_testCase0.subjectOrganizationalUnit;
     XCTAssertNil( organizationUnit_testCase0 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
+    // Subject Country Abbreviation
+    NSString* countryAbbreviation_testCase0 = certificate_testCase0.subjectCountryAbbreviation;
+    XCTAssertNotNil( countryAbbreviation_testCase0 );
+    XCTAssertEqualObjects( countryAbbreviation_testCase0, @"GB" );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
     // Issuer Common Name
-    NSString* issuerCommonName_testCase0 =
-        [ WSCCertificateItem p_retrieveAttributeFromSecCertificate: certificate_testCase0.secCertificateItem
-                                                      attributeKey: WSCKeychainItemAttributeIssuerCommonName
-                                                             error: &error ];
+    NSString* issuerCommonName_testCase0 = certificate_testCase0.issuerCommonName;
     XCTAssertNotNil( issuerCommonName_testCase0 );
     XCTAssertEqualObjects( issuerCommonName_testCase0, @"AddTrust External CA Root" );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
     // Issuer Organization Name
-    NSString* issuerOrganization_testCase0 =
-        [ WSCCertificateItem p_retrieveAttributeFromSecCertificate: certificate_testCase0.secCertificateItem
-                                                      attributeKey: WSCKeychainItemAttributeIssuerOrganization
-                                                             error: &error ];
+    NSString* issuerOrganization_testCase0 = certificate_testCase0.issuerOrganization;
     XCTAssertNotNil( issuerOrganization_testCase0 );
     XCTAssertEqualObjects( issuerOrganization_testCase0, @"AddTrust AB" );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
     // Issuer Organizational Unit Name
-    NSString* issuerOrganizationalUnit_testCase0 =
-        [ WSCCertificateItem p_retrieveAttributeFromSecCertificate: certificate_testCase0.secCertificateItem
-                                                      attributeKey: WSCKeychainItemAttributeIssuerOrganizationalUnit
-                                                             error: &error ];
+    NSString* issuerOrganizationalUnit_testCase0 = certificate_testCase0.issuerOrganizationalUnit;
     XCTAssertNotNil( issuerOrganizationalUnit_testCase0 );
     XCTAssertEqualObjects( issuerOrganizationalUnit_testCase0, @"AddTrust External TTP Network" );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
+    // Issuer Country Abbreviation
+    NSString* countryAbbreviation_testCase1 = certificate_testCase0.issuerCountryAbbreviation;
+    XCTAssertNotNil( countryAbbreviation_testCase1 );
+    XCTAssertEqualObjects( countryAbbreviation_testCase1, @"SE" );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
     // Serial Number
-    NSString* seriaNumber_testCase0 =
-        [ WSCCertificateItem p_retrieveAttributeFromSecCertificate: certificate_testCase0.secCertificateItem
-                                                      attributeKey: WSCKeychainItemAttributeSerialNumber
-                                                             error: &error ];
+    NSString* seriaNumber_testCase0 = certificate_testCase0.serialNumber;
     XCTAssertNotNil( seriaNumber_testCase0 );
     XCTAssertEqualObjects( seriaNumber_testCase0, @"00 E0 23 CB 15 12 83 53 89 AD 61 6E 7A 54 67 6B 21" );
     XCTAssertNil( error );
@@ -178,85 +168,56 @@
                                                 error: &error ];
     XCTAssertNotNil( certificate_testCase1 );
 
-    NSString* commonName_testCase1 = [ certificate_testCase1 subjectCommonName ];
-    XCTAssertNotNil( commonName_testCase1 );
-    XCTAssert( commonName_testCase1.length == 0 );
-    NSLog( @"Common Name #PositiveTestCase1: %@", commonName_testCase1 );
-
     NSString* issuerName_testCase1 = certificate_testCase1.issuerCommonName;
     NSLog( @"Issuer Name #PositiveTestCase1: %@", issuerName_testCase1 );
 
     // Subject Email Address
-    NSString* subjectEmailAddress_testCase1 =
-        [ WSCCertificateItem p_retrieveAttributeFromSecCertificate: certificate_testCase1.secCertificateItem
-                                                      attributeKey: WSCKeychainItemAttributeSubjectEmailAddress
-                                                             error: &error ];
+    NSString* subjectEmailAddress_testCase1 = certificate_testCase1.subjectEmailAddress;
     XCTAssertNotNil( subjectEmailAddress_testCase1 );
     XCTAssertEqualObjects( subjectEmailAddress_testCase1, @"tong-g@outlook.com" );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
     // Subject Common Name
-    NSString* subjectCommonName_testCase1 =
-        [ WSCCertificateItem p_retrieveAttributeFromSecCertificate: certificate_testCase1.secCertificateItem
-                                                      attributeKey: WSCKeychainItemAttributeSubjectCommonName
-                                                             error: &error ];
+    NSString* subjectCommonName_testCase1 = certificate_testCase1.subjectCommonName;
     XCTAssertNil( subjectCommonName_testCase1 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
     // Orgnization Name
-    NSString* organization_testCase1 =
-        [ WSCCertificateItem p_retrieveAttributeFromSecCertificate: certificate_testCase1.secCertificateItem
-                                                      attributeKey: WSCKeychainItemAttributeSubjectOrganization
-                                                             error: &error ];
+    NSString* organization_testCase1 = certificate_testCase1.subjectOrganization;
     XCTAssertNil( organization_testCase1 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
     // Orgnization Unit Name
-    NSString* organizationUnit_testCase1 =
-        [ WSCCertificateItem p_retrieveAttributeFromSecCertificate: certificate_testCase1.secCertificateItem
-                                                      attributeKey: WSCKeychainItemAttributeSubjectOrganizationalUnit
-                                                             error: &error ];
+    NSString* organizationUnit_testCase1 = certificate_testCase1.subjectOrganizationalUnit;
     XCTAssertNil( organizationUnit_testCase1 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
     // Issuer Common Name
-    NSString* issuerCommonName_testCase1 =
-        [ WSCCertificateItem p_retrieveAttributeFromSecCertificate: certificate_testCase1.secCertificateItem
-                                                      attributeKey: WSCKeychainItemAttributeIssuerCommonName
-                                                             error: &error ];
+    NSString* issuerCommonName_testCase1 = certificate_testCase1.issuerCommonName;
     XCTAssertNotNil( issuerCommonName_testCase1 );
     XCTAssertEqualObjects( issuerCommonName_testCase1, @"COMODO RSA Client Authentication and Secure Email CA" );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
     // Issuer Organization Name
-    NSString* issuerOrganization_testCase1 =
-        [ WSCCertificateItem p_retrieveAttributeFromSecCertificate: certificate_testCase1.secCertificateItem
-                                                      attributeKey: WSCKeychainItemAttributeIssuerOrganization
-                                                             error: &error ];
+    NSString* issuerOrganization_testCase1 = certificate_testCase1.issuerOrganization;
     XCTAssertNotNil( issuerOrganization_testCase1 );
     XCTAssertEqualObjects( issuerOrganization_testCase1, @"COMODO CA Limited" );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
     // Issuer Organizational Unit Name
-    NSString* issuerOrganizationalUnit_testCase1 =
-        [ WSCCertificateItem p_retrieveAttributeFromSecCertificate: certificate_testCase1.secCertificateItem
-                                                      attributeKey: WSCKeychainItemAttributeIssuerOrganizationalUnit
-                                                             error: &error ];
+    NSString* issuerOrganizationalUnit_testCase1 = certificate_testCase1.issuerOrganizationalUnit;
     XCTAssertNil( issuerOrganizationalUnit_testCase1 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
     // Serial Number
-    NSString* seriaNumber_testCase1 =
-        [ WSCCertificateItem p_retrieveAttributeFromSecCertificate: certificate_testCase1.secCertificateItem
-                                                      attributeKey: WSCKeychainItemAttributeSerialNumber
-                                                             error: &error ];
+    NSString* seriaNumber_testCase1 = certificate_testCase1.serialNumber;
     XCTAssertNotNil( seriaNumber_testCase1 );
     XCTAssertEqualObjects( seriaNumber_testCase1, @"00 9C CB A0 7C DE 88 D7 A8 07 53 83 9F A0 73 1E 3B" );
     XCTAssertNil( error );
@@ -269,7 +230,7 @@
 //                                                          , ( __bridge id )kSecOIDX509V1Signature
 //                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
                                                           , ( __bridge id )kSecOIDX509V1SubjectName
-                                                          , ( __bridge id )kSecOIDSubjectEmailAddress
+//                                                          , ( __bridge id )kSecOIDSubjectEmailAddress
 //                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKey
                                                           , ( __bridge id )kSecOIDX509V1SerialNumber
 //                                                          , ( __bridge id )kSecOIDX509V1SubjectName

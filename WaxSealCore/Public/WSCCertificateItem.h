@@ -95,16 +95,54 @@
   */
 @interface WSCCertificateItem : WSCKeychainItem
 
-#pragma mark Certificate Attributes
-/** @name Certificate Attributes */
+#pragma mark Subject Attributes of a Certificate
+/** @name Subject Attributes of a Certificate */
 
-/** The common name of the subject of a certificate.
+/** The Email address of the subject of a certificate. (read-only)
+  */
+@property ( copy, readonly ) NSString* subjectEmailAddress;
+
+/** The common name of the subject of a certificate. (read-only)
  */
 @property ( copy, readonly ) NSString* subjectCommonName;
 
-/** The common name of the issuer of a certificate.
+/** The organization name of the subject of a certificate. (read-only)
+  */
+@property ( copy, readonly ) NSString* subjectOrganization;
+
+/** The organizational unit name of the subject of a certificate. (read-only)
+  */
+@property ( copy, readonly ) NSString* subjectOrganizationalUnit;
+
+/** The country abbreviation of the subject of a certificate. (read-only)
+  */
+@property ( copy, readonly ) NSString* subjectCountryAbbreviation;
+
+#pragma mark Issuer Attributes of a Certificate
+/** @name Issuer Attributes of a Certificate */
+
+/** The common name of the issuer of a certificate. (read-only)
  */
 @property ( copy, readonly ) NSString* issuerCommonName;
+
+/** The organization name of the issuer of a certificate. (read-only)
+  */
+@property ( copy, readonly ) NSString* issuerOrganization;
+
+/** The organizational unit name of the issuer of a certificate. (read-only)
+  */
+@property ( copy, readonly ) NSString* issuerOrganizationalUnit;
+
+/** The country abbreviation of the issuer of a certificate. (read-only)
+  */
+@property ( copy, readonly ) NSString* issuerCountryAbbreviation;
+
+#pragma mark General Attributes of a Certificate
+/** @name General Attributes of a Certificate */
+
+/** The serial number of a certificate. (read-only)
+  */
+@property ( copy, readonly ) NSString* serialNumber;
 
 #pragma mark Certificate, Key, and Trust Services Bridge
 /** @name Certificate, Key, and Trust Services Bridge */

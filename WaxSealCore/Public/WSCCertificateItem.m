@@ -37,12 +37,29 @@
 
 @implementation WSCCertificateItem
 
+@dynamic subjectEmailAddress;
 @dynamic subjectCommonName;
+@dynamic subjectOrganization;
+@dynamic subjectOrganizationalUnit;
+@dynamic subjectCountryAbbreviation;
+
 @dynamic issuerCommonName;
+@dynamic issuerOrganization;
+@dynamic issuerOrganizationalUnit;
+@dynamic issuerCountryAbbreviation;
+
+@dynamic serialNumber;
 
 @dynamic secCertificateItem;
 
-#pragma mark Certificate Attributes
+#pragma mark Subject Attributes of a Certificate
+
+/** The Email address of the subject of a certificate.
+  */
+- ( NSString* ) subjectEmailAddress
+    {
+    return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeSubjectEmailAddress ];
+    }
 
 /* The common name of the subject of a certificate.
  */
@@ -51,11 +68,64 @@
     return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeSubjectCommonName ];
     }
 
+/** The organization name of the subject of a certificate.
+  */
+- ( NSString* ) subjectOrganization
+    {
+    return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeSubjectOrganization ];
+    }
+
+/** The organizational unit name of the subject of a certificate.
+  */
+- ( NSString* ) subjectOrganizationalUnit
+    {
+    return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeSubjectOrganizationalUnit ];
+    }
+
+/** The country abbreviation of the subject of a certificate. (read-only)
+  */
+- ( NSString* ) subjectCountryAbbreviation
+    {
+    return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeSubjectCountryAbbreviation ];
+    }
+
+#pragma mark Issuer Attributes of a Certificate
+
 /* The common name of the issuer of a certificate.
  */
 - ( NSString* ) issuerCommonName
     {
     return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeIssuerCommonName ];
+    }
+
+/** The organization name of the issuer of a certificate.
+  */
+- ( NSString* ) issuerOrganization
+    {
+    return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeIssuerOrganization ];
+    }
+
+/** The organizational unit name of the issuer of a certificate.
+  */
+- ( NSString* ) issuerOrganizationalUnit
+    {
+    return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeIssuerOrganizationalUnit ];
+    }
+
+/** The country abbreviation of the issuer of a certificate. (read-only)
+  */
+- ( NSString* ) issuerCountryAbbreviation
+    {
+    return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeIssuerCountryAbbreviation ];
+    }
+
+#pragma mark General Attributes of a Certificate
+
+/** The serial number of a certificate. (read-only)
+  */
+- ( NSString* ) serialNumber
+    {
+    return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeSerialNumber ];
     }
 
 #pragma mark Certificate, Key, and Trust Services Bridge
@@ -169,6 +239,13 @@ NSString static* kSubOIDKey = @"subOID";
         OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDOrganizationalUnitName;
         }
 
+    // Subject Country Abbreviation
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectCountryAbbreviation ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SubjectName;
+        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDCountryName;
+        }
+
     // Issuer Common Name
     else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerCommonName ] )
         {
@@ -188,6 +265,13 @@ NSString static* kSubOIDKey = @"subOID";
         {
         OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1IssuerName;
         OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDOrganizationalUnitName;
+        }
+
+    // Issuer Country Abbreviation
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerCountryAbbreviation ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1IssuerName;
+        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDCountryName;
         }
 
     // Serial Number
