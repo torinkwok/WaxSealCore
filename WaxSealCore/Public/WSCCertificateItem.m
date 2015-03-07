@@ -107,16 +107,49 @@
 
     NSString* masterOID = nil;
     NSString* subOID = nil;
-    if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectCommonName ] )
+
+    if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectEmailAddress ] )
+        {
+        masterOID = ( __bridge id )kSecOIDX509V1SubjectName;
+        subOID = ( __bridge id )kSecOIDEmailAddress;
+        }
+
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectCommonName ] )
         {
         masterOID = ( __bridge id )kSecOIDX509V1SubjectName;
         subOID = ( __bridge id )kSecOIDCommonName;
         }
+
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectOrganization ] )
+        {
+        masterOID = ( __bridge id )kSecOIDX509V1SubjectName;
+        subOID = ( __bridge id )kSecOIDOrganizationName;
+        }
+
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectOrganizationalUnit ] )
+        {
+        masterOID = ( __bridge id )kSecOIDX509V1SubjectName;
+        subOID = ( __bridge id )kSecOIDOrganizationalUnitName;
+        }
+
     else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerCommonName ] )
         {
         masterOID = ( __bridge id )kSecOIDX509V1IssuerName;
         subOID = ( __bridge id )kSecOIDCommonName;
         }
+    //
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerOrganization ] )
+        {
+        masterOID = ( __bridge id )kSecOIDX509V1IssuerName;
+        subOID = ( __bridge id )kSecOIDOrganizationName;
+        }
+
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerOrganizationalUnit ] )
+        {
+        masterOID = ( __bridge id )kSecOIDX509V1IssuerName;
+        subOID = ( __bridge id )kSecOIDOrganizationalUnitName;
+        }
+
     else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSerialNumber ] )
         masterOID = ( __bridge id )kSecOIDX509V1SerialNumber;
 
@@ -154,9 +187,6 @@
     }
 
 @end // WSCCertificateItem + _WSCCertificateItemPrivateAccessAttributes
-
-//static NSString* _WSCSecCertificateGetStringValue( SecCertificateRef _SecCertificateRef
-//                                                 , 
 
 NSString* _WSCSecCertificateGetIssuerName( SecCertificateRef _SecCertificateRef )
     {
