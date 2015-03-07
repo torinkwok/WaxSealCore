@@ -100,58 +100,8 @@
 NSString static* kMasterOIDKey = @"masterOID";
 NSString static* kSubOIDKey = @"subOID";
 
-+ ( id ) p_OIDsCorrespondingGivenAttributeKey: ( NSString* )_AttributeKey
-    {
-    NSMutableDictionary* OIDs = [ NSMutableDictionary dictionary ];
-
-    if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectEmailAddress ] )
-        {
-        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SubjectName;
-        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDEmailAddress;
-        }
-
-    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectCommonName ] )
-        {
-        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SubjectName;
-        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDCommonName;
-        }
-
-    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectOrganization ] )
-        {
-        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SubjectName;
-        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDOrganizationName;
-        }
-
-    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectOrganizationalUnit ] )
-        {
-        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SubjectName;
-        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDOrganizationalUnitName;
-        }
-
-    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerCommonName ] )
-        {
-        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1IssuerName;
-        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDCommonName;
-        }
-    //
-    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerOrganization ] )
-        {
-        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1IssuerName;
-        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDOrganizationName;
-        }
-
-    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerOrganizationalUnit ] )
-        {
-        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1IssuerName;
-        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDOrganizationalUnitName;
-        }
-
-    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSerialNumber ] )
-        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SerialNumber;
-
-    return OIDs;
-    }
-
+/* Extract attributes from the given SecCertificateRef
+ */
 + ( id ) p_retrieveAttributeFromSecCertificate: ( SecCertificateRef )_SecCertificateRef
                                   attributeKey: ( NSString* )_AttributeKey
                                          error: ( NSError** )_Error
@@ -195,6 +145,68 @@ NSString static* kSubOIDKey = @"subOID";
             *_Error = [ [ ( __bridge NSError* )cfError copy ] autorelease ];
 
     return attribute;
+    }
+
+/* Mapping the given attribute key to one pair of ODIs
+ */
++ ( id ) p_OIDsCorrespondingGivenAttributeKey: ( NSString* )_AttributeKey
+    {
+    NSMutableDictionary* OIDs = [ NSMutableDictionary dictionary ];
+
+    // Subject Email Address
+    if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectEmailAddress ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SubjectName;
+        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDEmailAddress;
+        }
+
+    // Subject Common Name
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectCommonName ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SubjectName;
+        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDCommonName;
+        }
+
+    // Subject Organization
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectOrganization ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SubjectName;
+        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDOrganizationName;
+        }
+
+    // Subject Organization Unit
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSubjectOrganizationalUnit ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SubjectName;
+        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDOrganizationalUnitName;
+        }
+
+    // Issuer Common Name
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerCommonName ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1IssuerName;
+        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDCommonName;
+        }
+
+    // Issuer Organization
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerOrganization ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1IssuerName;
+        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDOrganizationName;
+        }
+
+    // Issuer Organization Unit
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerOrganizationalUnit ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1IssuerName;
+        OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDOrganizationalUnitName;
+        }
+
+    // Serial Number
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSerialNumber ] )
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SerialNumber;
+
+    return OIDs;
     }
 
 @end // WSCCertificateItem + _WSCCertificateItemPrivateAccessAttributes
