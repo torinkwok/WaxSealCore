@@ -221,18 +221,24 @@ NSString static* kSubOIDKey = @"subOID";
                     {
                     if ( [ _Entry[ ( __bridge NSString* )kSecPropertyKeyLabel ] isEqualToString: subOID ] )
                         {
-                        attribute = _Entry[ ( __bridge NSString* )kSecPropertyKeyValue ];
+                        attribute = [ [ _Entry[ ( __bridge NSString* )kSecPropertyKeyValue ] copy ] autorelease ];
                         break;
                         }
                     }
                 }
             else
-                attribute = data;
+                attribute = [ [ data copy ] autorelease ];
             }
+
+        CFRelease( secResultValuesMatchingOIDs );
         }
     else
+        {
         if ( _Error )
             *_Error = [ [ ( __bridge NSError* )cfError copy ] autorelease ];
+
+        CFRelease( cfError );
+        }
 
     return attribute;
     }
