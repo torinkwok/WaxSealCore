@@ -122,6 +122,10 @@
   */
 @property ( copy, readonly ) NSString* subjectStateOrProvince;
 
+/** The locality name of the subject of a certificate. (read-only)
+  */
+@property ( copy, readonly ) NSString* subjectLocality;
+
 #pragma mark Issuer Attributes of a Certificate
 /** @name Issuer Attributes of a Certificate */
 
@@ -144,6 +148,10 @@
 /** The state or province name of the issuer of a certificate. (read-only)
   */
 @property ( copy, readonly ) NSString* issuerStateOrProvince;
+
+/** The locality name of the issuer of a certificate. (read-only)
+  */
+@property ( copy, readonly ) NSString* issuerLocality;
 
 #pragma mark General Attributes of a Certificate
 /** @name General Attributes of a Certificate */

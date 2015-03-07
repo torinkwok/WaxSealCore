@@ -130,6 +130,13 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
+    // Subject Locality
+    NSString* subjectLocality_testCase0 = certificate_testCase0.subjectLocality;
+    XCTAssertNotNil( subjectLocality_testCase0 );
+    XCTAssertEqualObjects( subjectLocality_testCase0, @"Salford" );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
     // Issuer Common Name
     NSString* issuerCommonName_testCase0 = certificate_testCase0.issuerCommonName;
     XCTAssertNotNil( issuerCommonName_testCase0 );
@@ -161,6 +168,12 @@
     // Issuer State/Province
     NSString* stateOrProvince_testCase1 = certificate_testCase0.issuerStateOrProvince;
     XCTAssertNil( stateOrProvince_testCase1 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Issuer Locality
+    NSString* issuerLocality_testCase0 = certificate_testCase0.issuerLocality;
+    XCTAssertNil( issuerLocality_testCase0 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -197,15 +210,33 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    // Orgnization Name
+    // Subject Orgnization Name
     NSString* organization_testCase1 = certificate_testCase1.subjectOrganization;
     XCTAssertNil( organization_testCase1 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    // Orgnization Unit Name
+    // Subject Orgnization Unit Name
     NSString* organizationUnit_testCase1 = certificate_testCase1.subjectOrganizationalUnit;
     XCTAssertNil( organizationUnit_testCase1 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Subject Country Abbreviation
+    NSString* subjectCountryAbbreviation_testCase1 = certificate_testCase1.subjectCountryAbbreviation;
+    XCTAssertNil( subjectCountryAbbreviation_testCase1 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Subject State/Province
+    NSString* subjectStateOrProvince_testCase1 = certificate_testCase1.subjectStateOrProvince;
+    XCTAssertNil( subjectStateOrProvince_testCase1 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Subject Locality
+    NSString* subjectLocality_testCase1 = certificate_testCase1.subjectLocality;
+    XCTAssertNil( subjectLocality_testCase1 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -229,6 +260,27 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
+    // Issuer Country Abbreviation
+    NSString* issuerCountryAbbreviation_testCase1 = certificate_testCase1.issuerCountryAbbreviation;
+    XCTAssertNotNil( issuerCountryAbbreviation_testCase1 );
+    XCTAssertEqualObjects( issuerCountryAbbreviation_testCase1, @"GB" );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Issuer State/Province
+    NSString* issuerStateOrProvince_testCase1 = certificate_testCase1.issuerStateOrProvince;
+    XCTAssertNotNil( issuerStateOrProvince_testCase1 );
+    XCTAssertEqualObjects( issuerStateOrProvince_testCase1, @"Greater Manchester" );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Issuer Locality
+    NSString* issuerLocality_testCase1 = certificate_testCase1.issuerLocality;
+    XCTAssertNotNil( issuerLocality_testCase1 );
+    XCTAssertEqualObjects( issuerLocality_testCase1, @"Salford" );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
     // Serial Number
     NSString* seriaNumber_testCase1 = certificate_testCase1.serialNumber;
     XCTAssertNotNil( seriaNumber_testCase1 );
@@ -243,6 +295,8 @@
 //                                                          , ( __bridge id )kSecOIDX509V1Signature
 //                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
                                                           , ( __bridge id )kSecOIDX509V1SubjectName
+                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
+                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithmParameters
 //                                                          , ( __bridge id )kSecOIDSubjectEmailAddress
 //                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKey
                                                           , ( __bridge id )kSecOIDX509V1SerialNumber
