@@ -780,16 +780,6 @@ WSCKeychain static* s_system = nil;
                 , ( __bridge id )kCFBooleanTrue, ( __bridge id )kSecReturnRef
                 , nil ];
 
-    #if 1 // DEBUG
-        NSMutableDictionary* finalQueryDictionary_debug =
-            [ NSMutableDictionary dictionaryWithObjectsAndKeys:
-                  ( __bridge id )_WSCModernClassFromOriginal( _ItemClass ), ( __bridge id )kSecClass
-                , ( __bridge id )kSecMatchLimitAll, ( __bridge id )kSecMatchLimit
-                , @[ ( __bridge id )self.secKeychain ], ( __bridge id )kSecMatchSearchList
-                , ( __bridge id )kCFBooleanTrue, ( __bridge id )kSecReturnAttributes
-                , nil ];
-    #endif
-
         // Adapt the passed-in search criteria (_SearchCriteriaDict)
         NSMutableDictionary* adaptedSearchCriteriaDict = [ NSMutableDictionary dictionary ];
         for ( NSString* _SearchKey in _SearchCriteriaDict )
@@ -821,13 +811,6 @@ WSCKeychain static* s_system = nil;
                 // On the other hand, values of other types may be inserted directly
                 adaptedSearchCriteriaDict[ _SearchKey ] = _SearchCriteriaDict[ _SearchKey ];
             }
-
-    #if 1
-        CFTypeRef attributes_debug = NULL;
-        [ finalQueryDictionary_debug addEntriesFromDictionary: adaptedSearchCriteriaDict ];
-        SecItemCopyMatching( ( __bridge CFDictionaryRef )finalQueryDictionary_debug, &attributes_debug );
-        NSLog( @"Debug Attributes %lu: %@", CFDictionaryGetCount( attributes_debug ), ( NSDictionary* )attributes_debug );
-    #endif
 
         [ finalQueryDictionary addEntriesFromDictionary: adaptedSearchCriteriaDict ];
 

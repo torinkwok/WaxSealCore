@@ -289,35 +289,124 @@
     _WSCPrintNSErrorForUnitTest( error );
 
     NSDictionary* values = ( __bridge NSDictionary* )
-        SecCertificateCopyValues( certificate_testCase1.secCertificateItem
-                                , ( __bridge CFArrayRef )@[ ( __bridge id )kSecOIDX509V1IssuerName
-//                                                          , ( __bridge id )kSecOIDX509V1Version
-//                                                          , ( __bridge id )kSecOIDX509V1Signature
-//                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
-                                                          , ( __bridge id )kSecOIDX509V1SubjectName
-                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
-                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithmParameters
-//                                                          , ( __bridge id )kSecOIDSubjectEmailAddress
-//                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKey
-                                                          , ( __bridge id )kSecOIDX509V1SerialNumber
+        SecCertificateCopyValues( certificate_testCase1.secCertificateItem, NULL, NULL );
+//                                , ( __bridge CFArrayRef )@[ ( __bridge id )kSecOIDX509V1IssuerName
+////                                                          , ( __bridge id )kSecOIDX509V1Version
+////                                                          , ( __bridge id )kSecOIDX509V1Signature
+////                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
 //                                                          , ( __bridge id )kSecOIDX509V1SubjectName
-                                                          ]
-                                , nil );
+//                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
+//                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithmParameters
+////                                                          , ( __bridge id )kSecOIDSubjectEmailAddress
+////                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKey
+//                                                          , ( __bridge id )kSecOIDX509V1SerialNumber
+////                                                          , ( __bridge id )kSecOIDX509V1SubjectName
+//                                                          ]
+//                                , nil );
 
     // ----------------------------------------------------------------------------------
     // Positive Test Case 2
     // ----------------------------------------------------------------------------------
-    NSString* searchKey_commonName_testCase2 = @"UTN-USERFirst-Client Authentication and Email";
+{
+    // ----------------------------------------------------------------------------------
+    // Positive Test Case 1
+    // ----------------------------------------------------------------------------------
+    NSString* searchKey_label_testCase2 = @"Mac Developer: Tong Guo (8ZDY95NQGT)";
     WSCCertificateItem* certificate_testCase2 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
-        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeSubjectCommonName: searchKey_commonName_testCase2 }
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel: searchKey_label_testCase2 }
                                             itemClass: WSCKeychainItemClassCertificateItem
                                                 error: &error ];
     XCTAssertNotNil( certificate_testCase2 );
 
-    NSString* commonName_testCase2 = [ certificate_testCase2 subjectCommonName ];
-    XCTAssertNotNil( commonName_testCase2 );
-    XCTAssertEqualObjects( certificate_testCase2.label, @"UTN-USERFirst-Client Authentication and Email" );
-    NSLog( @"Common Name #PositiveTestCase1: %@", commonName_testCase2 );
+    NSString* issuerName_testCase1 = certificate_testCase2.issuerCommonName;
+    NSLog( @"Issuer Name #PositiveTestCase1: %@", issuerName_testCase1 );
+
+    // Subject Email Address
+    NSString* subjectEmailAddress_testCase1 = certificate_testCase2.subjectEmailAddress;
+    XCTAssertNil( subjectEmailAddress_testCase1 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Subject Common Name
+    NSString* subjectCommonName_testCase2 = certificate_testCase2.subjectCommonName;
+    XCTAssertNotNil( subjectCommonName_testCase2 );
+    XCTAssertEqualObjects( subjectCommonName_testCase2, @"Mac Developer: Tong Guo (8ZDY95NQGT)" );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Subject Orgnization Name
+    NSString* sujectOrganization_testCase2 = certificate_testCase2.subjectOrganization;
+    XCTAssertNotNil( sujectOrganization_testCase2 );
+    XCTAssertEqualObjects( sujectOrganization_testCase2, @"Tong Guo" );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Subject Orgnization Unit Name
+    NSString* sujectOrganizationUnit_testCase2 = certificate_testCase2.subjectOrganizationalUnit;
+    XCTAssertNotNil( sujectOrganizationUnit_testCase2 );
+    XCTAssertEqualObjects( sujectOrganizationUnit_testCase2, @"89BSC2UYH8" );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Subject Country Abbreviation
+    NSString* subjectCountryAbbreviation_testCase2 = certificate_testCase2.subjectCountryAbbreviation;
+    XCTAssertNotNil( subjectCountryAbbreviation_testCase2 );
+    XCTAssertEqualObjects( subjectCountryAbbreviation_testCase2, @"CN" );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Subject State/Province
+    NSString* subjectStateOrProvince_testCase2 = certificate_testCase2.subjectStateOrProvince;
+    XCTAssertNil( subjectStateOrProvince_testCase2 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Subject Locality
+    NSString* subjectLocality_testCase2 = certificate_testCase2.subjectLocality;
+    XCTAssertNil( subjectLocality_testCase2 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Issuer Common Name
+    NSString* issuerCommonName_testCase2 = certificate_testCase2.issuerCommonName;
+    XCTAssertNotNil( issuerCommonName_testCase2 );
+    XCTAssertEqualObjects( issuerCommonName_testCase2, @"Apple Worldwide Developer Relations Certification Authority" );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Issuer Organization Name
+    NSString* issuerOrganization_testCase2 = certificate_testCase2.issuerOrganization;
+    XCTAssertNotNil( issuerOrganization_testCase2 );
+    XCTAssertEqualObjects( issuerOrganization_testCase2, @"Apple Inc." );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Issuer Organizational Unit Name
+    NSString* issuerOrganizationalUnit_testCase2 = certificate_testCase2.issuerOrganizationalUnit;
+    XCTAssertNotNil( issuerOrganizationalUnit_testCase2 );
+    XCTAssertEqualObjects( issuerOrganizationalUnit_testCase2, @"Apple Worldwide Developer Relations" );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Issuer Country Abbreviation
+    NSString* issuerCountryAbbreviation_testCase2 = certificate_testCase2.issuerCountryAbbreviation;
+    XCTAssertNotNil( issuerCountryAbbreviation_testCase2 );
+    XCTAssertEqualObjects( issuerCountryAbbreviation_testCase2, @"US" );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Issuer State/Province
+    NSString* issuerStateOrProvince_testCase2 = certificate_testCase2.issuerStateOrProvince;
+    XCTAssertNil( issuerStateOrProvince_testCase2 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // Issuer Locality
+    NSString* issuerLocality_testCase2 = certificate_testCase2.issuerLocality;
+    XCTAssertNil( issuerLocality_testCase2 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+}
     }
 
 @end // WSCCertificateItemTests test case
