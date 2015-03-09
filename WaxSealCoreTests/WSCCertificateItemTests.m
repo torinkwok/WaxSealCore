@@ -61,7 +61,7 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-- ( void ) testCommonNameProperty
+- ( void ) testProperties
     {
     NSError* error = nil;
 
@@ -381,20 +381,20 @@
     _WSCPrintNSErrorForUnitTest( error );
 
     NSDictionary* values = ( __bridge NSDictionary* )
-        SecCertificateCopyValues( certificate_testCase1.secCertificateItem, NULL, NULL );
-//                                , ( __bridge CFArrayRef )@[ ( __bridge id )kSecOIDX509V1IssuerName
-////                                                          , ( __bridge id )kSecOIDX509V1Version
-////                                                          , ( __bridge id )kSecOIDX509V1Signature
-////                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
-//                                                          , ( __bridge id )kSecOIDX509V1SubjectName
+        SecCertificateCopyValues( certificate_testCase1.secCertificateItem
+                                , ( __bridge CFArrayRef )@[ ( __bridge id )kSecOIDX509V1IssuerName
+//                                                          , ( __bridge id )kSecOIDX509V1Version
+//                                                          , ( __bridge id )kSecOIDX509V1Signature
 //                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
+//                                                          , ( __bridge id )kSecOIDX509V1SubjectName
+                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
 //                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithmParameters
-////                                                          , ( __bridge id )kSecOIDSubjectEmailAddress
-////                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKey
+//                                                          , ( __bridge id )kSecOIDSubjectEmailAddress
+//                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKey
 //                                                          , ( __bridge id )kSecOIDX509V1SerialNumber
-////                                                          , ( __bridge id )kSecOIDX509V1SubjectName
-//                                                          ]
-//                                , nil );
+//                                                          , ( __bridge id )kSecOIDX509V1SubjectName
+                                                          ]
+                                , NULL );
     }
 
 @end // WSCCertificateItemTests test case

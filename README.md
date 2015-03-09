@@ -158,7 +158,7 @@ WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain l
                                             error: &error ];
                                             
 // WaxSealCore supports Unicode-based search, so you can use Emoji or Chinese in your search criteria.
-// One step. So easy, is not it?
+// One step. Quite handy, isn't it?
 ```
 
 Print its Account Name, Passphrase and Comment:
