@@ -635,12 +635,14 @@ NSString* const WSCKeychainItemAttributeSubjectCountryAbbreviation  = @"2.16.840
 NSString* const WSCKeychainItemAttributeSubjectStateOrProvince      = @"2.16.840.1.113741.2.1.1.1.8/2.5.4.8 (Subject State/Province)";
 NSString* const WSCKeychainItemAttributeSubjectLocality             = @"2.16.840.1.113741.2.1.1.1.8/2.5.4.7 (Subject Locality)";
 
+NSString* const WSCKeychainItemAttributeIssuerEmailAddress          = @"2.16.840.1.113741.2.1.1.1.5/1.2.840.113549.1.9.1 (Issuer Email Address)";
 NSString* const WSCKeychainItemAttributeIssuerCommonName            = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.3 (Issuer Common Name)";
 NSString* const WSCKeychainItemAttributeIssuerOrganization          = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.10 (Issuer Organization)";
 NSString* const WSCKeychainItemAttributeIssuerOrganizationalUnit    = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.11 (Issuer Organizational Unit)";
 NSString* const WSCKeychainItemAttributeIssuerCountryAbbreviation   = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.6 (Issuer Country Abbreviation)";
 NSString* const WSCKeychainItemAttributeIssuerStateOrProvince       = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.8 (Issuer State/Province)";
 NSString* const WSCKeychainItemAttributeIssuerLocality              = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.7 (Issuer Locality)";
+NSString* const WSCKeychainItemAttributeIssuerSignatureAlgorithm    = @"2.16.840.1.113741.2.1.3.2.1 (Issuer Signature Algorithm)";
 
 NSString* const WSCKeychainItemAttributeSerialNumber                = @"2.16.840.1.113741.2.1.1.1.3 (Serial Number)";
 NSString* const WSCKeychainItemAttributeSubjectKeyID                = @"Subject Key ID";
