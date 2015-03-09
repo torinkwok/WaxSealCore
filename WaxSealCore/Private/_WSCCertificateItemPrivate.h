@@ -40,6 +40,8 @@
 // Mapping the given attribute key to one pair of ODIs
 + ( id ) p_OIDsCorrespondingGivenAttributeKey: ( NSString* )_AttributeKey;
 
++ ( WSCSignatureAlgorithmType ) p_signatureAlgorithmFromGiveOID: ( NSString* )_OID;
+
 @end // WSCCertificateItem + _WSCCertificateItemPrivateAccessAttributes
 
 /*================================================================================┐

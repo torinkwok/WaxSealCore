@@ -151,12 +151,14 @@ NSString extern* const WSCKeychainItemAttributeSubjectCountryAbbreviation;
 NSString extern* const WSCKeychainItemAttributeSubjectStateOrProvince;
 NSString extern* const WSCKeychainItemAttributeSubjectLocality;
 
+NSString extern* const WSCKeychainItemAttributeIssuerEmailAddress;
 NSString extern* const WSCKeychainItemAttributeIssuerCommonName;
 NSString extern* const WSCKeychainItemAttributeIssuerOrganization;
 NSString extern* const WSCKeychainItemAttributeIssuerOrganizationalUnit;
 NSString extern* const WSCKeychainItemAttributeIssuerCountryAbbreviation;
 NSString extern* const WSCKeychainItemAttributeIssuerStateOrProvince;
 NSString extern* const WSCKeychainItemAttributeIssuerLocality;
+NSString extern* const WSCKeychainItemAttributeIssuerSignatureAlgorithm;
 
 NSString extern* const WSCKeychainItemAttributeSerialNumber;
 NSString extern* const WSCKeychainItemAttributeSubjectKeyID;

@@ -26,6 +26,71 @@
 
 #import "WSCKeychainItem.h"
 
+/** Defines constants that represent the signature algorithm used by an X.509 certificate.
+  */
+typedef NS_ENUM( NSUInteger, WSCSignatureAlgorithmType )
+    {
+    /// Indicates unknown signature algorithm type.
+      WSCSignatureAlgorithmUnknown          = 0
+
+    /// Indicates SHA with RSA.
+    ,  WSCSignatureAlgorithmSHAWithRSA      = 1
+
+    /// Indicates SHA-1 with RSA.
+    , WSCSignatureAlgorithmSHA1WithRSA      = 2
+
+    /// Indicates SHA-224 with RSA.
+    , WSCSignatureAlgorithmSHA224WithRSA    = 3
+
+    /// Indicates SHA-256 with RSA.
+    , WSCSignatureAlgorithmSHA256WithRSA    = 4
+
+    /// Indicates SHA-384 with RSA.
+    , WSCSignatureAlgorithmSHA384WithRSA    = 5
+
+    /// Indicates SHA-512 with RSA.
+    , WSCSignatureAlgorithmSHA512WithRSA    = 6
+
+    /// Indicates MD2 with RSA.
+    , WSCSignatureAlgorithmMD2WithRSA       = 7
+
+    /// Indicates MD4 with RSA.
+    , WSCSignatureAlgorithmMD4WithRSA       = 8
+
+    /// Indicates MD5 with RSA.
+    , WSCSignatureAlgorithmMD5WithRSA       = 9
+
+    /// Indicates DSA with SHA-1.
+    , WSCSignatureAlgorithmDSAWithSHA1      = 10
+
+    /// Indicates DSA with SHA-224.
+    , WSCSignatureAlgorithmDSAWithSHA224    = 11
+
+    /// Indicates DSA with SHA-256.
+    , WSCSignatureAlgorithmDSAWithSHA256    = 12
+
+    /// Indicates ECDSA with SHA-1.
+    , WSCSignatureAlgorithmECDSAWithSHA1    = 13
+
+    /// Indicates ECDSA with SHA-224.
+    , WSCSignatureAlgorithmECDSAWithSHA224  = 14
+
+    /// Indicates ECDSA with SHA-256.
+    , WSCSignatureAlgorithmECDSAWithSHA256  = 15
+
+    /// Indicates ECDSA with SHA-384.
+    , WSCSignatureAlgorithmECDSAWithSHA384  = 16
+
+    /// Indicates ECDSA with SHA-512.
+    , WSCSignatureAlgorithmECDSAWithSHA512  = 17
+
+    /// Indicates Mosaic Updated Sig.
+    , WSCSignatureAlgorithmMosaicUpdatedSig = 18
+
+    /// Indicates RSASSA-PSS.
+    , WSCSignatureAlgorithmRSASSA_PSS       = 19
+    };
+
 /** The `WSCCertificateItem` class is a subclass of `WSCKeychainItem` representing an X.509 certificate.
     
   A digital certificate is a collection of data used to verify the identity of the holder 
@@ -122,6 +187,10 @@
 #pragma mark Issuer Attributes of a Certificate
 /** @name Issuer Attributes of a Certificate */
 
+/** The Email address of the issuer of a certificate. (read-only)
+  */
+@property ( copy, readonly ) NSString* issuerEmailAddress;
+
 /** The common name of the issuer of a certificate. (read-only)
  */
 @property ( copy, readonly ) NSString* issuerCommonName;
@@ -145,6 +214,12 @@
 /** The locality name of the issuer of a certificate. (read-only)
   */
 @property ( copy, readonly ) NSString* issuerLocality;
+
+/** The signature algorithm of the issuer of a certificate. (read-only)
+
+  @discussion See ["WSCSignatureAlgorithmType"](WSCSignatureAlgorithmType) for possible values.
+  */
+@property ( assign, readonly ) WSCSignatureAlgorithmType issuerSignatureAlgorithm;
 
 #pragma mark General Attributes of a Certificate
 /** @name General Attributes of a Certificate */
