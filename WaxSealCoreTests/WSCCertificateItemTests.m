@@ -1,24 +1,23 @@
 /*==============================================================================┐
-|               _    _      _                            _                      |  
-|              | |  | |    | |                          | |                     |██
-|              | |  | | ___| | ___ ___  _ __ ___   ___  | |_ ___                |██
-|              | |/\| |/ _ \ |/ __/ _ \| '_ ` _ \ / _ \ | __/ _ \               |██
-|              \  /\  /  __/ | (_| (_) | | | | | |  __/ | || (_) |              |██
-|               \/  \/ \___|_|\___\___/|_| |_| |_|\___|  \__\___/               |██
+|              _  _  _       _                                                  |  
+|             (_)(_)(_)     | |                            _                    |██
+|              _  _  _ _____| | ____ ___  ____  _____    _| |_ ___              |██
+|             | || || | ___ | |/ ___) _ \|    \| ___ |  (_   _) _ \             |██
+|             | || || | ____| ( (__| |_| | | | | ____|    | || |_| |            |██
+|              \_____/|_____)\_)____)___/|_|_|_|_____)     \__)___/             |██
+|                                                                               |██
+|      _  _  _              ______             _ _______                  _     |██
+|     (_)(_)(_)            / _____)           | (_______)                | |    |██
+|      _  _  _ _____ _   _( (____  _____ _____| |_       ___   ____ _____| |    |██
+|     | || || (____ ( \ / )\____ \| ___ (____ | | |     / _ \ / ___) ___ |_|    |██
+|     | || || / ___ |) X ( _____) ) ____/ ___ | | |____| |_| | |   | ____|_     |██
+|      \_____/\_____(_/ \_|______/|_____)_____|\_)______)___/|_|   |_____)_|    |██
 |                                                                               |██
 |                                                                               |██
-|          _    _            _____            _ _____                _          |██
-|         | |  | |          /  ___|          | /  __ \              | |         |██
-|         | |  | | __ ___  _\ `--.  ___  __ _| | /  \/ ___  _ __ ___| |         |██
-|         | |/\| |/ _` \ \/ /`--. \/ _ \/ _` | | |    / _ \| '__/ _ \ |         |██
-|         \  /\  / (_| |>  </\__/ /  __/ (_| | | \__/\ (_) | | |  __/_|         |██
-|          \/  \/ \__,_/_/\_\____/ \___|\__,_|_|\____/\___/|_|  \___(_)         |██
 |                                                                               |██
+|                           Copyright (c) 2015 Tong Guo                         |██
 |                                                                               |██
-|                                                                               |██
-|                          Copyright (c) 2015 Tong Guo                          |██
-|                                                                               |██
-|                              ALL RIGHTS RESERVED.                             |██
+|                               ALL RIGHTS RESERVED.                            |██
 |                                                                               |██
 └===============================================================================┘██
   █████████████████████████████████████████████████████████████████████████████████
@@ -61,7 +60,7 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-- ( void ) testIssuerSignatureAlgorithmProperty
+- ( void ) testPublicKeySignatureProperty
     {
     NSError* error = nil;
 
@@ -73,13 +72,26 @@
         findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : searchKey_label_testCase0 }
                                             itemClass: WSCKeychainItemClassCertificateItem
                                                 error: &error ];
+
+    NSData* publicSignature_testCase0 = certificate_testCase0.publicKeySignature;
+    XCTAssertNotNil( publicSignature_testCase0 );
+
+    NSDictionary* values = ( __bridge NSDictionary* )
+        SecCertificateCopyValues( certificate_testCase0.secCertificateItem
+                                , ( __bridge CFArrayRef )@[ ( __bridge id )kSecOIDX509V1Signature
+                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
+                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithmParameters
+                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKey
+                                                          ]
+                                , NULL );
+
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
     // Signature Algorithm
-    WSCSignatureAlgorithmType issuerSignatureAlgorithm_testCase0 = certificate_testCase0.issuerSignatureAlgorithm;
-    XCTAssert( issuerSignatureAlgorithm_testCase0 != 0 );
-    XCTAssertEqual( issuerSignatureAlgorithm_testCase0, WSCSignatureAlgorithmECDSAWithSHA384 );
+    WSCSignatureAlgorithmType publicKeySignatureAlgorithm_testCase0 = certificate_testCase0.publicKeySignatureAlgorithm;
+    XCTAssert( publicKeySignatureAlgorithm_testCase0 != 0 );
+    XCTAssertEqual( publicKeySignatureAlgorithm_testCase0, WSCSignatureAlgorithmECDSAWithSHA384 );
 
     // ----------------------------------------------------------------------------------
     // Positive Test Case 1
@@ -92,10 +104,13 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
+    NSData* publicSignature_testCase1 = certificate_testCase1.publicKeySignature;
+    XCTAssertNotNil( publicSignature_testCase1 );
+
     // Signature Algorithm
-    WSCSignatureAlgorithmType issuerSignatureAlgorithm_testCase1 = certificate_testCase1.issuerSignatureAlgorithm;
-    XCTAssert( issuerSignatureAlgorithm_testCase1 != 0 );
-    XCTAssertEqual( issuerSignatureAlgorithm_testCase1, WSCSignatureAlgorithmMD5WithRSA );
+    WSCSignatureAlgorithmType publicKeySignatureAlgorithm_testCase1 = certificate_testCase1.publicKeySignatureAlgorithm;
+    XCTAssert( publicKeySignatureAlgorithm_testCase1 != 0 );
+    XCTAssertEqual( publicKeySignatureAlgorithm_testCase1, WSCSignatureAlgorithmMD5WithRSA );
 
     NSString* emailAddress_testCase1 = nil;
     emailAddress_testCase1 = [ certificate_testCase1 subjectEmailAddress ];
@@ -115,10 +130,13 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
+    NSData* publicSignature_testCase2 = certificate_testCase2.publicKeySignature;
+    XCTAssertNotNil( publicSignature_testCase2 );
+
     // Signature Algorithm
-    WSCSignatureAlgorithmType issuerSignatureAlgorithm_testCase2 = certificate_testCase2.issuerSignatureAlgorithm;
-    XCTAssert( issuerSignatureAlgorithm_testCase2 != 0 );
-    XCTAssertEqual( issuerSignatureAlgorithm_testCase2, WSCSignatureAlgorithmMD5WithRSA );
+    WSCSignatureAlgorithmType publicKeySignatureAlgorithm_testCase2 = certificate_testCase2.publicKeySignatureAlgorithm;
+    XCTAssert( publicKeySignatureAlgorithm_testCase2 != 0 );
+    XCTAssertEqual( publicKeySignatureAlgorithm_testCase2, WSCSignatureAlgorithmMD5WithRSA );
 
     // ----------------------------------------------------------------------------------
     // Positive Test Case 3
@@ -131,25 +149,13 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    // Signature Algorithm
-    WSCSignatureAlgorithmType issuerSignatureAlgorithm_testCase3 = certificate_testCase3.issuerSignatureAlgorithm;
-    XCTAssert( issuerSignatureAlgorithm_testCase3 != 0 );
-    XCTAssertEqual( issuerSignatureAlgorithm_testCase3, WSCSignatureAlgorithmECDSAWithSHA384 );
+    NSData* publicSignature_testCase3 = certificate_testCase3.publicKeySignature;
+    XCTAssertNotNil( publicSignature_testCase3 );
 
-    NSDictionary* values = ( __bridge NSDictionary* )
-        SecCertificateCopyValues( certificate_testCase1.secCertificateItem
-                                , ( __bridge CFArrayRef )@[ ( __bridge id )kSecOIDX509V1IssuerName
-//                                                          , ( __bridge id )kSecOIDX509V1Version
-//                                                          , ( __bridge id )kSecOIDX509V1Signature
-//                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
-                                                          , ( __bridge id )kSecOIDX509V1SubjectName
-                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
-//                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithmParameters
-//                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKey
-//                                                          , ( __bridge id )kSecOIDX509V1SerialNumber
-//                                                          , ( __bridge id )kSecOIDX509V1SubjectName
-                                                          ]
-                                , NULL );
+    // Signature Algorithm
+    WSCSignatureAlgorithmType publicKeySignatureAlgorithm_testCase3 = certificate_testCase3.publicKeySignatureAlgorithm;
+    XCTAssert( publicKeySignatureAlgorithm_testCase3 != 0 );
+    XCTAssertEqual( publicKeySignatureAlgorithm_testCase3, WSCSignatureAlgorithmECDSAWithSHA384 );
     }
 
 - ( void ) testProperties
@@ -167,6 +173,9 @@
     XCTAssertNotNil( certificate_testCase0 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
+
+    NSData* publicSignature_testCase0 = certificate_testCase0.publicKeySignature;
+    XCTAssertNotNil( publicSignature_testCase0 );
 
     NSString* commonName_testCase0 = [ certificate_testCase0 subjectCommonName ];
     XCTAssertNotNil( commonName_testCase0 );
@@ -242,9 +251,9 @@
     XCTAssertNil( issuerLocality_testCase0 );
 
     // Signature Algorithm
-    WSCSignatureAlgorithmType issuerSignatureAlgorithm_testCase0 = certificate_testCase0.issuerSignatureAlgorithm;
-    XCTAssert( issuerSignatureAlgorithm_testCase0 != 0 );
-    XCTAssertEqual( issuerSignatureAlgorithm_testCase0, WSCSignatureAlgorithmSHA256WithRSA );
+    WSCSignatureAlgorithmType publicKeySignatureAlgorithm_testCase0 = certificate_testCase0.publicKeySignatureAlgorithm;
+    XCTAssert( publicKeySignatureAlgorithm_testCase0 != 0 );
+    XCTAssertEqual( publicKeySignatureAlgorithm_testCase0, WSCSignatureAlgorithmSHA256WithRSA );
 
     // Serial Number
     NSString* seriaNumber_testCase0 = certificate_testCase0.serialNumber;
@@ -262,6 +271,9 @@
     XCTAssertNotNil( certificate_testCase1 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
+
+    NSData* publicSignature_testCase1 = certificate_testCase1.publicKeySignature;
+    XCTAssertNotNil( publicSignature_testCase1 );
 
     NSString* issuerName_testCase1 = certificate_testCase1.issuerCommonName;
     NSLog( @"Issuer Name #PositiveTestCase1: %@", issuerName_testCase1 );
@@ -329,9 +341,9 @@
     XCTAssertEqualObjects( issuerLocality_testCase1, @"Salford" );
 
     // Issuer Signature Algorithm
-    WSCSignatureAlgorithmType issuerSignatureAlgorithm_testCase1 = certificate_testCase1.issuerSignatureAlgorithm;
-    XCTAssert( issuerSignatureAlgorithm_testCase1 != 0 );
-    XCTAssertEqual( issuerSignatureAlgorithm_testCase1, WSCSignatureAlgorithmSHA256WithRSA );
+    WSCSignatureAlgorithmType publicKeySignatureAlgorithm_testCase1 = certificate_testCase1.publicKeySignatureAlgorithm;
+    XCTAssert( publicKeySignatureAlgorithm_testCase1 != 0 );
+    XCTAssertEqual( publicKeySignatureAlgorithm_testCase1, WSCSignatureAlgorithmSHA256WithRSA );
 
     // Serial Number
     NSString* seriaNumber_testCase1 = certificate_testCase1.serialNumber;
@@ -349,6 +361,9 @@
     XCTAssertNotNil( certificate_testCase2 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
+
+    NSData* publicSignature_testCase2 = certificate_testCase2.publicKeySignature;
+    XCTAssertNotNil( publicSignature_testCase2 );
 
     NSString* issuerName_testCase2 = certificate_testCase2.issuerCommonName;
     NSLog( @"Issuer Name #PositiveTestCase1: %@", issuerName_testCase2 );
@@ -418,9 +433,9 @@
     XCTAssertNil( issuerLocality_testCase2 );
 
     // Issuer Signature Algorithm
-    WSCSignatureAlgorithmType issuerSignatureAlgorithm_testCase2 = certificate_testCase2.issuerSignatureAlgorithm;
-    XCTAssert( issuerSignatureAlgorithm_testCase2 != 0 );
-    XCTAssertEqual( issuerSignatureAlgorithm_testCase2, WSCSignatureAlgorithmSHA1WithRSA );
+    WSCSignatureAlgorithmType publicKeySignatureAlgorithm_testCase2 = certificate_testCase2.publicKeySignatureAlgorithm;
+    XCTAssert( publicKeySignatureAlgorithm_testCase2 != 0 );
+    XCTAssertEqual( publicKeySignatureAlgorithm_testCase2, WSCSignatureAlgorithmSHA1WithRSA );
     }
 
 @end // WSCCertificateItemTests test case

@@ -1,24 +1,23 @@
 /*==============================================================================┐
-|               _    _      _                            _                      |  
-|              | |  | |    | |                          | |                     |██
-|              | |  | | ___| | ___ ___  _ __ ___   ___  | |_ ___                |██
-|              | |/\| |/ _ \ |/ __/ _ \| '_ ` _ \ / _ \ | __/ _ \               |██
-|              \  /\  /  __/ | (_| (_) | | | | | |  __/ | || (_) |              |██
-|               \/  \/ \___|_|\___\___/|_| |_| |_|\___|  \__\___/               |██
+|              _  _  _       _                                                  |  
+|             (_)(_)(_)     | |                            _                    |██
+|              _  _  _ _____| | ____ ___  ____  _____    _| |_ ___              |██
+|             | || || | ___ | |/ ___) _ \|    \| ___ |  (_   _) _ \             |██
+|             | || || | ____| ( (__| |_| | | | | ____|    | || |_| |            |██
+|              \_____/|_____)\_)____)___/|_|_|_|_____)     \__)___/             |██
+|                                                                               |██
+|      _  _  _              ______             _ _______                  _     |██
+|     (_)(_)(_)            / _____)           | (_______)                | |    |██
+|      _  _  _ _____ _   _( (____  _____ _____| |_       ___   ____ _____| |    |██
+|     | || || (____ ( \ / )\____ \| ___ (____ | | |     / _ \ / ___) ___ |_|    |██
+|     | || || / ___ |) X ( _____) ) ____/ ___ | | |____| |_| | |   | ____|_     |██
+|      \_____/\_____(_/ \_|______/|_____)_____|\_)______)___/|_|   |_____)_|    |██
 |                                                                               |██
 |                                                                               |██
-|          _    _            _____            _ _____                _          |██
-|         | |  | |          /  ___|          | /  __ \              | |         |██
-|         | |  | | __ ___  _\ `--.  ___  __ _| | /  \/ ___  _ __ ___| |         |██
-|         | |/\| |/ _` \ \/ /`--. \/ _ \/ _` | | |    / _ \| '__/ _ \ |         |██
-|         \  /\  / (_| |>  </\__/ /  __/ (_| | | \__/\ (_) | | |  __/_|         |██
-|          \/  \/ \__,_/_/\_\____/ \___|\__,_|_|\____/\___/|_|  \___(_)         |██
 |                                                                               |██
+|                           Copyright (c) 2015 Tong Guo                         |██
 |                                                                               |██
-|                                                                               |██
-|                          Copyright (c) 2015 Tong Guo                          |██
-|                                                                               |██
-|                              ALL RIGHTS RESERVED.                             |██
+|                               ALL RIGHTS RESERVED.                            |██
 |                                                                               |██
 └===============================================================================┘██
   █████████████████████████████████████████████████████████████████████████████████
@@ -642,11 +641,10 @@ NSString* const WSCKeychainItemAttributeIssuerOrganizationalUnit    = @"2.16.840
 NSString* const WSCKeychainItemAttributeIssuerCountryAbbreviation   = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.6 (Issuer Country Abbreviation)";
 NSString* const WSCKeychainItemAttributeIssuerStateOrProvince       = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.8 (Issuer State/Province)";
 NSString* const WSCKeychainItemAttributeIssuerLocality              = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.7 (Issuer Locality)";
-NSString* const WSCKeychainItemAttributeIssuerSignatureAlgorithm    = @"2.16.840.1.113741.2.1.3.2.1 (Issuer Signature Algorithm)";
 
 NSString* const WSCKeychainItemAttributeSerialNumber                = @"2.16.840.1.113741.2.1.1.1.3 (Serial Number)";
-NSString* const WSCKeychainItemAttributeSubjectKeyID                = @"Subject Key ID";
-NSString* const WSCKeychainItemAttributePublicKeyHash               = @"Public Key Hash";
+NSString* const WSCKeychainItemAttributePublicKeySignature          = @"2.16.840.1.113741.2.1.3.2.2 (Public Key Signature)";
+NSString* const WSCKeychainItemAttributePublicKeySignatureAlgorithm = @"2.16.840.1.113741.2.1.3.2.1 (Public Key Signature Algorithm)";
 
 /*================================================================================┐
 │                              The MIT License (MIT)                              │

@@ -1,24 +1,23 @@
 /*==============================================================================┐
-|               _    _      _                            _                      |  
-|              | |  | |    | |                          | |                     |██
-|              | |  | | ___| | ___ ___  _ __ ___   ___  | |_ ___                |██
-|              | |/\| |/ _ \ |/ __/ _ \| '_ ` _ \ / _ \ | __/ _ \               |██
-|              \  /\  /  __/ | (_| (_) | | | | | |  __/ | || (_) |              |██
-|               \/  \/ \___|_|\___\___/|_| |_| |_|\___|  \__\___/               |██
+|              _  _  _       _                                                  |  
+|             (_)(_)(_)     | |                            _                    |██
+|              _  _  _ _____| | ____ ___  ____  _____    _| |_ ___              |██
+|             | || || | ___ | |/ ___) _ \|    \| ___ |  (_   _) _ \             |██
+|             | || || | ____| ( (__| |_| | | | | ____|    | || |_| |            |██
+|              \_____/|_____)\_)____)___/|_|_|_|_____)     \__)___/             |██
+|                                                                               |██
+|      _  _  _              ______             _ _______                  _     |██
+|     (_)(_)(_)            / _____)           | (_______)                | |    |██
+|      _  _  _ _____ _   _( (____  _____ _____| |_       ___   ____ _____| |    |██
+|     | || || (____ ( \ / )\____ \| ___ (____ | | |     / _ \ / ___) ___ |_|    |██
+|     | || || / ___ |) X ( _____) ) ____/ ___ | | |____| |_| | |   | ____|_     |██
+|      \_____/\_____(_/ \_|______/|_____)_____|\_)______)___/|_|   |_____)_|    |██
 |                                                                               |██
 |                                                                               |██
-|          _    _            _____            _ _____                _          |██
-|         | |  | |          /  ___|          | /  __ \              | |         |██
-|         | |  | | __ ___  _\ `--.  ___  __ _| | /  \/ ___  _ __ ___| |         |██
-|         | |/\| |/ _` \ \/ /`--. \/ _ \/ _` | | |    / _ \| '__/ _ \ |         |██
-|         \  /\  / (_| |>  </\__/ /  __/ (_| | | \__/\ (_) | | |  __/_|         |██
-|          \/  \/ \__,_/_/\_\____/ \___|\__,_|_|\____/\___/|_|  \___(_)         |██
 |                                                                               |██
+|                           Copyright (c) 2015 Tong Guo                         |██
 |                                                                               |██
-|                                                                               |██
-|                          Copyright (c) 2015 Tong Guo                          |██
-|                                                                               |██
-|                              ALL RIGHTS RESERVED.                             |██
+|                               ALL RIGHTS RESERVED.                            |██
 |                                                                               |██
 └===============================================================================┘██
   █████████████████████████████████████████████████████████████████████████████████
@@ -45,9 +44,11 @@
 @dynamic issuerCountryAbbreviation;
 @dynamic issuerStateOrProvince;
 @dynamic issuerLocality;
-@dynamic issuerSignatureAlgorithm;
 
 @dynamic serialNumber;
+
+@dynamic publicKeySignature;
+@dynamic publicKeySignatureAlgorithm;
 
 @dynamic secCertificateItem;
 
@@ -153,14 +154,6 @@
     return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeIssuerLocality ];
     }
 
-/* The signature algorithm of the issuer of a certificate. (read-only)
- */
-- ( WSCSignatureAlgorithmType ) issuerSignatureAlgorithm
-    {
-    return [ [ self class ] p_signatureAlgorithmFromGiveOID:
-        [ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeIssuerSignatureAlgorithm ] ];
-    }
-
 #pragma mark General Attributes of a Certificate
 
 /** The serial number of a certificate. (read-only)
@@ -168,6 +161,23 @@
 - ( NSString* ) serialNumber
     {
     return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeSerialNumber ];
+    }
+
+#pragma mark Managing Public Key
+
+/* The signature of public key that was wrapped in the certificate. (read-only)
+ */
+- ( NSData* ) publicKeySignature
+    {
+    return ( NSData* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributePublicKeySignature ];
+    }
+
+/* The signature algorithm of the issuer of a certificate. (read-only)
+ */
+- ( WSCSignatureAlgorithmType ) publicKeySignatureAlgorithm
+    {
+    return [ [ self class ] p_signatureAlgorithmFromGiveOID:
+        [ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributePublicKeySignatureAlgorithm ] ];
     }
 
 #pragma mark Certificate, Key, and Trust Services Bridge
@@ -357,8 +367,14 @@ NSString static* kSubOIDKey = @"subOID";
         OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDLocalityName;
         }
 
-    // Signature Algorithm
-    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerSignatureAlgorithm ] )
+    // Public Key Signature
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributePublicKeySignature ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1Signature;
+        }
+
+    // Public Key Signature Algorithm
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributePublicKeySignatureAlgorithm ] )
         {
         OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SignatureAlgorithm;
         OIDs[ kSubOIDKey ] = @"Algorithm";

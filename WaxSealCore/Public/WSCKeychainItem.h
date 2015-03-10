@@ -1,24 +1,23 @@
 /*==============================================================================┐
-|               _    _      _                            _                      |  
-|              | |  | |    | |                          | |                     |██
-|              | |  | | ___| | ___ ___  _ __ ___   ___  | |_ ___                |██
-|              | |/\| |/ _ \ |/ __/ _ \| '_ ` _ \ / _ \ | __/ _ \               |██
-|              \  /\  /  __/ | (_| (_) | | | | | |  __/ | || (_) |              |██
-|               \/  \/ \___|_|\___\___/|_| |_| |_|\___|  \__\___/               |██
+|              _  _  _       _                                                  |  
+|             (_)(_)(_)     | |                            _                    |██
+|              _  _  _ _____| | ____ ___  ____  _____    _| |_ ___              |██
+|             | || || | ___ | |/ ___) _ \|    \| ___ |  (_   _) _ \             |██
+|             | || || | ____| ( (__| |_| | | | | ____|    | || |_| |            |██
+|              \_____/|_____)\_)____)___/|_|_|_|_____)     \__)___/             |██
+|                                                                               |██
+|      _  _  _              ______             _ _______                  _     |██
+|     (_)(_)(_)            / _____)           | (_______)                | |    |██
+|      _  _  _ _____ _   _( (____  _____ _____| |_       ___   ____ _____| |    |██
+|     | || || (____ ( \ / )\____ \| ___ (____ | | |     / _ \ / ___) ___ |_|    |██
+|     | || || / ___ |) X ( _____) ) ____/ ___ | | |____| |_| | |   | ____|_     |██
+|      \_____/\_____(_/ \_|______/|_____)_____|\_)______)___/|_|   |_____)_|    |██
 |                                                                               |██
 |                                                                               |██
-|          _    _            _____            _ _____                _          |██
-|         | |  | |          /  ___|          | /  __ \              | |         |██
-|         | |  | | __ ___  _\ `--.  ___  __ _| | /  \/ ___  _ __ ___| |         |██
-|         | |/\| |/ _` \ \/ /`--. \/ _ \/ _` | | |    / _ \| '__/ _ \ |         |██
-|         \  /\  / (_| |>  </\__/ /  __/ (_| | | \__/\ (_) | | |  __/_|         |██
-|          \/  \/ \__,_/_/\_\____/ \___|\__,_|_|\____/\___/|_|  \___(_)         |██
 |                                                                               |██
+|                           Copyright (c) 2015 Tong Guo                         |██
 |                                                                               |██
-|                                                                               |██
-|                          Copyright (c) 2015 Tong Guo                          |██
-|                                                                               |██
-|                              ALL RIGHTS RESERVED.                             |██
+|                               ALL RIGHTS RESERVED.                            |██
 |                                                                               |██
 └===============================================================================┘██
   █████████████████████████████████████████████████████████████████████████████████
@@ -158,11 +157,10 @@ NSString extern* const WSCKeychainItemAttributeIssuerOrganizationalUnit;
 NSString extern* const WSCKeychainItemAttributeIssuerCountryAbbreviation;
 NSString extern* const WSCKeychainItemAttributeIssuerStateOrProvince;
 NSString extern* const WSCKeychainItemAttributeIssuerLocality;
-NSString extern* const WSCKeychainItemAttributeIssuerSignatureAlgorithm;
 
 NSString extern* const WSCKeychainItemAttributeSerialNumber;
-NSString extern* const WSCKeychainItemAttributeSubjectKeyID;
-NSString extern* const WSCKeychainItemAttributePublicKeyHash;
+NSString extern* const WSCKeychainItemAttributePublicKeySignature;
+NSString extern* const WSCKeychainItemAttributePublicKeySignatureAlgorithm;
 
 /*================================================================================┐
 |                              The MIT License (MIT)                              |
