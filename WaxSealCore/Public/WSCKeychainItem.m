@@ -645,6 +645,7 @@ NSString* const WSCKeychainItemAttributeIssuerLocality              = @"2.16.840
 NSString* const WSCKeychainItemAttributeIssuerSignatureAlgorithm    = @"2.16.840.1.113741.2.1.3.2.1 (Issuer Signature Algorithm)";
 
 NSString* const WSCKeychainItemAttributeSerialNumber                = @"2.16.840.1.113741.2.1.1.1.3 (Serial Number)";
+NSString* const WSCKeychainItemAttributePublicKeySignature          = @"2.16.840.1.113741.2.1.1.1.3 (Public Key Signature)";
 NSString* const WSCKeychainItemAttributeSubjectKeyID                = @"Subject Key ID";
 NSString* const WSCKeychainItemAttributePublicKeyHash               = @"Public Key Hash";
 

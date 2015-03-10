@@ -228,6 +228,13 @@ typedef NS_ENUM( NSUInteger, WSCSignatureAlgorithmType )
   */
 @property ( copy, readonly ) NSString* serialNumber;
 
+#pragma mark Managing Public Key
+/** @name Managing Public Key */
+
+/** The signature of public key that was wrapped in the certificate. (read-only)
+  */
+@property ( retain, readonly ) NSData* publicKeySignature;
+
 #pragma mark Certificate, Key, and Trust Services Bridge
 /** @name Certificate, Key, and Trust Services Bridge */
 

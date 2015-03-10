@@ -73,6 +73,16 @@
         findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : searchKey_label_testCase0 }
                                             itemClass: WSCKeychainItemClassCertificateItem
                                                 error: &error ];
+
+    NSDictionary* values = ( __bridge NSDictionary* )
+        SecCertificateCopyValues( certificate_testCase0.secCertificateItem
+                                , ( __bridge CFArrayRef )@[ ( __bridge id )kSecOIDX509V1Signature
+                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
+                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithmParameters
+                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKey
+                                                          ]
+                                , NULL );
+
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -135,21 +145,6 @@
     WSCSignatureAlgorithmType issuerSignatureAlgorithm_testCase3 = certificate_testCase3.issuerSignatureAlgorithm;
     XCTAssert( issuerSignatureAlgorithm_testCase3 != 0 );
     XCTAssertEqual( issuerSignatureAlgorithm_testCase3, WSCSignatureAlgorithmECDSAWithSHA384 );
-
-    NSDictionary* values = ( __bridge NSDictionary* )
-        SecCertificateCopyValues( certificate_testCase1.secCertificateItem
-                                , ( __bridge CFArrayRef )@[ ( __bridge id )kSecOIDX509V1IssuerName
-//                                                          , ( __bridge id )kSecOIDX509V1Version
-//                                                          , ( __bridge id )kSecOIDX509V1Signature
-//                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
-                                                          , ( __bridge id )kSecOIDX509V1SubjectName
-                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
-//                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithmParameters
-//                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKey
-//                                                          , ( __bridge id )kSecOIDX509V1SerialNumber
-//                                                          , ( __bridge id )kSecOIDX509V1SubjectName
-                                                          ]
-                                , NULL );
     }
 
 - ( void ) testProperties

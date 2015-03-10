@@ -49,6 +49,8 @@
 
 @dynamic serialNumber;
 
+@dynamic publicKeySignature;
+
 @dynamic secCertificateItem;
 
 #pragma mark Subject Attributes of a Certificate
@@ -169,6 +171,15 @@
     {
     return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeSerialNumber ];
     }
+
+#pragma mark Managing Public Key
+
+/* The signature of public key that was wrapped in the certificate. (read-only)
+ */
+//- ( NSData* ) publicKeySignature
+//    {
+//
+//    }
 
 #pragma mark Certificate, Key, and Trust Services Bridge
 
