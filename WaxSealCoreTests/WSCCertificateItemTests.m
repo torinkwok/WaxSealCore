@@ -59,6 +59,31 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+NSDictionary* kCopyValues( WSCCertificateItem* _CertificateItem )
+    {
+    NSDictionary* values = ( __bridge NSDictionary* )
+        SecCertificateCopyValues( _CertificateItem.secCertificateItem
+                                , ( __bridge CFArrayRef )@[ /*( __bridge id )kSecOIDX509V1Signature*/
+//                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
+//                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithmParameters
+                                                            ( __bridge id )kSecOIDX509V1SubjectPublicKey
+                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKeyAlgorithm
+                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKeyAlgorithmParameters
+                                                          , ( __bridge id )kSecOIDX509V1IssuerNameCStruct
+                                                          , ( __bridge id )kSecOIDX509V1IssuerNameLDAP
+                                                          , ( __bridge id )kSecOIDX509V1IssuerNameStd
+                                                          , ( __bridge id )kSecOIDX509V1SerialNumber
+                                                          , ( __bridge id )kSecOIDX509V1SubjectName
+                                                          , ( __bridge id )kSecOIDX509V1SubjectNameCStruct
+                                                          , ( __bridge id )kSecOIDX509V1SubjectNameLDAP
+                                                          , ( __bridge id )kSecOIDX509V1SubjectNameStd
+//                                                          , ( __bridge id )kSecOIDX509V1CertificateIssuerUniqueId
+//                                                          , ( __bridge id )kSecOIDX509V1CertificateSubjectUniqueId
+                                                          ]
+                                , NULL );
+    return values;
+    }
+
 - ( void ) testPublicKeySignatureProperty
     {
     NSError* error = nil;
@@ -75,14 +100,7 @@
     NSData* publicSignature_testCase0 = certificate_testCase0.publicKeySignature;
     XCTAssertNotNil( publicSignature_testCase0 );
 
-    NSDictionary* values = ( __bridge NSDictionary* )
-        SecCertificateCopyValues( certificate_testCase0.secCertificateItem
-                                , ( __bridge CFArrayRef )@[ ( __bridge id )kSecOIDX509V1Signature
-                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
-                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithmParameters
-                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKey
-                                                          ]
-                                , NULL );
+    NSDictionary* values = kCopyValues( certificate_testCase0 );
 
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
@@ -102,6 +120,8 @@
                                                 error: &error ];
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
+
+    values = kCopyValues( certificate_testCase1 );
 
     NSData* publicSignature_testCase1 = certificate_testCase1.publicKeySignature;
     XCTAssertNotNil( publicSignature_testCase1 );
@@ -129,6 +149,8 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
+    values = kCopyValues( certificate_testCase2 );
+
     NSData* publicSignature_testCase2 = certificate_testCase2.publicKeySignature;
     XCTAssertNotNil( publicSignature_testCase2 );
 
@@ -147,6 +169,8 @@
                                                 error: &error ];
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
+
+    values = kCopyValues( certificate_testCase3 );
 
     NSData* publicSignature_testCase3 = certificate_testCase3.publicKeySignature;
     XCTAssertNotNil( publicSignature_testCase3 );
@@ -172,6 +196,17 @@
     XCTAssertNotNil( certificate_testCase0 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
+
+    NSDictionary* values = ( __bridge NSDictionary* )
+        SecCertificateCopyValues( certificate_testCase0.secCertificateItem
+                                , ( __bridge CFArrayRef )@[ ( __bridge id )kSecOIDX509V1Signature
+                                                          , ( __bridge id )kSecOIDX509V1SubjectName
+                                                          , ( __bridge id )kSecOIDX509V1IssuerName
+                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
+                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithmParameters
+                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKey
+                                                          ]
+                                , NULL );
 
     NSData* publicSignature_testCase0 = certificate_testCase0.publicKeySignature;
     XCTAssertNotNil( publicSignature_testCase0 );
