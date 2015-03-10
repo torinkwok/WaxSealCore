@@ -215,12 +215,6 @@ typedef NS_ENUM( NSUInteger, WSCSignatureAlgorithmType )
   */
 @property ( copy, readonly ) NSString* issuerLocality;
 
-/** The signature algorithm of the issuer of a certificate. (read-only)
-
-  @discussion See ["WSCSignatureAlgorithmType"](WSCSignatureAlgorithmType) for possible values.
-  */
-@property ( assign, readonly ) WSCSignatureAlgorithmType issuerSignatureAlgorithm;
-
 #pragma mark General Attributes of a Certificate
 /** @name General Attributes of a Certificate */
 
@@ -231,9 +225,16 @@ typedef NS_ENUM( NSUInteger, WSCSignatureAlgorithmType )
 #pragma mark Managing Public Key
 /** @name Managing Public Key */
 
-/** The signature of public key that was wrapped in the certificate. (read-only)
+/** The signature (calculating by using the signature algorithm represented by `publicKeySignatureAlgorithm` ) of public key
+    that was wrapped in the certificate. (read-only)
   */
 @property ( retain, readonly ) NSData* publicKeySignature;
+
+/** The signature algorithm used for signing the public key that was wrapped in a certificate. (read-only)
+
+  @discussion See ["WSCSignatureAlgorithmType"](WSCSignatureAlgorithmType) for possible values.
+  */
+@property ( assign, readonly ) WSCSignatureAlgorithmType publicKeySignatureAlgorithm;
 
 #pragma mark Certificate, Key, and Trust Services Bridge
 /** @name Certificate, Key, and Trust Services Bridge */

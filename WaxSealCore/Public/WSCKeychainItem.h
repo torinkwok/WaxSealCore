@@ -158,11 +158,10 @@ NSString extern* const WSCKeychainItemAttributeIssuerOrganizationalUnit;
 NSString extern* const WSCKeychainItemAttributeIssuerCountryAbbreviation;
 NSString extern* const WSCKeychainItemAttributeIssuerStateOrProvince;
 NSString extern* const WSCKeychainItemAttributeIssuerLocality;
-NSString extern* const WSCKeychainItemAttributeIssuerSignatureAlgorithm;
 
 NSString extern* const WSCKeychainItemAttributeSerialNumber;
-NSString extern* const WSCKeychainItemAttributeSubjectKeyID;
-NSString extern* const WSCKeychainItemAttributePublicKeyHash;
+NSString extern* const WSCKeychainItemAttributePublicKeySignature;
+NSString extern* const WSCKeychainItemAttributePublicKeySignatureAlgorithm;
 
 /*================================================================================┐
 |                              The MIT License (MIT)                              |

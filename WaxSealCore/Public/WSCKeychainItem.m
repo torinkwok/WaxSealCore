@@ -642,12 +642,10 @@ NSString* const WSCKeychainItemAttributeIssuerOrganizationalUnit    = @"2.16.840
 NSString* const WSCKeychainItemAttributeIssuerCountryAbbreviation   = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.6 (Issuer Country Abbreviation)";
 NSString* const WSCKeychainItemAttributeIssuerStateOrProvince       = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.8 (Issuer State/Province)";
 NSString* const WSCKeychainItemAttributeIssuerLocality              = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.7 (Issuer Locality)";
-NSString* const WSCKeychainItemAttributeIssuerSignatureAlgorithm    = @"2.16.840.1.113741.2.1.3.2.1 (Issuer Signature Algorithm)";
 
 NSString* const WSCKeychainItemAttributeSerialNumber                = @"2.16.840.1.113741.2.1.1.1.3 (Serial Number)";
 NSString* const WSCKeychainItemAttributePublicKeySignature          = @"2.16.840.1.113741.2.1.1.1.3 (Public Key Signature)";
-NSString* const WSCKeychainItemAttributeSubjectKeyID                = @"Subject Key ID";
-NSString* const WSCKeychainItemAttributePublicKeyHash               = @"Public Key Hash";
+NSString* const WSCKeychainItemAttributePublicKeySignatureAlgorithm = @"2.16.840.1.113741.2.1.3.2.1 (Public Key Signature Algorithm)";
 
 /*================================================================================┐
 │                              The MIT License (MIT)                              │

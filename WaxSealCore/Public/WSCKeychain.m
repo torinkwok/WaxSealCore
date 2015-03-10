@@ -632,8 +632,8 @@ WSCKeychain static* s_system = nil;
 
             self->p_uniqueToCertificateItemAttributesSearchKeys =
                 [ [ @[ WSCKeychainItemAttributeSubjectCommonName, WSCKeychainItemAttributeIssuerCommonName
-                     , WSCKeychainItemAttributeSerialNumber, WSCKeychainItemAttributeSubjectKeyID
-                     , WSCKeychainItemAttributePublicKeyHash ] arrayByAddingObjectsFromArray: self->p_commonAttributesSearchKeys ] retain ];
+                     , WSCKeychainItemAttributeSerialNumber ]
+                     arrayByAddingObjectsFromArray: self->p_commonAttributesSearchKeys ] retain ];
             }
         else
             return nil;
@@ -793,9 +793,7 @@ WSCKeychain static* s_system = nil;
                 }
             else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeSubjectCommonName ]
                         || [ _SearchKey isEqualToString: WSCKeychainItemAttributeIssuerCommonName ]
-                        || [ _SearchKey isEqualToString: WSCKeychainItemAttributeSerialNumber ]
-                        || [ _SearchKey isEqualToString: WSCKeychainItemAttributeSubjectKeyID ]
-                        || [ _SearchKey isEqualToString: WSCKeychainItemAttributePublicKeyHash ] )
+                        || [ _SearchKey isEqualToString: WSCKeychainItemAttributeSerialNumber ] )
                 {
                 NSString* searchValue = ( NSString* )( _SearchCriteriaDict[ _SearchKey ] );
                 adaptedSearchCriteriaDict[ _SearchKey ] = [ searchValue dataUsingEncoding: NSUTF8StringEncoding ];

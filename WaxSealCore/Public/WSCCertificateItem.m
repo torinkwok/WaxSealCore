@@ -45,11 +45,11 @@
 @dynamic issuerCountryAbbreviation;
 @dynamic issuerStateOrProvince;
 @dynamic issuerLocality;
-@dynamic issuerSignatureAlgorithm;
 
 @dynamic serialNumber;
 
 @dynamic publicKeySignature;
+@dynamic publicKeySignatureAlgorithm;
 
 @dynamic secCertificateItem;
 
@@ -155,14 +155,6 @@
     return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeIssuerLocality ];
     }
 
-/* The signature algorithm of the issuer of a certificate. (read-only)
- */
-- ( WSCSignatureAlgorithmType ) issuerSignatureAlgorithm
-    {
-    return [ [ self class ] p_signatureAlgorithmFromGiveOID:
-        [ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeIssuerSignatureAlgorithm ] ];
-    }
-
 #pragma mark General Attributes of a Certificate
 
 /** The serial number of a certificate. (read-only)
@@ -180,6 +172,14 @@
 //    {
 //
 //    }
+
+/* The signature algorithm of the issuer of a certificate. (read-only)
+ */
+- ( WSCSignatureAlgorithmType ) publicKeySignatureAlgorithm
+    {
+    return [ [ self class ] p_signatureAlgorithmFromGiveOID:
+        [ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributePublicKeySignatureAlgorithm ] ];
+    }
 
 #pragma mark Certificate, Key, and Trust Services Bridge
 
@@ -369,7 +369,7 @@ NSString static* kSubOIDKey = @"subOID";
         }
 
     // Signature Algorithm
-    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeIssuerSignatureAlgorithm ] )
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributePublicKeySignatureAlgorithm ] )
         {
         OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SignatureAlgorithm;
         OIDs[ kSubOIDKey ] = @"Algorithm";

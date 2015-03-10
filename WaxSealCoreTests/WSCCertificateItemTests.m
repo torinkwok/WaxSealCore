@@ -61,7 +61,7 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-- ( void ) testIssuerSignatureAlgorithmProperty
+- ( void ) testPublicKeySignatureAlgorithmProperty
     {
     NSError* error = nil;
 
@@ -87,9 +87,9 @@
     _WSCPrintNSErrorForUnitTest( error );
 
     // Signature Algorithm
-    WSCSignatureAlgorithmType issuerSignatureAlgorithm_testCase0 = certificate_testCase0.issuerSignatureAlgorithm;
-    XCTAssert( issuerSignatureAlgorithm_testCase0 != 0 );
-    XCTAssertEqual( issuerSignatureAlgorithm_testCase0, WSCSignatureAlgorithmECDSAWithSHA384 );
+    WSCSignatureAlgorithmType publicKeySignatureAlgorithm_testCase0 = certificate_testCase0.publicKeySignatureAlgorithm;
+    XCTAssert( publicKeySignatureAlgorithm_testCase0 != 0 );
+    XCTAssertEqual( publicKeySignatureAlgorithm_testCase0, WSCSignatureAlgorithmECDSAWithSHA384 );
 
     // ----------------------------------------------------------------------------------
     // Positive Test Case 1
@@ -103,9 +103,9 @@
     _WSCPrintNSErrorForUnitTest( error );
 
     // Signature Algorithm
-    WSCSignatureAlgorithmType issuerSignatureAlgorithm_testCase1 = certificate_testCase1.issuerSignatureAlgorithm;
-    XCTAssert( issuerSignatureAlgorithm_testCase1 != 0 );
-    XCTAssertEqual( issuerSignatureAlgorithm_testCase1, WSCSignatureAlgorithmMD5WithRSA );
+    WSCSignatureAlgorithmType publicKeySignatureAlgorithm_testCase1 = certificate_testCase1.publicKeySignatureAlgorithm;
+    XCTAssert( publicKeySignatureAlgorithm_testCase1 != 0 );
+    XCTAssertEqual( publicKeySignatureAlgorithm_testCase1, WSCSignatureAlgorithmMD5WithRSA );
 
     NSString* emailAddress_testCase1 = nil;
     emailAddress_testCase1 = [ certificate_testCase1 subjectEmailAddress ];
@@ -126,9 +126,9 @@
     _WSCPrintNSErrorForUnitTest( error );
 
     // Signature Algorithm
-    WSCSignatureAlgorithmType issuerSignatureAlgorithm_testCase2 = certificate_testCase2.issuerSignatureAlgorithm;
-    XCTAssert( issuerSignatureAlgorithm_testCase2 != 0 );
-    XCTAssertEqual( issuerSignatureAlgorithm_testCase2, WSCSignatureAlgorithmMD5WithRSA );
+    WSCSignatureAlgorithmType publicKeySignatureAlgorithm_testCase2 = certificate_testCase2.publicKeySignatureAlgorithm;
+    XCTAssert( publicKeySignatureAlgorithm_testCase2 != 0 );
+    XCTAssertEqual( publicKeySignatureAlgorithm_testCase2, WSCSignatureAlgorithmMD5WithRSA );
 
     // ----------------------------------------------------------------------------------
     // Positive Test Case 3
@@ -142,9 +142,9 @@
     _WSCPrintNSErrorForUnitTest( error );
 
     // Signature Algorithm
-    WSCSignatureAlgorithmType issuerSignatureAlgorithm_testCase3 = certificate_testCase3.issuerSignatureAlgorithm;
-    XCTAssert( issuerSignatureAlgorithm_testCase3 != 0 );
-    XCTAssertEqual( issuerSignatureAlgorithm_testCase3, WSCSignatureAlgorithmECDSAWithSHA384 );
+    WSCSignatureAlgorithmType publicKeySignatureAlgorithm_testCase3 = certificate_testCase3.publicKeySignatureAlgorithm;
+    XCTAssert( publicKeySignatureAlgorithm_testCase3 != 0 );
+    XCTAssertEqual( publicKeySignatureAlgorithm_testCase3, WSCSignatureAlgorithmECDSAWithSHA384 );
     }
 
 - ( void ) testProperties
@@ -237,9 +237,9 @@
     XCTAssertNil( issuerLocality_testCase0 );
 
     // Signature Algorithm
-    WSCSignatureAlgorithmType issuerSignatureAlgorithm_testCase0 = certificate_testCase0.issuerSignatureAlgorithm;
-    XCTAssert( issuerSignatureAlgorithm_testCase0 != 0 );
-    XCTAssertEqual( issuerSignatureAlgorithm_testCase0, WSCSignatureAlgorithmSHA256WithRSA );
+    WSCSignatureAlgorithmType publicKeySignatureAlgorithm_testCase0 = certificate_testCase0.publicKeySignatureAlgorithm;
+    XCTAssert( publicKeySignatureAlgorithm_testCase0 != 0 );
+    XCTAssertEqual( publicKeySignatureAlgorithm_testCase0, WSCSignatureAlgorithmSHA256WithRSA );
 
     // Serial Number
     NSString* seriaNumber_testCase0 = certificate_testCase0.serialNumber;
@@ -324,9 +324,9 @@
     XCTAssertEqualObjects( issuerLocality_testCase1, @"Salford" );
 
     // Issuer Signature Algorithm
-    WSCSignatureAlgorithmType issuerSignatureAlgorithm_testCase1 = certificate_testCase1.issuerSignatureAlgorithm;
-    XCTAssert( issuerSignatureAlgorithm_testCase1 != 0 );
-    XCTAssertEqual( issuerSignatureAlgorithm_testCase1, WSCSignatureAlgorithmSHA256WithRSA );
+    WSCSignatureAlgorithmType publicKeySignatureAlgorithm_testCase1 = certificate_testCase1.publicKeySignatureAlgorithm;
+    XCTAssert( publicKeySignatureAlgorithm_testCase1 != 0 );
+    XCTAssertEqual( publicKeySignatureAlgorithm_testCase1, WSCSignatureAlgorithmSHA256WithRSA );
 
     // Serial Number
     NSString* seriaNumber_testCase1 = certificate_testCase1.serialNumber;
@@ -413,9 +413,9 @@
     XCTAssertNil( issuerLocality_testCase2 );
 
     // Issuer Signature Algorithm
-    WSCSignatureAlgorithmType issuerSignatureAlgorithm_testCase2 = certificate_testCase2.issuerSignatureAlgorithm;
-    XCTAssert( issuerSignatureAlgorithm_testCase2 != 0 );
-    XCTAssertEqual( issuerSignatureAlgorithm_testCase2, WSCSignatureAlgorithmSHA1WithRSA );
+    WSCSignatureAlgorithmType publicKeySignatureAlgorithm_testCase2 = certificate_testCase2.publicKeySignatureAlgorithm;
+    XCTAssert( publicKeySignatureAlgorithm_testCase2 != 0 );
+    XCTAssertEqual( publicKeySignatureAlgorithm_testCase2, WSCSignatureAlgorithmSHA1WithRSA );
     }
 
 @end // WSCCertificateItemTests test case
