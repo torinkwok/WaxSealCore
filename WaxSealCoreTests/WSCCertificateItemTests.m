@@ -61,7 +61,7 @@
     // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-- ( void ) testPublicKeySignatureAlgorithmProperty
+- ( void ) testPublicKeySignatureProperty
     {
     NSError* error = nil;
 
@@ -73,6 +73,9 @@
         findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : searchKey_label_testCase0 }
                                             itemClass: WSCKeychainItemClassCertificateItem
                                                 error: &error ];
+
+    NSData* publicSignature_testCase0 = certificate_testCase0.publicKeySignature;
+    XCTAssertNotNil( publicSignature_testCase0 );
 
     NSDictionary* values = ( __bridge NSDictionary* )
         SecCertificateCopyValues( certificate_testCase0.secCertificateItem
@@ -102,6 +105,9 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
+    NSData* publicSignature_testCase1 = certificate_testCase1.publicKeySignature;
+    XCTAssertNotNil( publicSignature_testCase1 );
+
     // Signature Algorithm
     WSCSignatureAlgorithmType publicKeySignatureAlgorithm_testCase1 = certificate_testCase1.publicKeySignatureAlgorithm;
     XCTAssert( publicKeySignatureAlgorithm_testCase1 != 0 );
@@ -125,6 +131,9 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
+    NSData* publicSignature_testCase2 = certificate_testCase2.publicKeySignature;
+    XCTAssertNotNil( publicSignature_testCase2 );
+
     // Signature Algorithm
     WSCSignatureAlgorithmType publicKeySignatureAlgorithm_testCase2 = certificate_testCase2.publicKeySignatureAlgorithm;
     XCTAssert( publicKeySignatureAlgorithm_testCase2 != 0 );
@@ -140,6 +149,9 @@
                                                 error: &error ];
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
+
+    NSData* publicSignature_testCase3 = certificate_testCase3.publicKeySignature;
+    XCTAssertNotNil( publicSignature_testCase3 );
 
     // Signature Algorithm
     WSCSignatureAlgorithmType publicKeySignatureAlgorithm_testCase3 = certificate_testCase3.publicKeySignatureAlgorithm;
@@ -162,6 +174,9 @@
     XCTAssertNotNil( certificate_testCase0 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
+
+    NSData* publicSignature_testCase0 = certificate_testCase0.publicKeySignature;
+    XCTAssertNotNil( publicSignature_testCase0 );
 
     NSString* commonName_testCase0 = [ certificate_testCase0 subjectCommonName ];
     XCTAssertNotNil( commonName_testCase0 );
@@ -258,6 +273,9 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
+    NSData* publicSignature_testCase1 = certificate_testCase1.publicKeySignature;
+    XCTAssertNotNil( publicSignature_testCase1 );
+
     NSString* issuerName_testCase1 = certificate_testCase1.issuerCommonName;
     NSLog( @"Issuer Name #PositiveTestCase1: %@", issuerName_testCase1 );
 
@@ -344,6 +362,9 @@
     XCTAssertNotNil( certificate_testCase2 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
+
+    NSData* publicSignature_testCase2 = certificate_testCase2.publicKeySignature;
+    XCTAssertNotNil( publicSignature_testCase2 );
 
     NSString* issuerName_testCase2 = certificate_testCase2.issuerCommonName;
     NSLog( @"Issuer Name #PositiveTestCase1: %@", issuerName_testCase2 );

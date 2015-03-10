@@ -168,10 +168,10 @@
 
 /* The signature of public key that was wrapped in the certificate. (read-only)
  */
-//- ( NSData* ) publicKeySignature
-//    {
-//
-//    }
+- ( NSData* ) publicKeySignature
+    {
+    return ( NSData* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributePublicKeySignature ];
+    }
 
 /* The signature algorithm of the issuer of a certificate. (read-only)
  */
@@ -368,7 +368,13 @@ NSString static* kSubOIDKey = @"subOID";
         OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDLocalityName;
         }
 
-    // Signature Algorithm
+    // Public Key Signature
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributePublicKeySignature ] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1Signature;
+        }
+
+    // Public Key Signature Algorithm
     else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributePublicKeySignatureAlgorithm ] )
         {
         OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SignatureAlgorithm;
