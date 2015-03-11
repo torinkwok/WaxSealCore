@@ -100,7 +100,7 @@ WSCKeychainManager static* s_defaultManager = nil;
     WSCKeychain* existingKeychain = nil;
 
     // If the given URL is reachable...
-    if ( [ _URLOfExistingKeychain checkResourceIsReachableAndReturnError: &error ] )
+    if ( [ _URLOfExistingKeychain checkResourceIsReachableAndReturnError: nil ] )
         {
         BOOL isDir = NO;
         BOOL doesExist = [ [ NSFileManager defaultManager ] fileExistsAtPath: _URLOfExistingKeychain.path
@@ -125,6 +125,18 @@ WSCKeychainManager static* s_defaultManager = nil;
             error = [ NSError errorWithDomain: isDir ? WaxSealCoreErrorDomain : NSCocoaErrorDomain
                                          code: isDir ? WSCKeychainCannotBeDirectoryError : NSFileReadNoSuchFileError
                                      userInfo: nil ];
+        }
+    else
+        {
+        // The Apple official implementation of checkResourceIsReachableAndReturnError: may has a bug
+        // resulting in the returned NSError object is invalid,
+        // so we create the error object ourselves
+        NSString* errorDesc = [ NSString stringWithFormat: @"The file \"%@\" couldn’t be opened because there is no such file.", _URLOfExistingKeychain ];
+        error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                     code: WSCKeychainURLIsInvalidError
+                                 userInfo: @{ NSLocalizedDescriptionKey : errorDesc
+                                            , NSURLErrorKey : _URLOfExistingKeychain
+                                            } ];
         }
 
     if ( error && _Error )
