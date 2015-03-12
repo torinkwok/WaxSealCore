@@ -25,15 +25,18 @@
 #import <Foundation/Foundation.h>
 #import <Security/Security.h>
 
-/** The `WSCKey` class is a subclass of `NSObject` representing a key that is stored in a keychain.
+/** The `WSCKey` class is a subclass of `WSCKeychainItem` representing a key that is stored in a keychain.
     On the other hand, if the key represented by `WSCKey` is not stored in a keychain, 
     passing it to methods of *WaxSealCore* returns errors.
   */
-@interface WSCKey : NSObject
-    {
-@protected
-    SecKeyRef _secKey;
-    }
+@interface WSCKey : WSCKeychainItem
+
+#pragma mark Managing Keys
+/** @name Managing Keys */
+
+/** The key data bytes of the key represented by receiver.
+  */
+@property ( retain, readonly ) NSData* keyData;
 
 #pragma mark Keychain Services Bridge
 /** @name Keychain Services Bridge */

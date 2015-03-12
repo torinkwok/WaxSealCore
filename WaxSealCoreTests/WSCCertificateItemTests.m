@@ -122,7 +122,13 @@
 
 - ( void ) tearDown
     {
-    // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
+    [ self.AppleRootCA_G3 release ];
+    [ self.COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA release ];
+    [ self.MacDeveloper_TongGuo_8ZDY95NQGT release ];
+    [ self.ThawtePersonalFreemailCA release ];
+    [ self.ThawtePersonalPremiumCA release ];
+    [ self.thawtePrimaryRootCA_G2 release ];
+    [ self.Tong_G_outlook_com release ];
     }
 
 - ( void ) testCreateKeyWithSecKeyRef
@@ -134,35 +140,14 @@
     // -------------------------------------------------------------------------------
     // Positive Test Case 0
     // -------------------------------------------------------------------------------
-    values = kCopyValues( self.Tong_G_outlook_com );
-
-    SecKeyRef secKey_testCase0 = NULL;
-    resultCode = SecCertificateCopyPublicKey( self.Tong_G_outlook_com.secCertificateItem, &secKey_testCase0 );
-    XCTAssertNotNil( ( __bridge id )secKey_testCase0 );
-    XCTAssertEqual( resultCode, errSecSuccess );
-
-    NSData* publicKeyData = [ WSCCertificateItem p_retrieveAttributeFromSecCertificate: self.Tong_G_outlook_com.secCertificateItem
-                                                                          attributeKey: _WSCKeychainItemAttributePublicKey
-                                                                                 error: &error ];
-
-    WSCKey* key_testCase0 = [ WSCKey keyWithSecKeyRef: secKey_testCase0 ];
-    XCTAssertNotNil( key_testCase0 );
-
-    CSSM_KEY* cssmKey = malloc( sizeof( CSSM_KEY ) );
-    if ( ( resultCode = SecKeyGetCSSMKey( secKey_testCase0, &cssmKey ) ) == errSecSuccess )
-        {
-        CSSM_DATA cssmKeyData = cssmKey->KeyData;
-
-        CSSM_SIZE cssmKeyDataLength = cssmKeyData.Length;
-        uint8* theCssmKeyData = cssmKeyData.Data;
-
-        NSData* data = [ NSData dataWithBytes: theCssmKeyData length: cssmKeyDataLength ];
-        NSLog( @"Fucking Data: %@", data );
-        }
-
-    if ( secKey_testCase0 )
-        CFRelease( secKey_testCase0 );
-    }
+//    SecKeyRef secKeyOfthawtePrimaryRootCA_G2 = NULL;
+//    if ( ( resultCode = SecCertificateCopyPublicKey( self.AppleRootCA_G3.secCertificateItem
+//                                                   , &secKeyOfthawtePrimaryRootCA_G2 ) ) == errSecSuccess )
+//        {
+//        WSCKey* keyOfthawtePrimaryRootCA_G2 = [ WSCKey keyWithSecKeyRef: secKeyOfthawtePrimaryRootCA_G2 ];
+//        XCTAssertNotNil( keyOfthawtePrimaryRootCA_G2.keyData );
+//        }
+//    }
 
 NSDictionary* kCopyValues( WSCCertificateItem* _CertificateItem )
     {
@@ -230,7 +215,6 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
 - ( void ) testPublicKeySignatureProperty
     {
     NSError* error = nil;
-    OSStatus resultCode = errSecSuccess;
 
     // ----------------------------------------------------------------------------------
     // Positive Test Case 0

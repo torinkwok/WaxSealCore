@@ -28,8 +28,42 @@
 
 @implementation WSCKey
 
-@synthesize secKey = _secKey;
+#pragma mark Managing Keys
+/** @name Managing Keys */
 
+/** The key data bytes of the key represented by receiver.
+  */
+- ( NSData* ) keyData
+    {
+    OSStatus resultCode = errSecSuccess;
+
+    NSData* data = nil;
+
+    CSSM_KEY_PTR ptrCSSMKey = malloc( sizeof( CSSM_KEY ) );
+    if ( ptrCSSMKey && ( ( resultCode = SecKeyGetCSSMKey( self.secKey, &ptrCSSMKey ) ) == errSecSuccess ) )
+        {
+        CSSM_DATA CSSMKeyDataStruct = ptrCSSMKey->KeyData;
+        CSSM_SIZE cssmKeyDataLength = CSSMKeyDataStruct.Length;
+        uint8* CSSMKeyData = CSSMKeyDataStruct.Data;
+
+        data = [ NSData dataWithBytes: CSSMKeyData length: cssmKeyDataLength ];
+        free( ptrCSSMKey );
+        }
+
+    return data;
+    }
+
+#pragma mark Certificate, Key, and Trust Services Bridge
+
+/* Creates and returns a `WSCKey` object using the given reference to the instance of `SecKey` opaque type.
+ */
+- ( SecKeyRef ) secKey
+    {
+    return ( SecKeyRef )( self->_secKeychainItem );
+    }
+
+/* Creates and returns a `WSCKey` object using the given reference to the instance of `SecKey` opaque type.
+ */
 + ( instancetype ) keyWithSecKeyRef: ( SecKeyRef )_SecKeyRef
     {
     return [ [ [ [ self class ] alloc ] p_initWithSecKeyRef: _SecKeyRef ] autorelease ];
@@ -40,18 +74,10 @@
 #pragma mark WSCKey + WSCKeyPrivateInitialization
 @implementation WSCKey ( WSCKeyPrivateInitialization )
 
-- ( instancetype ) p_initWithSecKeyRef: ( SecKeyRef )_SecKeyRef
-    {
-    if ( self = [ super init ] )
-        {
-        if ( _SecKeyRef )
-            self->_secKey = ( SecKeyRef )CFRetain( _SecKeyRef );
-        else
-            return nil;
-        }
-
-    return self;
-    }
+//- ( instancetype ) p_initWithSecKeyRef: ( SecKeyRef )_SecKeyRef
+//    {
+//
+//    }
 
 @end // WSCKey + WSCKeyPrivateInitialization
 
