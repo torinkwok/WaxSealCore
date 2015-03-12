@@ -93,6 +93,7 @@
 
 @end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes
 
+BOOL _WSCIsSecKeychainItemValid( SecKeychainItemRef _SecKeychainItemRef );
 NSString extern* const _WSCKeychainItemAttributePublicKey;
 
 /*================================================================================┐

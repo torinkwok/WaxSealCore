@@ -47,7 +47,10 @@
         uint8* CSSMKeyData = CSSMKeyDataStruct.Data;
 
         data = [ NSData dataWithBytes: CSSMKeyData length: cssmKeyDataLength ];
-        free( ptrCSSMKey );
+
+        // As described in the documentation of Certificate, Key and Trust Services:
+        // we should not modify or free the returned data of SecKeyGetCSSMKey() function (free( ptrCSSMKey )),
+        // because it is owned by the system.
         }
 
     return data;

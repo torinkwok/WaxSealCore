@@ -603,6 +603,21 @@
 
 @end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes
 
+BOOL _WSCIsSecKeychainItemValid( SecKeychainItemRef _SecKeychainItemRef )
+    {
+    OSStatus resultCode = errSecSuccess;
+
+    SecKeychainRef secResideKeychain = nil;
+    resultCode = SecKeychainItemCopyKeychain( _SecKeychainItemRef, &secResideKeychain );
+
+    if ( resultCode == errSecSuccess )
+        // If the reside keychain is already invalid (may be deleted, renamed or moved)
+        // the receiver is invalid.
+        return _WSCKeychainIsSecKeychainValid( secResideKeychain );
+    else
+        return NO;
+    }
+
 // Common Attributes
 NSString* const WSCKeychainItemAttributeCreationDate                = @"cdat";
 NSString* const WSCKeychainItemAttributeModificationDate            = @"mdat";
