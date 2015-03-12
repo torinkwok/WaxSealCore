@@ -24,6 +24,7 @@
 
 #import "WSCCertificateItem.h"
 
+#import "_WSCKeychainItemPrivate.h"
 #import "_WSCCertificateItemPrivate.h"
 
 @implementation WSCCertificateItem
@@ -364,6 +365,12 @@ NSString static* kSubOIDKey = @"subOID";
         {
         OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1IssuerName;
         OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDLocalityName;
+        }
+
+    // Public Key
+    else if ( [ _AttributeKey isEqualToString: _WSCKeychainItemAttributePublicKey] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SubjectPublicKey;
         }
 
     // Public Key Signature
