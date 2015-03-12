@@ -603,6 +603,21 @@
 
 @end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes
 
+BOOL _WSCIsSecKeychainItemValid( SecKeychainItemRef _SecKeychainItemRef )
+    {
+    OSStatus resultCode = errSecSuccess;
+
+    SecKeychainRef secResideKeychain = nil;
+    resultCode = SecKeychainItemCopyKeychain( _SecKeychainItemRef, &secResideKeychain );
+
+    if ( resultCode == errSecSuccess )
+        // If the reside keychain is already invalid (may be deleted, renamed or moved)
+        // the receiver is invalid.
+        return _WSCKeychainIsSecKeychainValid( secResideKeychain );
+    else
+        return NO;
+    }
+
 // Common Attributes
 NSString* const WSCKeychainItemAttributeCreationDate                = @"cdat";
 NSString* const WSCKeychainItemAttributeModificationDate            = @"mdat";
@@ -644,6 +659,8 @@ NSString* const WSCKeychainItemAttributeIssuerLocality              = @"2.16.840
 NSString* const WSCKeychainItemAttributeSerialNumber                = @"2.16.840.1.113741.2.1.1.1.3 (Serial Number)";
 NSString* const WSCKeychainItemAttributePublicKeySignature          = @"2.16.840.1.113741.2.1.3.2.2 (Public Key Signature)";
 NSString* const WSCKeychainItemAttributePublicKeySignatureAlgorithm = @"2.16.840.1.113741.2.1.3.2.1 (Public Key Signature Algorithm)";
+
+NSString* const _WSCKeychainItemAttributePublicKey                   = @"2.16.840.1.113741.2.1.1.1.10 (Public Key)";
 
 /*================================================================================┐
 │                              The MIT License (MIT)                              │

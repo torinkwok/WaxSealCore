@@ -23,7 +23,12 @@
   ██████████████████████████████████████████████████████████████████████████████*/
 
 #import "WSCCertificateItem.h"
+#import "WSCKey.h"
+#import "WSCKeychainError.h"
 
+#import "_WSCKeychainErrorPrivate.h"
+#import "_WSCKeychainPrivate.h"
+#import "_WSCKeychainItemPrivate.h"
 #import "_WSCCertificateItemPrivate.h"
 
 @implementation WSCCertificateItem
@@ -46,6 +51,7 @@
 
 @dynamic serialNumber;
 
+@dynamic publicKey;
 @dynamic publicKeySignature;
 @dynamic publicKeySignatureAlgorithm;
 
@@ -164,6 +170,33 @@
 
 #pragma mark Managing Public Key
 
+/** The public key that was wrapped in the certificate represented by receiver.
+  */
+- ( WSCKey* ) publicKey
+    {
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
+
+    WSCKey* thePublicKey = nil;
+
+    _WSCDontBeABitch( &error, self, [ WSCCertificateItem class ], s_guard );
+    if ( !error )
+        {
+        SecKeyRef secPublicKey = NULL;
+
+        if ( ( resultCode = SecCertificateCopyPublicKey( self.secCertificateItem, &secPublicKey ) ) == errSecSuccess )
+            {
+            thePublicKey = [ WSCKey keyWithSecKeyRef: secPublicKey ];
+            CFRelease( secPublicKey );
+            }
+        else
+            _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+        }
+
+    _WSCPrintNSErrorForLog( error );
+    return thePublicKey;
+    }
+
 /* The signature of public key that was wrapped in the certificate. (read-only)
  */
 - ( NSData* ) publicKeySignature
@@ -215,49 +248,55 @@ NSString static* kSubOIDKey = @"subOID";
                                   attributeKey: ( NSString* )_AttributeKey
                                          error: ( NSError** )_Error
     {
-    CFErrorRef cfError = NULL;
-
-    NSDictionary* OIDs = [ self p_OIDsCorrespondingGivenAttributeKey: _AttributeKey ];
-    NSString* masterOID = OIDs[ kMasterOIDKey ];
-    NSString* subOID = OIDs[ kSubOIDKey ];
-
+    NSError* error = nil;
     id attribute = nil;
 
-    CFDictionaryRef secResultValuesMatchingOIDs =
-        SecCertificateCopyValues( _SecCertificateRef, ( __bridge CFArrayRef )@[ masterOID ] , &cfError );
-
-    if ( !cfError )
+    if ( _WSCIsSecKeychainItemValid( ( SecKeychainItemRef )_SecCertificateRef ) )
         {
-        NSDictionary* valuesDict = [ ( __bridge NSDictionary* )secResultValuesMatchingOIDs objectForKey: masterOID ];
-        if ( valuesDict )
-            {
-            NSString* dataType = valuesDict[ ( __bridge NSString* )kSecPropertyKeyType ];
-            id data = valuesDict[ ( __bridge NSString* )kSecPropertyKeyValue ];
+        NSDictionary* OIDs = [ self p_OIDsCorrespondingGivenAttributeKey: _AttributeKey ];
+        NSString* masterOID = OIDs[ kMasterOIDKey ];
+        NSString* subOID = OIDs[ kSubOIDKey ];
 
-            if ( [ dataType isEqualToString: ( __bridge NSString* )kSecPropertyTypeSection ] )
+        CFErrorRef cfError = NULL;
+        CFDictionaryRef secResultValuesMatchingOIDs =
+            SecCertificateCopyValues( _SecCertificateRef, ( __bridge CFArrayRef )@[ masterOID ] , &cfError );
+
+        if ( !cfError )
+            {
+            NSDictionary* valuesDict = [ ( __bridge NSDictionary* )secResultValuesMatchingOIDs objectForKey: masterOID ];
+            if ( valuesDict )
                 {
-                for ( NSDictionary* _Entry in ( NSArray* )data )
+                NSString* dataType = valuesDict[ ( __bridge NSString* )kSecPropertyKeyType ];
+                id data = valuesDict[ ( __bridge NSString* )kSecPropertyKeyValue ];
+
+                if ( [ dataType isEqualToString: ( __bridge NSString* )kSecPropertyTypeSection ] )
                     {
-                    if ( [ _Entry[ ( __bridge NSString* )kSecPropertyKeyLabel ] isEqualToString: subOID ] )
+                    for ( NSDictionary* _Entry in ( NSArray* )data )
                         {
-                        attribute = [ [ _Entry[ ( __bridge NSString* )kSecPropertyKeyValue ] copy ] autorelease ];
-                        break;
+                        if ( [ _Entry[ ( __bridge NSString* )kSecPropertyKeyLabel ] isEqualToString: subOID ] )
+                            {
+                            attribute = [ [ _Entry[ ( __bridge NSString* )kSecPropertyKeyValue ] copy ] autorelease ];
+                            break;
+                            }
                         }
                     }
+                else
+                    attribute = [ [ data copy ] autorelease ];
                 }
-            else
-                attribute = [ [ data copy ] autorelease ];
-            }
 
-        CFRelease( secResultValuesMatchingOIDs );
+            CFRelease( secResultValuesMatchingOIDs );
+            }
+        else
+            {
+            error = [ [ ( __bridge NSError* )cfError copy ] autorelease ];
+            CFRelease( cfError );
+            }
         }
     else
-        {
-        if ( _Error )
-            *_Error = [ [ ( __bridge NSError* )cfError copy ] autorelease ];
+        error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCKeychainIsInvalidError userInfo: nil ];
 
-        CFRelease( cfError );
-        }
+    if ( error && _Error )
+        *_Error = [ [ error copy ] autorelease ];
 
     return attribute;
     }
@@ -364,6 +403,12 @@ NSString static* kSubOIDKey = @"subOID";
         {
         OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1IssuerName;
         OIDs[ kSubOIDKey ] = ( __bridge id )kSecOIDLocalityName;
+        }
+
+    // Public Key
+    else if ( [ _AttributeKey isEqualToString: _WSCKeychainItemAttributePublicKey] )
+        {
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SubjectPublicKey;
         }
 
     // Public Key Signature

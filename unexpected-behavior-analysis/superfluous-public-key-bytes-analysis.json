@@ -1,0 +1,88 @@
+Apple Root CA - G3:
+{
+	"Public Key Algorithm" = Elliptic Curve Public Key ( 1.2.840.10045.2.1 )
+
+    "CSSM Style" = 
+<30763010 06072a86 48ce3d02 0106052b 81040022 03620004 98e92f3d 4072a4ed 93227281 131cdd10 95f1c5a3 4e71dc14 16d90ee5 a6052a77 647b5f4e 38d3bb1c 44b57ff5 1fb63262 5dc9e984 5b4f304f 115a00fd 58580ca5 f50f2c4d 07471375 da979797 6f315ced 2b9d7b20 3bd8b954 d95e99a4 3a510a31>;
+
+    "Certificate, Key, and Trust Services Style" = 
+<0498e92f 3d4072a4 ed932272 81131cdd 1095f1c5 a34e71dc 1416d90e e5a6052a 77647b5f 4e38d3bb 1c44b57f f51fb632 625dc9e9 845b4f30 4f115a00 fd58580c a5f50f2c 4d074713 75da9797 976f315c ed2b9d7b 203bd8b9 54d95e99 a43a510a 31>;
+}
+
+============================================================================================================================
+
+thawte Primary Root CA - G2
+{
+	"Public Key Algorithm" = Elliptic Curve Public Key ( 1.2.840.10045.2.1 )
+
+    "CSSM Style" = 
+<30763010 06072a86 48ce3d02 0106052b 81040022 03620004 a2d59c82 7b959df1 527887fe 8a16bf05 e6dfa302 4f0d07c6 0051ba0c 02522d22 a44239c4 fe8feac9 c1bed44d ff9f7a9e e2b17c9a ada78609 7387d1e7 9ae37aa5 aa6efbba b370c067 88a235d4 a39ab1fd adc2ef31 faa8b9f3 fb08c691 d1fb2995>;
+
+    "Certificate, Key, and Trust Services Style" = 
+<04a2d59c 827b959d f1527887 fe8a16bf 05e6dfa3 024f0d07 c60051ba 0c02522d 22a44239 c4fe8fea c9c1bed4 4dff9f7a 9ee2b17c 9aada786 097387d1 e79ae37a a5aa6efb bab370c0 6788a235 d4a39ab1 fdadc2ef 31faa8b9 f3fb08c6 91d1fb29 95>;
+}
+
+============================================================================================================================
+
+COMODO SHA 256 Client Authentication And Secure Email CA:
+{
+	"Public Key Algorithm" = RSA Encryption ( 1.2.840.113549.1.1.1 )
+
+    "CSSM Style" = 
+<3082010a 02820101 0089b10d da7a5319 4e70521d bc56a606 26b7b849 e096e751 abf1f05a 134915a3 b48c1b60 bc7a5142 a7798ca4 22df1761 4e91d576 230a14d3 4a027fb6 1d09806e a5043dd9 babb16fe a187a92e 43524316 7caf3250 c8a64f5a e908d8cf 93259c7b 88e83064 e6a4f856 80fd2a24 14331799 ac44e569 8ba34606 4bc233d4 e9409f06 b0b1ac93 40b9b508 933a9c2a 53a310db 3d20613c 55038ed9 4e762502 2129faa3 7c71764f eee15f81 e9fb5480 dbc37b35 52b784de 223d2c30 2d317f59 bd5237b0 33692d43 ebfad6a5 f1977767 518cd9ee 27ebbca5 0738768c a4a938ff df8cf503 ac49beca f773993a 0f32ab9c 953a133d 0e463a57 746150be c6403fcb e4e29fa2 21020301 0001>;
+
+    "Certificate, Key, and Trust Services Style" = 
+<3082010a 02820101 0089b10d da7a5319 4e70521d bc56a606 26b7b849 e096e751 abf1f05a 134915a3 b48c1b60 bc7a5142 a7798ca4 22df1761 4e91d576 230a14d3 4a027fb6 1d09806e a5043dd9 babb16fe a187a92e 43524316 7caf3250 c8a64f5a e908d8cf 93259c7b 88e83064 e6a4f856 80fd2a24 14331799 ac44e569 8ba34606 4bc233d4 e9409f06 b0b1ac93 40b9b508 933a9c2a 53a310db 3d20613c 55038ed9 4e762502 2129faa3 7c71764f eee15f81 e9fb5480 dbc37b35 52b784de 223d2c30 2d317f59 bd5237b0 33692d43 ebfad6a5 f1977767 518cd9ee 27ebbca5 0738768c a4a938ff df8cf503 ac49beca f773993a 0f32ab9c 953a133d 0e463a57 746150be c6403fcb e4e29fa2 21020301 0001>;
+}
+
+============================================================================================================================
+
+Mac Developer: TongGuo (8ZDY95NQGT):
+{
+	"Public Key Algorithm" = RSA Encryption ( 1.2.840.113549.1.1.1 )
+
+    "CSSM Style" = 
+<3082010a 02820101 00cfec1c 1f0d87d0 1bf235f3 2d99c08b 2d5be234 c24edecc c90cb805 f505e9b8 2b1ab595 5b3205b3 d9ef8b34 07838e61 19bb4cd7 e2d06574 b2d66e77 395bd835 bc3cd17a 87c5907c 24b610d3 d5130e4a e077b16f da37a6c5 33712cf7 156b964a 33419476 85d930f0 3ff70d83 24e57dbc e6b31351 c342b850 671affeb 01eb785b 0bea42e2 0c1a86de 1c3d0ed4 3b4dafaf f74ce18d 736dcaa1 b3e2a2fa b12f964b de679ac9 fff701e7 12b8ab9a 51ddf514 df3c3226 06028c8b a13d7d53 3d643f35 a2a036a8 7d746a59 095ac634 d9d28284 0339f81a 5c11e4f4 38ba6e32 df5670da 7e19e6d9 5218248a bd9a93e8 3ff31472 a62e5541 90b841cf ad1c2c0c bebfe043 1f020301 0001>;
+
+    "Certificate, Key, and Trust Services Style" = 
+<3082010a 02820101 00cfec1c 1f0d87d0 1bf235f3 2d99c08b 2d5be234 c24edecc c90cb805 f505e9b8 2b1ab595 5b3205b3 d9ef8b34 07838e61 19bb4cd7 e2d06574 b2d66e77 395bd835 bc3cd17a 87c5907c 24b610d3 d5130e4a e077b16f da37a6c5 33712cf7 156b964a 33419476 85d930f0 3ff70d83 24e57dbc e6b31351 c342b850 671affeb 01eb785b 0bea42e2 0c1a86de 1c3d0ed4 3b4dafaf f74ce18d 736dcaa1 b3e2a2fa b12f964b de679ac9 fff701e7 12b8ab9a 51ddf514 df3c3226 06028c8b a13d7d53 3d643f35 a2a036a8 7d746a59 095ac634 d9d28284 0339f81a 5c11e4f4 38ba6e32 df5670da 7e19e6d9 5218248a bd9a93e8 3ff31472 a62e5541 90b841cf ad1c2c0c bebfe043 1f020301 0001>;
+}
+
+============================================================================================================================
+
+Tong-G@outlook.com:
+{
+	"Public Key Algorithm" = RSA Encryption ( 1.2.840.113549.1.1.1 )
+
+    "CSSM Style" = 
+<3082010a 02820101 00c74a91 9fc294b0 110d35c0 b79bc704 2b044354 02db0038 b6ecedbd cd3542b3 292801cc c9a1b51e d81a16d6 8bd4767b 934bed70 3cbcdb85 15023a7b d5b372eb 789e805a 748f6b97 88d76ea9 9ad2c8ed fd1dde71 c3051390 e97e5a2e d252902b 25d7bf7d 3b995349 b17fe658 5f80054e bff11faf b587fe39 b8d8c990 a56e673f f3996ea1 226211b8 6b6f6b50 fbcb54ef f4d14cf9 91da1902 364736a8 525975ab 6bfd02d6 97bfe0c2 fffe3744 683f693b 6e1ee774 a7890d09 6218fbbf b14f00ae 2711861c 7a03b37f 80039965 f29df4ed 753a9e55 fd5eb623 8e3131bb 77aae3b3 638e3503 4fa38e03 58fa5ca2 0d541ba6 7ce8cc91 b915fe6e 5348642e 980ee83d ef020301 0001>;
+
+    "Certificate, Key, and Trust Services Style" = 
+<3082010a 02820101 00c74a91 9fc294b0 110d35c0 b79bc704 2b044354 02db0038 b6ecedbd cd3542b3 292801cc c9a1b51e d81a16d6 8bd4767b 934bed70 3cbcdb85 15023a7b d5b372eb 789e805a 748f6b97 88d76ea9 9ad2c8ed fd1dde71 c3051390 e97e5a2e d252902b 25d7bf7d 3b995349 b17fe658 5f80054e bff11faf b587fe39 b8d8c990 a56e673f f3996ea1 226211b8 6b6f6b50 fbcb54ef f4d14cf9 91da1902 364736a8 525975ab 6bfd02d6 97bfe0c2 fffe3744 683f693b 6e1ee774 a7890d09 6218fbbf b14f00ae 2711861c 7a03b37f 80039965 f29df4ed 753a9e55 fd5eb623 8e3131bb 77aae3b3 638e3503 4fa38e03 58fa5ca2 0d541ba6 7ce8cc91 b915fe6e 5348642e 980ee83d ef020301 0001>;
+}
+
+============================================================================================================================
+
+Thawte Personal Freemail CA:
+{
+	"Public Key Algorithm" = MD5 with RSA Encryption ( 1.2.840.113549.1.1.4 )
+
+    "CSSM Style" = 
+<30818902 818100d4 69d7d4b0 94645b71 e947d80c 51b6ea72 91b0845e 7d2d0d8f 7b12df85 25752874 3a422c63 279f957b 4bef7e19 871d86ea a3ddb9ce 96641ac2 146e44ac 7ce68fe8 4d0f711f 4038a600 a38778f6 f994865e adeac05e 76ebd914 a35d6e7a 7c0ca54b 557f0619 297f9e9a 26d56abb 3824086a 98c7b1da a39891fd 79dbe55a c41cb902 03010001>;
+
+    "Certificate, Key, and Trust Services Style" = 
+<30818902 818100d4 69d7d4b0 94645b71 e947d80c 51b6ea72 91b0845e 7d2d0d8f 7b12df85 25752874 3a422c63 279f957b 4bef7e19 871d86ea a3ddb9ce 96641ac2 146e44ac 7ce68fe8 4d0f711f 4038a600 a38778f6 f994865e adeac05e 76ebd914 a35d6e7a 7c0ca54b 557f0619 297f9e9a 26d56abb 3824086a 98c7b1da a39891fd 79dbe55a c41cb902 03010001>;
+}
+
+============================================================================================================================
+
+Thawte Personal Premium CA:
+{
+	"Public Key Algorithm" = MD5 with RSA Encryption ( 1.2.840.113549.1.1.4 )
+
+    "CSSM Style" = 
+<30818902 818100c9 66d9f807 44cfb98c 2ef0a1ef 13456c05 dfde2716 51364111 6c6c3bed fe107d12 9ee59b42 9afe6031 c366b773 3a48ae4e d0323794 88b50db6 d9f3f244 d9d58812 dd764df2 1afc6f23 1e7af1d8 98454e07 10ef1642 d043756d 4adee2aa c931ff1f 00707c66 cf102508 bafaee00 e9460366 2711153b aa5bf298 dd3642b2 da887502 03010001>;
+
+    "Certificate, Key, and Trust Services Style" = 
+<30818902 818100c9 66d9f807 44cfb98c 2ef0a1ef 13456c05 dfde2716 51364111 6c6c3bed fe107d12 9ee59b42 9afe6031 c366b773 3a48ae4e d0323794 88b50db6 d9f3f244 d9d58812 dd764df2 1afc6f23 1e7af1d8 98454e07 10ef1642 d043756d 4adee2aa c931ff1f 00707c66 cf102508 bafaee00 e9460366 2711153b aa5bf298 dd3642b2 da887502 03010001>;
+}

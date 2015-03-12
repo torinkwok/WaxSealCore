@@ -250,8 +250,8 @@
                                                                                                  error: &error ];
     XCTAssertNil( newKeychainNonPrompt_testCase0 );
     XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, NSCocoaErrorDomain );
-    XCTAssertEqual( error.code, NSFileReadNoSuchFileError );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainURLIsInvalidError );
     _WSCPrintNSErrorForUnitTest( error );
 
     // create
@@ -289,8 +289,8 @@
                                                                                                  error: &error ];
     XCTAssertNil( newKeychainNonPrompt_testCase0 );
     XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, NSCocoaErrorDomain );
-    XCTAssertEqual( error.code, NSFileNoSuchFileError );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainURLIsInvalidError );
     _WSCPrintNSErrorForUnitTest( error );
 
     // ----------------------------------------------------------------------------------
@@ -511,8 +511,8 @@
         [ [ WSCKeychainManager defaultManager ] openExistingKeychainAtURL: incorrectURLForNagativeTestCase1
                                                                     error: &error ];
     XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, NSCocoaErrorDomain );
-    XCTAssertEqual( error.code, NSFileNoSuchFileError );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainURLIsInvalidError );
     XCTAssertNil( incorrectKeychain_nagativeTestCase1 );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -525,8 +525,8 @@
         [ [ WSCKeychainManager defaultManager ] openExistingKeychainAtURL: incorrectURLForNagativeTestCase2
                                                                     error: &error ];
     XCTAssertNotNil( error );
-    XCTAssertEqualObjects( error.domain, NSCocoaErrorDomain );
-    XCTAssertEqual( error.code, NSFileNoSuchFileError );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCKeychainURLIsInvalidError );
     XCTAssertNil( incorrectKeychain_nagativeTestCase2 );
     _WSCPrintNSErrorForUnitTest( error );
 

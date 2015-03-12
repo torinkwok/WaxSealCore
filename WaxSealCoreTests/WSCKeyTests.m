@@ -22,79 +22,42 @@
   ████████████████████████████████████████████████████████████████████████████████
   ██████████████████████████████████████████████████████████████████████████████*/
 
-#import <Foundation/Foundation.h>
+#import <XCTest/XCTest.h>
 
-#pragma mark Private Programmatic Interfaces for Creating Keychain Items
-@interface WSCKeychainItem ( WSCKeychainItemPrivateInitialization )
-- ( instancetype ) p_initWithSecKeychainItemRef: ( SecKeychainItemRef )_SecKeychainItemRef;
-@end // WSCKeychainItem + WSCKeychainItemPrivateInitialization
+#import "WSCKey.h"
+#import "WSCKeychain.h"
+#import "WSCKeychainItem.h"
+#import "WSCPassphraseItem.h"
+#import "WSCTrustedApplication.h"
+#import "WSCPermittedOperation.h"
+#import "WSCKeychainManager.h"
 
-#pragma mark Private Programmatic Interfaces for Zeroing Keychain Items
-@interface WSCKeychainItem ( WSCKeychainItemPrivateZeroing)
-- ( void ) p_zeroingKeychainItem;
-@end // WSCKeychainItem + WSCKeychainItemPrivateZeroing
+#import "_WSCTrustedApplicationPrivate.h"
+#import "_WSCPermittedOperationPrivate.h"
 
-#pragma mark Private Programmatic Interfaces for Accessing Attributes
-@interface WSCKeychainItem ( WSCKeychainItemPrivateAccessingAttributes )
+// --------------------------------------------------------
+#pragma mark Interface of WSCAccessPermissionTests case
+// --------------------------------------------------------
+@interface WSCKeyTests : XCTestCase
 
-#pragma mark Extracting
-- ( WSCKeychainItemClass ) p_itemClass: ( NSError** )_Error;
+@end
 
-// Because of the fucking potential infinite recursion,
-// we have to separate the "Don't be a bitch" logic with the p_extractAttribute:error: private method.
-- ( id ) p_extractAttributeWithCheckingParameter: ( SecItemAttr )_AttributeTag;
+// --------------------------------------------------------
+#pragma mark Implementation of WSCAccessPermissionTests case
+// --------------------------------------------------------
+@implementation WSCKeyTests
 
-- ( id ) p_extractAttribute: ( SecItemAttr )_AttrbuteTag
-                      error: ( NSError** )_Error;
+- ( void ) setUp
+    {
+    // TODO: Put setup code here. This method is called before the invocation of each test method in the class.
+    }
 
-// Extract NSDate object from the SecKeychainAttribute struct.
-- ( NSDate* ) p_extractDateFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
-                                       error: ( NSError** )_Error;
+- ( void ) tearDown
+    {
+    // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
+    }
 
-// Extract NSData object from the SecKeychainAttribute struct.
-- ( NSData* ) p_extractDataFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
-                                       error: ( NSError** )_Error;
-
-// Extract NSString object from the SecKeychainAttribute struct.
-- ( NSString* ) p_extractStringFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
-                                           error: ( NSError** )_Error;
-
-// Extract UInt32 value from the SecKeychainAttribute struct.
-- ( UInt32 ) p_extractUInt32FromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
-                                        error: ( NSError** )_Error;
-
-- ( WSCKeychain* ) p_keychainWithoutCheckingValidity: ( NSError** )_Error;
-
-#pragma mark Modifying
-- ( void ) p_modifyAttribute: ( SecItemAttr )_AttributeTag
-                withNewValue: ( id )_NewValue;
-
-// Construct SecKeychainAttribute struct with the NSDate object.
-- ( SecKeychainAttribute ) p_attrForDateValue: ( NSDate* )_Date;
-
-// Construct SecKeychainAttribute struct with the NSString object.
-- ( SecKeychainAttribute ) p_attrForStringValue: ( NSString* )_StringValue
-                                        forAttr: ( SecItemAttr )_Attr;
-
-// Construct SecKeychainAttribute struct with UInt32 and Four Char Code.
-- ( SecKeychainAttribute ) p_attrForUInt32: ( UInt32 )_UInt32Value
-                                   forAttr: ( SecItemAttr )_Attr;
-
-// Construct SecKeychainAttribute struct with Cocoa Data.
-- ( SecKeychainAttribute ) p_attrForData: ( NSData* )_CocoaData
-                                 forAttr: ( SecItemAttr )_Attr;
-
-// Objective-C wrapper of SecKeychainItemCopyAccess() function in Keychain Services
-// Use for copying the access of the protected keychain item represented by receiver.
-- ( SecAccessRef ) p_secCurrentAccess: ( NSError** )_Error;
-
-- ( void ) p_setSecCurrentAccess: ( SecAccessRef )_NewAccessRef
-                           error: ( NSError** )_Error;
-
-@end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes
-
-BOOL _WSCIsSecKeychainItemValid( SecKeychainItemRef _SecKeychainItemRef );
-NSString extern* const _WSCKeychainItemAttributePublicKey;
+@end // WSCAccessPermissionTests test case
 
 /*================================================================================┐
 |                              The MIT License (MIT)                              |

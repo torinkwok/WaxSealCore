@@ -24,6 +24,7 @@
 
 #import <XCTest/XCTest.h>
 
+#import "WSCKey.h"
 #import "WSCKeychain.h"
 #import "WSCKeychainItem.h"
 #import "WSCPassphraseItem.h"
@@ -34,6 +35,7 @@
 
 #import "_WSCTrustedApplicationPrivate.h"
 #import "_WSCPermittedOperationPrivate.h"
+#import "_WSCKeychainItemPrivate.h"
 #import "_WSCCertificateItemPrivate.h"
 
 // --------------------------------------------------------
@@ -41,6 +43,13 @@
 // --------------------------------------------------------
 @interface WSCCertificateItemTests : XCTestCase
 
+@property ( retain ) WSCCertificateItem* thawtePrimaryRootCA_G2;
+@property ( retain ) WSCCertificateItem* ThawtePersonalPremiumCA;
+@property ( retain ) WSCCertificateItem* ThawtePersonalFreemailCA;
+@property ( retain ) WSCCertificateItem* AppleRootCA_G3;
+@property ( retain ) WSCCertificateItem* COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA;
+@property ( retain ) WSCCertificateItem* Tong_G_outlook_com;
+@property ( retain ) WSCCertificateItem* MacDeveloper_TongGuo_8ZDY95NQGT;
 
 @end
 
@@ -49,39 +58,337 @@
 // --------------------------------------------------------
 @implementation WSCCertificateItemTests
 
-- ( void ) setUp
-    {
-    // TODO: Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-- ( void ) tearDown
-    {
-    // TODO: Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
+@synthesize thawtePrimaryRootCA_G2;
+@synthesize ThawtePersonalPremiumCA;
+@synthesize ThawtePersonalFreemailCA;
+@synthesize AppleRootCA_G3;
+@synthesize COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA;
+@synthesize Tong_G_outlook_com;
+@synthesize MacDeveloper_TongGuo_8ZDY95NQGT;
 
 NSDictionary* kCopyValues( WSCCertificateItem* _CertificateItem )
     {
     NSDictionary* values = ( __bridge NSDictionary* )
         SecCertificateCopyValues( _CertificateItem.secCertificateItem
-                                , ( __bridge CFArrayRef )@[ /*( __bridge id )kSecOIDX509V1Signature*/
+                                , ( __bridge CFArrayRef )@[ ( __bridge id )kSecOIDX509V1Signature
 //                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
 //                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithmParameters
-                                                            ( __bridge id )kSecOIDX509V1SubjectPublicKey
-                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKeyAlgorithm
-                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKeyAlgorithmParameters
-                                                          , ( __bridge id )kSecOIDX509V1IssuerNameCStruct
-                                                          , ( __bridge id )kSecOIDX509V1IssuerNameLDAP
-                                                          , ( __bridge id )kSecOIDX509V1IssuerNameStd
-                                                          , ( __bridge id )kSecOIDX509V1SerialNumber
-                                                          , ( __bridge id )kSecOIDX509V1SubjectName
-                                                          , ( __bridge id )kSecOIDX509V1SubjectNameCStruct
-                                                          , ( __bridge id )kSecOIDX509V1SubjectNameLDAP
-                                                          , ( __bridge id )kSecOIDX509V1SubjectNameStd
-//                                                          , ( __bridge id )kSecOIDX509V1CertificateIssuerUniqueId
-//                                                          , ( __bridge id )kSecOIDX509V1CertificateSubjectUniqueId
+                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKey
+//                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKeyAlgorithm
+//                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKeyAlgorithmParameters
                                                           ]
                                 , NULL );
     return values;
+    }
+
+NSData* kSecPublicKeyData( WSCCertificateItem* _CertificateItem, NSError** _Error )
+    {
+    return ( NSData* )[ WSCCertificateItem p_retrieveAttributeFromSecCertificate: _CertificateItem.secCertificateItem
+                                                                    attributeKey: _WSCKeychainItemAttributePublicKey
+                                                                           error: _Error ];
+    }
+
+NSData* kCSSMPublicKeyData( WSCCertificateItem* _CertificateItem, NSError** _Error )
+    {
+    OSStatus resultCode = errSecSuccess;
+
+    NSData* CSSMPublicKeyData = nil;
+
+    SecKeyRef secPublicKey_testCase0 = NULL;
+    SecCertificateCopyPublicKey( _CertificateItem.secCertificateItem, &secPublicKey_testCase0 );
+    CSSM_KEY_PTR ptrCSSMKey = malloc( sizeof( CSSM_KEY ) );
+    if ( ( resultCode = SecKeyGetCSSMKey( secPublicKey_testCase0, &ptrCSSMKey ) ) == errSecSuccess )
+        {
+        CSSM_DATA CSSMKeyDataStruct = ptrCSSMKey->KeyData;
+        CSSM_SIZE cssmKeyDataLength = CSSMKeyDataStruct.Length;
+        uint8* CSSMKeyData = CSSMKeyDataStruct.Data;
+
+        CSSMPublicKeyData = [ NSData dataWithBytes: CSSMKeyData length: cssmKeyDataLength ];
+        }
+
+    return CSSMPublicKeyData;
+    }
+
+NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
+    {
+    return @{ @"Certificate, Key, and Trust Services Style" : kSecPublicKeyData( _CertificateItem, nil )
+            , @"CSSM Style" : kCSSMPublicKeyData( _CertificateItem, nil )
+            };
+    }
+
+- ( void ) setUp
+    {
+    NSError* error = nil;
+
+    self.thawtePrimaryRootCA_G2 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"thawte Primary Root CA - G2" }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    self.ThawtePersonalPremiumCA = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Thawte Personal Premium CA" }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    self.ThawtePersonalFreemailCA = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Thawte Personal Freemail CA" }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    self.AppleRootCA_G3 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Apple Root CA - G3" }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    self.COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"COMODO SHA-256 Client Authentication and Secure Email CA" }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    self.Tong_G_outlook_com = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel: @"tong-g@outlook.com" }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    self.MacDeveloper_TongGuo_8ZDY95NQGT = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel: @"Mac Developer: Tong Guo (8ZDY95NQGT)" }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+    }
+
+- ( void ) tearDown
+    {
+    [ self.AppleRootCA_G3 release ];
+    [ self.COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA release ];
+    [ self.MacDeveloper_TongGuo_8ZDY95NQGT release ];
+    [ self.ThawtePersonalFreemailCA release ];
+    [ self.ThawtePersonalPremiumCA release ];
+    [ self.thawtePrimaryRootCA_G2 release ];
+    [ self.Tong_G_outlook_com release ];
+    }
+
+- ( void ) testPublicKeyProperty
+    {
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 0
+    // -------------------------------------------------------------------------------
+    WSCKey* publicKey_testCase0 = self.AppleRootCA_G3.publicKey;
+    NSData* publicKeyData_testCase0 = publicKey_testCase0.keyData;
+    XCTAssertNotNil( publicKey_testCase0 );
+    XCTAssertNotNil( publicKeyData_testCase0 );
+    XCTAssertEqualObjects( publicKeyData_testCase0, self.AppleRootCA_G3.publicKey.keyData );
+    XCTAssertEqualObjects( publicKey_testCase0, self.AppleRootCA_G3.publicKey );
+    XCTAssertEqual( publicKey_testCase0.hash, self.AppleRootCA_G3.publicKey.hash );
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 1
+    // -------------------------------------------------------------------------------
+    WSCKey* publicKey_testCase1 = self.COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA.publicKey;
+    NSData* publicKeyData_testCase1 = publicKey_testCase1.keyData;
+    XCTAssertNotNil( publicKey_testCase1 );
+    XCTAssertNotNil( publicKeyData_testCase1 );
+    XCTAssertEqualObjects( publicKeyData_testCase1, self.COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA.publicKey.keyData );
+    XCTAssertEqualObjects( publicKey_testCase1, self.COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA.publicKey );
+    XCTAssertEqual( publicKey_testCase1.hash, self.COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA.publicKey.hash );
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 2
+    // -------------------------------------------------------------------------------
+    WSCKey* publicKey_testCase2 = self.MacDeveloper_TongGuo_8ZDY95NQGT.publicKey;
+    NSData* publicKeyData_testCase2 = publicKey_testCase2.keyData;
+    XCTAssertNotNil( publicKey_testCase2 );
+    XCTAssertNotNil( publicKeyData_testCase2 );
+    XCTAssertEqualObjects( publicKeyData_testCase2, self.MacDeveloper_TongGuo_8ZDY95NQGT.publicKey.keyData );
+    XCTAssertEqualObjects( publicKey_testCase2, self.MacDeveloper_TongGuo_8ZDY95NQGT.publicKey );
+    XCTAssertEqual( publicKey_testCase2.hash, self.MacDeveloper_TongGuo_8ZDY95NQGT.publicKey.hash );
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 3
+    // -------------------------------------------------------------------------------
+    WSCKey* publicKey_testCase3 = self.ThawtePersonalFreemailCA.publicKey;
+    NSData* publicKeyData_testCase3 = publicKey_testCase3.keyData;
+    XCTAssertNotNil( publicKey_testCase3 );
+    XCTAssertNotNil( publicKeyData_testCase3 );
+    XCTAssertEqualObjects( publicKeyData_testCase3, self.ThawtePersonalFreemailCA.publicKey.keyData );
+    XCTAssertEqualObjects( publicKey_testCase3, self.ThawtePersonalFreemailCA.publicKey );
+    XCTAssertEqual( publicKey_testCase3.hash, self.ThawtePersonalFreemailCA.publicKey.hash );
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 4
+    // -------------------------------------------------------------------------------
+    WSCKey* publicKey_testCase4 = self.ThawtePersonalPremiumCA.publicKey;
+    NSData* publicKeyData_testCase4 = publicKey_testCase4.keyData;
+    XCTAssertNotNil( publicKey_testCase4 );
+    XCTAssertNotNil( publicKeyData_testCase4 );
+    XCTAssertEqualObjects( publicKeyData_testCase4, self.ThawtePersonalPremiumCA.publicKey.keyData );
+    XCTAssertEqualObjects( publicKey_testCase4, self.ThawtePersonalPremiumCA.publicKey );
+    XCTAssertEqual( publicKey_testCase4.hash, self.ThawtePersonalPremiumCA.publicKey.hash );
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 5
+    // -------------------------------------------------------------------------------
+    WSCKey* publicKey_testCase5 = self.thawtePrimaryRootCA_G2.publicKey;
+    NSData* publicKeyData_testCase5 = publicKey_testCase5.keyData;
+    XCTAssertNotNil( publicKey_testCase5 );
+    XCTAssertNotNil( publicKeyData_testCase5 );
+    XCTAssertEqualObjects( publicKeyData_testCase5, self.thawtePrimaryRootCA_G2.publicKey.keyData );
+    XCTAssertEqualObjects( publicKey_testCase5, self.thawtePrimaryRootCA_G2.publicKey );
+    XCTAssertEqual( publicKey_testCase5.hash, self.thawtePrimaryRootCA_G2.publicKey.hash );
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 6
+    // -------------------------------------------------------------------------------
+    WSCKey* publicKey_testCase6 = self.Tong_G_outlook_com.publicKey;
+    NSData* publicKeyData_testCase6 = publicKey_testCase6.keyData;
+    XCTAssertNotNil( publicKey_testCase6 );
+    XCTAssertNotNil( publicKeyData_testCase6 );
+    XCTAssertEqualObjects( publicKeyData_testCase6, self.Tong_G_outlook_com.publicKey.keyData );
+    XCTAssertEqualObjects( publicKey_testCase6, self.Tong_G_outlook_com.publicKey );
+    XCTAssertEqual( publicKey_testCase6.hash, self.Tong_G_outlook_com.publicKey.hash );
+
+    // Waiting for the negative 
+    }
+
+- ( void ) testCreateKeyWithSecKeyRef
+    {
+/* Template:
+    // -------------------------------------------------------------------------------
+    // Positive Test Case
+    // -------------------------------------------------------------------------------
+    SecKeyRef secKeyOf = NULL;
+    if ( ( resultCode = SecCertificateCopyPublicKey( self..secCertificateItem
+                                                   , &secKeyOf ) ) == errSecSuccess )
+        {
+        WSCKey* keyOf = [ WSCKey keychainItemWithSecKeychainItemRef: ( SecKeychainItemRef )secKeyOf ];
+        XCTAssertNotNil( keyOf.keyData );
+        NSLog( @"Key Data #TestCase: %@", keyOf.keyData );
+        }
+*/
+
+    OSStatus resultCode = errSecSuccess;
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 0
+    // -------------------------------------------------------------------------------
+    SecKeyRef secKeyOfAppleRootCA_G3 = NULL;
+    if ( ( resultCode = SecCertificateCopyPublicKey( self.AppleRootCA_G3.secCertificateItem
+                                                   , &secKeyOfAppleRootCA_G3 ) ) == errSecSuccess )
+        {
+        WSCKey* keyOfAppleRootCA_G3 = [ WSCKey keychainItemWithSecKeychainItemRef: ( SecKeychainItemRef )secKeyOfAppleRootCA_G3 ];
+        XCTAssertNotNil( keyOfAppleRootCA_G3.keyData );
+        NSLog( @"Key Data of Apple Root CA - G3: %@", keyOfAppleRootCA_G3.keyData );
+        }
+
+    fprintf( stdout, "\n\n\n------------------------------------------------------------------------------------------\n\n\n" );
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 1
+    // -------------------------------------------------------------------------------
+    SecKeyRef secKeyOfCOMODO_SHA_256_ClientAuthenticationAndSecureEmailCA = NULL;
+    if ( ( resultCode = SecCertificateCopyPublicKey( self.COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA.secCertificateItem
+                                                   , &secKeyOfCOMODO_SHA_256_ClientAuthenticationAndSecureEmailCA ) ) == errSecSuccess )
+        {
+        WSCKey* keyOfCOMODO_SHA_256_ClientAuthenticationAndSecureEmailCA = [ WSCKey keychainItemWithSecKeychainItemRef: ( SecKeychainItemRef )secKeyOfCOMODO_SHA_256_ClientAuthenticationAndSecureEmailCA ];
+        XCTAssertNotNil( keyOfCOMODO_SHA_256_ClientAuthenticationAndSecureEmailCA.keyData );
+        NSLog( @"Key Data of COMODO SHA 256 Client Authentication And Secure Email CA: %@", keyOfCOMODO_SHA_256_ClientAuthenticationAndSecureEmailCA.keyData );
+        }
+
+    fprintf( stdout, "\n\n\n------------------------------------------------------------------------------------------\n\n\n" );
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 2
+    // -------------------------------------------------------------------------------
+    SecKeyRef secKeyOfMacDeveloper_TongGuo_8ZDY95NQGT = NULL;
+    if ( ( resultCode = SecCertificateCopyPublicKey( self.MacDeveloper_TongGuo_8ZDY95NQGT.secCertificateItem
+                                                   , &secKeyOfMacDeveloper_TongGuo_8ZDY95NQGT ) ) == errSecSuccess )
+        {
+        WSCKey* keyOfMacDeveloper_TongGuo_8ZDY95NQGT = [ WSCKey keychainItemWithSecKeychainItemRef: ( SecKeychainItemRef )secKeyOfMacDeveloper_TongGuo_8ZDY95NQGT ];
+        XCTAssertNotNil( keyOfMacDeveloper_TongGuo_8ZDY95NQGT.keyData );
+        NSLog( @"Key Data of Mac Developer: Tong Guo (8ZDY95NQGT): %@", keyOfMacDeveloper_TongGuo_8ZDY95NQGT.keyData );
+        }
+
+    fprintf( stdout, "\n\n\n------------------------------------------------------------------------------------------\n\n\n" );
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 3
+    // -------------------------------------------------------------------------------
+    SecKeyRef secKeyOfThawtePersonalFreemailCA = NULL;
+    if ( ( resultCode = SecCertificateCopyPublicKey( self.ThawtePersonalFreemailCA.secCertificateItem
+                                                   , &secKeyOfThawtePersonalFreemailCA ) ) == errSecSuccess )
+        {
+        WSCKey* keyOfThawtePersonalFreemailCA = [ WSCKey keychainItemWithSecKeychainItemRef: ( SecKeychainItemRef )secKeyOfThawtePersonalFreemailCA ];
+        XCTAssertNotNil( keyOfThawtePersonalFreemailCA.keyData );
+        NSLog( @"Key Data of Thawte Personal Freemail CA: %@", keyOfThawtePersonalFreemailCA.keyData );
+        }
+
+    fprintf( stdout, "\n\n\n------------------------------------------------------------------------------------------\n\n\n" );
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 4
+    // -------------------------------------------------------------------------------
+    SecKeyRef secKeyOfThawtePersonalPremiumCA = NULL;
+    if ( ( resultCode = SecCertificateCopyPublicKey( self.ThawtePersonalPremiumCA.secCertificateItem
+                                                   , &secKeyOfThawtePersonalPremiumCA ) ) == errSecSuccess )
+        {
+        WSCKey* keyOfThawtePersonalPremiumCA = [ WSCKey keychainItemWithSecKeychainItemRef: ( SecKeychainItemRef )secKeyOfThawtePersonalPremiumCA ];
+        XCTAssertNotNil( keyOfThawtePersonalPremiumCA.keyData );
+        NSLog( @"Key Data of Thawte Personal Premium CA: %@", keyOfThawtePersonalPremiumCA.keyData );
+        }
+
+    fprintf( stdout, "\n\n\n------------------------------------------------------------------------------------------\n\n\n" );
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 5
+    // -------------------------------------------------------------------------------
+    SecKeyRef secKeyOfthawtePrimaryRootCA_G2 = NULL;
+    if ( ( resultCode = SecCertificateCopyPublicKey( self.thawtePrimaryRootCA_G2.secCertificateItem
+                                                   , &secKeyOfthawtePrimaryRootCA_G2 ) ) == errSecSuccess )
+        {
+        WSCKey* keyOfthawtePrimaryRootCA_G2 = [ WSCKey keychainItemWithSecKeychainItemRef: ( SecKeychainItemRef )secKeyOfthawtePrimaryRootCA_G2 ];
+        XCTAssertNotNil( keyOfthawtePrimaryRootCA_G2.keyData );
+        NSLog( @"Key Data of thawte Primary Root CA - G2: %@", keyOfthawtePrimaryRootCA_G2.keyData );
+        }
+
+    fprintf( stdout, "\n\n\n------------------------------------------------------------------------------------------\n\n\n" );
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 6
+    // -------------------------------------------------------------------------------
+    SecKeyRef secKeyOfTong_G_outlook_com = NULL;
+    if ( ( resultCode = SecCertificateCopyPublicKey( self.Tong_G_outlook_com.secCertificateItem
+                                                   , &secKeyOfTong_G_outlook_com ) ) == errSecSuccess )
+        {
+        WSCKey* keyOfTong_G_outlook_com = [ WSCKey keychainItemWithSecKeychainItemRef: ( SecKeychainItemRef )secKeyOfTong_G_outlook_com ];
+        XCTAssertNotNil( keyOfTong_G_outlook_com.keyData );
+        NSLog( @"Key Data of Tong-G@outlook.com: %@", keyOfTong_G_outlook_com.keyData );
+        }
+    }
+
+- ( void ) testTwoStylePublicKeys
+    {
+    NSDictionary* twoStypePublicKeys = nil;
+
+    twoStypePublicKeys = kTwoStylePublicKeys( self.AppleRootCA_G3 );
+    twoStypePublicKeys = kTwoStylePublicKeys( self.COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA ); // This guy
+    twoStypePublicKeys = kTwoStylePublicKeys( self.MacDeveloper_TongGuo_8ZDY95NQGT );
+    twoStypePublicKeys = kTwoStylePublicKeys( self.ThawtePersonalFreemailCA );
+    twoStypePublicKeys = kTwoStylePublicKeys( self.ThawtePersonalPremiumCA );
+    twoStypePublicKeys = kTwoStylePublicKeys( self.thawtePrimaryRootCA_G2 );
+    twoStypePublicKeys = kTwoStylePublicKeys( self.Tong_G_outlook_com );
     }
 
 - ( void ) testPublicKeySignatureProperty
@@ -91,11 +398,7 @@ NSDictionary* kCopyValues( WSCCertificateItem* _CertificateItem )
     // ----------------------------------------------------------------------------------
     // Positive Test Case 0
     // ----------------------------------------------------------------------------------
-    NSString* searchKey_label_testCase0 = @"thawte Primary Root CA - G2";
-    WSCCertificateItem* certificate_testCase0 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
-        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : searchKey_label_testCase0 }
-                                            itemClass: WSCKeychainItemClassCertificateItem
-                                                error: &error ];
+    WSCCertificateItem* certificate_testCase0 = self.thawtePrimaryRootCA_G2;
 
     NSData* publicSignature_testCase0 = certificate_testCase0.publicKeySignature;
     XCTAssertNotNil( publicSignature_testCase0 );
@@ -112,15 +415,8 @@ NSDictionary* kCopyValues( WSCCertificateItem* _CertificateItem )
 
     // ----------------------------------------------------------------------------------
     // Positive Test Case 1
-    // ----------------------------------------------------------------------------------
-    NSString* searchKey_label_testCase1 = @"Thawte Personal Premium CA";
-    WSCCertificateItem* certificate_testCase1 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
-        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : searchKey_label_testCase1 }
-                                            itemClass: WSCKeychainItemClassCertificateItem
-                                                error: &error ];
-    XCTAssertNil( error );
-    _WSCPrintNSErrorForUnitTest( error );
-
+    // ----------------------------------------------------------------------------------;
+    WSCCertificateItem* certificate_testCase1 = self.ThawtePersonalPremiumCA;
     values = kCopyValues( certificate_testCase1 );
 
     NSData* publicSignature_testCase1 = certificate_testCase1.publicKeySignature;
@@ -141,14 +437,7 @@ NSDictionary* kCopyValues( WSCCertificateItem* _CertificateItem )
     // ----------------------------------------------------------------------------------
     // Positive Test Case 2
     // ----------------------------------------------------------------------------------
-    NSString* searchKey_label_testCase2 = @"Thawte Personal Freemail CA";
-    WSCCertificateItem* certificate_testCase2 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
-        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : searchKey_label_testCase2 }
-                                            itemClass: WSCKeychainItemClassCertificateItem
-                                                error: &error ];
-    XCTAssertNil( error );
-    _WSCPrintNSErrorForUnitTest( error );
-
+    WSCCertificateItem* certificate_testCase2 = self.ThawtePersonalFreemailCA;
     values = kCopyValues( certificate_testCase2 );
 
     NSData* publicSignature_testCase2 = certificate_testCase2.publicKeySignature;
@@ -162,14 +451,7 @@ NSDictionary* kCopyValues( WSCCertificateItem* _CertificateItem )
     // ----------------------------------------------------------------------------------
     // Positive Test Case 3
     // ----------------------------------------------------------------------------------
-    NSString* searchKey_label_testCase3 = @"Apple Root CA - G3";
-    WSCCertificateItem* certificate_testCase3 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
-        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : searchKey_label_testCase3 }
-                                            itemClass: WSCKeychainItemClassCertificateItem
-                                                error: &error ];
-    XCTAssertNil( error );
-    _WSCPrintNSErrorForUnitTest( error );
-
+    WSCCertificateItem* certificate_testCase3 = self.AppleRootCA_G3;
     values = kCopyValues( certificate_testCase3 );
 
     NSData* publicSignature_testCase3 = certificate_testCase3.publicKeySignature;
@@ -183,37 +465,19 @@ NSDictionary* kCopyValues( WSCCertificateItem* _CertificateItem )
 
 - ( void ) testProperties
     {
-    NSError* error = nil;
-
     // ----------------------------------------------------------------------------------
     // Positive Test Case 0
     // ----------------------------------------------------------------------------------
-    NSString* searchKey_label_testCase0 = @"COMODO SHA-256 Client Authentication and Secure Email CA";
-    WSCCertificateItem* certificate_testCase0 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
-        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : searchKey_label_testCase0 }
-                                            itemClass: WSCKeychainItemClassCertificateItem
-                                                error: &error ];
-    XCTAssertNotNil( certificate_testCase0 );
-    XCTAssertNil( error );
-    _WSCPrintNSErrorForUnitTest( error );
+    WSCCertificateItem* certificate_testCase0 = self.COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA;
 
-    NSDictionary* values = ( __bridge NSDictionary* )
-        SecCertificateCopyValues( certificate_testCase0.secCertificateItem
-                                , ( __bridge CFArrayRef )@[ ( __bridge id )kSecOIDX509V1Signature
-                                                          , ( __bridge id )kSecOIDX509V1SubjectName
-                                                          , ( __bridge id )kSecOIDX509V1IssuerName
-                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
-                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithmParameters
-                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKey
-                                                          ]
-                                , NULL );
+    NSDictionary* values = kCopyValues( certificate_testCase0 );
 
     NSData* publicSignature_testCase0 = certificate_testCase0.publicKeySignature;
     XCTAssertNotNil( publicSignature_testCase0 );
 
     NSString* commonName_testCase0 = [ certificate_testCase0 subjectCommonName ];
     XCTAssertNotNil( commonName_testCase0 );
-    XCTAssertEqualObjects( searchKey_label_testCase0, commonName_testCase0 );
+    XCTAssertEqualObjects( @"COMODO SHA-256 Client Authentication and Secure Email CA", commonName_testCase0 );
     NSLog( @"Common Name #PositiveTestCase0: %@", commonName_testCase0 );
 
     NSString* issuerName_testCase0 = certificate_testCase0.issuerCommonName;
@@ -297,14 +561,9 @@ NSDictionary* kCopyValues( WSCCertificateItem* _CertificateItem )
     // ----------------------------------------------------------------------------------
     // Positive Test Case 1
     // ----------------------------------------------------------------------------------
-    NSString* searchKey_label_testCase1 = @"tong-g@outlook.com";
-    WSCCertificateItem* certificate_testCase1 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
-        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel: searchKey_label_testCase1 }
-                                            itemClass: WSCKeychainItemClassCertificateItem
-                                                error: &error ];
-    XCTAssertNotNil( certificate_testCase1 );
-    XCTAssertNil( error );
-    _WSCPrintNSErrorForUnitTest( error );
+    WSCCertificateItem* certificate_testCase1 = self.Tong_G_outlook_com;
+
+    values = kCopyValues( certificate_testCase1 );
 
     NSData* publicSignature_testCase1 = certificate_testCase1.publicKeySignature;
     XCTAssertNotNil( publicSignature_testCase1 );
@@ -387,14 +646,7 @@ NSDictionary* kCopyValues( WSCCertificateItem* _CertificateItem )
     // ----------------------------------------------------------------------------------
     // Positive Test Case 2
     // ----------------------------------------------------------------------------------
-    NSString* searchKey_label_testCase2 = @"Mac Developer: Tong Guo (8ZDY95NQGT)";
-    WSCCertificateItem* certificate_testCase2 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
-        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel: searchKey_label_testCase2 }
-                                            itemClass: WSCKeychainItemClassCertificateItem
-                                                error: &error ];
-    XCTAssertNotNil( certificate_testCase2 );
-    XCTAssertNil( error );
-    _WSCPrintNSErrorForUnitTest( error );
+    WSCCertificateItem* certificate_testCase2 = self.MacDeveloper_TongGuo_8ZDY95NQGT;
 
     NSData* publicSignature_testCase2 = certificate_testCase2.publicKeySignature;
     XCTAssertNotNil( publicSignature_testCase2 );
@@ -470,6 +722,8 @@ NSDictionary* kCopyValues( WSCCertificateItem* _CertificateItem )
     WSCSignatureAlgorithmType publicKeySignatureAlgorithm_testCase2 = certificate_testCase2.publicKeySignatureAlgorithm;
     XCTAssert( publicKeySignatureAlgorithm_testCase2 != 0 );
     XCTAssertEqual( publicKeySignatureAlgorithm_testCase2, WSCSignatureAlgorithmSHA1WithRSA );
+
+    // Waiting for the negative tests
     }
 
 @end // WSCCertificateItemTests test case

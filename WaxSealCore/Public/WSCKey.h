@@ -23,78 +23,67 @@
   ██████████████████████████████████████████████████████████████████████████████*/
 
 #import <Foundation/Foundation.h>
+#import <Security/Security.h>
 
-#pragma mark Private Programmatic Interfaces for Creating Keychain Items
-@interface WSCKeychainItem ( WSCKeychainItemPrivateInitialization )
-- ( instancetype ) p_initWithSecKeychainItemRef: ( SecKeychainItemRef )_SecKeychainItemRef;
-@end // WSCKeychainItem + WSCKeychainItemPrivateInitialization
+/** The `WSCKey` class is a subclass of `WSCKeychainItem` representing a key that is stored in a keychain.
+    On the other hand, if the key represented by `WSCKey` is not stored in a keychain, 
+    passing it to methods of *WaxSealCore* returns errors.
+  */
+@interface WSCKey : WSCKeychainItem
 
-#pragma mark Private Programmatic Interfaces for Zeroing Keychain Items
-@interface WSCKeychainItem ( WSCKeychainItemPrivateZeroing)
-- ( void ) p_zeroingKeychainItem;
-@end // WSCKeychainItem + WSCKeychainItemPrivateZeroing
+#pragma mark Managing Keys
+/** @name Managing Keys */
 
-#pragma mark Private Programmatic Interfaces for Accessing Attributes
-@interface WSCKeychainItem ( WSCKeychainItemPrivateAccessingAttributes )
+/** The key data bytes of the key represented by receiver.
+  */
+@property ( retain, readonly ) NSData* keyData;
 
-#pragma mark Extracting
-- ( WSCKeychainItemClass ) p_itemClass: ( NSError** )_Error;
+#pragma mark Comparing Keys
+/** @name Comparing Keys */
 
-// Because of the fucking potential infinite recursion,
-// we have to separate the "Don't be a bitch" logic with the p_extractAttribute:error: private method.
-- ( id ) p_extractAttributeWithCheckingParameter: ( SecItemAttr )_AttributeTag;
+/** Returns a `BOOL` value that indicates whether a given key is equal to receiver.
 
-- ( id ) p_extractAttribute: ( SecItemAttr )_AttrbuteTag
-                      error: ( NSError** )_Error;
+  @param _AnotherKey The key with which to compare the receiver.
 
-// Extract NSDate object from the SecKeychainAttribute struct.
-- ( NSDate* ) p_extractDateFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
-                                       error: ( NSError** )_Error;
+  @return `YES` if *_AnotherKey* is equivalent to receiver (if they have the same data bytes);
+          otherwise *NO*.
 
-// Extract NSData object from the SecKeychainAttribute struct.
-- ( NSData* ) p_extractDataFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
-                                       error: ( NSError** )_Error;
+  **One more thing**
 
-// Extract NSString object from the SecKeychainAttribute struct.
-- ( NSString* ) p_extractStringFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
-                                           error: ( NSError** )_Error;
+   When you know both objects are keychains, this method is a faster way to check equality than method `isEqual:`.
+  */
+- ( BOOL ) isEqualToKey: ( WSCKey* )_AnotherKey;
 
-// Extract UInt32 value from the SecKeychainAttribute struct.
-- ( UInt32 ) p_extractUInt32FromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
-                                        error: ( NSError** )_Error;
+#pragma mark Keychain Services Bridge
+/** @name Keychain Services Bridge */
 
-- ( WSCKeychain* ) p_keychainWithoutCheckingValidity: ( NSError** )_Error;
+/** The reference of the `SecKey` opaque object, which wrapped by `WSCKey` object. (read-only)
+  
+  @discussion If you are familiar with the underlying *Certificate, Key, and Trust Services* API,
+              you can move freely back and forth between *WaxSealCore* framework 
+              and *Certificate, Key, and Trust Services* API with this property.
+  */
+@property ( unsafe_unretained, readonly ) SecKeyRef secKey;
 
-#pragma mark Modifying
-- ( void ) p_modifyAttribute: ( SecItemAttr )_AttributeTag
-                withNewValue: ( id )_NewValue;
+/** Creates and returns a `WSCKey` object using the given reference to the instance of `SecKey` opaque type.
 
-// Construct SecKeychainAttribute struct with the NSDate object.
-- ( SecKeychainAttribute ) p_attrForDateValue: ( NSDate* )_Date;
+  If you are familiar with the underlying *Certificate, Key, and Trust Services* API,
+  you can move freely back and forth between *WaxSealCore* framework and *Certificate, Key, and Trust Services* API with this class method.
 
-// Construct SecKeychainAttribute struct with the NSString object.
-- ( SecKeychainAttribute ) p_attrForStringValue: ( NSString* )_StringValue
-                                        forAttr: ( SecItemAttr )_Attr;
+  @warning This method is just used for bridge between *WaxSealCore* framework and *Certificate, Key, and Trust Services* API.
+  
+  Instead of invoking this method, you should construct a `WSCKey` object by invoking:
 
-// Construct SecKeychainAttribute struct with UInt32 and Four Char Code.
-- ( SecKeychainAttribute ) p_attrForUInt32: ( UInt32 )_UInt32Value
-                                   forAttr: ( SecItemAttr )_Attr;
+  + [publicKey](-[WSCCertificateItem publicKey]) property of `WSCCertificateItem`
 
-// Construct SecKeychainAttribute struct with Cocoa Data.
-- ( SecKeychainAttribute ) p_attrForData: ( NSData* )_CocoaData
-                                 forAttr: ( SecItemAttr )_Attr;
+  @param _SecKeyRef A reference to the instance of `SecKey` opaque type.
+  
+  @return A `WSCKey` object initialized with the given reference to the instance of `SecKey` opaque type.
+          Return `nil` if *_SecKeyRef* is `nil` or an error occured.
+  */
++ ( instancetype ) keyWithSecKeyRef: ( SecKeyRef )_SecKeyRef;
 
-// Objective-C wrapper of SecKeychainItemCopyAccess() function in Keychain Services
-// Use for copying the access of the protected keychain item represented by receiver.
-- ( SecAccessRef ) p_secCurrentAccess: ( NSError** )_Error;
-
-- ( void ) p_setSecCurrentAccess: ( SecAccessRef )_NewAccessRef
-                           error: ( NSError** )_Error;
-
-@end // WSCKeychainItem + WSCKeychainItemPrivateAccessingAttributes
-
-BOOL _WSCIsSecKeychainItemValid( SecKeychainItemRef _SecKeychainItemRef );
-NSString extern* const _WSCKeychainItemAttributePublicKey;
+@end // WSCKey class
 
 /*================================================================================┐
 |                              The MIT License (MIT)                              |
