@@ -27,7 +27,7 @@
 #pragma mark WSCKey + WSCKeyPrivateInitialization
 @interface WSCKey ( WSCKeyPrivateInitialization )
 
-//- ( instancetype ) p_initWithSecKeyRef: ( SecKeyRef )_SecKeyRef;
+- ( instancetype ) p_initWithSecKeyRef: ( SecKeyRef )_SecKeyRef;
 
 @end // WSCKey + WSCKeyPrivateInitialization
 

@@ -181,6 +181,88 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
     [ self.Tong_G_outlook_com release ];
     }
 
+- ( void ) testPublicKeyProperty
+    {
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 0
+    // -------------------------------------------------------------------------------
+    WSCKey* publicKey_testCase0 = self.AppleRootCA_G3.publicKey;
+    NSData* publicKeyData_testCase0 = publicKey_testCase0.keyData;
+    XCTAssertNotNil( publicKey_testCase0 );
+    XCTAssertNotNil( publicKeyData_testCase0 );
+    XCTAssertEqualObjects( publicKeyData_testCase0, self.AppleRootCA_G3.publicKey.keyData );
+    XCTAssertEqualObjects( publicKey_testCase0, self.AppleRootCA_G3.publicKey );
+    XCTAssertEqual( publicKey_testCase0.hash, self.AppleRootCA_G3.publicKey.hash );
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 1
+    // -------------------------------------------------------------------------------
+    WSCKey* publicKey_testCase1 = self.COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA.publicKey;
+    NSData* publicKeyData_testCase1 = publicKey_testCase1.keyData;
+    XCTAssertNotNil( publicKey_testCase1 );
+    XCTAssertNotNil( publicKeyData_testCase1 );
+    XCTAssertEqualObjects( publicKeyData_testCase1, self.COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA.publicKey.keyData );
+    XCTAssertEqualObjects( publicKey_testCase1, self.COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA.publicKey );
+    XCTAssertEqual( publicKey_testCase1.hash, self.COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA.publicKey.hash );
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 2
+    // -------------------------------------------------------------------------------
+    WSCKey* publicKey_testCase2 = self.MacDeveloper_TongGuo_8ZDY95NQGT.publicKey;
+    NSData* publicKeyData_testCase2 = publicKey_testCase2.keyData;
+    XCTAssertNotNil( publicKey_testCase2 );
+    XCTAssertNotNil( publicKeyData_testCase2 );
+    XCTAssertEqualObjects( publicKeyData_testCase2, self.MacDeveloper_TongGuo_8ZDY95NQGT.publicKey.keyData );
+    XCTAssertEqualObjects( publicKey_testCase2, self.MacDeveloper_TongGuo_8ZDY95NQGT.publicKey );
+    XCTAssertEqual( publicKey_testCase2.hash, self.MacDeveloper_TongGuo_8ZDY95NQGT.publicKey.hash );
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 3
+    // -------------------------------------------------------------------------------
+    WSCKey* publicKey_testCase3 = self.ThawtePersonalFreemailCA.publicKey;
+    NSData* publicKeyData_testCase3 = publicKey_testCase3.keyData;
+    XCTAssertNotNil( publicKey_testCase3 );
+    XCTAssertNotNil( publicKeyData_testCase3 );
+    XCTAssertEqualObjects( publicKeyData_testCase3, self.ThawtePersonalFreemailCA.publicKey.keyData );
+    XCTAssertEqualObjects( publicKey_testCase3, self.ThawtePersonalFreemailCA.publicKey );
+    XCTAssertEqual( publicKey_testCase3.hash, self.ThawtePersonalFreemailCA.publicKey.hash );
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 4
+    // -------------------------------------------------------------------------------
+    WSCKey* publicKey_testCase4 = self.ThawtePersonalPremiumCA.publicKey;
+    NSData* publicKeyData_testCase4 = publicKey_testCase4.keyData;
+    XCTAssertNotNil( publicKey_testCase4 );
+    XCTAssertNotNil( publicKeyData_testCase4 );
+    XCTAssertEqualObjects( publicKeyData_testCase4, self.ThawtePersonalPremiumCA.publicKey.keyData );
+    XCTAssertEqualObjects( publicKey_testCase4, self.ThawtePersonalPremiumCA.publicKey );
+    XCTAssertEqual( publicKey_testCase4.hash, self.ThawtePersonalPremiumCA.publicKey.hash );
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 5
+    // -------------------------------------------------------------------------------
+    WSCKey* publicKey_testCase5 = self.thawtePrimaryRootCA_G2.publicKey;
+    NSData* publicKeyData_testCase5 = publicKey_testCase5.keyData;
+    XCTAssertNotNil( publicKey_testCase5 );
+    XCTAssertNotNil( publicKeyData_testCase5 );
+    XCTAssertEqualObjects( publicKeyData_testCase5, self.thawtePrimaryRootCA_G2.publicKey.keyData );
+    XCTAssertEqualObjects( publicKey_testCase5, self.thawtePrimaryRootCA_G2.publicKey );
+    XCTAssertEqual( publicKey_testCase5.hash, self.thawtePrimaryRootCA_G2.publicKey.hash );
+
+    // -------------------------------------------------------------------------------
+    // Positive Test Case 6
+    // -------------------------------------------------------------------------------
+    WSCKey* publicKey_testCase6 = self.Tong_G_outlook_com.publicKey;
+    NSData* publicKeyData_testCase6 = publicKey_testCase6.keyData;
+    XCTAssertNotNil( publicKey_testCase6 );
+    XCTAssertNotNil( publicKeyData_testCase6 );
+    XCTAssertEqualObjects( publicKeyData_testCase6, self.Tong_G_outlook_com.publicKey.keyData );
+    XCTAssertEqualObjects( publicKey_testCase6, self.Tong_G_outlook_com.publicKey );
+    XCTAssertEqual( publicKey_testCase6.hash, self.Tong_G_outlook_com.publicKey.hash );
+
+    // Waiting for the negative 
+    }
+
 - ( void ) testCreateKeyWithSecKeyRef
     {
 /* Template:

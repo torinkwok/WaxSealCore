@@ -24,13 +24,12 @@
 
 #import "WSCKey.h"
 
+#import "_WSCKeychainItemPrivate.h"
 #import "_WSCKeyPrivate.h"
 
 @implementation WSCKey
 
 #pragma mark Managing Keys
-/** @name Managing Keys */
-
 /** The key data bytes of the key represented by receiver.
   */
 - ( NSData* ) keyData
@@ -56,8 +55,16 @@
     return data;
     }
 
-#pragma mark Certificate, Key, and Trust Services Bridge
+#pragma mark Comparing Keys
+/* Returns a `BOOL` value that indicates whether a given key is equal to receiver.
+ */
+- ( BOOL ) isEqualToKey: ( WSCKey* )_AnotherKey
+    {
+    return [ self.keyData isEqualToData: _AnotherKey.keyData ]
+                && ( self.keyData.hash == _AnotherKey.keyData.hash );
+    }
 
+#pragma mark Certificate, Key, and Trust Services Bridge
 /* Creates and returns a `WSCKey` object using the given reference to the instance of `SecKey` opaque type.
  */
 - ( SecKeyRef ) secKey
@@ -72,15 +79,32 @@
     return [ [ [ [ self class ] alloc ] p_initWithSecKeyRef: _SecKeyRef ] autorelease ];
     }
 
+#pragma mark Overrides
+- ( BOOL ) isEqual: ( id )_Object
+    {
+    if ( self == _Object )
+        return YES;
+
+    if ( [ _Object isKindOfClass: [ WSCKey class ] ] )
+        return [ self isEqualToKey: ( WSCKey* )_Object ];
+
+    return [ super isEqual: _Object ];
+    }
+
+- ( NSUInteger ) hash
+    {
+    return self.keyData.hash;
+    }
+
 @end // WSCKey class
 
 #pragma mark WSCKey + WSCKeyPrivateInitialization
 @implementation WSCKey ( WSCKeyPrivateInitialization )
 
-//- ( instancetype ) p_initWithSecKeyRef: ( SecKeyRef )_SecKeyRef
-//    {
-//
-//    }
+- ( instancetype ) p_initWithSecKeyRef: ( SecKeyRef )_SecKeyRef
+    {
+    return ( WSCKey* )[ self p_initWithSecKeychainItemRef: ( SecKeychainItemRef )_SecKeyRef ];
+    }
 
 @end // WSCKey + WSCKeyPrivateInitialization
 

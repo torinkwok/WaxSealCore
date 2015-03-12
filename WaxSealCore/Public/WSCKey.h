@@ -38,6 +38,22 @@
   */
 @property ( retain, readonly ) NSData* keyData;
 
+#pragma mark Comparing Keys
+/** @name Comparing Keys */
+
+/** Returns a `BOOL` value that indicates whether a given key is equal to receiver.
+
+  @param _AnotherKey The key with which to compare the receiver.
+
+  @return `YES` if *_AnotherKey* is equivalent to receiver (if they have the same data bytes);
+          otherwise *NO*.
+
+  **One more thing**
+
+   When you know both objects are keychains, this method is a faster way to check equality than method `isEqual:`.
+  */
+- ( BOOL ) isEqualToKey: ( WSCKey* )_AnotherKey;
+
 #pragma mark Keychain Services Bridge
 /** @name Keychain Services Bridge */
 
