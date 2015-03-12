@@ -58,8 +58,7 @@
   
   Instead of invoking this method, you should construct a `WSCKey` object by invoking:
 
-  + [– addApplicationPassphraseWithServiceName:accountName:passphrase:error:](-[WSCKeychain addApplicationPassphraseWithServiceName:accountName:passphrase:error:])
-  + [– addInternetPassphraseWithServerName:URLRelativePath:accountName:protocol:passphrase:error:](-[WSCKeychain addInternetPassphraseWithServerName:URLRelativePath:accountName:protocol:passphrase:error:])
+  + [publicKey](-[WSCCertificateItem publicKey]) property of `WSCCertificateItem`
 
   @param _SecKeyRef A reference to the instance of `SecKey` opaque type.
   

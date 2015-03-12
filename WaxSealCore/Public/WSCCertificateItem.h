@@ -24,6 +24,8 @@
 
 #import "WSCKeychainItem.h"
 
+@class WSCKey;
+
 /** Defines constants that represent the signature algorithm used by an X.509 certificate.
   */
 typedef NS_ENUM( NSUInteger, WSCSignatureAlgorithmType )
@@ -222,6 +224,10 @@ typedef NS_ENUM( NSUInteger, WSCSignatureAlgorithmType )
 
 #pragma mark Managing Public Key
 /** @name Managing Public Key */
+
+/** The public key that was wrapped in the certificate represented by receiver.
+  */
+@property ( retain, readonly ) WSCKey* publicKey;
 
 /** The signature (calculating by using the signature algorithm represented by `publicKeySignatureAlgorithm` ) of public key
     that was wrapped in the certificate. (read-only)

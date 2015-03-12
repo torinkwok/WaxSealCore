@@ -32,8 +32,8 @@
   classes descend from this class and WSCProtectedKeychainItem:
 
   + WSCPassphraseItem
-  + WSCCertificate
-  + WSCKey (Not supported, be will supported in version 2.0)
+  + WSCCertificateItem
+  + WSCKey
   + WSCIdentity (Not supported, will be supported in version 2.0)
   */
 @interface WSCKeychainItem : NSObject

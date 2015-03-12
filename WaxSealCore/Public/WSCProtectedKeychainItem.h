@@ -32,8 +32,8 @@
   you use objects whose classes descend from this class or its superclass:
   
   + WSCPassphraseItem
-  + WSCCertificate
-  + WSCKey (Not supported, be will supported in version 2.0)
+  + WSCCertificateItem
+  + WSCKey
   + WSCIdentity (Not supported, will be supported in version 2.0)
   */
 @interface WSCProtectedKeychainItem : WSCKeychainItem

@@ -23,6 +23,7 @@
   ██████████████████████████████████████████████████████████████████████████████*/
 
 #import "WSCCertificateItem.h"
+#import "WSCKey.h"
 #import "WSCKeychainError.h"
 
 #import "_WSCKeychainErrorPrivate.h"
@@ -50,6 +51,7 @@
 
 @dynamic serialNumber;
 
+@dynamic publicKey;
 @dynamic publicKeySignature;
 @dynamic publicKeySignatureAlgorithm;
 
@@ -167,6 +169,33 @@
     }
 
 #pragma mark Managing Public Key
+
+/** The public key that was wrapped in the certificate represented by receiver.
+  */
+- ( WSCKey* ) publicKey
+    {
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
+
+    WSCKey* thePublicKey = nil;
+
+    _WSCDontBeABitch( &error, self, [ WSCCertificateItem class ], s_guard );
+    if ( !error )
+        {
+        SecKeyRef secPublicKey = NULL;
+
+        if ( ( resultCode = SecCertificateCopyPublicKey( self.secCertificateItem, &secPublicKey ) ) == errSecSuccess )
+            {
+            thePublicKey = [ WSCKey keyWithSecKeyRef: secPublicKey ];
+            CFRelease( secPublicKey );
+            }
+        else
+            _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+        }
+
+    _WSCPrintNSErrorForLog( error );
+    return thePublicKey;
+    }
 
 /* The signature of public key that was wrapped in the certificate. (read-only)
  */
