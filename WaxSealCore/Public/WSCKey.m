@@ -27,7 +27,27 @@
 #import "_WSCKeychainItemPrivate.h"
 #import "_WSCKeyPrivate.h"
 
+NSString static* const kAlgorithm = @"kAlgorithm";
+NSString static* const kEncryptAlgorithm = @"kEncryptAlgorithm";
+NSString static* const kEncryptMode = @"kEncryptMode";
+NSString static* const kKeyClass = @"kKeyClass";
+NSString static* const kKeyUsage = @"kKeyUsage";
+NSString static* const kStartDate = @"kStartDate";
+NSString static* const kEndDate = @"kEndDate";
+NSString static* const kData = @"kData";
+
 @implementation WSCKey
+
+- ( id ) p_retrieveAttributeIndicatedBy: ( NSString* )_RetrieveKey
+                       fromGivenCSSMKey: ( CSSM_KEY_PTR )_ptrCSSMKey
+    {
+//    CSSM_KEYHEADER CSSMKeyHeader = _ptrCSSMKey->KeyHeader;
+//    CSSM_DATA CSSMKeyData = _ptrCSSMKey->KeyData;
+//
+//    id toBeReturned = nil;
+//
+//    if ( [ _RetrieveKey isEqualToString: kAlgorithm ] )
+    }
 
 #pragma mark Managing Keys
 /** The key data bytes of the key represented by receiver.
