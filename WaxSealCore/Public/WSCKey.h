@@ -27,7 +27,7 @@
 
 /** Defines constants that specify algorithm that was used that key.
   */
-typedef NS_ENUM( CSSM_ALGORITHMS, WSCAlgorithmType )
+typedef NS_ENUM( CSSM_ALGORITHMS, WSCKeyAlgorithmType )
     {
     /// No Algorithm.
       WSCKeyAlgorithmNone           	= CSSM_ALGID_NONE
@@ -158,68 +158,122 @@ typedef NS_ENUM( CSSM_ALGORITHMS, WSCAlgorithmType )
 	/// MD5/RSA signature algorithm.
 	, WSCKeyAlgorithmMD5WithRSA  		= CSSM_ALGID_MD5WithRSA
 
-	/// MD2/RSA signature algorithm
+	/// MD2/RSA signature algorithm.
 	, WSCKeyAlgorithmMD2WithRSA  		= CSSM_ALGID_MD2WithRSA
+
+	/// ElGamal signature algorithm.
 	, WSCKeyAlgorithmElGamal  			= CSSM_ALGID_ElGamal
+
+	/// MD2-based random numbers.
 	, WSCKeyAlgorithmMD2Random 		    = CSSM_ALGID_MD2Random
+
+	/// MD5-based random numbers.
 	, WSCKeyAlgorithmMD5Random  		= CSSM_ALGID_MD5Random
+
+	/// SHA-based random numbers.
 	, WSCKeyAlgorithmSHARandom  		= CSSM_ALGID_SHARandom
+
+	/// DES-based random numbers.
 	, WSCKeyAlgorithmDESRandom  		= CSSM_ALGID_DESRandom
+
+	/// SHA-1/RSA signature algorithm.
 	, WSCKeyAlgorithmSHA1WithRSA  		= CSSM_ALGID_SHA1WithRSA
+
+	/// CDMF (Commercial Data Masking Facility) block cipher.
 	, WSCKeyAlgorithmCDMF  				= CSSM_ALGID_CDMF
+
+	/// Entrust's CAST3 block cipher.
 	, WSCKeyAlgorithmCAST3  			= CSSM_ALGID_CAST3
+
+	/// Entrust's CAST5 block cipher.
 	, WSCKeyAlgorithmCAST5  			= CSSM_ALGID_CAST5
+
+	/// Generic secret operations.
 	, WSCKeyAlgorithmGenericSecret  	= CSSM_ALGID_GenericSecret
+
+	/// Concatenate two keys, base key first.
 	, WSCKeyAlgorithmConcatBaseAndKey 	= CSSM_ALGID_ConcatBaseAndKey
+
+	/// Concatenate two keys, base key last.
 	, WSCKeyAlgorithmConcatKeyAndBase  	= CSSM_ALGID_ConcatKeyAndBase
+
+	/// Concatenate base key and random data, key first.
 	, WSCKeyAlgorithmConcatBaseAndData  = CSSM_ALGID_ConcatBaseAndData
+
+	/// Concatenate base key and data, data first.
 	, WSCKeyAlgorithmConcatDataAndBase  = CSSM_ALGID_ConcatDataAndBase
+
+	/// XOR a byte string with the base key.
 	, WSCKeyAlgorithmXORBaseAndData  	= CSSM_ALGID_XORBaseAndData
+
+	/// Extract a key from base key, starting at arbitrary bit position.
 	, WSCKeyAlgorithmExtractFromKey  	= CSSM_ALGID_ExtractFromKey
+
+	/// Generate a 48-byte SSL 3 premaster key.
 	, WSCKeyAlgorithmSSL3PreMasterGen   = CSSM_ALGID_SSL3PreMasterGen
+	
+	/// Derive an SSL 3 key from a premaster key.
 	, WSCKeyAlgorithmSSL3MasterDerive  	= CSSM_ALGID_SSL3MasterDerive
+
+	/// Derive the keys and MACing keys for the SSL cipher suite.
 	, WSCKeyAlgorithmSSL3KeyAndMacDerive= CSSM_ALGID_SSL3KeyAndMacDerive
+
+	/// Performs SSL 3 MD5 MACing.
 	, WSCKeyAlgorithmSSL3MD5_MAC  		= CSSM_ALGID_SSL3MD5_MAC
+
+	/// Performs SSL 3 SHA-1 MACing.
 	, WSCKeyAlgorithmSSL3SHA1_MAC  		= CSSM_ALGID_SSL3SHA1_MAC
+
+	/// PKCS5 PBKDF1 MD5 algorithm.
 	, WSCKeyAlgorithmPKCS5_PBKDF1_MD5  	= CSSM_ALGID_PKCS5_PBKDF1_MD5
+
+	/// PKCS5 PBKDF1 MD2 algorithm.
 	, WSCKeyAlgorithmPKCS5_PBKDF1_MD2  	= CSSM_ALGID_PKCS5_PBKDF1_MD2
+
+	/// PKCS5 PBKDF1 SHA1 algorithm.
 	, WSCKeyAlgorithmPKCS5_PBKDF1_SHA1  = CSSM_ALGID_PKCS5_PBKDF1_SHA1
+
+	/// Spyrus LYNKS DES based wrapping scheme w/checksum.
 	, WSCKeyAlgorithmWrapLynks  		= CSSM_ALGID_WrapLynks
+
+	/// SET key wrapping.
 	, WSCKeyAlgorithmWrapSET_OAEP  		= CSSM_ALGID_WrapSET_OAEP
+
+	/// Fortezza BATON cipher.
 	, WSCKeyAlgorithmBATON  			= CSSM_ALGID_BATON
+
+	/// Elliptic Curve DSA.
 	, WSCKeyAlgorithmECDSA  			= CSSM_ALGID_ECDSA
-	, WSCKeyAlgorithmMAYFLY  			= CSSM_ALGID_MAYFLY
-	, WSCKeyAlgorithmJUNIPER 			= CSSM_ALGID_JUNIPER
-	, WSCKeyAlgorithmFASTHASH  			= CSSM_ALGID_FASTHASH
+
+	/// Fortezza Mayfly cipher.
+	, WSCKeyAlgorithmMayfly  			= CSSM_ALGID_MAYFLY
+
+	/// Fortezza Juniper cipher.
+	, WSCKeyAlgorithmJuniper 			= CSSM_ALGID_JUNIPER
+
+	/// Fortezza Fasthash.
+	, WSCKeyAlgorithmFasthash  			= CSSM_ALGID_FASTHASH
+
+	/// Generic TripleDES.
 	, WSCKeyAlgorithm3DES  				= CSSM_ALGID_3DES
+
+	/// SSL3MD5.
 	, WSCKeyAlgorithmSSL3MD5  			= CSSM_ALGID_SSL3MD5
+	
+	/// SSL3SHA1.
 	, WSCKeyAlgorithmSSL3SHA1  			= CSSM_ALGID_SSL3SHA1
+
+	/// Fortezza Timestamp.
 	, WSCKeyAlgorithmFortezzaTimestamp  = CSSM_ALGID_FortezzaTimestamp
+
+	/// SHA1 with DSA.
 	, WSCKeyAlgorithmSHA1WithDSA  		= CSSM_ALGID_SHA1WithDSA
+
+	/// SHA1 with ECDSA.
 	, WSCKeyAlgorithmSHA1WithECDSA  	= CSSM_ALGID_SHA1WithECDSA
+
+	/// DSA Bsafe
 	, WSCKeyAlgorithmDSA_BSAFE  		= CSSM_ALGID_DSA_BSAFE
-	, WSCKeyAlgorithmECDH  				= CSSM_ALGID_ECDH
-	, WSCKeyAlgorithmECMQV  			= CSSM_ALGID_ECMQV
-	, WSCKeyAlgorithmPKCS12_SHA1_PBE  	= CSSM_ALGID_PKCS12_SHA1_PBE
-	, WSCKeyAlgorithmECNRA  			= CSSM_ALGID_ECNRA
-	, WSCKeyAlgorithmSHA1WithECNRA  	= CSSM_ALGID_SHA1WithECNRA
-	, WSCKeyAlgorithmECES  				= CSSM_ALGID_ECES
-	, WSCKeyAlgorithmECAES  			= CSSM_ALGID_ECAES
-	, WSCKeyAlgorithmSHA1HMAC  			= CSSM_ALGID_SHA1HMAC
-	, WSCKeyAlgorithmFIPS186Random  	= CSSM_ALGID_FIPS186Random
-	, WSCKeyAlgorithmECC  				= CSSM_ALGID_ECC
-	, WSCKeyAlgorithmMQV  				= CSSM_ALGID_MQV
-	, WSCKeyAlgorithmNRA 	 			= CSSM_ALGID_NRA
-	, WSCKeyAlgorithmIntelPlatformRandom= CSSM_ALGID_IntelPlatformRandom
-	, WSCKeyAlgorithmUTC  				= CSSM_ALGID_UTC
-	, WSCKeyAlgorithmHAVAL3  			= CSSM_ALGID_HAVAL3
-	, WSCKeyAlgorithmHAVAL4  			= CSSM_ALGID_HAVAL4
-	, WSCKeyAlgorithmHAVAL5  			= CSSM_ALGID_HAVAL5
-	, WSCKeyAlgorithmTIGER  			= CSSM_ALGID_TIGER
-	, WSCKeyAlgorithmMD5HMAC  			= CSSM_ALGID_MD5HMAC
-	, WSCKeyAlgorithmPKCS5_PBKDF2  		= CSSM_ALGID_PKCS5_PBKDF2
-	, WSCKeyAlgorithmRUNNING_COUNTER  	= CSSM_ALGID_RUNNING_COUNTER
-	, WSCKeyAlgorithmLAST  				= CSSM_ALGID_LAST
     };
 
 /** The `WSCKey` class is a subclass of `WSCKeychainItem` representing a key that is stored in a keychain.

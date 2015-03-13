@@ -38,16 +38,16 @@ NSString static* const kData = @"kData";
 
 @implementation WSCKey
 
-- ( id ) p_retrieveAttributeIndicatedBy: ( NSString* )_RetrieveKey
-                       fromGivenCSSMKey: ( CSSM_KEY_PTR )_ptrCSSMKey
-    {
+//- ( id ) p_retrieveAttributeIndicatedBy: ( NSString* )_RetrieveKey
+//                       fromGivenCSSMKey: ( CSSM_KEY_PTR )_ptrCSSMKey
+//    {
 //    CSSM_KEYHEADER CSSMKeyHeader = _ptrCSSMKey->KeyHeader;
 //    CSSM_DATA CSSMKeyData = _ptrCSSMKey->KeyData;
 //
 //    id toBeReturned = nil;
 //
 //    if ( [ _RetrieveKey isEqualToString: kAlgorithm ] )
-    }
+//    }
 
 #pragma mark Managing Keys
 /** The key data bytes of the key represented by receiver.
