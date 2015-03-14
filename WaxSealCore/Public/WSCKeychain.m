@@ -922,7 +922,7 @@ WSCKeychain static* s_system = nil;
                 // remove it from the mathcedItems array
                 if ( ![ _SearchKey isEqualToString: WSCKeychainItemAttributePublicKeySignatureAlgorithm ] )
                     {
-                    if ( [ attrValueOfCurrentCert isEqualTo: searchValue ] )
+                    if ( ![ attrValueOfCurrentCert isEqualTo: searchValue ] )
                         [ matchedCerts removeObject: _Item ];
                     }
                 else
@@ -933,7 +933,7 @@ WSCKeychain static* s_system = nil;
                     WSCSignatureAlgorithmType searchingSignatureAlgorithm = 0;
                     [ searchValue getValue: &searchingSignatureAlgorithm ];
 
-                    if ( signatureAlgorithmOfCurrentCert == searchingSignatureAlgorithm )
+                    if ( signatureAlgorithmOfCurrentCert != searchingSignatureAlgorithm )
                         [ matchedCerts removeObject: _Item ];
                     }
                 }
