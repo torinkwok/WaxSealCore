@@ -42,7 +42,7 @@ NSString static* const kData = @"kData";
 @dynamic encryptAlgorithm;
 @dynamic keyClass;
 @dynamic keyUsage;
-@dynamic startDate;
+@dynamic effectiveDate;
 @dynamic endDate;
 
 NSDate* _WSCCocoaDateFromCSSMDate( CSSM_DATE _CSSMDate )
@@ -181,7 +181,7 @@ NSValue* _WSCWrapCTypeIntoCocoaValue( uint32 _Value )
 
 /* The start date of a key represented by receiver.
  */
-- ( NSDate* ) startDate
+- ( NSDate* ) effectiveDate
     {
     return ( NSDate* )[ self p_retrieveAttributeIndicatedBy: kStartDate ];
     }

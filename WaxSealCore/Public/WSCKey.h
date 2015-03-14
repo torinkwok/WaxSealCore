@@ -362,7 +362,7 @@ typedef NS_ENUM( CSSM_KEYUSE, WSCKeyUsage )
 
 /** The start date of a key represented by receiver.
   */
-@property ( retain, readonly ) NSDate* startDate;
+@property ( retain, readonly ) NSDate* effectiveDate;
 
 /** The end date of a key represented by receiver.
   */

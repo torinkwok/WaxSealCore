@@ -194,6 +194,10 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
     XCTAssertEqualObjects( publicKey_testCase0, self.AppleRootCA_G3.publicKey );
     XCTAssertEqual( publicKey_testCase0.hash, self.AppleRootCA_G3.publicKey.hash );
 
+    NSDate* startDate_testCase0 = publicKey_testCase0.effectiveDate;
+    XCTAssertNotNil( startDate_testCase0 );
+    NSLog( @"Start Date #TestCase0: %@", startDate_testCase0 );
+
     // -------------------------------------------------------------------------------
     // Positive Test Case 1
     // -------------------------------------------------------------------------------
