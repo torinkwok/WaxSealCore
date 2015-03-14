@@ -28,6 +28,7 @@
 #import "WSCKeychain.h"
 #import "WSCPassphraseItem.h"
 #import "WSCCertificateItem.h"
+#import "WSCKey.h"
 #import "NSURL+WSCKeychainURL.h"
 #import "WSCKeychainError.h"
 #import "WSCKeychainManager.h"
@@ -604,27 +605,53 @@ WSCKeychain static* s_system = nil;
 
             // TODO: Waiting for the other item class, Certificates, Keys, etc.
             self->p_commonAttributesSearchKeys =
-                [ @[ WSCKeychainItemAttributeCreationDate, WSCKeychainItemAttributeModificationDate
-                   , WSCKeychainItemAttributeKindDescription, WSCKeychainItemAttributeComment
-                   , WSCKeychainItemAttributeLabel, WSCKeychainItemAttributeInvisible
-                   , WSCKeychainItemAttributeNegative ] retain ];
+                [ @[ WSCKeychainItemAttributeCreationDate
+                   , WSCKeychainItemAttributeModificationDate
+                   , WSCKeychainItemAttributeLabel
+                   ] retain ];
 
-            NSArray* uniqueToPassphraseItemAttributesSearchKeys = [ @[ WSCKeychainItemAttributeAccount ] arrayByAddingObjectsFromArray: self->p_commonAttributesSearchKeys ];
+            NSArray* uniqueToPassphraseItemAttributesSearchKeys =
+                [ @[ WSCKeychainItemAttributeAccount
+                   , WSCKeychainItemAttributeComment
+                   , WSCKeychainItemAttributeKindDescription
+                   , WSCKeychainItemAttributeNegative
+                   , WSCKeychainItemAttributeInvisible
+                   ] arrayByAddingObjectsFromArray: self->p_commonAttributesSearchKeys ];
 
             self->p_uniqueToInternetPassphraseItemAttributesSearchKeys =
-                [ [ @[ WSCKeychainItemAttributeHostName, WSCKeychainItemAttributeAuthenticationType
-                     , WSCKeychainItemAttributePort, WSCKeychainItemAttributeRelativePath
+                [ [ @[ WSCKeychainItemAttributeHostName
+                     , WSCKeychainItemAttributeAuthenticationType
+                     , WSCKeychainItemAttributePort
+                     , WSCKeychainItemAttributeRelativePath
                      , WSCKeychainItemAttributeProtocol
                      ] arrayByAddingObjectsFromArray: uniqueToPassphraseItemAttributesSearchKeys ] retain ];
 
             self->p_uniqueToAppPassphraseItemAttributesSearchKeys =
-                [ [ @[ WSCKeychainItemAttributeServiceName, WSCKeychainItemAttributeUserDefinedDataAttribute
+                [ [ @[ WSCKeychainItemAttributeServiceName
+                     , WSCKeychainItemAttributeUserDefinedDataAttribute
                      ] arrayByAddingObjectsFromArray: uniqueToPassphraseItemAttributesSearchKeys ] retain ];
 
             self->p_uniqueToCertificateItemAttributesSearchKeys =
-                [ [ @[ WSCKeychainItemAttributeSubjectCommonName, WSCKeychainItemAttributeIssuerCommonName
-                     , WSCKeychainItemAttributeSerialNumber ]
-                     arrayByAddingObjectsFromArray: self->p_commonAttributesSearchKeys ] retain ];
+                [ [ @[ WSCKeychainItemAttributeSubjectEmailAddress
+                     , WSCKeychainItemAttributeSubjectCommonName
+                     , WSCKeychainItemAttributeSubjectOrganization
+                     , WSCKeychainItemAttributeSubjectOrganizationalUnit
+                     , WSCKeychainItemAttributeSubjectCountryAbbreviation
+                     , WSCKeychainItemAttributeSubjectStateOrProvince
+                     , WSCKeychainItemAttributeSubjectLocality
+
+                     , WSCKeychainItemAttributeIssuerEmailAddress
+                     , WSCKeychainItemAttributeIssuerCommonName
+                     , WSCKeychainItemAttributeIssuerOrganization
+                     , WSCKeychainItemAttributeIssuerOrganizationalUnit
+                     , WSCKeychainItemAttributeIssuerCountryAbbreviation
+                     , WSCKeychainItemAttributeIssuerStateOrProvince
+                     , WSCKeychainItemAttributeIssuerLocality
+
+                     , WSCKeychainItemAttributeSerialNumber
+                     , WSCKeychainItemAttributePublicKeySignature
+                     , WSCKeychainItemAttributePublicKeySignatureAlgorithm
+                     ] arrayByAddingObjectsFromArray: self->p_commonAttributesSearchKeys ] retain ];
             }
         else
             return nil;
@@ -702,6 +729,8 @@ WSCKeychain static* s_system = nil;
                     wrapperClass = [ WSCPassphraseItem class ];
                 else if ( itemClass == kSecCertificateItemClass )
                     wrapperClass = [ WSCCertificateItem class ];
+                else if ( itemClass == kSecPublicKeyItemClass || itemClass == kSecPrivateKeyItemClass )
+                    wrapperClass = [ WSCKey class ];
 
                 // TODO: Waiting for the other item class, Certificates, Keys, etc.
                 NSAssert( wrapperClass, @"Failed to determine the concrete Class of new object" );
@@ -750,6 +779,166 @@ WSCKeychain static* s_system = nil;
         }
 
     return doesBelongTo;
+    }
+
+- ( NSArray* ) p_findCertificateItemsSatisfyingSearchCriteria: ( NSDictionary* )_CertSearchCriteriaDict
+                                                        error: ( NSError** )_Error
+    {
+    if ( !_CertSearchCriteriaDict || ( _CertSearchCriteriaDict.count == 0 ) )
+        {
+        *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                       code: WSCCommonInvalidParametersError
+                                   userInfo: @{ NSLocalizedFailureReasonErrorKey : @"The search criteria must not be empty or nil." } ];
+        return nil;
+        }
+
+    for ( NSString* _Key in _CertSearchCriteriaDict )
+        if ( ![ self p_doesItemAttributeSearchKey: _Key blongToItemClass: WSCKeychainItemClassCertificateItem error: _Error ] )
+            return nil;
+
+    NSError* error = nil;
+    NSArray* allCertificateItems = [ self p_allItemsConformsTheClass: WSCKeychainItemClassCertificateItem error: &error ];
+
+    if ( error )
+        {
+        if ( _Error )
+            *_Error = [ [ error copy ] autorelease ];
+
+        return nil;
+        }
+
+    // Suppose that all the passphrase items conforming the given item class are the matched items
+    NSMutableArray* matchedItems = [ [ allCertificateItems mutableCopy ] autorelease ];
+
+    if ( self.isValid )
+        {
+        for ( NSString* _SearchKey in _CertSearchCriteriaDict )
+            {
+            for ( WSCCertificateItem* _Item in allCertificateItems )
+                {
+                id searchValue = _CertSearchCriteriaDict[ _SearchKey ];
+
+                // If the give certificate item's attribute is not equal to the search value
+                // remove it from the mathcedItems array
+
+                // Subject Name
+                if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeSubjectEmailAddress ] )
+                    {
+                    if ( ![ _Item.subjectEmailAddress isEqualToString: searchValue ] )
+                        [ matchedItems removeObject: _Item ];
+                    }
+
+                else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeSubjectCommonName ] )
+                    {
+                    if ( ![ _Item.subjectCommonName isEqualToString: searchValue ] )
+                        [ matchedItems removeObject: _Item ];
+                    }
+
+                else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeSubjectOrganization ] )
+                    {
+                    if ( ![ _Item.subjectOrganization isEqualToString: searchValue ] )
+                        [ matchedItems removeObject: _Item ];
+                    }
+
+                else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeSubjectOrganizationalUnit ] )
+                    {
+                    if ( ![ _Item.subjectOrganizationalUnit isEqualToString: searchValue ] )
+                        [ matchedItems removeObject: _Item ];
+                    }
+
+                else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeSubjectCountryAbbreviation ] )
+                    {
+                    if ( ![ _Item.subjectCountryAbbreviation isEqualToString: searchValue ] )
+                        [ matchedItems removeObject: _Item ];
+                    }
+
+                else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeSubjectStateOrProvince ] )
+                    {
+                    if ( ![ _Item.subjectStateOrProvince isEqualToString: searchValue ] )
+                        [ matchedItems removeObject: _Item ];
+                    }
+
+                else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeSubjectLocality ] )
+                    {
+                    if ( ![ _Item.subjectLocality isEqualToString: searchValue ] )
+                        [ matchedItems removeObject: _Item ];
+                    }
+
+                // Issuer Name
+                else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeIssuerEmailAddress ] )
+                    {
+                    if ( ![ _Item.issuerEmailAddress isEqualToString: searchValue ] )
+                        [ matchedItems removeObject: _Item ];
+                    }
+
+                else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeIssuerCommonName ] )
+                    {
+                    if ( ![ _Item.issuerCommonName isEqualToString: searchValue ] )
+                        [ matchedItems removeObject: _Item ];
+                    }
+
+                else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeIssuerOrganization ] )
+                    {
+                    if ( ![ _Item.issuerOrganization isEqualToString: searchValue ] )
+                        [ matchedItems removeObject: _Item ];
+                    }
+
+                else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeIssuerOrganizationalUnit ] )
+                    {
+                    if ( ![ _Item.issuerOrganizationalUnit isEqualToString: searchValue ] )
+                        [ matchedItems removeObject: _Item ];
+                    }
+
+                else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeIssuerCountryAbbreviation ] )
+                    {
+                    if ( ![ _Item.issuerCountryAbbreviation isEqualToString: searchValue ] )
+                        [ matchedItems removeObject: _Item ];
+                    }
+
+                else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeIssuerStateOrProvince ] )
+                    {
+                    if ( ![ _Item.issuerStateOrProvince isEqualToString: searchValue ] )
+                        [ matchedItems removeObject: _Item ];
+                    }
+
+                else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeIssuerLocality ] )
+                    {
+                    if ( ![ _Item.issuerLocality isEqualToString: searchValue ] )
+                        [ matchedItems removeObject: _Item ];
+                    }
+
+                // Others
+                else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeSerialNumber ] )
+                    {
+                    if ( ![ _Item.serialNumber isEqualToString: searchValue ] )
+                        [ matchedItems removeObject: _Item ];
+                    }
+
+                else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributePublicKeySignature ] )
+                    {
+                    if ( ![ _Item.publicKeySignature isEqualToData: searchValue ] )
+                        [ matchedItems removeObject: _Item ];
+                    }
+
+//                else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributePublicKeySignatureAlgorithm ] )
+//                    {
+//                    if ( ![ _Item.serialNumber isEqualToString: searchValue ] )
+//                        [ matchedItems removeObject: _Item ];
+//                    }
+                }
+
+            // At last, all the remaining passphrase items are considered satisfying the current search criteria,
+            // any item that does not satisfy the current search criteria has been removed.
+            allCertificateItems = [ [ matchedItems copy ] autorelease ];
+            }
+        }
+    else
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                           code: WSCKeychainIsInvalidError
+                                       userInfo: nil ];
+
+    return [ [ matchedItems copy ] autorelease ];
     }
 
 - ( NSArray* ) p_findKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
