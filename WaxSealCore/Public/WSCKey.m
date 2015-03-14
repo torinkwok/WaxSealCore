@@ -29,6 +29,7 @@
 
 NSString static* const kAlgorithm = @"kAlgorithm";
 NSString static* const kEncryptAlgorithm = @"kEncryptAlgorithm";
+NSString static* const kKeySizeInBits = @"kKeySizeInBits";
 NSString static* const kKeyClass = @"kKeyClass";
 NSString static* const kKeyUsage = @"kKeyUsage";
 NSString static* const kStartDate = @"kStartDate";
@@ -40,6 +41,7 @@ NSString static* const kData = @"kData";
 @dynamic keyData;
 @dynamic keyAlgorithm;
 @dynamic encryptAlgorithm;
+@dynamic keySizeInBits;
 @dynamic keyClass;
 @dynamic keyUsage;
 @dynamic effectiveDate;
@@ -103,6 +105,9 @@ NSValue* _WSCWrapCTypeIntoCocoaValue( uint32 _Value )
 
         else if ( [ _RetrieveKey isEqualToString: kEncryptAlgorithm ] )
             toBeReturned = ( id )( ptrCSSMKey->KeyHeader.WrapAlgorithmId );
+
+        else if ( [ _RetrieveKey isEqualToString: kKeySizeInBits ] )
+            toBeReturned = ( id )( ptrCSSMKey->KeyHeader.LogicalKeySizeInBits );
 
         else if ( [ _RetrieveKey isEqualToString: kKeyClass ] )
             toBeReturned = ( id )( ptrCSSMKey->KeyHeader.KeyClass );
@@ -171,6 +176,13 @@ NSValue* _WSCWrapCTypeIntoCocoaValue( uint32 _Value )
 - ( WSCKeyAlgorithmType ) encryptAlgorithm
     {
     return ( WSCKeyAlgorithmType )[ self p_retrieveAttributeIndicatedBy: kEncryptAlgorithm ];
+    }
+
+/* The size in bits of a key represented by receiver.
+ */
+- ( NSUInteger ) keySizeInBits
+    {
+    return ( NSUInteger )[ self p_retrieveAttributeIndicatedBy: kKeySizeInBits ];
     }
 
 /* The type of a key represented by receiver.

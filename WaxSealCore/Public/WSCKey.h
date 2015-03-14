@@ -352,6 +352,10 @@ typedef NS_ENUM( CSSM_KEYUSE, WSCKeyUsage )
   */
 @property ( assign, readonly ) WSCKeyAlgorithmType encryptAlgorithm;
 
+/** The size in bits of a key represented by receiver.
+  */
+@property ( assign, readonly ) NSUInteger keySizeInBits;
+
 /** The type of a key represented by receiver.
   */
 @property ( assign, readonly ) WSCKeyClass keyClass;
