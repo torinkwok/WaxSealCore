@@ -393,7 +393,7 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
     WSCKeyUsage keyUsage_testCase6 = publicKey_testCase6.keyUsage;
     XCTAssertEqual( keyUsage_testCase6, WSCKeyUsageVerify | WSCKeyUsageWrap | WSCKeyUsageDerive );
 
-    // Waiting for the negative 
+    // Waiting for the negative tests
     }
 
 - ( void ) testCreateKeyWithSecKeyRef

@@ -25,12 +25,14 @@
 #import <XCTest/XCTest.h>
 
 #import "WSCPassphraseItem.h"
+#import "WSCCertificateItem.h"
 #import "WSCKeychainItem.h"
 #import "NSURL+WSCKeychainURL.h"
 #import "WSCKeychainError.h"
 #import "WSCKeychainManager.h"
 
 #import "_WSCKeychainPrivate.h"
+#import "_WSCCertificateItemPrivate.h"
 #import "_WSCKeychainManagerPrivate.h"
 
 // --------------------------------------------------------
@@ -559,6 +561,83 @@
 
     NSArray* allInternetPassphraseItems_negaitveTestCase1 = [ randomKeychain_testCase2 allInternetPassphraseItems ];
     XCTAssertNil( allInternetPassphraseItems_negaitveTestCase1 );
+    }
+
+- ( void ) testAllCertificatesItem
+    {
+    NSError* error = nil;
+
+    fprintf( stdout, "\n========================================================================"
+                     "========================================================================\n" );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 0: For login keychain
+    // --------------------------------------------------------------------------------------------------------------------
+    NSArray* allCertificateItems_testCase0 = [ [ WSCKeychain login ] allCertificateItems ];
+
+    XCTAssertNotNil( allCertificateItems_testCase0 );
+    XCTAssert( allCertificateItems_testCase0.count > 1 );
+
+    for ( WSCCertificateItem* _Item in allCertificateItems_testCase0 )
+        {
+        NSLog( @"Label #TestCase0: %@", _Item.label );
+
+        NSLog( @"Subject Address #TestCase0: %@", _Item.subjectEmailAddress );
+        NSLog( @"Subject Common Name #TestCase0: %@", _Item.subjectCommonName );
+        NSLog( @"Subject Organization #TestCase0: %@", _Item.subjectOrganization );
+        NSLog( @"Subject Organization #TestCase0: %@", _Item.subjectOrganizationalUnit );
+        NSLog( @"Subject Country Abbreviation #TestCase0: %@", _Item.subjectCountryAbbreviation );
+        NSLog( @"Subject State Or Province #TestCase0: %@", _Item.subjectStateOrProvince );
+        NSLog( @"Subject Subject Locality #TestCase0: %@", _Item.subjectLocality );
+
+        NSLog( @"Issuer Address #TestCase0: %@", _Item.issuerEmailAddress );
+        NSLog( @"Issuer Common Name #TestCase0: %@", _Item.issuerCommonName );
+        NSLog( @"Issuer Organization #TestCase0: %@", _Item.issuerOrganization );
+        NSLog( @"Issuer Organization #TestCase0: %@", _Item.issuerOrganizationalUnit );
+        NSLog( @"Issuer Country Abbreviation #TestCase0: %@", _Item.issuerCountryAbbreviation );
+        NSLog( @"Issuer State Or Province #TestCase0: %@", _Item.issuerStateOrProvince );
+        NSLog( @"Issuer Subject Locality #TestCase0: %@", _Item.issuerLocality );
+
+        fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                         "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
+        }
+
+    fprintf( stdout, "\n========================================================================"
+                     "========================================================================\n" );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 1: For system keychain
+    // --------------------------------------------------------------------------------------------------------------------
+    NSArray* allCertificateItems_testCase1 = [ [ WSCKeychain system ] allCertificateItems ];
+
+    XCTAssertNotNil( allCertificateItems_testCase1 );
+    XCTAssert( allCertificateItems_testCase1.count > 1 );
+
+    for ( WSCCertificateItem* _Item in allCertificateItems_testCase1 )
+        {
+        NSLog( @"Label #TestCase1: %@", _Item.label );
+
+        NSLog( @"Subject Address #TestCase1: %@", _Item.subjectEmailAddress );
+        NSLog( @"Subject Common Name #TestCase1: %@", _Item.subjectCommonName );
+        NSLog( @"Subject Organization #TestCase1: %@", _Item.subjectOrganization );
+        NSLog( @"Subject Organization #TestCase1: %@", _Item.subjectOrganizationalUnit );
+        NSLog( @"Subject Country Abbreviation #TestCase1: %@", _Item.subjectCountryAbbreviation );
+        NSLog( @"Subject State Or Province #TestCase1: %@", _Item.subjectStateOrProvince );
+        NSLog( @"Subject Subject Locality #TestCase1: %@", _Item.subjectLocality );
+
+        NSLog( @"Issuer Address #TestCase1: %@", _Item.issuerEmailAddress );
+        NSLog( @"Issuer Common Name #TestCase1: %@", _Item.issuerCommonName );
+        NSLog( @"Issuer Organization #TestCase1: %@", _Item.issuerOrganization );
+        NSLog( @"Issuer Organization #TestCase1: %@", _Item.issuerOrganizationalUnit );
+        NSLog( @"Issuer Country Abbreviation #TestCase1: %@", _Item.issuerCountryAbbreviation );
+        NSLog( @"Issuer State Or Province #TestCase1: %@", _Item.issuerStateOrProvince );
+        NSLog( @"Issuer Subject Locality #TestCase1: %@", _Item.issuerLocality );
+
+        fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                         "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
+        }
+
+    // Waiting for the negative tests
     }
 
 - ( void ) testFindingFirstKeychainItem

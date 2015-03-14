@@ -694,10 +694,20 @@ WSCKeychain static* s_system = nil;
             // Match any keychain attribute
             while ( ( resultCode = SecKeychainSearchCopyNext( secSearch, &secMatchedItem ) ) != errSecItemNotFound )
                 {
-                WSCPassphraseItem* matchedItem = [ WSCPassphraseItem keychainItemWithSecKeychainItemRef: secMatchedItem ];
-                CFRelease( secMatchedItem );
+                Class wrapperClass = nil;
+                SEL initSelector = @selector( keychainItemWithSecKeychainItemRef: );
 
-                [ allItems addObject: matchedItem ];
+                SecItemClass itemClass = _WSCSecKeychainItemClass( ( __bridge SecKeychainItemRef )secMatchedItem );
+                if ( itemClass == kSecInternetPasswordItemClass || itemClass == kSecGenericPasswordItemClass )
+                    wrapperClass = [ WSCPassphraseItem class ];
+                else if ( itemClass == kSecCertificateItemClass )
+                    wrapperClass = [ WSCCertificateItem class ];
+
+                // TODO: Waiting for the other item class, Certificates, Keys, etc.
+                NSAssert( wrapperClass, @"Failed to determine the concrete Class of new object" );
+
+                id keychainItem = objc_msgSend( wrapperClass, initSelector, ( __bridge SecKeychainRef )secMatchedItem );
+                [ allItems addObject: keychainItem ];
                 }
 
             if ( secSearch )
