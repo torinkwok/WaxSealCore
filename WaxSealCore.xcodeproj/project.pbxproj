@@ -63,7 +63,7 @@
 		83D9C8791A6A685700B31F25 /* WSCTrustedApplicationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83D9C8781A6A685700B31F25 /* WSCTrustedApplicationTests.m */; };
 		83DBD7E01A6E25E800D0D107 /* WSCKeychainItemTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83DBD7DF1A6E25E800D0D107 /* WSCKeychainItemTests.m */; };
 		83F6D1CB1A9E128B00E2B51B /* _WSCKeychainManagerPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 83F6D1CA1A9E128B00E2B51B /* _WSCKeychainManagerPrivate.h */; };
-		83F83CBA1AB044B600B80E30 /* WSCKey.h in Headers */ = {isa = PBXBuildFile; fileRef = 83F83CB81AB044B600B80E30 /* WSCKey.h */; };
+		83F83CBA1AB044B600B80E30 /* WSCKey.h in Headers */ = {isa = PBXBuildFile; fileRef = 83F83CB81AB044B600B80E30 /* WSCKey.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		83F83CBB1AB044B600B80E30 /* WSCKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F83CB91AB044B600B80E30 /* WSCKey.m */; };
 		83F83CBF1AB04A4700B80E30 /* _WSCKeyPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 83F83CBD1AB04A4700B80E30 /* _WSCKeyPrivate.h */; };
 		83F8E10E1A69FE4A00201BF6 /* WSCPermittedOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F8E10D1A69FE4A00201BF6 /* WSCPermittedOperationTests.m */; };
@@ -441,6 +441,7 @@
 				837C8B731A6D50F900FFE4FF /* WSCKeychainItem.h in Headers */,
 				83663D651A88A9C7005CE439 /* WSCProtectedKeychainItem.h in Headers */,
 				837C8B6F1A6D50F900FFE4FF /* WSCPassphraseItem.h in Headers */,
+				83F83CBA1AB044B600B80E30 /* WSCKey.h in Headers */,
 				838ABAF81AA95DF500E0D70A /* WSCCertificateItem.h in Headers */,
 				837C8B8B1A6D516500FFE4FF /* WSCTrustedApplication.h in Headers */,
 				83663D6A1A88B79B005CE439 /* WSCPermittedOperation.h in Headers */,
@@ -451,7 +452,6 @@
 				837C8B631A6D4DF000FFE4FF /* _WSCCommonForUnitTests.h in Headers */,
 				837C8B511A6D4D7700FFE4FF /* _WSCKeychainItemPrivate.h in Headers */,
 				837C8B5B1A6D4DD400FFE4FF /* _WSCPermittedOperationPrivate.h in Headers */,
-				83F83CBA1AB044B600B80E30 /* WSCKey.h in Headers */,
 				837C8B5C1A6D4DD400FFE4FF /* _WSCTrustedApplicationPrivate.h in Headers */,
 				83D70F0D1A7CBD0200329504 /* _WSCPassphraseItemPrivate.h in Headers */,
 				83F6D1CB1A9E128B00E2B51B /* _WSCKeychainManagerPrivate.h in Headers */,
