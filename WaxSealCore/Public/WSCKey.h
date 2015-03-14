@@ -276,18 +276,97 @@ typedef NS_ENUM( CSSM_ALGORITHMS, WSCKeyAlgorithmType )
 	, WSCKeyAlgorithmDSA_BSAFE  		= CSSM_ALGID_DSA_BSAFE
     };
 
+/** Defines constants that specify the type of a key.
+  */
+typedef NS_ENUM( CSSM_KEYCLASS, WSCKeyClass )
+    {
+    /// Indicates that the key is a public key.
+      WSCKeyClassPublicKey  = CSSM_KEYCLASS_PUBLIC_KEY
+
+    /// Indicates that the key is a private key.
+    , WSCKeyClassPrivateKey = CSSM_KEYCLASS_PRIVATE_KEY
+
+    /// Indicates that key is a session or symmetric key.
+    , WSCKeyClassSessionKey = CSSM_KEYCLASS_SESSION_KEY
+
+    /// Indicates that key is part of secret key.
+    , WSCKeyClassSecretPart = CSSM_KEYCLASS_SECRET_PART
+
+    /// Other types.
+    , WSCKeyClassOther      = CSSM_KEYCLASS_OTHER
+    };
+
+/** Defines constants that specify the usage of a key, combined using the C bitwise `OR` operator.
+  */
+typedef NS_ENUM( CSSM_KEYUSE, WSCKeyUsage )
+    {
+    /// No restrictions.
+      WSCKeyUsageAny            = CSSM_KEYUSE_ANY
+
+    /// Use for encrypting.
+    , WSCKeyUsageEncrypt        = CSSM_KEYUSE_ENCRYPT
+
+    /// Use for decrypting.
+    , WSCKeyUsageDecrypt        = CSSM_KEYUSE_DECRYPT
+
+    /// Use for signing.
+    , WSCKeyUsageSign           = CSSM_KEYUSE_SIGN
+
+    /// Use for verifying.
+    , WSCKeyUsageVerify         = CSSM_KEYUSE_VERIFY
+
+    /// Use for sign recover.
+    , WSCKeyUsageSignRecover    = CSSM_KEYUSE_SIGN_RECOVER
+
+    /// Use for verify recover.
+    , WSCKeyUsageVerifyRecover  = CSSM_KEYUSE_VERIFY_RECOVER
+
+    /// Use for wrapping.
+    , WSCKeyUsageWrap           = CSSM_KEYUSE_WRAP
+
+    /// Use for unwrapping.
+    , WSCKeyUsageUnwrap         = CSSM_KEYUSE_UNWRAP
+
+    /// Use for deriving.
+    , WSCKeyUsageDerive         = CSSM_KEYUSE_DERIVE
+    };
+
 /** The `WSCKey` class is a subclass of `WSCKeychainItem` representing a key that is stored in a keychain.
     On the other hand, if the key represented by `WSCKey` is not stored in a keychain, 
     passing it to methods of *WaxSealCore* returns errors.
   */
 @interface WSCKey : WSCKeychainItem
 
-#pragma mark Managing Keys
-/** @name Managing Keys */
+#pragma mark Attributes of a Key
+/** @name Attributes of a Key */
 
-/** The key data bytes of the key represented by receiver.
+/** The key data bytes of a key represented by receiver.
   */
 @property ( retain, readonly ) NSData* keyData;
+
+/** The key algorithm of a key represented by receiver.
+  */
+@property ( assign, readonly ) WSCKeyAlgorithmType keyAlgorithm;
+
+/** The encrypt algorithm of a key represented by receiver.
+  */
+@property ( assign, readonly ) WSCKeyAlgorithmType encryptAlgorithm;
+
+/** The type of a key represented by receiver.
+  */
+@property ( assign, readonly ) WSCKeyClass keyClass;
+
+/** The usage of a key represented by receiver.
+  */
+@property ( assign, readonly ) WSCKeyUsage keyUsage;
+
+/** The start date of a key represented by receiver.
+  */
+@property ( retain, readonly ) NSDate* startDate;
+
+/** The end date of a key represented by receiver.
+  */
+@property ( retain, readonly ) NSDate* endDate;
 
 #pragma mark Comparing Keys
 /** @name Comparing Keys */

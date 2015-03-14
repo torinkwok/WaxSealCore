@@ -29,7 +29,6 @@
 
 NSString static* const kAlgorithm = @"kAlgorithm";
 NSString static* const kEncryptAlgorithm = @"kEncryptAlgorithm";
-NSString static* const kEncryptMode = @"kEncryptMode";
 NSString static* const kKeyClass = @"kKeyClass";
 NSString static* const kKeyUsage = @"kKeyUsage";
 NSString static* const kStartDate = @"kStartDate";
@@ -38,41 +37,160 @@ NSString static* const kData = @"kData";
 
 @implementation WSCKey
 
-//- ( id ) p_retrieveAttributeIndicatedBy: ( NSString* )_RetrieveKey
-//                       fromGivenCSSMKey: ( CSSM_KEY_PTR )_ptrCSSMKey
-//    {
-//    CSSM_KEYHEADER CSSMKeyHeader = _ptrCSSMKey->KeyHeader;
-//    CSSM_DATA CSSMKeyData = _ptrCSSMKey->KeyData;
-//
-//    id toBeReturned = nil;
-//
-//    if ( [ _RetrieveKey isEqualToString: kAlgorithm ] )
-//    }
+@dynamic keyData;
+@dynamic keyAlgorithm;
+@dynamic encryptAlgorithm;
+@dynamic keyClass;
+@dynamic keyUsage;
+@dynamic startDate;
+@dynamic endDate;
 
-#pragma mark Managing Keys
-/** The key data bytes of the key represented by receiver.
-  */
-- ( NSData* ) keyData
+NSDate* _WSCCocoaDateFromCSSMDate( CSSM_DATE _CSSMDate )
     {
+    NSMutableString* yearString = [ NSMutableString string ];
+    for ( int _Index = 0; _Index < 4; _Index++ )
+        [ yearString appendString: [ NSString stringWithFormat: @"%u", _CSSMDate.Year[ _Index ] ] ];
+
+    NSMutableString* monthString = [ NSMutableString string ];
+    for ( int _Index = 0; _Index < 2; _Index++ )
+        [ monthString appendString: [ NSString stringWithFormat: @"%u", _CSSMDate.Month[ _Index ] ] ];
+
+    NSMutableString* dayString = [ NSMutableString string ];
+    for ( int _Index = 0; _Index < 2; _Index++ )
+        [ dayString appendString: [ NSString stringWithFormat: @"%u", _CSSMDate.Day[ _Index ] ] ];
+
+    NSDateComponents* dateComponents = [ [ [ NSDateComponents alloc ] init ] autorelease ];
+
+    // GMT (GMT) offset 0, the standard Greenwich Mean Time, that's pretty important!
+    [ dateComponents setTimeZone: [ NSTimeZone timeZoneForSecondsFromGMT: 0 ] ];
+
+    [ dateComponents setYear: yearString.integerValue   ];
+    [ dateComponents setMonth: monthString.integerValue ];
+    [ dateComponents setDay: dayString.integerValue ];
+
+    NSDate* rawDate = [ [ NSCalendar autoupdatingCurrentCalendar ] dateFromComponents: dateComponents ];
+    NSDate* dateWithCorrectTimeZone = [ rawDate dateWithCalendarFormat: nil
+                                                              timeZone: [ NSTimeZone localTimeZone ] ];
+    return dateWithCorrectTimeZone;
+    }
+
+NSValue* _WSCWrapCTypeIntoCocoaValue( uint32 _Value )
+    {
+    return [ NSValue valueWithBytes: &_Value objCType: @encode( uint32 ) ];
+    }
+
+- ( id ) p_retrieveAttributeIndicatedBy: ( NSString* )_RetrieveKey
+                                  error: ( NSError** )_Error
+    {
+    NSError* error = nil;
     OSStatus resultCode = errSecSuccess;
-
-    NSData* data = nil;
-
     CSSM_KEY_PTR ptrCSSMKey = malloc( sizeof( CSSM_KEY ) );
+
+    id toBeReturned = nil;
+
     if ( ptrCSSMKey && ( ( resultCode = SecKeyGetCSSMKey( self.secKey, &ptrCSSMKey ) ) == errSecSuccess ) )
         {
-        CSSM_DATA CSSMKeyDataStruct = ptrCSSMKey->KeyData;
-        CSSM_SIZE cssmKeyDataLength = CSSMKeyDataStruct.Length;
-        uint8* CSSMKeyData = CSSMKeyDataStruct.Data;
+        if ( [ _RetrieveKey isEqualToString: kAlgorithm ] )
+            toBeReturned = ( id )( ptrCSSMKey->KeyHeader.AlgorithmId );
 
-        data = [ NSData dataWithBytes: CSSMKeyData length: cssmKeyDataLength ];
+        else if ( [ _RetrieveKey isEqualToString: kEncryptAlgorithm ] )
+            toBeReturned = ( id )( ptrCSSMKey->KeyHeader.WrapAlgorithmId );
+
+        else if ( [ _RetrieveKey isEqualToString: kKeyClass ] )
+            toBeReturned = ( id )( ptrCSSMKey->KeyHeader.KeyClass );
+
+        else if ( [ _RetrieveKey isEqualToString: kKeyUsage ] )
+            toBeReturned = ( id )( ptrCSSMKey->KeyHeader.KeyUsage );
+
+        else if ( [ _RetrieveKey isEqualToString: kStartDate ] )
+            toBeReturned = _WSCCocoaDateFromCSSMDate( ptrCSSMKey->KeyHeader.StartDate );
+
+        else if ( [ _RetrieveKey isEqualToString: kEndDate ] )
+            toBeReturned = _WSCCocoaDateFromCSSMDate( ptrCSSMKey->KeyHeader.EndDate );
+
+        else if ( [ _RetrieveKey isEqualToString: kData ] )
+            {
+            CSSM_DATA CSSMKeyDataStruct = ptrCSSMKey->KeyData;
+            CSSM_SIZE cssmKeyDataLength = CSSMKeyDataStruct.Length;
+            uint8* CSSMKeyData = CSSMKeyDataStruct.Data;
+
+            toBeReturned = [ NSData dataWithBytes: CSSMKeyData length: cssmKeyDataLength ];
+            }
 
         // As described in the documentation of Certificate, Key and Trust Services:
         // we should not modify or free the returned data of SecKeyGetCSSMKey() function (free( ptrCSSMKey )),
         // because it is owned by the system.
         }
 
-    return data;
+    if ( resultCode != errSecSuccess )
+        {
+        _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+
+        if ( _Error )
+            *_Error = [ [ error copy ] autorelease ];
+        }
+
+    return toBeReturned;
+    }
+
+- ( id ) p_retrieveAttributeIndicatedBy: ( NSString* )_RetrieveKey
+    {
+    NSError* error = nil;
+
+    id attrValue = [ self p_retrieveAttributeIndicatedBy: _RetrieveKey error: &error ];
+    _WSCPrintNSErrorForLog( error );
+
+    return attrValue;
+    }
+
+#pragma mark Managing Keys
+/** The key data bytes of the key represented by receiver.
+  */
+- ( NSData* ) keyData
+    {
+    return ( NSData* )[ self p_retrieveAttributeIndicatedBy: kData ];
+    }
+
+/* The key algorithm of a key represented by receiver.
+ */
+- ( WSCKeyAlgorithmType ) keyAlgorithm
+    {
+    return ( WSCKeyAlgorithmType )[ self p_retrieveAttributeIndicatedBy: kAlgorithm ];
+    }
+
+/* The encrypt algorithm of a key represented by receiver.
+ */
+- ( WSCKeyAlgorithmType ) encryptAlgorithm
+    {
+    return ( WSCKeyAlgorithmType )[ self p_retrieveAttributeIndicatedBy: kEncryptAlgorithm ];
+    }
+
+/* The type of a key represented by receiver.
+ */
+- ( WSCKeyClass ) keyClass
+    {
+    return ( WSCKeyClass )[ self p_retrieveAttributeIndicatedBy: kKeyClass ];
+    }
+
+/* The usage of a key represented by receiver.
+ */
+- ( WSCKeyUsage ) keyUsage
+    {
+    return ( WSCKeyUsage )[ self p_retrieveAttributeIndicatedBy: kKeyUsage ];
+    }
+
+/* The start date of a key represented by receiver.
+ */
+- ( NSDate* ) startDate
+    {
+    return ( NSDate* )[ self p_retrieveAttributeIndicatedBy: kStartDate ];
+    }
+
+/* The end date of a key represented by receiver.
+ */
+- ( NSDate* ) endDate
+    {
+    return ( NSDate* )[ self p_retrieveAttributeIndicatedBy: kEndDate ];
     }
 
 #pragma mark Comparing Keys
