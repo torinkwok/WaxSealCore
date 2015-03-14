@@ -28,6 +28,7 @@
 #import "WSCKeychain.h"
 #import "WSCPassphraseItem.h"
 #import "WSCCertificateItem.h"
+#import "WSCKey.h"
 #import "NSURL+WSCKeychainURL.h"
 #import "WSCKeychainError.h"
 #import "WSCKeychainManager.h"
@@ -35,6 +36,7 @@
 #import "_WSCKeychainPrivate.h"
 #import "_WSCKeychainErrorPrivate.h"
 #import "_WSCKeychainItemPrivate.h"
+#import "_WSCCertificateItemPrivate.h"
 
 NSString* _WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain )
     {
@@ -404,28 +406,21 @@ WSCKeychain static* s_system = nil;
  */
 - ( NSArray* ) allApplicationPassphraseItems
     {
-    NSError* error = nil;
-    NSArray* allAppPassphraseItems =
-        [ self p_allItemsConformsTheClass: WSCKeychainItemClassApplicationPassphraseItem error: &error ];
-
-    if ( error )
-        _WSCPrintNSErrorForLog( error );
-
-    return allAppPassphraseItems;
+    return [ self p_allItemsConformsTheClass: WSCKeychainItemClassApplicationPassphraseItem ];
     }
 
 /* Retrieve all the Internet passphrase items stored in the keychain represented by receiver.
  */
 - ( NSArray* ) allInternetPassphraseItems
     {
-    NSError* error = nil;
-    NSArray* allInternetPassphraseItems =
-        [ self p_allItemsConformsTheClass: WSCKeychainItemClassInternetPassphraseItem error: &error ];
+    return [ self p_allItemsConformsTheClass: WSCKeychainItemClassInternetPassphraseItem ];
+    }
 
-    if ( error )
-        _WSCPrintNSErrorForLog( error );
-
-    return allInternetPassphraseItems;
+/* Retrieve all the X.509 certificates stored in the keychain represented by receiver.
+ */
+- ( NSArray* ) allCertificateItems
+    {
+    return [ self p_allItemsConformsTheClass: WSCKeychainItemClassCertificateItem ];
     }
 
 /* Find the first keychain item which satisfies the given search criteria contained in *_SearchCriteriaDict* dictionary.
@@ -611,27 +606,53 @@ WSCKeychain static* s_system = nil;
 
             // TODO: Waiting for the other item class, Certificates, Keys, etc.
             self->p_commonAttributesSearchKeys =
-                [ @[ WSCKeychainItemAttributeCreationDate, WSCKeychainItemAttributeModificationDate
-                   , WSCKeychainItemAttributeKindDescription, WSCKeychainItemAttributeComment
-                   , WSCKeychainItemAttributeLabel, WSCKeychainItemAttributeInvisible
-                   , WSCKeychainItemAttributeNegative ] retain ];
+                [ @[ WSCKeychainItemAttributeCreationDate
+                   , WSCKeychainItemAttributeModificationDate
+                   , WSCKeychainItemAttributeLabel
+                   ] retain ];
 
-            NSArray* uniqueToPassphraseItemAttributesSearchKeys = [ @[ WSCKeychainItemAttributeAccount ] arrayByAddingObjectsFromArray: self->p_commonAttributesSearchKeys ];
+            NSArray* uniqueToPassphraseItemAttributesSearchKeys =
+                [ @[ WSCKeychainItemAttributeAccount
+                   , WSCKeychainItemAttributeComment
+                   , WSCKeychainItemAttributeKindDescription
+                   , WSCKeychainItemAttributeNegative
+                   , WSCKeychainItemAttributeInvisible
+                   ] arrayByAddingObjectsFromArray: self->p_commonAttributesSearchKeys ];
 
             self->p_uniqueToInternetPassphraseItemAttributesSearchKeys =
-                [ [ @[ WSCKeychainItemAttributeHostName, WSCKeychainItemAttributeAuthenticationType
-                     , WSCKeychainItemAttributePort, WSCKeychainItemAttributeRelativePath
+                [ [ @[ WSCKeychainItemAttributeHostName
+                     , WSCKeychainItemAttributeAuthenticationType
+                     , WSCKeychainItemAttributePort
+                     , WSCKeychainItemAttributeRelativePath
                      , WSCKeychainItemAttributeProtocol
                      ] arrayByAddingObjectsFromArray: uniqueToPassphraseItemAttributesSearchKeys ] retain ];
 
             self->p_uniqueToAppPassphraseItemAttributesSearchKeys =
-                [ [ @[ WSCKeychainItemAttributeServiceName, WSCKeychainItemAttributeUserDefinedDataAttribute
+                [ [ @[ WSCKeychainItemAttributeServiceName
+                     , WSCKeychainItemAttributeUserDefinedDataAttribute
                      ] arrayByAddingObjectsFromArray: uniqueToPassphraseItemAttributesSearchKeys ] retain ];
 
             self->p_uniqueToCertificateItemAttributesSearchKeys =
-                [ [ @[ WSCKeychainItemAttributeSubjectCommonName, WSCKeychainItemAttributeIssuerCommonName
-                     , WSCKeychainItemAttributeSerialNumber ]
-                     arrayByAddingObjectsFromArray: self->p_commonAttributesSearchKeys ] retain ];
+                [ [ @[ WSCKeychainItemAttributeSubjectEmailAddress
+                     , WSCKeychainItemAttributeSubjectCommonName
+                     , WSCKeychainItemAttributeSubjectOrganization
+                     , WSCKeychainItemAttributeSubjectOrganizationalUnit
+                     , WSCKeychainItemAttributeSubjectCountryAbbreviation
+                     , WSCKeychainItemAttributeSubjectStateOrProvince
+                     , WSCKeychainItemAttributeSubjectLocality
+
+                     , WSCKeychainItemAttributeIssuerEmailAddress
+                     , WSCKeychainItemAttributeIssuerCommonName
+                     , WSCKeychainItemAttributeIssuerOrganization
+                     , WSCKeychainItemAttributeIssuerOrganizationalUnit
+                     , WSCKeychainItemAttributeIssuerCountryAbbreviation
+                     , WSCKeychainItemAttributeIssuerStateOrProvince
+                     , WSCKeychainItemAttributeIssuerLocality
+
+                     , WSCKeychainItemAttributeSerialNumber
+                     , WSCKeychainItemAttributePublicKeySignature
+                     , WSCKeychainItemAttributePublicKeySignatureAlgorithm
+                     ] arrayByAddingObjectsFromArray: self->p_commonAttributesSearchKeys ] retain ];
             }
         else
             return nil;
@@ -669,6 +690,18 @@ WSCKeychain static* s_system = nil;
 @implementation WSCKeychain( WSCKeychainPrivateFindingKeychainItems )
 
 - ( NSArray* ) p_allItemsConformsTheClass: ( WSCKeychainItemClass )_ItemClass
+    {
+    NSError* error = nil;
+    NSArray* allItems =
+        [ self p_allItemsConformsTheClass: _ItemClass error: &error ];
+
+    if ( error )
+        _WSCPrintNSErrorForLog( error );
+
+    return allItems;
+    }
+
+- ( NSArray* ) p_allItemsConformsTheClass: ( WSCKeychainItemClass )_ItemClass
                                     error: ( NSError** )_Error
     {
     OSStatus resultCode = errSecSuccess;
@@ -689,10 +722,22 @@ WSCKeychain static* s_system = nil;
             // Match any keychain attribute
             while ( ( resultCode = SecKeychainSearchCopyNext( secSearch, &secMatchedItem ) ) != errSecItemNotFound )
                 {
-                WSCPassphraseItem* matchedItem = [ WSCPassphraseItem keychainItemWithSecKeychainItemRef: secMatchedItem ];
-                CFRelease( secMatchedItem );
+                Class wrapperClass = nil;
+                SEL initSelector = @selector( keychainItemWithSecKeychainItemRef: );
 
-                [ allItems addObject: matchedItem ];
+                SecItemClass itemClass = _WSCSecKeychainItemClass( ( __bridge SecKeychainItemRef )secMatchedItem );
+                if ( itemClass == kSecInternetPasswordItemClass || itemClass == kSecGenericPasswordItemClass )
+                    wrapperClass = [ WSCPassphraseItem class ];
+                else if ( itemClass == kSecCertificateItemClass )
+                    wrapperClass = [ WSCCertificateItem class ];
+                else if ( itemClass == kSecPublicKeyItemClass || itemClass == kSecPrivateKeyItemClass )
+                    wrapperClass = [ WSCKey class ];
+
+                // TODO: Waiting for the other item class, Certificates, Keys, etc.
+                NSAssert( wrapperClass, @"Failed to determine the concrete Class of new object" );
+
+                id keychainItem = objc_msgSend( wrapperClass, initSelector, ( __bridge SecKeychainRef )secMatchedItem );
+                [ allItems addObject: keychainItem ];
                 }
 
             if ( secSearch )
@@ -758,75 +803,82 @@ WSCKeychain static* s_system = nil;
 
     if ( self.isValid )
         {
-        // Just return this empty array
-        // if there is not any keychan item satisfying the given search criteria.
-        matchedItems = [ NSMutableArray array ];
-
-        OSStatus resultCode = errSecSuccess;
-        NSMutableDictionary* finalQueryDictionary =
-            [ NSMutableDictionary dictionaryWithObjectsAndKeys:
-                  ( __bridge id )_WSCModernClassFromOriginal( _ItemClass ), ( __bridge id )kSecClass
-                , ( __bridge id )kSecMatchLimitAll, ( __bridge id )kSecMatchLimit
-                , @[ ( __bridge id )self.secKeychain ], ( __bridge id )kSecMatchSearchList
-                , ( __bridge id )kCFBooleanTrue, ( __bridge id )kSecReturnRef
-                , nil ];
-
-        // Adapt the passed-in search criteria (_SearchCriteriaDict)
-        NSMutableDictionary* adaptedSearchCriteriaDict = [ NSMutableDictionary dictionary ];
-        for ( NSString* _SearchKey in _SearchCriteriaDict )
+        if ( _ItemClass == WSCKeychainItemClassInternetPassphraseItem
+                || _ItemClass == WSCKeychainItemClassApplicationPassphraseItem )
             {
-            // The value of Auth Type and Protocol were wrapped in the Cocoa value (NSValue).
-            // Unbox and convert them to the form that can be understood by SecItemCopyMatching() function
-            if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeAuthenticationType ]
-                    || [ _SearchKey isEqualToString: WSCKeychainItemAttributeProtocol ] )
-                {
-                FourCharCode searchValue = 0;
-                [ _SearchCriteriaDict[ _SearchKey ] getValue: &searchValue ];
+            // Just return this empty array
+            // if there is not any keychan item satisfying the given search criteria.
+            matchedItems = [ NSMutableArray array ];
 
-                if ( searchValue )
+            OSStatus resultCode = errSecSuccess;
+            NSMutableDictionary* finalQueryDictionary =
+                [ NSMutableDictionary dictionaryWithObjectsAndKeys:
+                      ( __bridge id )_WSCModernClassFromOriginal( _ItemClass ), ( __bridge id )kSecClass
+                    , ( __bridge id )kSecMatchLimitAll, ( __bridge id )kSecMatchLimit
+                    , @[ ( __bridge id )self.secKeychain ], ( __bridge id )kSecMatchSearchList
+                    , ( __bridge id )kCFBooleanTrue, ( __bridge id )kSecReturnRef
+                    , nil ];
+
+            // Adapt the passed-in search criteria (_SearchCriteriaDict)
+            NSMutableDictionary* adaptedSearchCriteriaDict = [ NSMutableDictionary dictionary ];
+            for ( NSString* _SearchKey in _SearchCriteriaDict )
+                {
+                // The value of Auth Type and Protocol were wrapped in the Cocoa value (NSValue).
+                // Unbox and convert them to the form that can be understood by SecItemCopyMatching() function
+                if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeAuthenticationType ]
+                        || [ _SearchKey isEqualToString: WSCKeychainItemAttributeProtocol ] )
                     {
-                    NSString* newSearchValue = _WSCStringFromFourCharCode( searchValue );
-                    adaptedSearchCriteriaDict[ _SearchKey ] = newSearchValue;
+                    FourCharCode searchValue = 0;
+                    [ _SearchCriteriaDict[ _SearchKey ] getValue: &searchValue ];
+
+                    if ( searchValue )
+                        {
+                        NSString* newSearchValue = _WSCStringFromFourCharCode( searchValue );
+                        adaptedSearchCriteriaDict[ _SearchKey ] = newSearchValue;
+                        }
                     }
+                else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeSubjectCommonName ]
+                            || [ _SearchKey isEqualToString: WSCKeychainItemAttributeIssuerCommonName ]
+                            || [ _SearchKey isEqualToString: WSCKeychainItemAttributeSerialNumber ] )
+                    {
+                    NSString* searchValue = ( NSString* )( _SearchCriteriaDict[ _SearchKey ] );
+                    adaptedSearchCriteriaDict[ _SearchKey ] = [ searchValue dataUsingEncoding: NSUTF8StringEncoding ];
+                    }
+                else
+                    // On the other hand, values of other types may be inserted directly
+                    adaptedSearchCriteriaDict[ _SearchKey ] = _SearchCriteriaDict[ _SearchKey ];
                 }
-            else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeSubjectCommonName ]
-                        || [ _SearchKey isEqualToString: WSCKeychainItemAttributeIssuerCommonName ]
-                        || [ _SearchKey isEqualToString: WSCKeychainItemAttributeSerialNumber ] )
+
+            [ finalQueryDictionary addEntriesFromDictionary: adaptedSearchCriteriaDict ];
+
+            CFTypeRef secMatchedItems = NULL;
+            if ( ( resultCode = SecItemCopyMatching( ( __bridge CFDictionaryRef )finalQueryDictionary
+                                                   , &secMatchedItems ) ) == errSecSuccess )
                 {
-                NSString* searchValue = ( NSString* )( _SearchCriteriaDict[ _SearchKey ] );
-                adaptedSearchCriteriaDict[ _SearchKey ] = [ searchValue dataUsingEncoding: NSUTF8StringEncoding ];
+                for ( id _MatchedItem in ( __bridge NSArray* )secMatchedItems )
+                    {
+                    Class wrapperClass = nil;
+                    SEL initSelector = @selector( keychainItemWithSecKeychainItemRef: );
+
+                    SecItemClass itemClass = _WSCSecKeychainItemClass( ( __bridge SecKeychainItemRef )_MatchedItem );
+                    if ( itemClass == kSecInternetPasswordItemClass || itemClass == kSecGenericPasswordItemClass )
+                        wrapperClass = [ WSCPassphraseItem class ];
+                    else if ( itemClass == kSecCertificateItemClass )
+                        wrapperClass = [ WSCCertificateItem class ];
+
+                    // TODO: Waiting for the other item class, Certificates, Keys, etc.
+                    NSAssert( wrapperClass, @"Failed to determine the concrete Class of new object" );
+
+                    id keychainItem = objc_msgSend( wrapperClass, initSelector, ( __bridge SecKeychainRef )_MatchedItem );
+                    [ matchedItems addObject: keychainItem ];
+                    }
+
+                CFRelease( secMatchedItems );
                 }
-            else
-                // On the other hand, values of other types may be inserted directly
-                adaptedSearchCriteriaDict[ _SearchKey ] = _SearchCriteriaDict[ _SearchKey ];
             }
 
-        [ finalQueryDictionary addEntriesFromDictionary: adaptedSearchCriteriaDict ];
-
-        CFTypeRef secMatchedItems = NULL;
-        if ( ( resultCode = SecItemCopyMatching( ( __bridge CFDictionaryRef )finalQueryDictionary
-                                               , &secMatchedItems ) ) == errSecSuccess )
-            {
-            for ( id _MatchedItem in ( __bridge NSArray* )secMatchedItems )
-                {
-                Class wrapperClass = nil;
-                SEL initSelector = @selector( keychainItemWithSecKeychainItemRef: );
-
-                SecItemClass itemClass = _WSCSecKeychainItemClass( ( __bridge SecKeychainItemRef )_MatchedItem );
-                if ( itemClass == kSecInternetPasswordItemClass || itemClass == kSecGenericPasswordItemClass )
-                    wrapperClass = [ WSCPassphraseItem class ];
-                else if ( itemClass == kSecCertificateItemClass )
-                    wrapperClass = [ WSCCertificateItem class ];
-
-                // TODO: Waiting for the other item class, Certificates, Keys, etc.
-                NSAssert( wrapperClass, @"Failed to determine the concrete Class of new object" );
-
-                id keychainItem = objc_msgSend( wrapperClass, initSelector, ( __bridge SecKeychainRef )_MatchedItem );
-                [ matchedItems addObject: keychainItem ];
-                }
-
-            CFRelease( secMatchedItems );
-            }
+        else if ( _ItemClass == WSCKeychainItemClassCertificateItem )
+            matchedItems = [ self p_findCertificateItemsSatisfyingSearchCriteria: _SearchCriteriaDict error: _Error ];
         }
     else
         if ( _Error )
@@ -835,6 +887,69 @@ WSCKeychain static* s_system = nil;
                                        userInfo: nil ];
 
     return [ [ matchedItems copy ] autorelease ];
+    }
+
+- ( NSMutableArray* ) p_findCertificateItemsSatisfyingSearchCriteria: ( NSDictionary* )_CertSearchCriteriaDict
+                                                               error: ( NSError** )_Error
+    {
+    // This private API relies on the `-p_findKeychainItemsSatisfyingSearchCriteria:itemClass:error:` method
+    // to examine the incoming criteria dictionary.
+
+    NSError* error = nil;
+    NSArray* allCertificateItems = [ self p_allItemsConformsTheClass: WSCKeychainItemClassCertificateItem error: &error ];
+
+    if ( error )
+        {
+        if ( _Error )
+            *_Error = [ [ error copy ] autorelease ];
+
+        return nil;
+        }
+
+    // Suppose that all the passphrase items conforming the given item class are the matched items
+    NSMutableArray* matchedCerts = [ [ allCertificateItems mutableCopy ] autorelease ];
+
+    if ( self.isValid )
+        {
+        for ( NSString* _SearchKey in _CertSearchCriteriaDict )
+            {
+            for ( WSCCertificateItem* _Item in allCertificateItems )
+                {
+                id searchValue = _CertSearchCriteriaDict[ _SearchKey ];
+                id attrValueOfCurrentCert = [ _Item p_retriveAttributeOfReceiverItselfWithKey: _SearchKey ];
+
+                // If the give certificate item's attribute is not equal to the search value
+                // remove it from the mathcedItems array
+                if ( ![ _SearchKey isEqualToString: WSCKeychainItemAttributePublicKeySignatureAlgorithm ] )
+                    {
+                    if ( ![ attrValueOfCurrentCert isEqualTo: searchValue ] )
+                        [ matchedCerts removeObject: _Item ];
+                    }
+                else
+                    {
+                    WSCSignatureAlgorithmType signatureAlgorithmOfCurrentCert =
+                        [ WSCCertificateItem p_signatureAlgorithmFromGiveOID: attrValueOfCurrentCert ];
+
+                    WSCSignatureAlgorithmType searchingSignatureAlgorithm = 0;
+                    [ searchValue getValue: &searchingSignatureAlgorithm ];
+
+                    if ( signatureAlgorithmOfCurrentCert != searchingSignatureAlgorithm )
+                        [ matchedCerts removeObject: _Item ];
+                    }
+                }
+
+            // At last, all the remaining passphrase items are considered satisfying the current search criteria,
+            // any item that does not satisfy the current search criteria has been removed.
+            allCertificateItems = [ [ matchedCerts copy ] autorelease ];
+            }
+        }
+    else
+        if ( _Error )
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
+                                           code: WSCKeychainIsInvalidError
+                                       userInfo: nil ];
+
+    return matchedCerts;
     }
 
 @end // WSCKeychain + WSCKeychainPrivateFindingKeychainItems
@@ -852,6 +967,11 @@ inline NSValue* WSCInternetProtocolCocoaValue( WSCInternetProtocolType _Internet
 inline NSValue* WSCAuthenticationTypeCocoaValue( WSCInternetAuthenticationType _AuthenticationType )
     {
     return [ NSValue valueWithBytes: &_AuthenticationType objCType: @encode( WSCInternetAuthenticationType ) ];
+    }
+
+inline NSValue* WSCSignatureAlgorithmTypeCocoaValue( WSCSignatureAlgorithmType _SignatureAlgorithmType )
+    {
+    return [ NSValue valueWithBytes: &_SignatureAlgorithmType objCType: @encode( WSCSignatureAlgorithmType ) ];
     }
 
 /*================================================================================┐

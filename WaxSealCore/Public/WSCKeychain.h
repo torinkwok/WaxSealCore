@@ -401,6 +401,18 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
   */
 - ( NSArray* ) allInternetPassphraseItems;
 
+/** Retrieve all the X.509 certificates stored in the keychain represented by receiver.
+
+  @warning After invoking this method, the certificate item stored in the returned array may become invalid
+          (perhaps it has been deleted or modified by user or by other applications),
+           you should check the validity of each passphrase item before using it.
+
+  @return An `NSArray` object containing all the certificate items stored in the keychain represented by receiver.
+          Returns an empty array if there is not any certificate item in the keychain.
+          Returns `nil` if an error occured.
+  */
+- ( NSArray* ) allCertificateItems;
+
 /** Find the first keychain item which satisfies the given search criteria contained in *_SearchCriteriaDict* dictionary.
  
   The valid search keys: 
@@ -580,9 +592,12 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
 @end // WSCKeychain class
 
+#import "WSCCertificateItem.h"
+
 NSValue* WSCFourCharCodeValue( FourCharCode _FourCharCode );
 NSValue* WSCInternetProtocolCocoaValue( WSCInternetProtocolType _InternetProtocolType );
 NSValue* WSCAuthenticationTypeCocoaValue( WSCInternetAuthenticationType _AuthenticationType );
+NSValue* WSCSignatureAlgorithmTypeCocoaValue( WSCSignatureAlgorithmType _SignatureAlgorithmType );
 
 /*================================================================================┐
 |                              The MIT License (MIT)                              |

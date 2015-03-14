@@ -36,17 +36,6 @@ NSString static* const kStartDate = @"kStartDate";
 NSString static* const kEndDate = @"kEndDate";
 NSString static* const kData = @"kData";
 
-@implementation WSCKey
-
-@dynamic keyData;
-@dynamic keyAlgorithm;
-@dynamic encryptAlgorithm;
-@dynamic keySizeInBits;
-@dynamic keyClass;
-@dynamic keyUsage;
-@dynamic effectiveDate;
-@dynamic expirationDate;
-
 NSDate* _WSCCocoaDateFromCSSMDate( CSSM_DATE _CSSMDate )
     {
     NSDate* dateWithCorrectTimeZone = nil;
@@ -89,72 +78,16 @@ NSValue* _WSCWrapCTypeIntoCocoaValue( uint32 _Value )
     return [ NSValue valueWithBytes: &_Value objCType: @encode( uint32 ) ];
     }
 
-- ( id ) p_retrieveAttributeIndicatedBy: ( NSString* )_RetrieveKey
-                                  error: ( NSError** )_Error
-    {
-    NSError* error = nil;
-    OSStatus resultCode = errSecSuccess;
-    CSSM_KEY_PTR ptrCSSMKey = malloc( sizeof( CSSM_KEY ) );
+@implementation WSCKey
 
-    id toBeReturned = nil;
-
-    if ( ptrCSSMKey && ( ( resultCode = SecKeyGetCSSMKey( self.secKey, &ptrCSSMKey ) ) == errSecSuccess ) )
-        {
-        if ( [ _RetrieveKey isEqualToString: kAlgorithm ] )
-            toBeReturned = ( id )( ptrCSSMKey->KeyHeader.AlgorithmId );
-
-        else if ( [ _RetrieveKey isEqualToString: kEncryptAlgorithm ] )
-            toBeReturned = ( id )( ptrCSSMKey->KeyHeader.WrapAlgorithmId );
-
-        else if ( [ _RetrieveKey isEqualToString: kKeySizeInBits ] )
-            toBeReturned = ( id )( ptrCSSMKey->KeyHeader.LogicalKeySizeInBits );
-
-        else if ( [ _RetrieveKey isEqualToString: kKeyClass ] )
-            toBeReturned = ( id )( ptrCSSMKey->KeyHeader.KeyClass );
-
-        else if ( [ _RetrieveKey isEqualToString: kKeyUsage ] )
-            toBeReturned = ( id )( ptrCSSMKey->KeyHeader.KeyUsage );
-
-        else if ( [ _RetrieveKey isEqualToString: kStartDate ] )
-            toBeReturned = _WSCCocoaDateFromCSSMDate( ptrCSSMKey->KeyHeader.StartDate );
-
-        else if ( [ _RetrieveKey isEqualToString: kEndDate ] )
-            toBeReturned = _WSCCocoaDateFromCSSMDate( ptrCSSMKey->KeyHeader.EndDate );
-
-        else if ( [ _RetrieveKey isEqualToString: kData ] )
-            {
-            CSSM_DATA CSSMKeyDataStruct = ptrCSSMKey->KeyData;
-            CSSM_SIZE cssmKeyDataLength = CSSMKeyDataStruct.Length;
-            uint8* CSSMKeyData = CSSMKeyDataStruct.Data;
-
-            toBeReturned = [ NSData dataWithBytes: CSSMKeyData length: cssmKeyDataLength ];
-            }
-
-        // As described in the documentation of Certificate, Key and Trust Services:
-        // we should not modify or free the returned data of SecKeyGetCSSMKey() function (free( ptrCSSMKey )),
-        // because it is owned by the system.
-        }
-
-    if ( resultCode != errSecSuccess )
-        {
-        _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
-
-        if ( _Error )
-            *_Error = [ [ error copy ] autorelease ];
-        }
-
-    return toBeReturned;
-    }
-
-- ( id ) p_retrieveAttributeIndicatedBy: ( NSString* )_RetrieveKey
-    {
-    NSError* error = nil;
-
-    id attrValue = [ self p_retrieveAttributeIndicatedBy: _RetrieveKey error: &error ];
-    _WSCPrintNSErrorForLog( error );
-
-    return attrValue;
-    }
+@dynamic keyData;
+@dynamic keyAlgorithm;
+@dynamic encryptAlgorithm;
+@dynamic keySizeInBits;
+@dynamic keyClass;
+@dynamic keyUsage;
+@dynamic effectiveDate;
+@dynamic expirationDate;
 
 #pragma mark Managing Keys
 /** The key data bytes of the key represented by receiver.
@@ -265,6 +198,78 @@ NSValue* _WSCWrapCTypeIntoCocoaValue( uint32 _Value )
     }
 
 @end // WSCKey + WSCKeyPrivateInitialization
+
+#pragma mark WSCKey + WSCKeyPrivateRetrieveAttributes
+@implementation WSCKey ( WSCKeyPrivateRetrieveAttributes )
+
+- ( id ) p_retrieveAttributeIndicatedBy: ( NSString* )_RetrieveKey
+    {
+    NSError* error = nil;
+
+    id attrValue = [ self p_retrieveAttributeIndicatedBy: _RetrieveKey error: &error ];
+    _WSCPrintNSErrorForLog( error );
+
+    return attrValue;
+    }
+
+- ( id ) p_retrieveAttributeIndicatedBy: ( NSString* )_RetrieveKey
+                                  error: ( NSError** )_Error
+    {
+    NSError* error = nil;
+    OSStatus resultCode = errSecSuccess;
+    CSSM_KEY_PTR ptrCSSMKey = malloc( sizeof( CSSM_KEY ) );
+
+    id toBeReturned = nil;
+
+    if ( ptrCSSMKey && ( ( resultCode = SecKeyGetCSSMKey( self.secKey, &ptrCSSMKey ) ) == errSecSuccess ) )
+        {
+        if ( [ _RetrieveKey isEqualToString: kAlgorithm ] )
+            toBeReturned = ( id )( ptrCSSMKey->KeyHeader.AlgorithmId );
+
+        else if ( [ _RetrieveKey isEqualToString: kEncryptAlgorithm ] )
+            toBeReturned = ( id )( ptrCSSMKey->KeyHeader.WrapAlgorithmId );
+
+        else if ( [ _RetrieveKey isEqualToString: kKeySizeInBits ] )
+            toBeReturned = ( id )( ptrCSSMKey->KeyHeader.LogicalKeySizeInBits );
+
+        else if ( [ _RetrieveKey isEqualToString: kKeyClass ] )
+            toBeReturned = ( id )( ptrCSSMKey->KeyHeader.KeyClass );
+
+        else if ( [ _RetrieveKey isEqualToString: kKeyUsage ] )
+            toBeReturned = ( id )( ptrCSSMKey->KeyHeader.KeyUsage );
+
+        else if ( [ _RetrieveKey isEqualToString: kStartDate ] )
+            toBeReturned = _WSCCocoaDateFromCSSMDate( ptrCSSMKey->KeyHeader.StartDate );
+
+        else if ( [ _RetrieveKey isEqualToString: kEndDate ] )
+            toBeReturned = _WSCCocoaDateFromCSSMDate( ptrCSSMKey->KeyHeader.EndDate );
+
+        else if ( [ _RetrieveKey isEqualToString: kData ] )
+            {
+            CSSM_DATA CSSMKeyDataStruct = ptrCSSMKey->KeyData;
+            CSSM_SIZE cssmKeyDataLength = CSSMKeyDataStruct.Length;
+            uint8* CSSMKeyData = CSSMKeyDataStruct.Data;
+
+            toBeReturned = [ NSData dataWithBytes: CSSMKeyData length: cssmKeyDataLength ];
+            }
+
+        // As described in the documentation of Certificate, Key and Trust Services:
+        // we should not modify or free the returned data of SecKeyGetCSSMKey() function (free( ptrCSSMKey )),
+        // because it is owned by the system.
+        }
+
+    if ( resultCode != errSecSuccess )
+        {
+        _WSCFillErrorParamWithSecErrorCode( resultCode, &error );
+
+        if ( _Error )
+            *_Error = [ [ error copy ] autorelease ];
+        }
+
+    return toBeReturned;
+    }
+
+@end // WSCKey + WSCKeyPrivateRetrieveAttributes
 
 /*================================================================================┐
 |                              The MIT License (MIT)                              |
