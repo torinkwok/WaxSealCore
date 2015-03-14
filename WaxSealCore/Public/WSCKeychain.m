@@ -892,6 +892,9 @@ WSCKeychain static* s_system = nil;
 - ( NSMutableArray* ) p_findCertificateItemsSatisfyingSearchCriteria: ( NSDictionary* )_CertSearchCriteriaDict
                                                                error: ( NSError** )_Error
     {
+    // This private API relies on the `-p_findKeychainItemsSatisfyingSearchCriteria:itemClass:error:` method
+    // to examine the incoming criteria dictionary.
+
     NSError* error = nil;
     NSArray* allCertificateItems = [ self p_allItemsConformsTheClass: WSCKeychainItemClassCertificateItem error: &error ];
 
