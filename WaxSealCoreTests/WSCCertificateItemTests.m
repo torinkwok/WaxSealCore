@@ -181,7 +181,7 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
     [ self.Tong_G_outlook_com release ];
     }
 
-- ( void ) testPublicKeyProperty
+- ( void ) testKeyProperties
     {
     // -------------------------------------------------------------------------------
     // Positive Test Case 0
@@ -195,8 +195,20 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
     XCTAssertEqual( publicKey_testCase0.hash, self.AppleRootCA_G3.publicKey.hash );
 
     NSDate* startDate_testCase0 = publicKey_testCase0.effectiveDate;
-    XCTAssertNotNil( startDate_testCase0 );
+    XCTAssertNil( startDate_testCase0 );
     NSLog( @"Start Date #TestCase0: %@", startDate_testCase0 );
+
+    WSCKeyAlgorithmType algorithm_testCase0 = publicKey_testCase0.keyAlgorithm;
+    XCTAssertEqual( algorithm_testCase0, WSCKeyAlgorithmECDSA );
+
+    WSCKeyAlgorithmType encryptAlgorithm_testCase0 = publicKey_testCase0.encryptAlgorithm;
+    XCTAssertEqual( encryptAlgorithm_testCase0, WSCKeyAlgorithmNone );
+
+    WSCKeyClass keyClass_testCase0 = publicKey_testCase0.keyClass;
+    XCTAssertEqual( keyClass_testCase0, WSCKeyClassPublicKey );
+
+    WSCKeyUsage keyUsage_testCase0 = publicKey_testCase0.keyUsage;
+    XCTAssertEqual( keyUsage_testCase0, WSCKeyUsageVerify );
 
     // -------------------------------------------------------------------------------
     // Positive Test Case 1
@@ -209,6 +221,22 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
     XCTAssertEqualObjects( publicKey_testCase1, self.COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA.publicKey );
     XCTAssertEqual( publicKey_testCase1.hash, self.COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA.publicKey.hash );
 
+    NSDate* startDate_testCase1 = publicKey_testCase1.effectiveDate;
+    XCTAssertNil( startDate_testCase1 );
+    NSLog( @"Start Date #TestCase1: %@", startDate_testCase1 );
+
+    WSCKeyAlgorithmType algorithm_testCase1 = publicKey_testCase1.keyAlgorithm;
+    XCTAssertEqual( algorithm_testCase1, WSCKeyAlgorithmRSA );
+
+    WSCKeyAlgorithmType encryptAlgorithm_testCase1 = publicKey_testCase1.encryptAlgorithm;
+    XCTAssertEqual( encryptAlgorithm_testCase1, WSCKeyAlgorithmNone );
+
+    WSCKeyClass keyClass_testCase1 = publicKey_testCase1.keyClass;
+    XCTAssertEqual( keyClass_testCase1, WSCKeyClassPublicKey );
+
+    WSCKeyUsage keyUsage_testCase1 = publicKey_testCase1.keyUsage;
+    XCTAssertEqual( keyUsage_testCase1, WSCKeyUsageEncrypt | WSCKeyUsageVerify | WSCKeyUsageWrap | WSCKeyUsageDerive );
+
     // -------------------------------------------------------------------------------
     // Positive Test Case 2
     // -------------------------------------------------------------------------------
@@ -219,6 +247,22 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
     XCTAssertEqualObjects( publicKeyData_testCase2, self.MacDeveloper_TongGuo_8ZDY95NQGT.publicKey.keyData );
     XCTAssertEqualObjects( publicKey_testCase2, self.MacDeveloper_TongGuo_8ZDY95NQGT.publicKey );
     XCTAssertEqual( publicKey_testCase2.hash, self.MacDeveloper_TongGuo_8ZDY95NQGT.publicKey.hash );
+
+    NSDate* startDate_testCase2 = publicKey_testCase2.effectiveDate;
+    XCTAssertNil( startDate_testCase2 );
+    NSLog( @"Start Date #TestCase2: %@", startDate_testCase2 );
+
+    WSCKeyAlgorithmType algorithm_testCase2 = publicKey_testCase2.keyAlgorithm;
+    XCTAssertEqual( algorithm_testCase2, WSCKeyAlgorithmRSA );
+
+    WSCKeyAlgorithmType encryptAlgorithm_testCase2 = publicKey_testCase2.encryptAlgorithm;
+    XCTAssertEqual( encryptAlgorithm_testCase2, WSCKeyAlgorithmNone );
+
+    WSCKeyClass keyClass_testCase2 = publicKey_testCase2.keyClass;
+    XCTAssertEqual( keyClass_testCase2, WSCKeyClassPublicKey );
+
+    WSCKeyUsage keyUsage_testCase2 = publicKey_testCase2.keyUsage;
+    XCTAssertEqual( keyUsage_testCase2, WSCKeyUsageVerify );
 
     // -------------------------------------------------------------------------------
     // Positive Test Case 3
@@ -231,6 +275,22 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
     XCTAssertEqualObjects( publicKey_testCase3, self.ThawtePersonalFreemailCA.publicKey );
     XCTAssertEqual( publicKey_testCase3.hash, self.ThawtePersonalFreemailCA.publicKey.hash );
 
+    NSDate* startDate_testCase3 = publicKey_testCase3.effectiveDate;
+    XCTAssertNil( startDate_testCase3 );
+    NSLog( @"Start Date #TestCase3: %@", startDate_testCase3 );
+
+    WSCKeyAlgorithmType algorithm_testCase3 = publicKey_testCase3.keyAlgorithm;
+    XCTAssertEqual( algorithm_testCase3, WSCKeyAlgorithmRSA );
+
+    WSCKeyAlgorithmType encryptAlgorithm_testCase3 = publicKey_testCase3.encryptAlgorithm;
+    XCTAssertEqual( encryptAlgorithm_testCase3, WSCKeyAlgorithmNone );
+
+    WSCKeyClass keyClass_testCase3 = publicKey_testCase3.keyClass;
+    XCTAssertEqual( keyClass_testCase3, WSCKeyClassPublicKey );
+
+    WSCKeyUsage keyUsage_testCase3 = publicKey_testCase3.keyUsage;
+    XCTAssertEqual( keyUsage_testCase3, WSCKeyUsageAny );
+
     // -------------------------------------------------------------------------------
     // Positive Test Case 4
     // -------------------------------------------------------------------------------
@@ -241,6 +301,22 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
     XCTAssertEqualObjects( publicKeyData_testCase4, self.ThawtePersonalPremiumCA.publicKey.keyData );
     XCTAssertEqualObjects( publicKey_testCase4, self.ThawtePersonalPremiumCA.publicKey );
     XCTAssertEqual( publicKey_testCase4.hash, self.ThawtePersonalPremiumCA.publicKey.hash );
+
+    NSDate* startDate_testCase4 = publicKey_testCase4.effectiveDate;
+    XCTAssertNil( startDate_testCase4 );
+    NSLog( @"Start Date #TestCase4: %@", startDate_testCase4 );
+
+    WSCKeyAlgorithmType algorithm_testCase4 = publicKey_testCase4.keyAlgorithm;
+    XCTAssertEqual( algorithm_testCase4, WSCKeyAlgorithmRSA );
+
+    WSCKeyAlgorithmType encryptAlgorithm_testCase4 = publicKey_testCase4.encryptAlgorithm;
+    XCTAssertEqual( encryptAlgorithm_testCase4, WSCKeyAlgorithmNone );
+
+    WSCKeyClass keyClass_testCase4 = publicKey_testCase4.keyClass;
+    XCTAssertEqual( keyClass_testCase4, WSCKeyClassPublicKey );
+
+    WSCKeyUsage keyUsage_testCase4 = publicKey_testCase4.keyUsage;
+    XCTAssertEqual( keyUsage_testCase4, WSCKeyUsageAny );
 
     // -------------------------------------------------------------------------------
     // Positive Test Case 5
@@ -253,6 +329,22 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
     XCTAssertEqualObjects( publicKey_testCase5, self.thawtePrimaryRootCA_G2.publicKey );
     XCTAssertEqual( publicKey_testCase5.hash, self.thawtePrimaryRootCA_G2.publicKey.hash );
 
+    NSDate* startDate_testCase5 = publicKey_testCase5.effectiveDate;
+    XCTAssertNil( startDate_testCase5 );
+    NSLog( @"Start Date #TestCase5: %@", startDate_testCase5 );
+
+    WSCKeyAlgorithmType algorithm_testCase5 = publicKey_testCase5.keyAlgorithm;
+    XCTAssertEqual( algorithm_testCase5, WSCKeyAlgorithmECDSA );
+
+    WSCKeyAlgorithmType encryptAlgorithm_testCase5 = publicKey_testCase5.encryptAlgorithm;
+    XCTAssertEqual( encryptAlgorithm_testCase5, WSCKeyAlgorithmNone );
+
+    WSCKeyClass keyClass_testCase5 = publicKey_testCase5.keyClass;
+    XCTAssertEqual( keyClass_testCase5, WSCKeyClassPublicKey );
+
+    WSCKeyUsage keyUsage_testCase5 = publicKey_testCase5.keyUsage;
+    XCTAssertEqual( keyUsage_testCase5, WSCKeyUsageVerify );
+
     // -------------------------------------------------------------------------------
     // Positive Test Case 6
     // -------------------------------------------------------------------------------
@@ -263,6 +355,22 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
     XCTAssertEqualObjects( publicKeyData_testCase6, self.Tong_G_outlook_com.publicKey.keyData );
     XCTAssertEqualObjects( publicKey_testCase6, self.Tong_G_outlook_com.publicKey );
     XCTAssertEqual( publicKey_testCase6.hash, self.Tong_G_outlook_com.publicKey.hash );
+
+    NSDate* startDate_testCase6 = publicKey_testCase6.effectiveDate;
+    XCTAssertNil( startDate_testCase6 );
+    NSLog( @"Start Date #TestCase6: %@", startDate_testCase6 );
+
+    WSCKeyAlgorithmType algorithm_testCase6 = publicKey_testCase6.keyAlgorithm;
+    XCTAssertEqual( algorithm_testCase6, WSCKeyAlgorithmRSA );
+
+    WSCKeyAlgorithmType encryptAlgorithm_testCase6 = publicKey_testCase6.encryptAlgorithm;
+    XCTAssertEqual( encryptAlgorithm_testCase6, WSCKeyAlgorithmNone );
+
+    WSCKeyClass keyClass_testCase6 = publicKey_testCase6.keyClass;
+    XCTAssertEqual( keyClass_testCase6, WSCKeyClassPublicKey );
+
+    WSCKeyUsage keyUsage_testCase6 = publicKey_testCase6.keyUsage;
+    XCTAssertEqual( keyUsage_testCase6, WSCKeyUsageVerify | WSCKeyUsageWrap | WSCKeyUsageDerive );
 
     // Waiting for the negative 
     }

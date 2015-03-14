@@ -360,11 +360,15 @@ typedef NS_ENUM( CSSM_KEYUSE, WSCKeyUsage )
   */
 @property ( assign, readonly ) WSCKeyUsage keyUsage;
 
-/** The start date of a key represented by receiver.
+/** The effective date of a key represented by receiver.
+
+  @return `nil` if a key doesn't have an effective date.
   */
 @property ( retain, readonly ) NSDate* effectiveDate;
 
-/** The end date of a key represented by receiver.
+/** The expiration date of a key represented by receiver.
+
+  @return `nil` if a key doesn't have an expiration date.
   */
 @property ( retain, readonly ) NSDate* expirationDate;
 

@@ -47,30 +47,38 @@ NSString static* const kData = @"kData";
 
 NSDate* _WSCCocoaDateFromCSSMDate( CSSM_DATE _CSSMDate )
     {
+    NSDate* dateWithCorrectTimeZone = nil;
+
     NSMutableString* yearString = [ NSMutableString string ];
     for ( int _Index = 0; _Index < 4; _Index++ )
-        [ yearString appendString: [ NSString stringWithFormat: @"%u", _CSSMDate.Year[ _Index ] ] ];
+        if ( _CSSMDate.Year[ _Index ] != '\0' )
+            [ yearString appendString: [ NSString stringWithFormat: @"%u", _CSSMDate.Year[ _Index ] ] ];
 
     NSMutableString* monthString = [ NSMutableString string ];
     for ( int _Index = 0; _Index < 2; _Index++ )
-        [ monthString appendString: [ NSString stringWithFormat: @"%u", _CSSMDate.Month[ _Index ] ] ];
+        if ( _CSSMDate.Month[ _Index ] != '\0' )
+            [ monthString appendString: [ NSString stringWithFormat: @"%u", _CSSMDate.Month[ _Index ] ] ];
 
     NSMutableString* dayString = [ NSMutableString string ];
     for ( int _Index = 0; _Index < 2; _Index++ )
-        [ dayString appendString: [ NSString stringWithFormat: @"%u", _CSSMDate.Day[ _Index ] ] ];
+        if ( _CSSMDate.Day[ _Index ] != '\0' )
+            [ dayString appendString: [ NSString stringWithFormat: @"%u", _CSSMDate.Day[ _Index ] ] ];
 
-    NSDateComponents* dateComponents = [ [ [ NSDateComponents alloc ] init ] autorelease ];
+    if ( yearString.length !=0 && monthString.length != 0 && dayString.length != 0 )
+        {
+        NSDateComponents* dateComponents = [ [ [ NSDateComponents alloc ] init ] autorelease ];
 
-    // GMT (GMT) offset 0, the standard Greenwich Mean Time, that's pretty important!
-    [ dateComponents setTimeZone: [ NSTimeZone timeZoneForSecondsFromGMT: 0 ] ];
+        // GMT (GMT) offset 0, the standard Greenwich Mean Time, that's pretty important!
+        [ dateComponents setTimeZone: [ NSTimeZone timeZoneForSecondsFromGMT: 0 ] ];
 
-    [ dateComponents setYear: yearString.integerValue   ];
-    [ dateComponents setMonth: monthString.integerValue ];
-    [ dateComponents setDay: dayString.integerValue ];
+        [ dateComponents setYear: yearString.integerValue   ];
+        [ dateComponents setMonth: monthString.integerValue ];
+        [ dateComponents setDay: dayString.integerValue ];
 
-    NSDate* rawDate = [ [ NSCalendar autoupdatingCurrentCalendar ] dateFromComponents: dateComponents ];
-    NSDate* dateWithCorrectTimeZone = [ rawDate dateWithCalendarFormat: nil
-                                                              timeZone: [ NSTimeZone localTimeZone ] ];
+        NSDate* rawDate = [ [ NSCalendar autoupdatingCurrentCalendar ] dateFromComponents: dateComponents ];
+        dateWithCorrectTimeZone = [ rawDate dateWithCalendarFormat: nil timeZone: [ NSTimeZone localTimeZone ] ];
+        }
+
     return dateWithCorrectTimeZone;
     }
 
@@ -179,14 +187,14 @@ NSValue* _WSCWrapCTypeIntoCocoaValue( uint32 _Value )
     return ( WSCKeyUsage )[ self p_retrieveAttributeIndicatedBy: kKeyUsage ];
     }
 
-/* The start date of a key represented by receiver.
+/* The effective date of a key represented by receiver.
  */
 - ( NSDate* ) effectiveDate
     {
     return ( NSDate* )[ self p_retrieveAttributeIndicatedBy: kStartDate ];
     }
 
-/* The end date of a key represented by receiver.
+/* The expiration date of a key represented by receiver.
  */
 - ( NSDate* ) expirationDate
     {
