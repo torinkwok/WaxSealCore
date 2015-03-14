@@ -404,28 +404,21 @@ WSCKeychain static* s_system = nil;
  */
 - ( NSArray* ) allApplicationPassphraseItems
     {
-    NSError* error = nil;
-    NSArray* allAppPassphraseItems =
-        [ self p_allItemsConformsTheClass: WSCKeychainItemClassApplicationPassphraseItem error: &error ];
-
-    if ( error )
-        _WSCPrintNSErrorForLog( error );
-
-    return allAppPassphraseItems;
+    return [ self p_allItemsConformsTheClass: WSCKeychainItemClassApplicationPassphraseItem ];
     }
 
 /* Retrieve all the Internet passphrase items stored in the keychain represented by receiver.
  */
 - ( NSArray* ) allInternetPassphraseItems
     {
-    NSError* error = nil;
-    NSArray* allInternetPassphraseItems =
-        [ self p_allItemsConformsTheClass: WSCKeychainItemClassInternetPassphraseItem error: &error ];
+    return [ self p_allItemsConformsTheClass: WSCKeychainItemClassInternetPassphraseItem ];
+    }
 
-    if ( error )
-        _WSCPrintNSErrorForLog( error );
-
-    return allInternetPassphraseItems;
+/* Retrieve all the X.509 certificates stored in the keychain represented by receiver.
+ */
+- ( NSArray* ) allCertificateItems
+    {
+    return [ self p_allItemsConformsTheClass: WSCKeychainItemClassCertificateItem ];
     }
 
 /* Find the first keychain item which satisfies the given search criteria contained in *_SearchCriteriaDict* dictionary.
@@ -667,6 +660,18 @@ WSCKeychain static* s_system = nil;
 
 #pragma mark Private Programmatic Interfaces for Finding Keychain Items
 @implementation WSCKeychain( WSCKeychainPrivateFindingKeychainItems )
+
+- ( NSArray* ) p_allItemsConformsTheClass: ( WSCKeychainItemClass )_ItemClass
+    {
+    NSError* error = nil;
+    NSArray* allItems =
+        [ self p_allItemsConformsTheClass: _ItemClass error: &error ];
+
+    if ( error )
+        _WSCPrintNSErrorForLog( error );
+
+    return allItems;
+    }
 
 - ( NSArray* ) p_allItemsConformsTheClass: ( WSCKeychainItemClass )_ItemClass
                                     error: ( NSError** )_Error

@@ -40,6 +40,8 @@
 #pragma mark Private Programmatic Interfaces for Finding Keychain Items
 @interface WSCKeychain( WSCKeychainPrivateFindingKeychainItems )
 
+- ( NSArray* ) p_allItemsConformsTheClass: ( WSCKeychainItemClass )_ItemClass;
+
 - ( NSArray* ) p_allItemsConformsTheClass: ( WSCKeychainItemClass )_ItemClass
                                     error: ( NSError** )_Error;
 
