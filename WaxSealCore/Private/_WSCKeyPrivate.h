@@ -31,6 +31,19 @@
 
 @end // WSCKey + WSCKeyPrivateInitialization
 
+NSDate* _WSCCocoaDateFromCSSMDate( CSSM_DATE _CSSMDate );
+NSValue* _WSCWrapCTypeIntoCocoaValue( uint32 _Value );
+
+#pragma mark WSCKey + WSCKeyPrivateRetrieveAttributes
+@interface WSCKey ( WSCKeyPrivateRetrieveAttributes )
+
+- ( id ) p_retrieveAttributeIndicatedBy: ( NSString* )_RetrieveKey;
+
+- ( id ) p_retrieveAttributeIndicatedBy: ( NSString* )_RetrieveKey
+                                  error: ( NSError** )_Error;
+
+@end // WSCKey + WSCKeyPrivateRetrieveAttributes
+
 /*================================================================================┐
 |                              The MIT License (MIT)                              |
 |                                                                                 |
