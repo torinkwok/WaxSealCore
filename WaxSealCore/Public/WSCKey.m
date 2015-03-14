@@ -43,7 +43,7 @@ NSString static* const kData = @"kData";
 @dynamic keyClass;
 @dynamic keyUsage;
 @dynamic effectiveDate;
-@dynamic endDate;
+@dynamic expirationDate;
 
 NSDate* _WSCCocoaDateFromCSSMDate( CSSM_DATE _CSSMDate )
     {
@@ -188,7 +188,7 @@ NSValue* _WSCWrapCTypeIntoCocoaValue( uint32 _Value )
 
 /* The end date of a key represented by receiver.
  */
-- ( NSDate* ) endDate
+- ( NSDate* ) expirationDate
     {
     return ( NSDate* )[ self p_retrieveAttributeIndicatedBy: kEndDate ];
     }
