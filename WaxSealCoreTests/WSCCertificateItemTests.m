@@ -204,6 +204,9 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
     WSCKeyAlgorithmType encryptAlgorithm_testCase0 = publicKey_testCase0.encryptAlgorithm;
     XCTAssertEqual( encryptAlgorithm_testCase0, WSCKeyAlgorithmNone );
 
+    NSUInteger keySize_testCase0 = publicKey_testCase0.keySizeInBits;
+    XCTAssertEqual( keySize_testCase0, 384 );
+
     WSCKeyClass keyClass_testCase0 = publicKey_testCase0.keyClass;
     XCTAssertEqual( keyClass_testCase0, WSCKeyClassPublicKey );
 
@@ -230,6 +233,9 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
 
     WSCKeyAlgorithmType encryptAlgorithm_testCase1 = publicKey_testCase1.encryptAlgorithm;
     XCTAssertEqual( encryptAlgorithm_testCase1, WSCKeyAlgorithmNone );
+
+    NSUInteger keySize_testCase1 = publicKey_testCase1.keySizeInBits;
+    XCTAssertEqual( keySize_testCase1, 2048 );
 
     WSCKeyClass keyClass_testCase1 = publicKey_testCase1.keyClass;
     XCTAssertEqual( keyClass_testCase1, WSCKeyClassPublicKey );
@@ -258,6 +264,9 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
     WSCKeyAlgorithmType encryptAlgorithm_testCase2 = publicKey_testCase2.encryptAlgorithm;
     XCTAssertEqual( encryptAlgorithm_testCase2, WSCKeyAlgorithmNone );
 
+    NSUInteger keySize_testCase2 = publicKey_testCase2.keySizeInBits;
+    XCTAssertEqual( keySize_testCase2, 2048 );
+
     WSCKeyClass keyClass_testCase2 = publicKey_testCase2.keyClass;
     XCTAssertEqual( keyClass_testCase2, WSCKeyClassPublicKey );
 
@@ -284,6 +293,9 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
 
     WSCKeyAlgorithmType encryptAlgorithm_testCase3 = publicKey_testCase3.encryptAlgorithm;
     XCTAssertEqual( encryptAlgorithm_testCase3, WSCKeyAlgorithmNone );
+
+    NSUInteger keySize_testCase3 = publicKey_testCase3.keySizeInBits;
+    XCTAssertEqual( keySize_testCase3, 1024 );
 
     WSCKeyClass keyClass_testCase3 = publicKey_testCase3.keyClass;
     XCTAssertEqual( keyClass_testCase3, WSCKeyClassPublicKey );
@@ -312,6 +324,9 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
     WSCKeyAlgorithmType encryptAlgorithm_testCase4 = publicKey_testCase4.encryptAlgorithm;
     XCTAssertEqual( encryptAlgorithm_testCase4, WSCKeyAlgorithmNone );
 
+    NSUInteger keySize_testCase4 = publicKey_testCase4.keySizeInBits;
+    XCTAssertEqual( keySize_testCase4, 1024 );
+
     WSCKeyClass keyClass_testCase4 = publicKey_testCase4.keyClass;
     XCTAssertEqual( keyClass_testCase4, WSCKeyClassPublicKey );
 
@@ -339,6 +354,9 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
     WSCKeyAlgorithmType encryptAlgorithm_testCase5 = publicKey_testCase5.encryptAlgorithm;
     XCTAssertEqual( encryptAlgorithm_testCase5, WSCKeyAlgorithmNone );
 
+    NSUInteger keySize_testCase5 = publicKey_testCase5.keySizeInBits;
+    XCTAssertEqual( keySize_testCase5, 384 );
+
     WSCKeyClass keyClass_testCase5 = publicKey_testCase5.keyClass;
     XCTAssertEqual( keyClass_testCase5, WSCKeyClassPublicKey );
 
@@ -365,6 +383,9 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
 
     WSCKeyAlgorithmType encryptAlgorithm_testCase6 = publicKey_testCase6.encryptAlgorithm;
     XCTAssertEqual( encryptAlgorithm_testCase6, WSCKeyAlgorithmNone );
+
+    NSUInteger keySize_testCase6 = publicKey_testCase6.keySizeInBits;
+    XCTAssertEqual( keySize_testCase6, 2048 );
 
     WSCKeyClass keyClass_testCase6 = publicKey_testCase6.keyClass;
     XCTAssertEqual( keyClass_testCase6, WSCKeyClassPublicKey );
@@ -575,7 +596,7 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
     XCTAssertEqual( publicKeySignatureAlgorithm_testCase3, WSCSignatureAlgorithmECDSAWithSHA384 );
     }
 
-- ( void ) testProperties
+- ( void ) testCertificateProperties
     {
     // ----------------------------------------------------------------------------------
     // Positive Test Case 0
