@@ -592,9 +592,12 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
 @end // WSCKeychain class
 
+#import "WSCCertificateItem.h"
+
 NSValue* WSCFourCharCodeValue( FourCharCode _FourCharCode );
 NSValue* WSCInternetProtocolCocoaValue( WSCInternetProtocolType _InternetProtocolType );
 NSValue* WSCAuthenticationTypeCocoaValue( WSCInternetAuthenticationType _AuthenticationType );
+NSValue* WSCSignatureAlgorithmTypeCocoaValue( WSCSignatureAlgorithmType _SignatureAlgorithmType );
 
 /*================================================================================┐
 |                              The MIT License (MIT)                              |

@@ -904,7 +904,7 @@ WSCKeychain static* s_system = nil;
         }
 
     // Suppose that all the passphrase items conforming the given item class are the matched items
-    NSMutableArray* matchedItems = [ [ allCertificateItems mutableCopy ] autorelease ];
+    NSMutableArray* matchedCerts = [ [ allCertificateItems mutableCopy ] autorelease ];
 
     if ( self.isValid )
         {
@@ -920,7 +920,7 @@ WSCKeychain static* s_system = nil;
                 if ( ![ _SearchKey isEqualToString: WSCKeychainItemAttributePublicKeySignatureAlgorithm ] )
                     {
                     if ( [ attrValueOfCurrentCert isEqualTo: searchValue ] )
-                        [ matchedItems removeObject: _Item ];
+                        [ matchedCerts removeObject: _Item ];
                     }
                 else
                     {
@@ -931,13 +931,13 @@ WSCKeychain static* s_system = nil;
                     [ searchValue getValue: &searchingSignatureAlgorithm ];
 
                     if ( signatureAlgorithmOfCurrentCert == searchingSignatureAlgorithm )
-                        [ matchedItems removeObject: _Item ];
+                        [ matchedCerts removeObject: _Item ];
                     }
                 }
 
             // At last, all the remaining passphrase items are considered satisfying the current search criteria,
             // any item that does not satisfy the current search criteria has been removed.
-            allCertificateItems = [ [ matchedItems copy ] autorelease ];
+            allCertificateItems = [ [ matchedCerts copy ] autorelease ];
             }
         }
     else
@@ -946,7 +946,7 @@ WSCKeychain static* s_system = nil;
                                            code: WSCKeychainIsInvalidError
                                        userInfo: nil ];
 
-    return matchedItems;
+    return matchedCerts;
     }
 
 @end // WSCKeychain + WSCKeychainPrivateFindingKeychainItems
@@ -964,6 +964,11 @@ inline NSValue* WSCInternetProtocolCocoaValue( WSCInternetProtocolType _Internet
 inline NSValue* WSCAuthenticationTypeCocoaValue( WSCInternetAuthenticationType _AuthenticationType )
     {
     return [ NSValue valueWithBytes: &_AuthenticationType objCType: @encode( WSCInternetAuthenticationType ) ];
+    }
+
+inline NSValue* WSCSignatureAlgorithmTypeCocoaValue( WSCSignatureAlgorithmType _SignatureAlgorithmType )
+    {
+    return [ NSValue valueWithBytes: &_SignatureAlgorithmType objCType: @encode( WSCSignatureAlgorithmType ) ];
     }
 
 /*================================================================================┐
