@@ -782,9 +782,9 @@ WSCKeychain static* s_system = nil;
     return doesBelongTo;
     }
 
-- ( NSArray* ) p_findKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
-                                                 itemClass: ( WSCKeychainItemClass )_ItemClass
-                                                     error: ( NSError** )_Error
+- ( NSSet* ) p_findKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
+                                               itemClass: ( WSCKeychainItemClass )_ItemClass
+                                                   error: ( NSError** )_Error
     {
     NSMutableArray* matchedItems = nil;
     if ( !_SearchCriteriaDict || ( _SearchCriteriaDict.count == 0 ) )
@@ -901,14 +901,13 @@ WSCKeychain static* s_system = nil;
     return matchedItems;
     }
 
-- ( NSMutableArray* ) p_findCertificateItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
+- ( NSMutableSet* ) p_findCertificateItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
                                                                error: ( NSError** )_Error
     {
     // This private API relies on the `-p_findKeychainItemsSatisfyingSearchCriteria:itemClass:error:` method
     // to examine the incoming criteria dictionary.
 
     NSError* error = nil;
-    NSArray* allCertificateItems = [ self p_allItemsConformsTheClass: WSCKeychainItemClassCertificateItem error: &error ];
 
     if ( error )
         {
@@ -929,42 +928,57 @@ WSCKeychain static* s_system = nil;
             searchCriteriaAgainstCerts[ _SearchKey ] = _SearchCriteriaDict[ _SearchKey ];
         }
 
-    // Suppose that all the passphrase items conforming the given item class are the matched items
-    NSMutableArray* matchedCerts = [ [ allCertificateItems mutableCopy ] autorelease ];
+    NSMutableSet* matchedCerts = nil;
+    NSMutableSet* matchedGeneralKeychainItem = nil;
 
     if ( self.isValid )
         {
-        for ( NSString* _SearchKey in searchCriteriaAgainstCerts )
+        if ( searchCriteriaAgainstGeneralKeychainItems.count != 0 )
+            matchedGeneralKeychainItem =
+                [ NSMutableSet setWithArray: [ self p_findProtectedKeychainItemsSatisfyingSearchCriteria: _SearchCriteriaDict
+                                                                                               itemClass: WSCKeychainItemClassCertificateItem
+                                                                                                   error: &error ] ];
+        if ( searchCriteriaAgainstCerts.count != 0 )
             {
-            for ( WSCCertificateItem* _Item in allCertificateItems )
+            NSArray* allCertificateItems = [ self p_allItemsConformsTheClass: WSCKeychainItemClassCertificateItem error: &error ];
+
+            // Suppose that all the passphrase items conforming the given item class are the matched items
+            matchedCerts = [ [ allCertificateItems mutableCopy ] autorelease ];
+
+            for ( NSString* _SearchKey in searchCriteriaAgainstCerts )
                 {
-                id searchValue = searchCriteriaAgainstCerts[ _SearchKey ];
-                id attrValueOfCurrentCert = [ _Item p_retriveAttributeOfReceiverItselfWithKey: _SearchKey ];
-
-                // If the give certificate item's attribute is not equal to the search value
-                // remove it from the mathcedItems array
-                if ( ![ _SearchKey isEqualToString: WSCKeychainItemAttributePublicKeySignatureAlgorithm ] )
+                for ( WSCCertificateItem* _Item in allCertificateItems )
                     {
-                    if ( ![ attrValueOfCurrentCert isEqualTo: searchValue ] )
-                        [ matchedCerts removeObject: _Item ];
-                    }
-                else
-                    {
-                    WSCSignatureAlgorithmType signatureAlgorithmOfCurrentCert =
-                        [ WSCCertificateItem p_signatureAlgorithmFromGiveOID: attrValueOfCurrentCert ];
+                    id searchValue = searchCriteriaAgainstCerts[ _SearchKey ];
+                    id attrValueOfCurrentCert = [ _Item p_retriveAttributeOfReceiverItselfWithKey: _SearchKey ];
 
-                    WSCSignatureAlgorithmType searchingSignatureAlgorithm = 0;
-                    [ searchValue getValue: &searchingSignatureAlgorithm ];
+                    // If the give certificate item's attribute is not equal to the search value
+                    // remove it from the mathcedItems array
+                    if ( ![ _SearchKey isEqualToString: WSCKeychainItemAttributePublicKeySignatureAlgorithm ] )
+                        {
+                        if ( ![ attrValueOfCurrentCert isEqualTo: searchValue ] )
+                            [ matchedCerts removeObject: _Item ];
+                        }
+                    else
+                        {
+                        WSCSignatureAlgorithmType signatureAlgorithmOfCurrentCert =
+                            [ WSCCertificateItem p_signatureAlgorithmFromGiveOID: attrValueOfCurrentCert ];
 
-                    if ( signatureAlgorithmOfCurrentCert != searchingSignatureAlgorithm )
-                        [ matchedCerts removeObject: _Item ];
+                        WSCSignatureAlgorithmType searchingSignatureAlgorithm = 0;
+                        [ searchValue getValue: &searchingSignatureAlgorithm ];
+
+                        if ( signatureAlgorithmOfCurrentCert != searchingSignatureAlgorithm )
+                            [ matchedCerts removeObject: _Item ];
+                        }
                     }
+
+                // At last, all the remaining passphrase items are considered satisfying the current search criteria,
+                // any item that does not satisfy the current search criteria has been removed.
+                allCertificateItems = [ [ matchedCerts copy ] autorelease ];
                 }
-
-            // At last, all the remaining passphrase items are considered satisfying the current search criteria,
-            // any item that does not satisfy the current search criteria has been removed.
-            allCertificateItems = [ [ matchedCerts copy ] autorelease ];
             }
+
+        [ matchedCerts intersectSet: matchedGeneralKeychainItem ];
         }
     else
         if ( _Error )
