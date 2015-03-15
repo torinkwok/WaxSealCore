@@ -647,9 +647,10 @@
     // --------------------------------------------------------------------------------------------------------------------
     NSArray* matchedItems_testCase0 = [ [ WSCKeychain login ]
         findAllKeychainItemsSatisfyingSearchCriteria: @{ /*WSCKeychainItemAttributeSubjectOrganization : @"Thawte Consulting"*/
-                                                         WSCKeychainItemAttributePublicKeySignatureAlgorithm : WSCSignatureAlgorithmTypeCocoaValue( WSCSignatureAlgorithmECDSAWithSHA384 )
-//                                                          WSCKeychainItemAttributeSubjectCountryAbbreviation : @"CN"
-//                                                        , WSCKeychainItemAttributeIssuerCountryAbbreviation : @"US"
+                                                         WSCKeychainItemAttributePublicKeySignatureAlgorithm : WSCSignatureAlgorithmTypeCocoaValue( WSCSignatureAlgorithmSHA1WithRSA )
+                                                         , WSCKeychainItemAttributeSubjectCountryAbbreviation : @"CN"
+                                                         , WSCKeychainItemAttributeIssuerCountryAbbreviation : @"US"
+                                                         , WSCKeychainItemAttributeLabel : @"Mac Developer: Tong Guo (8ZDY95NQGT)"
 //                                                       , WSCKeychainItemAttributeSubjectOrganizationalUnit : @"Certification Services Division"
 //                                                       , WSCKeychainItemAttributeSubjectEmailAddress : @"personal-freemail@thawte.com"
                                                        }

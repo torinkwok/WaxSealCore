@@ -212,6 +212,20 @@
         [ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributePublicKeySignatureAlgorithm ] ];
     }
 
+#pragma mark Comparing Certificates
+/** @name Comparing Certificates */
+
+/* Returns a `BOOL` value that indicates whether a given certificate is equal to receiver.
+ */
+- ( BOOL ) isEqualToCertificate: ( WSCCertificateItem* )_AnotherCertificate
+    {
+    if ( self == _AnotherCertificate )
+        return YES;
+
+    return ( [ self.publicKeySignature isEqualToData: _AnotherCertificate.publicKeySignature ]
+                && self.publicKeySignatureAlgorithm == _AnotherCertificate.publicKeySignatureAlgorithm );
+    }
+
 #pragma mark Certificate, Key, and Trust Services Bridge
 
 /* The reference of the `SecCertificate` opaque object, which wrapped by `WSCCertificateItem` object. (read-only)
@@ -219,6 +233,28 @@
 - ( SecCertificateRef ) secCertificateItem
     {
     return ( SecCertificateRef )( self->_secKeychainItem );
+    }
+
+#pragma mark Overrides
+- ( NSUInteger ) hash
+    {
+    NSUInteger publicKeySignatureHash = self.publicKeySignature.hash;
+    NSUInteger publicKeySignatureAlgorithmHash = ( NSUInteger )self.publicKeySignatureAlgorithm;
+    NSUInteger publicKeyHash = self.publicKey.hash;
+    NSUInteger serialNumberHash = self.serialNumber.hash;
+
+    return publicKeySignatureHash ^ publicKeySignatureAlgorithmHash ^ publicKeyHash ^ serialNumberHash;
+    }
+
+- ( BOOL ) isEqual: ( id )_Object
+    {
+    if ( self == _Object )
+        return YES;
+
+    if ( [ _Object isKindOfClass: [ WSCCertificateItem class ] ] )
+        return [ self isEqualToCertificate: ( WSCCertificateItem* )_Object ];
+
+    return [ super isEqual: _Object ];
     }
 
 @end // WSCCertificateItem class

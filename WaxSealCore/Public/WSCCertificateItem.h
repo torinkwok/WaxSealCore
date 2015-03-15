@@ -240,6 +240,21 @@ typedef NS_ENUM( NSUInteger, WSCSignatureAlgorithmType )
   */
 @property ( assign, readonly ) WSCSignatureAlgorithmType publicKeySignatureAlgorithm;
 
+#pragma mark Comparing Certificates
+/** @name Comparing Certificates */
+
+/** Returns a `BOOL` value that indicates whether a given certificate is equal to receiver.
+
+  @param _AnotherCertificate The certificate with which to compare the receiver.
+
+  @return `YES` if *_AnotherCertificate* is equivalent to receiver; otherwise *NO*.
+
+  **One more thing**
+
+   When you know both objects are keychains, this method is a faster way to check equality than method `isEqual:`.
+  */
+- ( BOOL ) isEqualToCertificate: ( WSCCertificateItem* )_AnotherCertificate;
+
 #pragma mark Certificate, Key, and Trust Services Bridge
 /** @name Certificate, Key, and Trust Services Bridge */
 
