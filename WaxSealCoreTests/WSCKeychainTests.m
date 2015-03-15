@@ -105,7 +105,7 @@
         NSLog( @"I'm so sorry!" );
 
     // Find all the Internet passphrases that met the given search criteria
-    NSArray* passphrases = [ [ WSCKeychain login ]
+    NSSet* passphrases = [ [ WSCKeychain login ]
         // Batch search
         findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"secure.imdb.com"
                                                        , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPS )
@@ -348,7 +348,7 @@
     // --------------------------------------------------------------------------------------------------------------------
     // Positive Test Case 0: For login keychain
     // --------------------------------------------------------------------------------------------------------------------
-    NSArray* allApplicationPassphraseItems_testCase0 = [ [ WSCKeychain login ] allApplicationPassphraseItems ];
+    NSSet* allApplicationPassphraseItems_testCase0 = [ [ WSCKeychain login ] allApplicationPassphraseItems ];
 
     XCTAssertNotNil( allApplicationPassphraseItems_testCase0 );
     XCTAssert( allApplicationPassphraseItems_testCase0.count > 1 );
@@ -365,7 +365,7 @@
     // --------------------------------------------------------------------------------------------------------------------
     // Positive Test Case 1: For system keychain
     // --------------------------------------------------------------------------------------------------------------------
-    NSArray* allApplicationPassphraseItems_testCase1 = [ [ WSCKeychain system ] allApplicationPassphraseItems ];
+    NSSet* allApplicationPassphraseItems_testCase1 = [ [ WSCKeychain system ] allApplicationPassphraseItems ];
 
     XCTAssertNotNil( allApplicationPassphraseItems_testCase1 );
     XCTAssert( allApplicationPassphraseItems_testCase1.count > 1 );
@@ -406,7 +406,7 @@
         _WSCPrintNSErrorForUnitTest( error );
         }
 
-    NSArray* allApplicationPassphraseItems_testCase2 = [ randomKeychain_testCase2 allApplicationPassphraseItems ];
+    NSSet* allApplicationPassphraseItems_testCase2 = [ randomKeychain_testCase2 allApplicationPassphraseItems ];
     XCTAssertNotNil( allApplicationPassphraseItems_testCase2 );
     XCTAssertEqual( allApplicationPassphraseItems_testCase2.count, 20 );
 
@@ -428,7 +428,7 @@
     for ( WSCPassphraseItem* _Item in allApplicationPassphraseItems_testCase2 )
         SecKeychainItemDelete( _Item.secKeychainItem );
 
-    NSArray* allApplicationPassphraseItems_negaitveTestCase0 = [ randomKeychain_testCase2 allApplicationPassphraseItems ];
+    NSSet* allApplicationPassphraseItems_negaitveTestCase0 = [ randomKeychain_testCase2 allApplicationPassphraseItems ];
     XCTAssertNotNil( allApplicationPassphraseItems_negaitveTestCase0 );
     XCTAssertEqual( allApplicationPassphraseItems_negaitveTestCase0.count, 0 );
 
@@ -439,7 +439,7 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    NSArray* allApplicationPassphraseItems_negaitveTestCase1 = [ randomKeychain_testCase2 allApplicationPassphraseItems ];
+    NSSet* allApplicationPassphraseItems_negaitveTestCase1 = [ randomKeychain_testCase2 allApplicationPassphraseItems ];
     XCTAssertNil( allApplicationPassphraseItems_negaitveTestCase1 );
     }
 
@@ -453,7 +453,7 @@
     // --------------------------------------------------------------------------------------------------------------------
     // Positive Test Case 0: For login keychain
     // --------------------------------------------------------------------------------------------------------------------
-    NSArray* allInternetPassphraseItems_testCase0 = [ [ WSCKeychain login ] allInternetPassphraseItems ];
+    NSSet* allInternetPassphraseItems_testCase0 = [ [ WSCKeychain login ] allInternetPassphraseItems ];
 
     XCTAssertNotNil( allInternetPassphraseItems_testCase0 );
     XCTAssert( allInternetPassphraseItems_testCase0.count > 1 );
@@ -474,7 +474,7 @@
     // --------------------------------------------------------------------------------------------------------------------
     // Positive Test Case 1: For system keychain
     // --------------------------------------------------------------------------------------------------------------------
-    NSArray* allInternetPassphraseItems_testCase1 = [ [ WSCKeychain system ] allInternetPassphraseItems ];
+    NSSet* allInternetPassphraseItems_testCase1 = [ [ WSCKeychain system ] allInternetPassphraseItems ];
 
     XCTAssertNotNil( allInternetPassphraseItems_testCase1 );
     XCTAssert( allInternetPassphraseItems_testCase1.count >= 0 );
@@ -519,7 +519,7 @@
         _WSCPrintNSErrorForUnitTest( error );
         }
 
-    NSArray* allInternetPassphraseItems_testCase2 = [ randomKeychain_testCase2 allInternetPassphraseItems ];
+    NSSet* allInternetPassphraseItems_testCase2 = [ randomKeychain_testCase2 allInternetPassphraseItems ];
     XCTAssertNotNil( allInternetPassphraseItems_testCase2 );
     XCTAssertEqual( allInternetPassphraseItems_testCase2.count, 20 );
 
@@ -548,7 +548,7 @@
     for ( WSCPassphraseItem* _Item in allInternetPassphraseItems_testCase2 )
         SecKeychainItemDelete( _Item.secKeychainItem );
 
-    NSArray* allInternetPassphraseItems_negaitveTestCase0 = [ randomKeychain_testCase2 allInternetPassphraseItems ];
+    NSSet* allInternetPassphraseItems_negaitveTestCase0 = [ randomKeychain_testCase2 allInternetPassphraseItems ];
     XCTAssertNotNil( allInternetPassphraseItems_negaitveTestCase0 );
     XCTAssertEqual( allInternetPassphraseItems_negaitveTestCase0.count, 0 );
 
@@ -559,7 +559,7 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    NSArray* allInternetPassphraseItems_negaitveTestCase1 = [ randomKeychain_testCase2 allInternetPassphraseItems ];
+    NSSet* allInternetPassphraseItems_negaitveTestCase1 = [ randomKeychain_testCase2 allInternetPassphraseItems ];
     XCTAssertNil( allInternetPassphraseItems_negaitveTestCase1 );
     }
 
@@ -571,22 +571,10 @@
     // --------------------------------------------------------------------------------------------------------------------
     // Positive Test Case 0: For login keychain
     // --------------------------------------------------------------------------------------------------------------------
-    NSArray* allCertificateItems_testCase0 = [ [ WSCKeychain login ] allCertificateItems ];
+    NSSet* allCertificateItems_testCase0 = [ [ WSCKeychain login ] allCertificateItems ];
 
     XCTAssertNotNil( allCertificateItems_testCase0 );
     XCTAssert( allCertificateItems_testCase0.count > 1 );
-
-    for ( int _Index = 0; _Index < allCertificateItems_testCase0.count; _Index++ )
-        {
-        WSCCertificateItem* lhsCert = allCertificateItems_testCase0[ _Index ];
-        WSCCertificateItem* rhsCert = allCertificateItems_testCase0[ ( _Index == ( allCertificateItems_testCase0.count - 1 ) ) ? 0 : _Index + 1 ];
-
-        NSUInteger lhsHash = lhsCert.hash;
-        NSUInteger rhsHash = rhsCert.hash;
-
-        XCTAssertNotEqual( lhsHash, rhsHash );
-        XCTAssertNotEqualObjects( lhsCert, rhsCert );
-        }
 
     for ( WSCCertificateItem* _Item in allCertificateItems_testCase0 )
         {
@@ -618,22 +606,10 @@
     // --------------------------------------------------------------------------------------------------------------------
     // Positive Test Case 1: For system keychain
     // --------------------------------------------------------------------------------------------------------------------
-    NSArray* allCertificateItems_testCase1 = [ [ WSCKeychain system ] allCertificateItems ];
+    NSSet* allCertificateItems_testCase1 = [ [ WSCKeychain system ] allCertificateItems ];
 
     XCTAssertNotNil( allCertificateItems_testCase1 );
     XCTAssert( allCertificateItems_testCase1.count > 1 );
-
-    for ( int _Index = 0; _Index < allCertificateItems_testCase1.count; _Index++ )
-        {
-        WSCCertificateItem* lhsCert = allCertificateItems_testCase1[ _Index ];
-        WSCCertificateItem* rhsCert = allCertificateItems_testCase1[ ( _Index == ( allCertificateItems_testCase1.count - 1 ) ) ? 0 : _Index + 1 ];
-
-        NSUInteger lhsHash = lhsCert.hash;
-        NSUInteger rhsHash = rhsCert.hash;
-
-        XCTAssertNotEqual( lhsHash, rhsHash );
-        XCTAssertNotEqualObjects( lhsCert, rhsCert );
-        }
 
     for ( WSCCertificateItem* _Item in allCertificateItems_testCase1 )
         {
@@ -770,7 +746,7 @@
     // --------------------------------------------------------------------------------------------------------------------
     // Positive Test Case 0
     // --------------------------------------------------------------------------------------------------------------------
-    NSArray* matchedItems_testCase0 = [ [ WSCKeychain login ]
+    NSSet* matchedItems_testCase0 = [ [ WSCKeychain login ]
         findAllKeychainItemsSatisfyingSearchCriteria: @{ /*WSCKeychainItemAttributeSubjectOrganization : @"Thawte Consulting"*/
                                                          WSCKeychainItemAttributePublicKeySignatureAlgorithm : WSCSignatureAlgorithmTypeCocoaValue( WSCSignatureAlgorithmSHA1WithRSA )
                                                          , WSCKeychainItemAttributeSubjectCountryAbbreviation : @"CN"
@@ -831,7 +807,7 @@
 
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
-    NSArray* matchedItems_testCase0 = [ [ WSCKeychain login ]
+    NSSet* matchedItems_testCase0 = [ [ WSCKeychain login ]
         findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeAuthenticationType : WSCAuthenticationTypeCocoaValue( WSCInternetAuthenticationTypeAny ) }
                                            itemClass: WSCKeychainItemClassInternetPassphraseItem
                                                error: &error ];
@@ -909,7 +885,7 @@
     XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
-    NSArray* matchedItems_negativeTestCase0 = [ [ WSCKeychain login ]
+    NSSet* matchedItems_negativeTestCase0 = [ [ WSCKeychain login ]
         findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeAccount : @"TongGuo"
                                                        , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPS )
                                                        }
@@ -932,7 +908,7 @@
     XCTAssertNil( error );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
-    NSArray* matchedItems_testCase1 = [ [ WSCKeychain login ]
+    NSSet* matchedItems_testCase1 = [ [ WSCKeychain login ]
         findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Vnet Link (sosueme)" }
                                            itemClass: WSCKeychainItemClassInternetPassphraseItem
                                                error: &error ];
@@ -949,7 +925,7 @@
     XCTAssertNil( error );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
-    NSArray* matchedItems_negativeTestCase1 = [ [ WSCKeychain login ]
+    NSSet* matchedItems_negativeTestCase1 = [ [ WSCKeychain login ]
         findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Vnet Link (sosueme)" }
                                            itemClass: WSCKeychainItemClassApplicationPassphraseItem
                                                error: &error ];

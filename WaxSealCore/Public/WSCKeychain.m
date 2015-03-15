@@ -404,21 +404,21 @@ WSCKeychain static* s_system = nil;
 
 /* Retrieve all the application passphrase items stored in the keychain represented by receiver.
  */
-- ( NSArray* ) allApplicationPassphraseItems
+- ( NSSet* ) allApplicationPassphraseItems
     {
     return [ self p_allItemsConformsTheClass: WSCKeychainItemClassApplicationPassphraseItem ];
     }
 
 /* Retrieve all the Internet passphrase items stored in the keychain represented by receiver.
  */
-- ( NSArray* ) allInternetPassphraseItems
+- ( NSSet* ) allInternetPassphraseItems
     {
     return [ self p_allItemsConformsTheClass: WSCKeychainItemClassInternetPassphraseItem ];
     }
 
 /* Retrieve all the X.509 certificates stored in the keychain represented by receiver.
  */
-- ( NSArray* ) allCertificateItems
+- ( NSSet* ) allCertificateItems
     {
     return [ self p_allItemsConformsTheClass: WSCKeychainItemClassCertificateItem ];
     }
@@ -429,22 +429,22 @@ WSCKeychain static* s_system = nil;
                                                            itemClass: ( WSCKeychainItemClass )_ItemClass
                                                                error: ( NSError** )_Error;
     {
-    NSArray* matchedItems = [ self p_findKeychainItemsSatisfyingSearchCriteria: _SearchCriteriaDict
-                                                                     itemClass: _ItemClass
-                                                                         error: _Error ];
+    NSSet* matchedItems = [ self p_findKeychainItemsSatisfyingSearchCriteria: _SearchCriteriaDict
+                                                                   itemClass: _ItemClass
+                                                                       error: _Error ];
     // If the matchedItems is empty, returns nil.
-    return matchedItems.firstObject;
+    return matchedItems.anyObject;
     }
 
 /* Find all the keychain items satisfying the given search criteria contained in *_SearchCriteriaDict* dictionary.
  */
-- ( NSArray* ) findAllKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
-                                                  itemClass: ( WSCKeychainItemClass )_ItemClass
-                                                      error: ( NSError** )_Error
+- ( NSSet* ) findAllKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
+                                               itemClass: ( WSCKeychainItemClass )_ItemClass
+                                                   error: ( NSError** )_Error;
     {
-    NSArray* matchedItems = [ self p_findKeychainItemsSatisfyingSearchCriteria: _SearchCriteriaDict
-                                                                     itemClass: _ItemClass
-                                                                         error: _Error ];
+    NSSet* matchedItems = [ self p_findKeychainItemsSatisfyingSearchCriteria: _SearchCriteriaDict
+                                                                   itemClass: _ItemClass
+                                                                       error: _Error ];
     return matchedItems;
     }
 
@@ -689,11 +689,10 @@ WSCKeychain static* s_system = nil;
 #pragma mark Private Programmatic Interfaces for Finding Keychain Items
 @implementation WSCKeychain( WSCKeychainPrivateFindingKeychainItems )
 
-- ( NSArray* ) p_allItemsConformsTheClass: ( WSCKeychainItemClass )_ItemClass
+- ( NSSet* ) p_allItemsConformsTheClass: ( WSCKeychainItemClass )_ItemClass
     {
     NSError* error = nil;
-    NSArray* allItems =
-        [ self p_allItemsConformsTheClass: _ItemClass error: &error ];
+    NSSet* allItems = [ self p_allItemsConformsTheClass: _ItemClass error: &error ];
 
     if ( error )
         _WSCPrintNSErrorForLog( error );
@@ -701,11 +700,11 @@ WSCKeychain static* s_system = nil;
     return allItems;
     }
 
-- ( NSArray* ) p_allItemsConformsTheClass: ( WSCKeychainItemClass )_ItemClass
-                                    error: ( NSError** )_Error
+- ( NSSet* ) p_allItemsConformsTheClass: ( WSCKeychainItemClass )_ItemClass
+                                  error: ( NSError** )_Error
     {
     OSStatus resultCode = errSecSuccess;
-    NSMutableArray* allItems = nil;
+    NSMutableSet* allItems = nil;
 
     if ( self.isValid )
         {
@@ -717,7 +716,7 @@ WSCKeychain static* s_system = nil;
                                                                  ) ) == errSecSuccess )
             {
             SecKeychainItemRef secMatchedItem = NULL;
-            allItems = [ NSMutableArray array ];
+            allItems = [ NSMutableSet set ];
 
             // Match any keychain attribute
             while ( ( resultCode = SecKeychainSearchCopyNext( secSearch, &secMatchedItem ) ) != errSecItemNotFound )
@@ -786,7 +785,7 @@ WSCKeychain static* s_system = nil;
                                                itemClass: ( WSCKeychainItemClass )_ItemClass
                                                    error: ( NSError** )_Error
     {
-    NSMutableArray* matchedItems = nil;
+    NSMutableSet* matchedItems = nil;
     if ( !_SearchCriteriaDict || ( _SearchCriteriaDict.count == 0 ) )
         {
         *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
@@ -819,18 +818,18 @@ WSCKeychain static* s_system = nil;
     return [ [ matchedItems copy ] autorelease ];
     }
 
-- ( NSMutableArray* ) p_findProtectedKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
+- ( NSMutableSet* ) p_findProtectedKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
                                                                  itemClass: ( WSCKeychainItemClass )_ItemClass
                                                                      error: ( NSError** )_Error
     {
     // This private API relies on the `-p_findKeychainItemsSatisfyingSearchCriteria:itemClass:error:` method
     // to examine the incoming criteria dictionary.
 
-    NSMutableArray* matchedItems = nil;
+    NSMutableSet* matchedItems = nil;
 
     // Just return this empty array
     // if there is not any keychan item satisfying the given search criteria.
-    matchedItems = [ NSMutableArray array ];
+    matchedItems = [ NSMutableSet set ];
 
     OSStatus resultCode = errSecSuccess;
     NSMutableDictionary* finalQueryDictionary =
@@ -902,12 +901,13 @@ WSCKeychain static* s_system = nil;
     }
 
 - ( NSMutableSet* ) p_findCertificateItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
-                                                               error: ( NSError** )_Error
+                                                             error: ( NSError** )_Error
     {
     // This private API relies on the `-p_findKeychainItemsSatisfyingSearchCriteria:itemClass:error:` method
     // to examine the incoming criteria dictionary.
 
     NSError* error = nil;
+    NSMutableSet* finalCerts = nil;
 
     if ( error )
         {
@@ -929,18 +929,17 @@ WSCKeychain static* s_system = nil;
         }
 
     NSMutableSet* matchedCerts = nil;
-    NSMutableSet* matchedGeneralKeychainItem = nil;
+    NSMutableSet* matchedGeneralKeychainItems = nil;
 
     if ( self.isValid )
         {
         if ( searchCriteriaAgainstGeneralKeychainItems.count != 0 )
-            matchedGeneralKeychainItem =
-                [ NSMutableSet setWithArray: [ self p_findProtectedKeychainItemsSatisfyingSearchCriteria: _SearchCriteriaDict
-                                                                                               itemClass: WSCKeychainItemClassCertificateItem
-                                                                                                   error: &error ] ];
+            matchedGeneralKeychainItems = [ self p_findProtectedKeychainItemsSatisfyingSearchCriteria: _SearchCriteriaDict
+                                                                                           itemClass: WSCKeychainItemClassCertificateItem
+                                                                                               error: &error ];
         if ( searchCriteriaAgainstCerts.count != 0 )
             {
-            NSArray* allCertificateItems = [ self p_allItemsConformsTheClass: WSCKeychainItemClassCertificateItem error: &error ];
+            NSSet* allCertificateItems = [ self p_allItemsConformsTheClass: WSCKeychainItemClassCertificateItem error: &error ];
 
             // Suppose that all the passphrase items conforming the given item class are the matched items
             matchedCerts = [ [ allCertificateItems mutableCopy ] autorelease ];
@@ -978,7 +977,24 @@ WSCKeychain static* s_system = nil;
                 }
             }
 
-        [ matchedCerts intersectSet: matchedGeneralKeychainItem ];
+        if ( matchedGeneralKeychainItems.count == 0 && matchedCerts.count == 0 )
+            finalCerts = [ NSMutableSet set ];
+
+        else if ( matchedGeneralKeychainItems.count > 0 )
+            {
+            finalCerts = matchedGeneralKeychainItems;
+
+            if ( matchedCerts.count > 0 )
+                [ finalCerts intersectSet: matchedCerts ];
+            }
+
+        else if ( matchedCerts.count > 0 )
+            {
+            finalCerts = matchedCerts;
+
+            if ( matchedGeneralKeychainItems.count > 0 )
+                [ finalCerts intersectSet: matchedGeneralKeychainItems ];
+            }
         }
     else
         if ( _Error )
@@ -986,7 +1002,7 @@ WSCKeychain static* s_system = nil;
                                            code: WSCKeychainIsInvalidError
                                        userInfo: nil ];
 
-    return matchedCerts;
+    return finalCerts;
     }
 
 @end // WSCKeychain + WSCKeychainPrivateFindingKeychainItems

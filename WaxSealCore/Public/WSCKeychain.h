@@ -383,11 +383,11 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
           (perhaps it has been deleted or modified by user or by other applications),
            you should check the validity of each passphrase item before using it.
 
-  @return An `NSArray` object containing all the application passphrase items stored in the keychain represented by receiver.
-          Returns an empty array if there is not any application passphrase item in the keychain.
+  @return An `NSSet` object containing all the application passphrase items stored in the keychain represented by receiver.
+          Returns an empty set if there is not any application passphrase item in the keychain.
           Returns `nil` if an error occured.
   */
-- ( NSArray* ) allApplicationPassphraseItems;
+- ( NSSet* ) allApplicationPassphraseItems;
 
 /** Retrieve all the Internet passphrase items stored in the keychain represented by receiver.
 
@@ -395,11 +395,11 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
           (perhaps it has been deleted or modified by user or by other applications),
            you should check the validity of each passphrase item before using it.
 
-  @return An `NSArray` object containing all the Internet passphrase items stored in the keychain represented by receiver.
-          Returns an empty array if there is not any Internet passphrase item in the keychain.
+  @return An `NSSet` object containing all the Internet passphrase items stored in the keychain represented by receiver.
+          Returns an empty set if there is not any Internet passphrase item in the keychain.
           Returns `nil` if an error occured.
   */
-- ( NSArray* ) allInternetPassphraseItems;
+- ( NSSet* ) allInternetPassphraseItems;
 
 /** Retrieve all the X.509 certificates stored in the keychain represented by receiver.
 
@@ -407,11 +407,11 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
           (perhaps it has been deleted or modified by user or by other applications),
            you should check the validity of each passphrase item before using it.
 
-  @return An `NSArray` object containing all the certificate items stored in the keychain represented by receiver.
-          Returns an empty array if there is not any certificate item in the keychain.
+  @return An `NSSet` object containing all the certificate items stored in the keychain represented by receiver.
+          Returns an empty set if there is not any certificate item in the keychain.
           Returns `nil` if an error occured.
   */
-- ( NSArray* ) allCertificateItems;
+- ( NSSet* ) allCertificateItems;
 
 /** Find the first keychain item which satisfies the given search criteria contained in *_SearchCriteriaDict* dictionary.
  
@@ -529,15 +529,15 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
                 If an error occurs, this pointer is set to an actual error object containing the error information.
                 You may specify `nil` for this parameter if you don't want the error information.
                 
-  @return An `NSArray` object containing the keychain items satisfying the given search criteria.
-          Returns an empty array if there is not any keychan item satisfying the given search criteria.
+  @return An `NSSet` object containing the keychain items satisfying the given search criteria.
+          Returns an empty set if there is not any keychan item satisfying the given search criteria.
           Returns `nil` if an error occurs.
 
   @sa findFirstKeychainItemSatisfyingSearchCriteria:itemClass:error:
   */
-- ( NSArray* ) findAllKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
-                                                  itemClass: ( WSCKeychainItemClass )_ItemClass
-                                                      error: ( NSError** )_Error;
+- ( NSSet* ) findAllKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
+                                                itemClass: ( WSCKeychainItemClass )_ItemClass
+                                                    error: ( NSError** )_Error;
 
 /** Deletes a keychain item from the permanent data store of the keychain represented by receiver.
 
