@@ -576,6 +576,18 @@
     XCTAssertNotNil( allCertificateItems_testCase0 );
     XCTAssert( allCertificateItems_testCase0.count > 1 );
 
+    for ( int _Index = 0; _Index < allCertificateItems_testCase0.count; _Index++ )
+        {
+        WSCCertificateItem* lhsCert = allCertificateItems_testCase0[ _Index ];
+        WSCCertificateItem* rhsCert = allCertificateItems_testCase0[ ( _Index == ( allCertificateItems_testCase0.count - 1 ) ) ? 0 : _Index + 1 ];
+
+        NSUInteger lhsHash = lhsCert.hash;
+        NSUInteger rhsHash = rhsCert.hash;
+
+        XCTAssertNotEqual( lhsHash, rhsHash );
+        XCTAssertNotEqualObjects( lhsCert, rhsCert );
+        }
+
     for ( WSCCertificateItem* _Item in allCertificateItems_testCase0 )
         {
         NSLog( @"Label #TestCase0: %@", _Item.label );
@@ -611,6 +623,18 @@
     XCTAssertNotNil( allCertificateItems_testCase1 );
     XCTAssert( allCertificateItems_testCase1.count > 1 );
 
+    for ( int _Index = 0; _Index < allCertificateItems_testCase1.count; _Index++ )
+        {
+        WSCCertificateItem* lhsCert = allCertificateItems_testCase1[ _Index ];
+        WSCCertificateItem* rhsCert = allCertificateItems_testCase1[ ( _Index == ( allCertificateItems_testCase1.count - 1 ) ) ? 0 : _Index + 1 ];
+
+        NSUInteger lhsHash = lhsCert.hash;
+        NSUInteger rhsHash = rhsCert.hash;
+
+        XCTAssertNotEqual( lhsHash, rhsHash );
+        XCTAssertNotEqualObjects( lhsCert, rhsCert );
+        }
+
     for ( WSCCertificateItem* _Item in allCertificateItems_testCase1 )
         {
         NSLog( @"Label #TestCase1: %@", _Item.label );
@@ -636,6 +660,107 @@
         }
 
     // Waiting for the negative tests
+    }
+
+- ( void ) testIsEqualToCertificate
+    {
+    NSError* error = nil;
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 0
+    // --------------------------------------------------------------------------------------------------------------------
+    WSCCertificateItem* sameCert0_testCase0 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeIssuerCommonName: @"COMODO RSA Client Authentication and Secure Email CA"
+                                                        , WSCKeychainItemAttributeSerialNumber : @"00 9C CB A0 7C DE 88 D7 A8 07 53 83 9F A0 73 1E 3B"
+                                                        }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+
+    WSCCertificateItem* sameCert1_testCase0 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeIssuerCommonName: @"COMODO RSA Client Authentication and Secure Email CA"
+                                                        , WSCKeychainItemAttributeSerialNumber : @"00 9C CB A0 7C DE 88 D7 A8 07 53 83 9F A0 73 1E 3B"
+                                                        }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+
+    WSCCertificateItem* sameCert2_testCase0 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeIssuerCommonName: @"COMODO RSA Client Authentication and Secure Email CA"
+                                                        , WSCKeychainItemAttributeSerialNumber : @"00 9C CB A0 7C DE 88 D7 A8 07 53 83 9F A0 73 1E 3B"
+                                                        }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+
+    XCTAssertEqualObjects( sameCert0_testCase0, sameCert1_testCase0 );
+    XCTAssertEqualObjects( sameCert1_testCase0, sameCert2_testCase0 );
+    XCTAssertEqualObjects( sameCert2_testCase0, sameCert0_testCase0 );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 1
+    // --------------------------------------------------------------------------------------------------------------------
+    WSCCertificateItem* sameCert0_testCase1 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeIssuerOrganizationalUnit: @"Apple Certification Authority"
+                                                        , WSCKeychainItemAttributeSerialNumber : @"4784349903082612876"
+                                                        }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+
+    WSCCertificateItem* sameCert1_testCase1 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeIssuerOrganizationalUnit: @"Apple Certification Authority"
+                                                        , WSCKeychainItemAttributeSerialNumber : @"4784349903082612876"
+                                                        }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+
+    WSCCertificateItem* sameCert2_testCase1 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeIssuerOrganizationalUnit: @"Apple Certification Authority"
+                                                        , WSCKeychainItemAttributeSerialNumber : @"4784349903082612876"
+                                                        }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+
+    XCTAssertEqualObjects( sameCert0_testCase1, sameCert1_testCase1 );
+    XCTAssertEqualObjects( sameCert1_testCase1, sameCert2_testCase1 );
+    XCTAssertEqualObjects( sameCert2_testCase1, sameCert0_testCase1 );
+
+    XCTAssertNotEqualObjects( sameCert0_testCase0, sameCert0_testCase1 );
+    XCTAssertNotEqualObjects( sameCert1_testCase0, sameCert1_testCase1 );
+    XCTAssertNotEqualObjects( sameCert2_testCase0, sameCert2_testCase1 );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 2
+    // --------------------------------------------------------------------------------------------------------------------
+    WSCCertificateItem* sameCert0_testCase2 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeIssuerCountryAbbreviation: @"US"
+                                                        , WSCKeychainItemAttributeSerialNumber : @"3298319966700653461"
+                                                        }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+
+    WSCCertificateItem* sameCert1_testCase2 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeIssuerCountryAbbreviation: @"US"
+                                                        , WSCKeychainItemAttributeSerialNumber : @"3298319966700653461"
+                                                        }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+
+    WSCCertificateItem* sameCert2_testCase2 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeIssuerCountryAbbreviation: @"US"
+                                                        , WSCKeychainItemAttributeSerialNumber : @"3298319966700653461"
+                                                        }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+
+    XCTAssertEqualObjects( sameCert0_testCase2, sameCert1_testCase2 );
+    XCTAssertEqualObjects( sameCert1_testCase2, sameCert2_testCase2 );
+    XCTAssertEqualObjects( sameCert2_testCase2, sameCert0_testCase2 );
+
+    XCTAssertNotEqualObjects( sameCert0_testCase0, sameCert0_testCase2 );
+    XCTAssertNotEqualObjects( sameCert1_testCase0, sameCert1_testCase2 );
+    XCTAssertNotEqualObjects( sameCert2_testCase0, sameCert2_testCase2 );
+
+    XCTAssertNotEqualObjects( sameCert0_testCase1, sameCert0_testCase2 );
+    XCTAssertNotEqualObjects( sameCert1_testCase1, sameCert1_testCase2 );
+    XCTAssertNotEqualObjects( sameCert2_testCase1, sameCert2_testCase2 );
     }
 
 - ( void ) testFindingCertificateItems
