@@ -935,8 +935,8 @@ WSCKeychain static* s_system = nil;
         {
         if ( searchCriteriaAgainstGeneralKeychainItems.count != 0 )
             matchedGeneralKeychainItems = [ self p_findProtectedKeychainItemsSatisfyingSearchCriteria: searchCriteriaAgainstGeneralKeychainItems
-                                                                                           itemClass: WSCKeychainItemClassCertificateItem
-                                                                                               error: &error ];
+                                                                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                                                                error: &error ];
         if ( searchCriteriaAgainstCerts.count != 0 )
             {
             NSSet* allCertificateItems = [ self p_allItemsConformsTheClass: WSCKeychainItemClassCertificateItem error: &error ];
@@ -977,31 +977,24 @@ WSCKeychain static* s_system = nil;
                 }
             }
 
-        if ( matchedGeneralKeychainItems.count == 0 && matchedCerts.count == 0 )
-            finalCerts = [ NSMutableSet set ];
 
-        else if ( matchedGeneralKeychainItems.count > 0 )
+        if ( matchedGeneralKeychainItems && matchedCerts )
             {
             finalCerts = matchedGeneralKeychainItems;
-
-            if ( matchedCerts.count > 0 )
-                [ finalCerts intersectSet: matchedCerts ];
+            [ matchedGeneralKeychainItems intersectSet: matchedCerts ];
             }
 
-        else if ( matchedCerts.count > 0 )
-            {
+        else if ( !matchedGeneralKeychainItems && matchedCerts )
             finalCerts = matchedCerts;
 
-            if ( matchedGeneralKeychainItems.count > 0 )
-                [ finalCerts intersectSet: matchedGeneralKeychainItems ];
-            }
+        else if ( !matchedCerts && matchedGeneralKeychainItems )
+            finalCerts = matchedGeneralKeychainItems;
         }
     else
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                            code: WSCKeychainIsInvalidError
                                        userInfo: nil ];
-
     return finalCerts;
     }
 
