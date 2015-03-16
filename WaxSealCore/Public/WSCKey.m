@@ -24,6 +24,7 @@
 
 #import "WSCKey.h"
 
+#import "NSDate+_WSCCocoaDate.h"
 #import "_WSCKeychainItemPrivate.h"
 #import "_WSCKeyPrivate.h"
 
@@ -35,43 +36,6 @@ NSString static* const kKeyUsage = @"kKeyUsage";
 NSString static* const kStartDate = @"kStartDate";
 NSString static* const kEndDate = @"kEndDate";
 NSString static* const kData = @"kData";
-
-NSDate* _WSCCocoaDateFromCSSMDate( CSSM_DATE _CSSMDate )
-    {
-    NSDate* dateWithCorrectTimeZone = nil;
-
-    NSMutableString* yearString = [ NSMutableString string ];
-    for ( int _Index = 0; _Index < 4; _Index++ )
-        if ( _CSSMDate.Year[ _Index ] != '\0' )
-            [ yearString appendString: [ NSString stringWithFormat: @"%u", _CSSMDate.Year[ _Index ] ] ];
-
-    NSMutableString* monthString = [ NSMutableString string ];
-    for ( int _Index = 0; _Index < 2; _Index++ )
-        if ( _CSSMDate.Month[ _Index ] != '\0' )
-            [ monthString appendString: [ NSString stringWithFormat: @"%u", _CSSMDate.Month[ _Index ] ] ];
-
-    NSMutableString* dayString = [ NSMutableString string ];
-    for ( int _Index = 0; _Index < 2; _Index++ )
-        if ( _CSSMDate.Day[ _Index ] != '\0' )
-            [ dayString appendString: [ NSString stringWithFormat: @"%u", _CSSMDate.Day[ _Index ] ] ];
-
-    if ( yearString.length !=0 && monthString.length != 0 && dayString.length != 0 )
-        {
-        NSDateComponents* dateComponents = [ [ [ NSDateComponents alloc ] init ] autorelease ];
-
-        // GMT (GMT) offset 0, the standard Greenwich Mean Time, that's pretty important!
-        [ dateComponents setTimeZone: [ NSTimeZone timeZoneForSecondsFromGMT: 0 ] ];
-
-        [ dateComponents setYear: yearString.integerValue   ];
-        [ dateComponents setMonth: monthString.integerValue ];
-        [ dateComponents setDay: dayString.integerValue ];
-
-        NSDate* rawDate = [ [ NSCalendar autoupdatingCurrentCalendar ] dateFromComponents: dateComponents ];
-        dateWithCorrectTimeZone = [ rawDate dateWithCalendarFormat: nil timeZone: [ NSTimeZone localTimeZone ] ];
-        }
-
-    return dateWithCorrectTimeZone;
-    }
 
 NSValue* _WSCWrapCTypeIntoCocoaValue( uint32 _Value )
     {
@@ -248,10 +212,10 @@ NSValue* _WSCWrapCTypeIntoCocoaValue( uint32 _Value )
             toBeReturned = ( id )( ptrCSSMKey->KeyHeader.KeyUsage );
 
         else if ( [ _RetrieveKey isEqualToString: kStartDate ] )
-            toBeReturned = _WSCCocoaDateFromCSSMDate( ptrCSSMKey->KeyHeader.StartDate );
+            toBeReturned = [ NSDate dateWithCSSMDate: ptrCSSMKey->KeyHeader.StartDate ];
 
         else if ( [ _RetrieveKey isEqualToString: kEndDate ] )
-            toBeReturned = _WSCCocoaDateFromCSSMDate( ptrCSSMKey->KeyHeader.EndDate );
+            toBeReturned = [ NSDate dateWithCSSMDate: ptrCSSMKey->KeyHeader.EndDate ];
 
         else if ( [ _RetrieveKey isEqualToString: kData ] )
             {

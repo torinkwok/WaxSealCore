@@ -608,8 +608,14 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
     WSCCertificateItem* certificate_testCase0 = self.COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA;
 
     NSDictionary* values = kCopyValues( certificate_testCase0 );
+
     NSDate* effectiveDate_testCase0 = certificate_testCase0.effectiveDate;
     XCTAssertEqualObjects( effectiveDate_testCase0, [ NSDate dateWithString: @"2014-12-22 00:00:00 +0000" ] );
+    XCTAssertEqualObjects( effectiveDate_testCase0.description, @"2014-12-22 08:00:00 +0800" );
+
+    NSDate* expirationDate_testCase0 = certificate_testCase0.expirationDate;
+    XCTAssertEqualObjects( expirationDate_testCase0, [ NSDate dateWithString: @"2020-05-30 10:48:38 +0000" ] );
+    XCTAssertEqualObjects( expirationDate_testCase0.description, @"2020-05-30 18:48:38 +0800" );
 
     NSData* publicSignature_testCase0 = certificate_testCase0.publicKeySignature;
     XCTAssertNotNil( publicSignature_testCase0 );
