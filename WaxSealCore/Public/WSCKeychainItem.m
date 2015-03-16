@@ -619,25 +619,27 @@ BOOL _WSCIsSecKeychainItemValid( SecKeychainItemRef _SecKeychainItemRef )
     }
 
 // Common Attributes
+NSString* const WSCKeychainItemAttributeLabel                       = @"labl";
+
+// Unique to the Passphrase Items
 NSString* const WSCKeychainItemAttributeCreationDate                = @"cdat";
 NSString* const WSCKeychainItemAttributeModificationDate            = @"mdat";
 NSString* const WSCKeychainItemAttributeKindDescription             = @"desc";
 NSString* const WSCKeychainItemAttributeComment                     = @"icmt";
-NSString* const WSCKeychainItemAttributeLabel                       = @"labl";
 NSString* const WSCKeychainItemAttributeInvisible                   = @"invi";
 NSString* const WSCKeychainItemAttributeNegative                    = @"nega";
 NSString* const WSCKeychainItemAttributeAccount                     = @"acct";
 
-// Unique to the Internet Passphrase Items
-NSString* const WSCKeychainItemAttributeHostName                    = @"srvr";
-NSString* const WSCKeychainItemAttributeAuthenticationType          = @"atyp";
-NSString* const WSCKeychainItemAttributePort                        = @"port";
-NSString* const WSCKeychainItemAttributeRelativePath                = @"path";
-NSString* const WSCKeychainItemAttributeProtocol                    = @"ptcl";
+    // Unique to the Internet Passphrase Items
+    NSString* const WSCKeychainItemAttributeHostName                    = @"srvr";
+    NSString* const WSCKeychainItemAttributeAuthenticationType          = @"atyp";
+    NSString* const WSCKeychainItemAttributePort                        = @"port";
+    NSString* const WSCKeychainItemAttributeRelativePath                = @"path";
+    NSString* const WSCKeychainItemAttributeProtocol                    = @"ptcl";
 
-// Unique to the Application Passphrase Items
-NSString* const WSCKeychainItemAttributeServiceName                 = @"svce";
-NSString* const WSCKeychainItemAttributeUserDefinedDataAttribute    = @"gena";
+    // Unique to the Application Passphrase Items
+    NSString* const WSCKeychainItemAttributeServiceName                 = @"svce";
+    NSString* const WSCKeychainItemAttributeUserDefinedDataAttribute    = @"gena";
 
 // Unique to the Certificate Items
 NSString* const WSCKeychainItemAttributeSubjectEmailAddress         = @"2.16.840.1.113741.2.1.1.1.8/1.2.840.113549.1.9.1 (Subject Email Address)";
@@ -660,7 +662,7 @@ NSString* const WSCKeychainItemAttributeSerialNumber                = @"2.16.840
 NSString* const WSCKeychainItemAttributePublicKeySignature          = @"2.16.840.1.113741.2.1.3.2.2 (Public Key Signature)";
 NSString* const WSCKeychainItemAttributePublicKeySignatureAlgorithm = @"2.16.840.1.113741.2.1.3.2.1 (Public Key Signature Algorithm)";
 
-NSString* const _WSCKeychainItemAttributePublicKey                   = @"2.16.840.1.113741.2.1.1.1.10 (Public Key)";
+NSString* const _WSCKeychainItemAttributePublicKey                  = @"2.16.840.1.113741.2.1.1.1.10 (Public Key)";
 
 /*================================================================================┐
 │                              The MIT License (MIT)                              │

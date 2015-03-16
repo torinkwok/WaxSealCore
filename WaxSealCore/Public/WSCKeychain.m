@@ -605,14 +605,12 @@ WSCKeychain static* s_system = nil;
             self->_secKeychain = ( SecKeychainRef )CFRetain( _SecKeychainRef );
 
             // TODO: Waiting for the other item class, Certificates, Keys, etc.
-            self->p_commonAttributesSearchKeys =
-                [ @[ WSCKeychainItemAttributeCreationDate
-                   , WSCKeychainItemAttributeModificationDate
-                   , WSCKeychainItemAttributeLabel
-                   ] retain ];
+            self->p_commonAttributesSearchKeys = [ @[ WSCKeychainItemAttributeLabel ] retain ];
 
             NSArray* uniqueToPassphraseItemAttributesSearchKeys =
-                [ @[ WSCKeychainItemAttributeAccount
+                [ @[ WSCKeychainItemAttributeCreationDate
+                   , WSCKeychainItemAttributeModificationDate
+                   , WSCKeychainItemAttributeAccount
                    , WSCKeychainItemAttributeComment
                    , WSCKeychainItemAttributeKindDescription
                    , WSCKeychainItemAttributeNegative
