@@ -774,8 +774,7 @@ WSCKeychain static* s_system = nil;
                                            code: WSCCommonInvalidParametersError
                                        userInfo:
             @{ NSLocalizedFailureReasonErrorKey : @"The given search criteria dictionary "
-                                                   "containing at least one key "
-                                                   "which does not belong to the given item class." } ];
+                                                   "containing at least one key which does not belong to the given item class." } ];
         }
 
     return doesBelongTo;

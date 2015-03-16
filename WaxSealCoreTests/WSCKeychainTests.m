@@ -786,6 +786,49 @@
                          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
         }
 
+{
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 1
+    // --------------------------------------------------------------------------------------------------------------------
+    NSSet* matchedItems_testCase1 = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Mac Developer: Tong Guo (8ZDY95NQGT)"
+                                                       , 
+                                                       }
+                                           itemClass: WSCKeychainItemClassCertificateItem
+                                               error: &error ];
+    XCTAssertNotNil( matchedItems_testCase1 );
+    XCTAssert( matchedItems_testCase1.count > 0 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                     "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
+
+    for ( WSCCertificateItem* _Cert in matchedItems_testCase1 )
+        {
+        NSLog( @"Label #TestCase0: %@", _Cert.label );
+
+        NSLog( @"Subject Address #TestCase0: %@", _Cert.subjectEmailAddress );
+        NSLog( @"Subject Common Name #TestCase0: %@", _Cert.subjectCommonName );
+        NSLog( @"Subject Organization #TestCase0: %@", _Cert.subjectOrganization );
+        NSLog( @"Subject OrganizationalUnit #TestCase0: %@", _Cert.subjectOrganizationalUnit );
+        NSLog( @"Subject Country Abbreviation #TestCase0: %@", _Cert.subjectCountryAbbreviation );
+        NSLog( @"Subject State Or Province #TestCase0: %@", _Cert.subjectStateOrProvince );
+        NSLog( @"Subject Subject Locality #TestCase0: %@", _Cert.subjectLocality );
+
+        NSLog( @"Issuer Address #TestCase0: %@", _Cert.issuerEmailAddress );
+        NSLog( @"Issuer Common Name #TestCase0: %@", _Cert.issuerCommonName );
+        NSLog( @"Issuer Organization #TestCase0: %@", _Cert.issuerOrganization );
+        NSLog( @"Issuer Organization #TestCase0: %@", _Cert.issuerOrganizationalUnit );
+        NSLog( @"Issuer Country Abbreviation #TestCase0: %@", _Cert.issuerCountryAbbreviation );
+        NSLog( @"Issuer State Or Province #TestCase0: %@", _Cert.issuerStateOrProvince );
+        NSLog( @"Issuer Subject Locality #TestCase0: %@", _Cert.issuerLocality );
+
+        fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                         "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
+        }
+}
+
     // --------------------------------------------------------------------------------------------------------------------
     // Negative Test Case 1
     // --------------------------------------------------------------------------------------------------------------------
@@ -801,35 +844,7 @@
     XCTAssertNotNil( matchedItems_negativeTestCase1 );
     XCTAssert( matchedItems_negativeTestCase1.count == 0 );
     XCTAssertNil( error );
-
     _WSCPrintNSErrorForUnitTest( error );
-
-    fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-                     "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
-
-    for ( WSCCertificateItem* _Cert in matchedItems_negativeTestCase1 )
-        {
-        NSLog( @"Label #TestCase0: %@", _Cert.label );
-
-        NSLog( @"Subject Address #NegativeTestCase0: %@", _Cert.subjectEmailAddress );
-        NSLog( @"Subject Common Name #NegativeTestCase0: %@", _Cert.subjectCommonName );
-        NSLog( @"Subject Organization #NegativeTestCase0: %@", _Cert.subjectOrganization );
-        NSLog( @"Subject Organization #NegativeTestCase0: %@", _Cert.subjectOrganizationalUnit );
-        NSLog( @"Subject Country Abbreviation #NegativeTestCase0: %@", _Cert.subjectCountryAbbreviation );
-        NSLog( @"Subject State Or Province #NegativeTestCase0: %@", _Cert.subjectStateOrProvince );
-        NSLog( @"Subject Subject Locality #NegativeTestCase0: %@", _Cert.subjectLocality );
-
-        NSLog( @"Issuer Address #NegativeTestCase0: %@", _Cert.issuerEmailAddress );
-        NSLog( @"Issuer Common Name #NegativeTestCase0: %@", _Cert.issuerCommonName );
-        NSLog( @"Issuer Organization #NegativeTestCase0: %@", _Cert.issuerOrganization );
-        NSLog( @"Issuer Organization #NegativeTestCase0: %@", _Cert.issuerOrganizationalUnit );
-        NSLog( @"Issuer Country Abbreviation #NegativeTestCase0: %@", _Cert.issuerCountryAbbreviation );
-        NSLog( @"Issuer State Or Province #NegativeTestCase0: %@", _Cert.issuerStateOrProvince );
-        NSLog( @"Issuer Subject Locality #NegativeTestCase0: %@", _Cert.issuerLocality );
-
-        fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-                         "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
-        }
 
     // --------------------------------------------------------------------------------------------------------------------
     // Negative Test Case 2
@@ -843,35 +858,35 @@
     XCTAssertNotNil( matchedItems_negativeTestCase2 );
     XCTAssert( matchedItems_negativeTestCase2.count == 0 );
     XCTAssertNil( error );
-
     _WSCPrintNSErrorForUnitTest( error );
 
-    fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-                     "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
+    // --------------------------------------------------------------------------------------------------------------------
+    // Negative Test Case 3
+    // --------------------------------------------------------------------------------------------------------------------
+    NSSet* matchedItems_negativeTestCase3 = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ /* empty criteria */ }
+                                           itemClass: WSCKeychainItemClassCertificateItem
+                                               error: &error ];
 
-    for ( WSCCertificateItem* _Cert in matchedItems_negativeTestCase2 )
-        {
-        NSLog( @"Label #TestCase0: %@", _Cert.label );
+    XCTAssertNil( matchedItems_negativeTestCase3 );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
+    _WSCPrintNSErrorForUnitTest( error );
 
-        NSLog( @"Subject Address #NegativeTestCase0: %@", _Cert.subjectEmailAddress );
-        NSLog( @"Subject Common Name #NegativeTestCase0: %@", _Cert.subjectCommonName );
-        NSLog( @"Subject Organization #NegativeTestCase0: %@", _Cert.subjectOrganization );
-        NSLog( @"Subject Organization #NegativeTestCase0: %@", _Cert.subjectOrganizationalUnit );
-        NSLog( @"Subject Country Abbreviation #NegativeTestCase0: %@", _Cert.subjectCountryAbbreviation );
-        NSLog( @"Subject State Or Province #NegativeTestCase0: %@", _Cert.subjectStateOrProvince );
-        NSLog( @"Subject Subject Locality #NegativeTestCase0: %@", _Cert.subjectLocality );
+    // --------------------------------------------------------------------------------------------------------------------
+    // Negative Test Case 4
+    // --------------------------------------------------------------------------------------------------------------------
+    NSSet* matchedItems_negativeTestCase4 = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeAccount : @"NSTongG" }
+                                           itemClass: WSCKeychainItemClassCertificateItem
+                                               error: &error ];
 
-        NSLog( @"Issuer Address #NegativeTestCase0: %@", _Cert.issuerEmailAddress );
-        NSLog( @"Issuer Common Name #NegativeTestCase0: %@", _Cert.issuerCommonName );
-        NSLog( @"Issuer Organization #NegativeTestCase0: %@", _Cert.issuerOrganization );
-        NSLog( @"Issuer Organization #NegativeTestCase0: %@", _Cert.issuerOrganizationalUnit );
-        NSLog( @"Issuer Country Abbreviation #NegativeTestCase0: %@", _Cert.issuerCountryAbbreviation );
-        NSLog( @"Issuer State Or Province #NegativeTestCase0: %@", _Cert.issuerStateOrProvince );
-        NSLog( @"Issuer Subject Locality #NegativeTestCase0: %@", _Cert.issuerLocality );
-
-        fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-                         "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
-        }
+    XCTAssertNil( matchedItems_negativeTestCase4 );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
+    _WSCPrintNSErrorForUnitTest( error );
     }
 
 - ( void ) testFindingFirstKeychainItem
