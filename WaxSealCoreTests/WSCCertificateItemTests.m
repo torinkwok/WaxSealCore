@@ -70,10 +70,14 @@ NSDictionary* kCopyValues( WSCCertificateItem* _CertificateItem )
     {
     NSDictionary* values = ( __bridge NSDictionary* )
         SecCertificateCopyValues( _CertificateItem.secCertificateItem
-                                , ( __bridge CFArrayRef )@[ ( __bridge id )kSecOIDX509V1Signature
+                                , ( __bridge CFArrayRef )@[ /*( __bridge id )kSecOIDX509V1Signature*/
 //                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
 //                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithmParameters
+                                                            ( __bridge id )kSecOIDX509V1IssuerName
+                                                          , ( __bridge id )kSecOIDX509V1SubjectName
                                                           , ( __bridge id )kSecOIDX509V1SubjectPublicKey
+                                                          , ( __bridge id )kSecOIDX509V1ValidityNotAfter
+                                                          , ( __bridge id )kSecOIDX509V1ValidityNotBefore
 //                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKeyAlgorithm
 //                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKeyAlgorithmParameters
                                                           ]
@@ -604,6 +608,8 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
     WSCCertificateItem* certificate_testCase0 = self.COMODO_SHA_256_ClientAuthenticationAndSecureEmailCA;
 
     NSDictionary* values = kCopyValues( certificate_testCase0 );
+    NSDate* effectiveDate_testCase0 = certificate_testCase0.effectiveDate;
+    XCTAssertEqualObjects( effectiveDate_testCase0, [ NSDate dateWithString: @"2014-12-22 00:00:00 +0000" ] );
 
     NSData* publicSignature_testCase0 = certificate_testCase0.publicKeySignature;
     XCTAssertNotNil( publicSignature_testCase0 );

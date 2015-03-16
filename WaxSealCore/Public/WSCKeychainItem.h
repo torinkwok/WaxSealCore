@@ -160,6 +160,8 @@ NSString extern* const WSCKeychainItemAttributeIssuerStateOrProvince;
 NSString extern* const WSCKeychainItemAttributeIssuerLocality;
 
 NSString extern* const WSCKeychainItemAttributeSerialNumber;
+NSString extern* const WSCKeychainItemAttributeEffectiveDate;
+NSString extern* const WSCKeychainItemAttributeExpirationDate;
 NSString extern* const WSCKeychainItemAttributePublicKeySignature;
 NSString extern* const WSCKeychainItemAttributePublicKeySignatureAlgorithm;
 

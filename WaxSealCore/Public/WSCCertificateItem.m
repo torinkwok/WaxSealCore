@@ -50,6 +50,8 @@
 @dynamic issuerLocality;
 
 @dynamic serialNumber;
+@dynamic effectiveDate;
+@dynamic expirationDate;
 
 @dynamic publicKey;
 @dynamic publicKeySignature;
@@ -166,6 +168,30 @@
 - ( NSString* ) serialNumber
     {
     return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeSerialNumber ];
+    }
+
+/* The effective date of a certificate represented by receiver.
+ */
+- ( NSDate* ) effectiveDate
+    {
+    NSNumber* validityNotBefore = ( NSNumber* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeEffectiveDate ];
+
+    NSDate* date = [ NSDate dateWithTimeIntervalSinceReferenceDate: ( NSTimeInterval )( validityNotBefore.doubleValue ) ];
+    date = [ date dateWithCalendarFormat: nil timeZone: [ NSTimeZone localTimeZone ] ];
+
+    return date;
+    }
+
+/* The expiration date of a certificate represented by receiver.
+ */
+- ( NSDate* ) expirationDate
+    {
+    NSNumber* validityNotAfter = ( NSNumber* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeExpirationDate ];
+
+    NSDate* date = [ NSDate dateWithTimeIntervalSinceReferenceDate: ( NSTimeInterval )( validityNotAfter.doubleValue ) ];
+    date = [ date dateWithCalendarFormat: nil timeZone: [ NSTimeZone localTimeZone ] ];
+
+    return date;
     }
 
 #pragma mark Managing Public Key
@@ -317,7 +343,7 @@ NSString static* kSubOIDKey = @"subOID";
                         }
                     }
                 else
-                    attribute = [ [ data copy ] autorelease ];
+                    attribute = [ [ ( __bridge id )data copy ] autorelease ];
                 }
 
             CFRelease( secResultValuesMatchingOIDs );
@@ -463,6 +489,14 @@ NSString static* kSubOIDKey = @"subOID";
     // Serial Number
     else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeSerialNumber ] )
         OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1SerialNumber;
+
+    // Effective Date
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeEffectiveDate ] )
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1ValidityNotBefore;
+
+    // Expiration Date
+    else if ( [ _AttributeKey isEqualToString: WSCKeychainItemAttributeExpirationDate ] )
+        OIDs[ kMasterOIDKey ] = ( __bridge id )kSecOIDX509V1ValidityNotAfter;
 
     return OIDs;
     }
