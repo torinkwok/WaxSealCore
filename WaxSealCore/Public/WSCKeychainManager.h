@@ -346,7 +346,7 @@
   
   @return The keychain search list for current user. 
           Returns `nil` if an error occurs.
-          Returns an empty array if the current keychain search list is empty.
+          Returns an empty set if the current keychain search list is empty.
   
   @sa setKeychainSearchList:error:
   */
@@ -368,7 +368,7 @@
   To obtain the current default keychain search list, use the keychainSearchList method.
 
   @param _SearchList A set of keychain objects (of class WSCKeychain) specifying the list of keychains to use in the new default keychain search list.
-                     Passing an empty array clears the search list.
+                     Passing an empty set clears the search list.
                      This parameter must **NOT** be `nil`.
 
   @param _Error On input, a pointer to an error object.

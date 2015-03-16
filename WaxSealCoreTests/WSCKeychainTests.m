@@ -105,7 +105,7 @@
         NSLog( @"I'm so sorry!" );
 
     // Find all the Internet passphrases that met the given search criteria
-    NSArray* passphrases = [ [ WSCKeychain login ]
+    NSSet* passphrases = [ [ WSCKeychain login ]
         // Batch search
         findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"secure.imdb.com"
                                                        , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPS )
@@ -348,7 +348,7 @@
     // --------------------------------------------------------------------------------------------------------------------
     // Positive Test Case 0: For login keychain
     // --------------------------------------------------------------------------------------------------------------------
-    NSArray* allApplicationPassphraseItems_testCase0 = [ [ WSCKeychain login ] allApplicationPassphraseItems ];
+    NSSet* allApplicationPassphraseItems_testCase0 = [ [ WSCKeychain login ] allApplicationPassphraseItems ];
 
     XCTAssertNotNil( allApplicationPassphraseItems_testCase0 );
     XCTAssert( allApplicationPassphraseItems_testCase0.count > 1 );
@@ -365,7 +365,7 @@
     // --------------------------------------------------------------------------------------------------------------------
     // Positive Test Case 1: For system keychain
     // --------------------------------------------------------------------------------------------------------------------
-    NSArray* allApplicationPassphraseItems_testCase1 = [ [ WSCKeychain system ] allApplicationPassphraseItems ];
+    NSSet* allApplicationPassphraseItems_testCase1 = [ [ WSCKeychain system ] allApplicationPassphraseItems ];
 
     XCTAssertNotNil( allApplicationPassphraseItems_testCase1 );
     XCTAssert( allApplicationPassphraseItems_testCase1.count > 1 );
@@ -406,7 +406,7 @@
         _WSCPrintNSErrorForUnitTest( error );
         }
 
-    NSArray* allApplicationPassphraseItems_testCase2 = [ randomKeychain_testCase2 allApplicationPassphraseItems ];
+    NSSet* allApplicationPassphraseItems_testCase2 = [ randomKeychain_testCase2 allApplicationPassphraseItems ];
     XCTAssertNotNil( allApplicationPassphraseItems_testCase2 );
     XCTAssertEqual( allApplicationPassphraseItems_testCase2.count, 20 );
 
@@ -428,7 +428,7 @@
     for ( WSCPassphraseItem* _Item in allApplicationPassphraseItems_testCase2 )
         SecKeychainItemDelete( _Item.secKeychainItem );
 
-    NSArray* allApplicationPassphraseItems_negaitveTestCase0 = [ randomKeychain_testCase2 allApplicationPassphraseItems ];
+    NSSet* allApplicationPassphraseItems_negaitveTestCase0 = [ randomKeychain_testCase2 allApplicationPassphraseItems ];
     XCTAssertNotNil( allApplicationPassphraseItems_negaitveTestCase0 );
     XCTAssertEqual( allApplicationPassphraseItems_negaitveTestCase0.count, 0 );
 
@@ -439,7 +439,7 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    NSArray* allApplicationPassphraseItems_negaitveTestCase1 = [ randomKeychain_testCase2 allApplicationPassphraseItems ];
+    NSSet* allApplicationPassphraseItems_negaitveTestCase1 = [ randomKeychain_testCase2 allApplicationPassphraseItems ];
     XCTAssertNil( allApplicationPassphraseItems_negaitveTestCase1 );
     }
 
@@ -453,7 +453,7 @@
     // --------------------------------------------------------------------------------------------------------------------
     // Positive Test Case 0: For login keychain
     // --------------------------------------------------------------------------------------------------------------------
-    NSArray* allInternetPassphraseItems_testCase0 = [ [ WSCKeychain login ] allInternetPassphraseItems ];
+    NSSet* allInternetPassphraseItems_testCase0 = [ [ WSCKeychain login ] allInternetPassphraseItems ];
 
     XCTAssertNotNil( allInternetPassphraseItems_testCase0 );
     XCTAssert( allInternetPassphraseItems_testCase0.count > 1 );
@@ -474,7 +474,7 @@
     // --------------------------------------------------------------------------------------------------------------------
     // Positive Test Case 1: For system keychain
     // --------------------------------------------------------------------------------------------------------------------
-    NSArray* allInternetPassphraseItems_testCase1 = [ [ WSCKeychain system ] allInternetPassphraseItems ];
+    NSSet* allInternetPassphraseItems_testCase1 = [ [ WSCKeychain system ] allInternetPassphraseItems ];
 
     XCTAssertNotNil( allInternetPassphraseItems_testCase1 );
     XCTAssert( allInternetPassphraseItems_testCase1.count >= 0 );
@@ -519,7 +519,7 @@
         _WSCPrintNSErrorForUnitTest( error );
         }
 
-    NSArray* allInternetPassphraseItems_testCase2 = [ randomKeychain_testCase2 allInternetPassphraseItems ];
+    NSSet* allInternetPassphraseItems_testCase2 = [ randomKeychain_testCase2 allInternetPassphraseItems ];
     XCTAssertNotNil( allInternetPassphraseItems_testCase2 );
     XCTAssertEqual( allInternetPassphraseItems_testCase2.count, 20 );
 
@@ -548,7 +548,7 @@
     for ( WSCPassphraseItem* _Item in allInternetPassphraseItems_testCase2 )
         SecKeychainItemDelete( _Item.secKeychainItem );
 
-    NSArray* allInternetPassphraseItems_negaitveTestCase0 = [ randomKeychain_testCase2 allInternetPassphraseItems ];
+    NSSet* allInternetPassphraseItems_negaitveTestCase0 = [ randomKeychain_testCase2 allInternetPassphraseItems ];
     XCTAssertNotNil( allInternetPassphraseItems_negaitveTestCase0 );
     XCTAssertEqual( allInternetPassphraseItems_negaitveTestCase0.count, 0 );
 
@@ -559,7 +559,7 @@
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
-    NSArray* allInternetPassphraseItems_negaitveTestCase1 = [ randomKeychain_testCase2 allInternetPassphraseItems ];
+    NSSet* allInternetPassphraseItems_negaitveTestCase1 = [ randomKeychain_testCase2 allInternetPassphraseItems ];
     XCTAssertNil( allInternetPassphraseItems_negaitveTestCase1 );
     }
 
@@ -571,7 +571,7 @@
     // --------------------------------------------------------------------------------------------------------------------
     // Positive Test Case 0: For login keychain
     // --------------------------------------------------------------------------------------------------------------------
-    NSArray* allCertificateItems_testCase0 = [ [ WSCKeychain login ] allCertificateItems ];
+    NSSet* allCertificateItems_testCase0 = [ [ WSCKeychain login ] allCertificateItems ];
 
     XCTAssertNotNil( allCertificateItems_testCase0 );
     XCTAssert( allCertificateItems_testCase0.count > 1 );
@@ -606,7 +606,7 @@
     // --------------------------------------------------------------------------------------------------------------------
     // Positive Test Case 1: For system keychain
     // --------------------------------------------------------------------------------------------------------------------
-    NSArray* allCertificateItems_testCase1 = [ [ WSCKeychain system ] allCertificateItems ];
+    NSSet* allCertificateItems_testCase1 = [ [ WSCKeychain system ] allCertificateItems ];
 
     XCTAssertNotNil( allCertificateItems_testCase1 );
     XCTAssert( allCertificateItems_testCase1.count > 1 );
@@ -638,6 +638,107 @@
     // Waiting for the negative tests
     }
 
+- ( void ) testIsEqualToCertificate
+    {
+    NSError* error = nil;
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 0
+    // --------------------------------------------------------------------------------------------------------------------
+    WSCCertificateItem* sameCert0_testCase0 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeIssuerCommonName: @"COMODO RSA Client Authentication and Secure Email CA"
+                                                        , WSCKeychainItemAttributeSerialNumber : @"00 9C CB A0 7C DE 88 D7 A8 07 53 83 9F A0 73 1E 3B"
+                                                        }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+
+    WSCCertificateItem* sameCert1_testCase0 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeIssuerCommonName: @"COMODO RSA Client Authentication and Secure Email CA"
+                                                        , WSCKeychainItemAttributeSerialNumber : @"00 9C CB A0 7C DE 88 D7 A8 07 53 83 9F A0 73 1E 3B"
+                                                        }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+
+    WSCCertificateItem* sameCert2_testCase0 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeIssuerCommonName: @"COMODO RSA Client Authentication and Secure Email CA"
+                                                        , WSCKeychainItemAttributeSerialNumber : @"00 9C CB A0 7C DE 88 D7 A8 07 53 83 9F A0 73 1E 3B"
+                                                        }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+
+    XCTAssertEqualObjects( sameCert0_testCase0, sameCert1_testCase0 );
+    XCTAssertEqualObjects( sameCert1_testCase0, sameCert2_testCase0 );
+    XCTAssertEqualObjects( sameCert2_testCase0, sameCert0_testCase0 );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 1
+    // --------------------------------------------------------------------------------------------------------------------
+    WSCCertificateItem* sameCert0_testCase1 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeIssuerOrganizationalUnit: @"Apple Certification Authority"
+                                                        , WSCKeychainItemAttributeSerialNumber : @"4784349903082612876"
+                                                        }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+
+    WSCCertificateItem* sameCert1_testCase1 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeIssuerOrganizationalUnit: @"Apple Certification Authority"
+                                                        , WSCKeychainItemAttributeSerialNumber : @"4784349903082612876"
+                                                        }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+
+    WSCCertificateItem* sameCert2_testCase1 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeIssuerOrganizationalUnit: @"Apple Certification Authority"
+                                                        , WSCKeychainItemAttributeSerialNumber : @"4784349903082612876"
+                                                        }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+
+    XCTAssertEqualObjects( sameCert0_testCase1, sameCert1_testCase1 );
+    XCTAssertEqualObjects( sameCert1_testCase1, sameCert2_testCase1 );
+    XCTAssertEqualObjects( sameCert2_testCase1, sameCert0_testCase1 );
+
+    XCTAssertNotEqualObjects( sameCert0_testCase0, sameCert0_testCase1 );
+    XCTAssertNotEqualObjects( sameCert1_testCase0, sameCert1_testCase1 );
+    XCTAssertNotEqualObjects( sameCert2_testCase0, sameCert2_testCase1 );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 2
+    // --------------------------------------------------------------------------------------------------------------------
+    WSCCertificateItem* sameCert0_testCase2 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeIssuerCountryAbbreviation: @"US"
+                                                        , WSCKeychainItemAttributeSerialNumber : @"3298319966700653461"
+                                                        }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+
+    WSCCertificateItem* sameCert1_testCase2 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeIssuerCountryAbbreviation: @"US"
+                                                        , WSCKeychainItemAttributeSerialNumber : @"3298319966700653461"
+                                                        }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+
+    WSCCertificateItem* sameCert2_testCase2 = ( WSCCertificateItem* )[ [ WSCKeychain login ]
+        findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeIssuerCountryAbbreviation: @"US"
+                                                        , WSCKeychainItemAttributeSerialNumber : @"3298319966700653461"
+                                                        }
+                                            itemClass: WSCKeychainItemClassCertificateItem
+                                                error: &error ];
+
+    XCTAssertEqualObjects( sameCert0_testCase2, sameCert1_testCase2 );
+    XCTAssertEqualObjects( sameCert1_testCase2, sameCert2_testCase2 );
+    XCTAssertEqualObjects( sameCert2_testCase2, sameCert0_testCase2 );
+
+    XCTAssertNotEqualObjects( sameCert0_testCase0, sameCert0_testCase2 );
+    XCTAssertNotEqualObjects( sameCert1_testCase0, sameCert1_testCase2 );
+    XCTAssertNotEqualObjects( sameCert2_testCase0, sameCert2_testCase2 );
+
+    XCTAssertNotEqualObjects( sameCert0_testCase1, sameCert0_testCase2 );
+    XCTAssertNotEqualObjects( sameCert1_testCase1, sameCert1_testCase2 );
+    XCTAssertNotEqualObjects( sameCert2_testCase1, sameCert2_testCase2 );
+    }
+
 - ( void ) testFindingCertificateItems
     {
     NSError* error = nil;
@@ -645,17 +746,16 @@
     // --------------------------------------------------------------------------------------------------------------------
     // Positive Test Case 0
     // --------------------------------------------------------------------------------------------------------------------
-    NSArray* matchedItems_testCase0 = [ [ WSCKeychain login ]
-        findAllKeychainItemsSatisfyingSearchCriteria: @{ /*WSCKeychainItemAttributeSubjectOrganization : @"Thawte Consulting"*/
-                                                         WSCKeychainItemAttributePublicKeySignatureAlgorithm : WSCSignatureAlgorithmTypeCocoaValue( WSCSignatureAlgorithmECDSAWithSHA384 )
-//                                                          WSCKeychainItemAttributeSubjectCountryAbbreviation : @"CN"
-//                                                        , WSCKeychainItemAttributeIssuerCountryAbbreviation : @"US"
-//                                                       , WSCKeychainItemAttributeSubjectOrganizationalUnit : @"Certification Services Division"
-//                                                       , WSCKeychainItemAttributeSubjectEmailAddress : @"personal-freemail@thawte.com"
+    NSSet* matchedItems_testCase0 = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributePublicKeySignatureAlgorithm : WSCSignatureAlgorithmTypeCocoaValue( WSCSignatureAlgorithmSHA1WithRSA )
+                                                       , WSCKeychainItemAttributeSubjectCountryAbbreviation : @"CN"
+                                                       , WSCKeychainItemAttributeIssuerCountryAbbreviation : @"US"
+                                                       , WSCKeychainItemAttributeLabel : @"Mac Developer: Tong Guo (8ZDY95NQGT)"
                                                        }
                                            itemClass: WSCKeychainItemClassCertificateItem
                                                error: &error ];
     XCTAssertNotNil( matchedItems_testCase0 );
+    XCTAssert( matchedItems_testCase0.count > 0 );
     XCTAssertNil( error );
     _WSCPrintNSErrorForUnitTest( error );
 
@@ -669,7 +769,7 @@
         NSLog( @"Subject Address #TestCase0: %@", _Cert.subjectEmailAddress );
         NSLog( @"Subject Common Name #TestCase0: %@", _Cert.subjectCommonName );
         NSLog( @"Subject Organization #TestCase0: %@", _Cert.subjectOrganization );
-        NSLog( @"Subject Organization #TestCase0: %@", _Cert.subjectOrganizationalUnit );
+        NSLog( @"Subject OrganizationalUnit #TestCase0: %@", _Cert.subjectOrganizationalUnit );
         NSLog( @"Subject Country Abbreviation #TestCase0: %@", _Cert.subjectCountryAbbreviation );
         NSLog( @"Subject State Or Province #TestCase0: %@", _Cert.subjectStateOrProvince );
         NSLog( @"Subject Subject Locality #TestCase0: %@", _Cert.subjectLocality );
@@ -685,6 +785,108 @@
         fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
         }
+
+{
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 1
+    // --------------------------------------------------------------------------------------------------------------------
+    NSSet* matchedItems_testCase1 = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Mac Developer: Tong Guo (8ZDY95NQGT)"
+                                                       , 
+                                                       }
+                                           itemClass: WSCKeychainItemClassCertificateItem
+                                               error: &error ];
+    XCTAssertNotNil( matchedItems_testCase1 );
+    XCTAssert( matchedItems_testCase1.count > 0 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                     "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
+
+    for ( WSCCertificateItem* _Cert in matchedItems_testCase1 )
+        {
+        NSLog( @"Label #TestCase0: %@", _Cert.label );
+
+        NSLog( @"Subject Address #TestCase0: %@", _Cert.subjectEmailAddress );
+        NSLog( @"Subject Common Name #TestCase0: %@", _Cert.subjectCommonName );
+        NSLog( @"Subject Organization #TestCase0: %@", _Cert.subjectOrganization );
+        NSLog( @"Subject OrganizationalUnit #TestCase0: %@", _Cert.subjectOrganizationalUnit );
+        NSLog( @"Subject Country Abbreviation #TestCase0: %@", _Cert.subjectCountryAbbreviation );
+        NSLog( @"Subject State Or Province #TestCase0: %@", _Cert.subjectStateOrProvince );
+        NSLog( @"Subject Subject Locality #TestCase0: %@", _Cert.subjectLocality );
+
+        NSLog( @"Issuer Address #TestCase0: %@", _Cert.issuerEmailAddress );
+        NSLog( @"Issuer Common Name #TestCase0: %@", _Cert.issuerCommonName );
+        NSLog( @"Issuer Organization #TestCase0: %@", _Cert.issuerOrganization );
+        NSLog( @"Issuer Organization #TestCase0: %@", _Cert.issuerOrganizationalUnit );
+        NSLog( @"Issuer Country Abbreviation #TestCase0: %@", _Cert.issuerCountryAbbreviation );
+        NSLog( @"Issuer State Or Province #TestCase0: %@", _Cert.issuerStateOrProvince );
+        NSLog( @"Issuer Subject Locality #TestCase0: %@", _Cert.issuerLocality );
+
+        fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                         "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
+        }
+}
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Negative Test Case 1
+    // --------------------------------------------------------------------------------------------------------------------
+    NSSet* matchedItems_negativeTestCase1 = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributePublicKeySignatureAlgorithm : WSCSignatureAlgorithmTypeCocoaValue( WSCSignatureAlgorithmSHA1WithRSA )
+                                                       , WSCKeychainItemAttributeSubjectCountryAbbreviation : @"CN"
+                                                       , WSCKeychainItemAttributeIssuerCountryAbbreviation : @"US"
+                                                       , WSCKeychainItemAttributeLabel : @"Doesn't exist"
+                                                       }
+                                           itemClass: WSCKeychainItemClassCertificateItem
+                                               error: &error ];
+
+    XCTAssertNotNil( matchedItems_negativeTestCase1 );
+    XCTAssert( matchedItems_negativeTestCase1.count == 0 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Negative Test Case 2
+    // --------------------------------------------------------------------------------------------------------------------
+    NSSet* matchedItems_negativeTestCase2 = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Doesn't exist"
+                                                       }
+                                           itemClass: WSCKeychainItemClassCertificateItem
+                                               error: &error ];
+
+    XCTAssertNotNil( matchedItems_negativeTestCase2 );
+    XCTAssert( matchedItems_negativeTestCase2.count == 0 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Negative Test Case 3
+    // --------------------------------------------------------------------------------------------------------------------
+    NSSet* matchedItems_negativeTestCase3 = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ /* empty criteria */ }
+                                           itemClass: WSCKeychainItemClassCertificateItem
+                                               error: &error ];
+
+    XCTAssertNil( matchedItems_negativeTestCase3 );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Negative Test Case 4
+    // --------------------------------------------------------------------------------------------------------------------
+    NSSet* matchedItems_negativeTestCase4 = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeAccount : @"NSTongG" }
+                                           itemClass: WSCKeychainItemClassCertificateItem
+                                               error: &error ];
+
+    XCTAssertNil( matchedItems_negativeTestCase4 );
+    XCTAssertNotNil( error );
+    XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+    XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
+    _WSCPrintNSErrorForUnitTest( error );
     }
 
 - ( void ) testFindingFirstKeychainItem
@@ -705,7 +907,7 @@
 
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
-    NSArray* matchedItems_testCase0 = [ [ WSCKeychain login ]
+    NSSet* matchedItems_testCase0 = [ [ WSCKeychain login ]
         findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeAuthenticationType : WSCAuthenticationTypeCocoaValue( WSCInternetAuthenticationTypeAny ) }
                                            itemClass: WSCKeychainItemClassInternetPassphraseItem
                                                error: &error ];
@@ -783,7 +985,7 @@
     XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
-    NSArray* matchedItems_negativeTestCase0 = [ [ WSCKeychain login ]
+    NSSet* matchedItems_negativeTestCase0 = [ [ WSCKeychain login ]
         findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeAccount : @"TongGuo"
                                                        , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPS )
                                                        }
@@ -806,7 +1008,7 @@
     XCTAssertNil( error );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
-    NSArray* matchedItems_testCase1 = [ [ WSCKeychain login ]
+    NSSet* matchedItems_testCase1 = [ [ WSCKeychain login ]
         findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Vnet Link (sosueme)" }
                                            itemClass: WSCKeychainItemClassInternetPassphraseItem
                                                error: &error ];
@@ -823,7 +1025,7 @@
     XCTAssertNil( error );
     /***************/ _WSCPrintNSErrorForUnitTest( error ); /***************/
 
-    NSArray* matchedItems_negativeTestCase1 = [ [ WSCKeychain login ]
+    NSSet* matchedItems_negativeTestCase1 = [ [ WSCKeychain login ]
         findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Vnet Link (sosueme)" }
                                            itemClass: WSCKeychainItemClassApplicationPassphraseItem
                                                error: &error ];

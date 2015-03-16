@@ -151,8 +151,7 @@ NSValue* _WSCWrapCTypeIntoCocoaValue( uint32 _Value )
  */
 - ( BOOL ) isEqualToKey: ( WSCKey* )_AnotherKey
     {
-    return [ self.keyData isEqualToData: _AnotherKey.keyData ]
-                && ( self.keyData.hash == _AnotherKey.keyData.hash );
+    return [ self.keyData isEqualToData: _AnotherKey.keyData ];
     }
 
 #pragma mark Certificate, Key, and Trust Services Bridge
@@ -184,7 +183,17 @@ NSValue* _WSCWrapCTypeIntoCocoaValue( uint32 _Value )
 
 - ( NSUInteger ) hash
     {
-    return self.keyData.hash;
+    NSUInteger keyDataHash = self.keyData.hash;
+    NSUInteger keyAlgorithmHash = self.keyAlgorithm;
+    NSUInteger encryptAlgorithmHash = self.encryptAlgorithm;
+    NSUInteger keySizeInBitsHash = self.keySizeInBits;
+    NSUInteger keyClassHash = self.keyClass;
+    NSUInteger keyUsageHash = self.keyUsage;
+    NSUInteger effectiveDateHash = self.effectiveDate.hash;
+    NSUInteger expirationDateHash = self.expirationDate.hash;
+
+    return ( keyDataHash ^ keyAlgorithmHash ^ encryptAlgorithmHash ^ keySizeInBitsHash
+                ^ keyClassHash ^ keyUsageHash ^ effectiveDateHash ^ expirationDateHash );
     }
 
 @end // WSCKey class
