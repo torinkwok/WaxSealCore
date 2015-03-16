@@ -819,8 +819,8 @@ WSCKeychain static* s_system = nil;
     }
 
 - ( NSMutableSet* ) p_findProtectedKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
-                                                                 itemClass: ( WSCKeychainItemClass )_ItemClass
-                                                                     error: ( NSError** )_Error
+                                                               itemClass: ( WSCKeychainItemClass )_ItemClass
+                                                                   error: ( NSError** )_Error
     {
     // This private API relies on the `-p_findKeychainItemsSatisfyingSearchCriteria:itemClass:error:` method
     // to examine the incoming criteria dictionary.
@@ -934,7 +934,7 @@ WSCKeychain static* s_system = nil;
     if ( self.isValid )
         {
         if ( searchCriteriaAgainstGeneralKeychainItems.count != 0 )
-            matchedGeneralKeychainItems = [ self p_findProtectedKeychainItemsSatisfyingSearchCriteria: _SearchCriteriaDict
+            matchedGeneralKeychainItems = [ self p_findProtectedKeychainItemsSatisfyingSearchCriteria: searchCriteriaAgainstGeneralKeychainItems
                                                                                            itemClass: WSCKeychainItemClassCertificateItem
                                                                                                error: &error ];
         if ( searchCriteriaAgainstCerts.count != 0 )

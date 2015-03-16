@@ -53,6 +53,10 @@
                                                itemClass: ( WSCKeychainItemClass )_ItemClass
                                                    error: ( NSError** )_Error;
 
+- ( NSMutableSet* ) p_findProtectedKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
+                                                               itemClass: ( WSCKeychainItemClass )_ItemClass
+                                                                   error: ( NSError** )_Error;
+
 - ( NSMutableSet* ) p_findCertificateItemsSatisfyingSearchCriteria: ( NSDictionary* )_CertSearchCriteriaDict
                                                              error: ( NSError** )_Error;
 #if 0

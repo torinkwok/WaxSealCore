@@ -747,13 +747,10 @@
     // Positive Test Case 0
     // --------------------------------------------------------------------------------------------------------------------
     NSSet* matchedItems_testCase0 = [ [ WSCKeychain login ]
-        findAllKeychainItemsSatisfyingSearchCriteria: @{ /*WSCKeychainItemAttributeSubjectOrganization : @"Thawte Consulting"*/
-                                                         WSCKeychainItemAttributePublicKeySignatureAlgorithm : WSCSignatureAlgorithmTypeCocoaValue( WSCSignatureAlgorithmSHA1WithRSA )
-                                                         , WSCKeychainItemAttributeSubjectCountryAbbreviation : @"CN"
-                                                         , WSCKeychainItemAttributeIssuerCountryAbbreviation : @"US"
-                                                         , WSCKeychainItemAttributeLabel : @"Mac Developer: Tong Guo (8ZDY95NQGT)"
-//                                                       , WSCKeychainItemAttributeSubjectOrganizationalUnit : @"Certification Services Division"
-//                                                       , WSCKeychainItemAttributeSubjectEmailAddress : @"personal-freemail@thawte.com"
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributePublicKeySignatureAlgorithm : WSCSignatureAlgorithmTypeCocoaValue( WSCSignatureAlgorithmSHA1WithRSA )
+                                                       , WSCKeychainItemAttributeSubjectCountryAbbreviation : @"CN"
+                                                       , WSCKeychainItemAttributeIssuerCountryAbbreviation : @"US"
+                                                       , WSCKeychainItemAttributeLabel : @"Mac Developer: Tong Guo (8ZDY95NQGT)"
                                                        }
                                            itemClass: WSCKeychainItemClassCertificateItem
                                                error: &error ];
@@ -765,6 +762,49 @@
                      "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
 
     for ( WSCCertificateItem* _Cert in matchedItems_testCase0 )
+        {
+        NSLog( @"Label #TestCase0: %@", _Cert.label );
+
+        NSLog( @"Subject Address #TestCase0: %@", _Cert.subjectEmailAddress );
+        NSLog( @"Subject Common Name #TestCase0: %@", _Cert.subjectCommonName );
+        NSLog( @"Subject Organization #TestCase0: %@", _Cert.subjectOrganization );
+        NSLog( @"Subject OrganizationalUnit #TestCase0: %@", _Cert.subjectOrganizationalUnit );
+        NSLog( @"Subject Country Abbreviation #TestCase0: %@", _Cert.subjectCountryAbbreviation );
+        NSLog( @"Subject State Or Province #TestCase0: %@", _Cert.subjectStateOrProvince );
+        NSLog( @"Subject Subject Locality #TestCase0: %@", _Cert.subjectLocality );
+
+        NSLog( @"Issuer Address #TestCase0: %@", _Cert.issuerEmailAddress );
+        NSLog( @"Issuer Common Name #TestCase0: %@", _Cert.issuerCommonName );
+        NSLog( @"Issuer Organization #TestCase0: %@", _Cert.issuerOrganization );
+        NSLog( @"Issuer Organization #TestCase0: %@", _Cert.issuerOrganizationalUnit );
+        NSLog( @"Issuer Country Abbreviation #TestCase0: %@", _Cert.issuerCountryAbbreviation );
+        NSLog( @"Issuer State Or Province #TestCase0: %@", _Cert.issuerStateOrProvince );
+        NSLog( @"Issuer Subject Locality #TestCase0: %@", _Cert.issuerLocality );
+
+        fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                         "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
+        }
+
+{
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 1
+    // --------------------------------------------------------------------------------------------------------------------
+    NSSet* matchedItems_testCase1 = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributePublicKeySignatureAlgorithm : WSCSignatureAlgorithmTypeCocoaValue( WSCSignatureAlgorithmSHA1WithRSA )
+                                                       , WSCKeychainItemAttributeSubjectCountryAbbreviation : @"CN"
+                                                       , WSCKeychainItemAttributeIssuerCountryAbbreviation : @"US"
+                                                       , WSCKeychainItemAttributeLabel : @"Mac Developer: Tong Guo (8ZDY95NQGT)"
+                                                       }
+                                           itemClass: WSCKeychainItemClassCertificateItem
+                                               error: &error ];
+    XCTAssertNotNil( matchedItems_testCase1 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                     "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
+
+    for ( WSCCertificateItem* _Cert in matchedItems_testCase1 )
         {
         NSLog( @"Label #TestCase0: %@", _Cert.label );
 
@@ -787,6 +827,7 @@
         fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
         }
+}
     }
 
 - ( void ) testFindingFirstKeychainItem
