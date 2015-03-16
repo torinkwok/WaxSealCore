@@ -22,26 +22,54 @@
   ████████████████████████████████████████████████████████████████████████████████
   ██████████████████████████████████████████████████████████████████████████████*/
 
-#import "WSCKey.h"
 
-#pragma mark WSCKey + WSCKeyPrivateInitialization
-@interface WSCKey ( WSCKeyPrivateInitialization )
+#import "NSDate+_WSCCocoaDate.h"
 
-- ( instancetype ) p_initWithSecKeyRef: ( SecKeyRef )_SecKeyRef;
+#pragma mark NSDate+_WSCCocoaDate
+@implementation NSDate ( _WSCocoaDate )
 
-@end // WSCKey + WSCKeyPrivateInitialization
++ ( NSDate* ) dateWithCSSMDate: ( CSSM_DATE )_CSSMDate
+    {
+    NSDate* rawDate = nil;
 
-NSValue* _WSCWrapCTypeIntoCocoaValue( uint32 _Value );
+    NSMutableString* yearString = [ NSMutableString string ];
+    for ( int _Index = 0; _Index < 4; _Index++ )
+        if ( _CSSMDate.Year[ _Index ] != '\0' )
+            [ yearString appendString: [ NSString stringWithFormat: @"%u", _CSSMDate.Year[ _Index ] ] ];
 
-#pragma mark WSCKey + WSCKeyPrivateRetrieveAttributes
-@interface WSCKey ( WSCKeyPrivateRetrieveAttributes )
+    NSMutableString* monthString = [ NSMutableString string ];
+    for ( int _Index = 0; _Index < 2; _Index++ )
+        if ( _CSSMDate.Month[ _Index ] != '\0' )
+            [ monthString appendString: [ NSString stringWithFormat: @"%u", _CSSMDate.Month[ _Index ] ] ];
 
-- ( id ) p_retrieveAttributeIndicatedBy: ( NSString* )_RetrieveKey;
+    NSMutableString* dayString = [ NSMutableString string ];
+    for ( int _Index = 0; _Index < 2; _Index++ )
+        if ( _CSSMDate.Day[ _Index ] != '\0' )
+            [ dayString appendString: [ NSString stringWithFormat: @"%u", _CSSMDate.Day[ _Index ] ] ];
 
-- ( id ) p_retrieveAttributeIndicatedBy: ( NSString* )_RetrieveKey
-                                  error: ( NSError** )_Error;
+    if ( yearString.length !=0 && monthString.length != 0 && dayString.length != 0 )
+        {
+        NSDateComponents* dateComponents = [ [ [ NSDateComponents alloc ] init ] autorelease ];
 
-@end // WSCKey + WSCKeyPrivateRetrieveAttributes
+        // GMT (GMT) offset 0, the standard Greenwich Mean Time, that's pretty important!
+        [ dateComponents setTimeZone: [ NSTimeZone timeZoneForSecondsFromGMT: 0 ] ];
+
+        [ dateComponents setYear: yearString.integerValue   ];
+        [ dateComponents setMonth: monthString.integerValue ];
+        [ dateComponents setDay: dayString.integerValue ];
+
+        rawDate = [ [ NSCalendar autoupdatingCurrentCalendar ] dateFromComponents: dateComponents ];
+        }
+
+    return [ rawDate localizedDate ];
+    }
+
+- ( NSDate* ) localizedDate
+    {
+    return [ self dateWithCalendarFormat: nil timeZone: [ NSTimeZone localTimeZone ] ];
+    }
+
+@end // NSDate + _WSCCocoaDate
 
 /*================================================================================┐
 |                              The MIT License (MIT)                              |

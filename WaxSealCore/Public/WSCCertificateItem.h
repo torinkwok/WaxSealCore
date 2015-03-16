@@ -222,6 +222,14 @@ typedef NS_ENUM( NSUInteger, WSCSignatureAlgorithmType )
   */
 @property ( copy, readonly ) NSString* serialNumber;
 
+/** The effective date of a certificate represented by receiver.
+  */
+@property ( retain, readonly ) NSDate* effectiveDate;
+
+/** The expiration date of a certificate represented by receiver.
+  */
+@property ( retain, readonly ) NSDate* expirationDate;
+
 #pragma mark Managing Public Key
 /** @name Managing Public Key */
 

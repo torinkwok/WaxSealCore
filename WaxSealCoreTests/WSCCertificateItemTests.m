@@ -70,10 +70,14 @@ NSDictionary* kCopyValues( WSCCertificateItem* _CertificateItem )
     {
     NSDictionary* values = ( __bridge NSDictionary* )
         SecCertificateCopyValues( _CertificateItem.secCertificateItem
-                                , ( __bridge CFArrayRef )@[ ( __bridge id )kSecOIDX509V1Signature
+                                , ( __bridge CFArrayRef )@[ /*( __bridge id )kSecOIDX509V1Signature*/
 //                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithm
 //                                                          , ( __bridge id )kSecOIDX509V1SignatureAlgorithmParameters
+                                                            ( __bridge id )kSecOIDX509V1IssuerName
+                                                          , ( __bridge id )kSecOIDX509V1SubjectName
                                                           , ( __bridge id )kSecOIDX509V1SubjectPublicKey
+                                                          , ( __bridge id )kSecOIDX509V1ValidityNotAfter
+                                                          , ( __bridge id )kSecOIDX509V1ValidityNotBefore
 //                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKeyAlgorithm
 //                                                          , ( __bridge id )kSecOIDX509V1SubjectPublicKeyAlgorithmParameters
                                                           ]
@@ -605,6 +609,14 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
 
     NSDictionary* values = kCopyValues( certificate_testCase0 );
 
+    NSDate* effectiveDate_testCase0 = certificate_testCase0.effectiveDate;
+    XCTAssertEqualObjects( effectiveDate_testCase0, [ NSDate dateWithString: @"2014-12-22 00:00:00 +0000" ] );
+    XCTAssertEqualObjects( effectiveDate_testCase0.description, @"2014-12-22 08:00:00 +0800" );
+
+    NSDate* expirationDate_testCase0 = certificate_testCase0.expirationDate;
+    XCTAssertEqualObjects( expirationDate_testCase0, [ NSDate dateWithString: @"2020-05-30 10:48:38 +0000" ] );
+    XCTAssertEqualObjects( expirationDate_testCase0.description, @"2020-05-30 18:48:38 +0800" );
+
     NSData* publicSignature_testCase0 = certificate_testCase0.publicKeySignature;
     XCTAssertNotNil( publicSignature_testCase0 );
 
@@ -698,6 +710,14 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
 
     values = kCopyValues( certificate_testCase1 );
 
+    NSDate* effectiveDate_testCase1 = certificate_testCase1.effectiveDate;
+    XCTAssertEqualObjects( effectiveDate_testCase1, [ NSDate dateWithString: @"2014-12-12 00:00:00 +0000" ] );
+    XCTAssertEqualObjects( effectiveDate_testCase1.description, @"2014-12-12 08:00:00 +0800" );
+
+    NSDate* expirationDate_testCase1 = certificate_testCase1.expirationDate;
+    XCTAssertEqualObjects( expirationDate_testCase1, [ NSDate dateWithString: @"2015-12-12 23:59:59 +0000" ] );
+    XCTAssertEqualObjects( expirationDate_testCase1.description, @"2015-12-13 07:59:59 +0800" );
+
     NSData* publicSignature_testCase1 = certificate_testCase1.publicKeySignature;
     XCTAssertNotNil( publicSignature_testCase1 );
 
@@ -780,6 +800,14 @@ NSDictionary* kTwoStylePublicKeys( WSCCertificateItem* _CertificateItem )
     // Positive Test Case 2
     // ----------------------------------------------------------------------------------
     WSCCertificateItem* certificate_testCase2 = self.MacDeveloper_TongGuo_8ZDY95NQGT;
+
+    NSDate* effectiveDate_testCase2 = certificate_testCase2.effectiveDate;
+    XCTAssertEqualObjects( effectiveDate_testCase2, [ NSDate dateWithString: @"2014-08-25 04:28:32 +0000" ] );
+    XCTAssertEqualObjects( effectiveDate_testCase2.description, @"2014-08-25 12:28:32 +0800" );
+
+    NSDate* expirationDate_testCase2 = certificate_testCase2.expirationDate;
+    XCTAssertEqualObjects( expirationDate_testCase2, [ NSDate dateWithString: @"2015-08-25 04:28:32 +0000" ] );
+    XCTAssertEqualObjects( expirationDate_testCase2.description, @"2015-08-25 12:28:32 +0800" );
 
     NSData* publicSignature_testCase2 = certificate_testCase2.publicKeySignature;
     XCTAssertNotNil( publicSignature_testCase2 );

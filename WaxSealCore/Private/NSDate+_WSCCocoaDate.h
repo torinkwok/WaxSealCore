@@ -22,26 +22,17 @@
   ████████████████████████████████████████████████████████████████████████████████
   ██████████████████████████████████████████████████████████████████████████████*/
 
-#import "WSCKey.h"
 
-#pragma mark WSCKey + WSCKeyPrivateInitialization
-@interface WSCKey ( WSCKeyPrivateInitialization )
+#import <Foundation/Foundation.h>
 
-- ( instancetype ) p_initWithSecKeyRef: ( SecKeyRef )_SecKeyRef;
+#pragma mark NSDate+_WSCCocoaDate
+@interface NSDate ( _WSCocoaDate )
 
-@end // WSCKey + WSCKeyPrivateInitialization
++ ( NSDate* ) dateWithCSSMDate: ( CSSM_DATE )_CSSMDate;
 
-NSValue* _WSCWrapCTypeIntoCocoaValue( uint32 _Value );
+- ( NSDate* ) localizedDate;
 
-#pragma mark WSCKey + WSCKeyPrivateRetrieveAttributes
-@interface WSCKey ( WSCKeyPrivateRetrieveAttributes )
-
-- ( id ) p_retrieveAttributeIndicatedBy: ( NSString* )_RetrieveKey;
-
-- ( id ) p_retrieveAttributeIndicatedBy: ( NSString* )_RetrieveKey
-                                  error: ( NSError** )_Error;
-
-@end // WSCKey + WSCKeyPrivateRetrieveAttributes
+@end // NSDate + _WSCCocoaDate
 
 /*================================================================================┐
 |                              The MIT License (MIT)                              |

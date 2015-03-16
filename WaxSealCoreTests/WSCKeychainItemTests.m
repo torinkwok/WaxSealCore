@@ -1163,8 +1163,9 @@ NSString* _WSCPassphrases[] =
                                                             passphrase: @"waxsealcore"
                                                                  error: &error ];
 
-    XCTAssertNotNil( applicationPassphrase_testCase0.modificationDate );
-    NSLog( @"Modification Date #0: %@", applicationPassphrase_testCase0.modificationDate );
+    NSDate* modificationDate_testCase0 = applicationPassphrase_testCase0.modificationDate;
+    XCTAssertNotNil( modificationDate_testCase0 );
+    NSLog( @"Modification Date #0: %@", modificationDate_testCase0 );
 
     sleep( 5 );
 
@@ -1179,8 +1180,9 @@ NSString* _WSCPassphrases[] =
                                                         passphrase: @"waxsealcore"
                                                              error: &error ];
 
-    XCTAssertNotNil( internetPassphrase_testCase1.creationDate );
-    NSLog( @"Modification Date #1: %@", internetPassphrase_testCase1.modificationDate );
+    NSDate* modificationDate_testCase1 = internetPassphrase_testCase1.modificationDate;
+    XCTAssertNotNil( modificationDate_testCase1 );
+    NSLog( @"Modification Date #1: %@", modificationDate_testCase1 );
 
     // -------------------------------------------------------------------------------------------------------------------- //
     // Negative Test Case 0: The keychain item: applicationPassphrase_testCase0 has been already deleted

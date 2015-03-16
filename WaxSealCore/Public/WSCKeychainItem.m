@@ -28,6 +28,7 @@
 #import "WSCPassphraseItem.h"
 #import "NSString+_OMCString.h"
 
+#import "NSDate+_WSCCocoaDate.h"
 #import "_WSCKeychainErrorPrivate.h"
 #import "_WSCKeychainPrivate.h"
 #import "_WSCKeychainItemPrivate.h"
@@ -351,7 +352,7 @@
 - ( NSDate* ) p_extractDateFromSecAttrStruct: ( SecKeychainAttribute )_SecKeychainAttrStruct
                                        error: ( NSError** )_Error
     {
-    NSDate* dateWithCorrectTimeZone = nil;
+    NSDate* rawDate = nil;
 
     // The _SecKeychainAttr must be a valid attribute.
     if ( _SecKeychainAttrStruct.tag == kSecCreationDateItemAttr
@@ -391,16 +392,14 @@
         [ rawDateComponents setMinute:  min.integerValue    ];
         [ rawDateComponents setSecond:  second.integerValue ];
 
-        NSDate* rawDate = [ [ NSCalendar autoupdatingCurrentCalendar ] dateFromComponents: rawDateComponents ];
-        dateWithCorrectTimeZone = [ rawDate dateWithCalendarFormat: nil
-                                                          timeZone: [ NSTimeZone localTimeZone ] ];
+        rawDate = [ [ NSCalendar autoupdatingCurrentCalendar ] dateFromComponents: rawDateComponents ];
         }
     else
         if ( _Error )
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                            code: WSCCommonInvalidParametersError
                                        userInfo: nil ];
-    return dateWithCorrectTimeZone;
+    return [ rawDate localizedDate ];
     }
 
 /* Extract NSData object from the SecKeychainAttribute struct.
@@ -659,6 +658,8 @@ NSString* const WSCKeychainItemAttributeIssuerStateOrProvince       = @"2.16.840
 NSString* const WSCKeychainItemAttributeIssuerLocality              = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.7 (Issuer Locality)";
 
 NSString* const WSCKeychainItemAttributeSerialNumber                = @"2.16.840.1.113741.2.1.1.1.3 (Serial Number)";
+NSString* const WSCKeychainItemAttributeEffectiveDate               = @"2.16.840.1.113741.2.1.1.1.7 (Effective Date)";
+NSString* const WSCKeychainItemAttributeExpirationDate              = @"2.16.840.1.113741.2.1.1.1.6 (Expiration Date)";
 NSString* const WSCKeychainItemAttributePublicKeySignature          = @"2.16.840.1.113741.2.1.3.2.2 (Public Key Signature)";
 NSString* const WSCKeychainItemAttributePublicKeySignatureAlgorithm = @"2.16.840.1.113741.2.1.3.2.1 (Public Key Signature Algorithm)";
 
