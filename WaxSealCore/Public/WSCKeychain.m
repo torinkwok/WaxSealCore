@@ -439,8 +439,8 @@ WSCKeychain static* s_system = nil;
 /* Find all the keychain items satisfying the given search criteria contained in *_SearchCriteriaDict* dictionary.
  */
 - ( NSSet* ) findAllKeychainItemsSatisfyingSearchCriteria: ( NSDictionary* )_SearchCriteriaDict
-                                               itemClass: ( WSCKeychainItemClass )_ItemClass
-                                                   error: ( NSError** )_Error;
+                                                itemClass: ( WSCKeychainItemClass )_ItemClass
+                                                    error: ( NSError** )_Error;
     {
     NSSet* matchedItems = [ self p_findKeychainItemsSatisfyingSearchCriteria: _SearchCriteriaDict
                                                                    itemClass: _ItemClass
@@ -786,6 +786,8 @@ WSCKeychain static* s_system = nil;
                                                    error: ( NSError** )_Error
     {
     NSMutableSet* matchedItems = nil;
+
+    // The search criteria must not be empty or nil
     if ( !_SearchCriteriaDict || ( _SearchCriteriaDict.count == 0 ) )
         {
         *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
@@ -795,8 +797,8 @@ WSCKeychain static* s_system = nil;
         return matchedItems;
         }
 
-    for ( NSString* _Key in _SearchCriteriaDict )
-        if ( ![ self p_doesItemAttributeSearchKey: _Key blongToItemClass: _ItemClass error: _Error ] )
+    for ( NSString* _SearchKey in _SearchCriteriaDict )
+        if ( ![ self p_doesItemAttributeSearchKey: _SearchKey blongToItemClass: _ItemClass error: _Error ] )
             // Fatal error, return nil
             return matchedItems;
 
@@ -827,7 +829,7 @@ WSCKeychain static* s_system = nil;
 
     NSMutableSet* matchedItems = nil;
 
-    // Just return this empty array
+    // Just return this empty set
     // if there is not any keychan item satisfying the given search criteria.
     matchedItems = [ NSMutableSet set ];
 
@@ -896,6 +898,9 @@ WSCKeychain static* s_system = nil;
 
         CFRelease( secMatchedItems );
         }
+    else
+        if ( resultCode != errSecItemNotFound )
+            _WSCFillErrorParamWithSecErrorCode( resultCode, _Error );
 
     return matchedItems;
     }
@@ -906,22 +911,14 @@ WSCKeychain static* s_system = nil;
     // This private API relies on the `-p_findKeychainItemsSatisfyingSearchCriteria:itemClass:error:` method
     // to examine the incoming criteria dictionary.
 
-    NSError* error = nil;
     NSMutableSet* finalCerts = nil;
-
-    if ( error )
-        {
-        if ( _Error )
-            *_Error = [ [ error copy ] autorelease ];
-
-        return nil;
-        }
 
     NSMutableDictionary* searchCriteriaAgainstGeneralKeychainItems = [ NSMutableDictionary dictionary ];
     NSMutableDictionary* searchCriteriaAgainstCerts = [ NSMutableDictionary dictionary ];
 
     for ( NSString* _SearchKey in _SearchCriteriaDict )
         {
+        // If this _SearchKey is classified into "common attributes"
         if ( [ self->p_commonAttributesSearchKeys containsObject: _SearchKey ] )
             searchCriteriaAgainstGeneralKeychainItems[ _SearchKey ] = _SearchCriteriaDict[ _SearchKey ];
         else
@@ -936,10 +933,10 @@ WSCKeychain static* s_system = nil;
         if ( searchCriteriaAgainstGeneralKeychainItems.count != 0 )
             matchedGeneralKeychainItems = [ self p_findProtectedKeychainItemsSatisfyingSearchCriteria: searchCriteriaAgainstGeneralKeychainItems
                                                                                             itemClass: WSCKeychainItemClassCertificateItem
-                                                                                                error: &error ];
+                                                                                                error: _Error ];
         if ( searchCriteriaAgainstCerts.count != 0 )
             {
-            NSSet* allCertificateItems = [ self p_allItemsConformsTheClass: WSCKeychainItemClassCertificateItem error: &error ];
+            NSSet* allCertificateItems = [ self p_allItemsConformsTheClass: WSCKeychainItemClassCertificateItem error: _Error ];
 
             // Suppose that all the passphrase items conforming the given item class are the matched items
             matchedCerts = [ [ allCertificateItems mutableCopy ] autorelease ];
@@ -977,7 +974,6 @@ WSCKeychain static* s_system = nil;
                 }
             }
 
-
         if ( matchedGeneralKeychainItems && matchedCerts )
             {
             finalCerts = matchedGeneralKeychainItems;
@@ -992,9 +988,8 @@ WSCKeychain static* s_system = nil;
         }
     else
         if ( _Error )
-            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
-                                           code: WSCKeychainIsInvalidError
-                                       userInfo: nil ];
+            *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain code: WSCKeychainIsInvalidError userInfo: nil ];
+
     return finalCerts;
     }
 

@@ -379,7 +379,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
 /** Retrieve all the application passphrase items stored in the keychain represented by receiver.
 
-  @warning After invoking this method, the passphrase item stored in the returned array may become invalid 
+  @warning After invoking this method, the passphrase item stored in the returned set may become invalid
           (perhaps it has been deleted or modified by user or by other applications),
            you should check the validity of each passphrase item before using it.
 
@@ -391,7 +391,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
 /** Retrieve all the Internet passphrase items stored in the keychain represented by receiver.
 
-  @warning After invoking this method, the passphrase item stored in the returned array may become invalid 
+  @warning After invoking this method, the passphrase item stored in the returned set may become invalid
           (perhaps it has been deleted or modified by user or by other applications),
            you should check the validity of each passphrase item before using it.
 
@@ -403,7 +403,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
 /** Retrieve all the X.509 certificates stored in the keychain represented by receiver.
 
-  @warning After invoking this method, the certificate item stored in the returned array may become invalid
+  @warning After invoking this method, the certificate item stored in the returned set may become invalid
           (perhaps it has been deleted or modified by user or by other applications),
            you should check the validity of each passphrase item before using it.
 
@@ -515,7 +515,7 @@ typedef NS_ENUM( FourCharCode, WSCKeychainItemClass )
 
 /** Find all the keychain items satisfying the given search criteria contained in *_SearchCriteriaDict* dictionary.
 
-  @warning After invoking this method, the passphrase item stored in the returned array may become invalid 
+  @warning After invoking this method, the passphrase item stored in the returned set may become invalid 
           (perhaps it has been deleted or modified by user or by other applications),
            you should check the validity of each passphrase item before using it.
 

@@ -59,21 +59,7 @@
 
 - ( NSMutableSet* ) p_findCertificateItemsSatisfyingSearchCriteria: ( NSDictionary* )_CertSearchCriteriaDict
                                                              error: ( NSError** )_Error;
-#if 0
-- ( NSMutableArray* ) p_convertSearchCriteriaDictionaryToMutableArray: ( NSDictionary* )_SearchCriteriaDict;
 
-- ( BOOL ) p_addSearchCriteriaTo: ( NSMutableArray* )_SearchCriteria
-             withCocoaStringData: ( NSString* )_CocoaStringData
-                        itemAttr: ( SecItemAttr )_ItemAttr;
-
-- ( BOOL ) p_addSearchCriteriaTo: ( NSMutableArray* )_SearchCriteria
-              withCocoaValueData: ( NSValue* )_CocoaValueData
-                        itemAttr: ( SecItemAttr )_ItemAttr;
-
-- ( BOOL ) p_addSearchCriteriaTo: ( NSMutableArray* )_SearchCriteria
-             withCocoaNumberData: ( NSNumber* )_CocoaNumber
-                        itemAttr: ( SecItemAttr )_ItemAttr;
-#endif
 @end // WSCKeychain + WSCKeychainPrivateFindingKeychainItems
 
 NSString* _WSCKeychainGetPathOfKeychain( SecKeychainRef _Keychain );
