@@ -25,8 +25,8 @@
 #import "WSCCertificateItem.h"
 #import "WSCKey.h"
 #import "WSCKeychainError.h"
+#import "NSDate+WSCCocoaDate.h"
 
-#import "NSDate+_WSCCocoaDate.h"
 #import "_WSCKeychainErrorPrivate.h"
 #import "_WSCKeychainPrivate.h"
 #import "_WSCKeychainItemPrivate.h"
@@ -176,7 +176,9 @@
 - ( NSDate* ) effectiveDate
     {
     NSNumber* validityNotBefore = ( NSNumber* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeEffectiveDate ];
-    return [ NSDate dateWithTimeIntervalSinceReferenceDate: ( NSTimeInterval )( validityNotBefore.doubleValue ) ].localizedDate;
+
+    return [ [ NSDate dateWithTimeIntervalSinceReferenceDate:
+                ( NSTimeInterval )( validityNotBefore.doubleValue ) ] dateWithLocalTimeZone ];
     }
 
 /* The expiration date of a certificate represented by receiver.
@@ -184,7 +186,9 @@
 - ( NSDate* ) expirationDate
     {
     NSNumber* validityNotAfter = ( NSNumber* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeExpirationDate ];
-    return [ NSDate dateWithTimeIntervalSinceReferenceDate: ( NSTimeInterval )( validityNotAfter.doubleValue ) ].localizedDate;
+
+    return [ [ NSDate dateWithTimeIntervalSinceReferenceDate:
+                ( NSTimeInterval )( validityNotAfter.doubleValue ) ] dateWithLocalTimeZone ];
     }
 
 #pragma mark Managing Public Key

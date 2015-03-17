@@ -23,9 +23,9 @@
   ██████████████████████████████████████████████████████████████████████████████*/
 
 
-#import "NSDate+_WSCCocoaDate.h"
+#import "NSDate+WSCCocoaDate.h"
 
-#pragma mark NSDate+_WSCCocoaDate
+#pragma mark NSDate+WSCCocoaDate
 @implementation NSDate ( _WSCocoaDate )
 
 + ( NSDate* ) dateWithCSSMDate: ( CSSM_DATE )_CSSMDate
@@ -61,10 +61,10 @@
         rawDate = [ [ NSCalendar autoupdatingCurrentCalendar ] dateFromComponents: dateComponents ];
         }
 
-    return [ rawDate localizedDate ];
+    return [ rawDate dateWithLocalTimeZone ];
     }
 
-- ( NSDate* ) localizedDate
+- ( NSDate* ) dateWithLocalTimeZone
     {
     return [ self dateWithCalendarFormat: nil timeZone: [ NSTimeZone localTimeZone ] ];
     }

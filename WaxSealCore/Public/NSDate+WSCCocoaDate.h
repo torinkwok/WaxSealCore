@@ -25,12 +25,12 @@
 
 #import <Foundation/Foundation.h>
 
-#pragma mark NSDate+_WSCCocoaDate
+#pragma mark NSDate+WSCCocoaDate
 @interface NSDate ( _WSCocoaDate )
 
 + ( NSDate* ) dateWithCSSMDate: ( CSSM_DATE )_CSSMDate;
 
-- ( NSDate* ) localizedDate;
+- ( NSDate* ) dateWithLocalTimeZone;
 
 @end // NSDate + _WSCCocoaDate
 
