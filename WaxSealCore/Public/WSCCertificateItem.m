@@ -111,6 +111,55 @@
     return ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeSubjectLocality ];
     }
 
+- ( NSString* ) description
+    {
+    NSArray* searchKeys = @[ WSCKeychainItemAttributeSubjectEmailAddress
+                           , WSCKeychainItemAttributeSubjectCommonName
+                           , WSCKeychainItemAttributeSubjectOrganization
+                           , WSCKeychainItemAttributeSubjectOrganizationalUnit
+                           , WSCKeychainItemAttributeSubjectCountryAbbreviation
+                           , WSCKeychainItemAttributeSubjectStateOrProvince
+                           , WSCKeychainItemAttributeSubjectLocality
+
+                           , WSCKeychainItemAttributeIssuerEmailAddress
+                           , WSCKeychainItemAttributeIssuerCommonName
+                           , WSCKeychainItemAttributeIssuerOrganization
+                           , WSCKeychainItemAttributeIssuerOrganizationalUnit
+                           , WSCKeychainItemAttributeIssuerCountryAbbreviation
+                           , WSCKeychainItemAttributeIssuerStateOrProvince
+                           , WSCKeychainItemAttributeIssuerLocality
+
+                           , WSCKeychainItemAttributeSerialNumber
+                           , WSCKeychainItemAttributeEffectiveDate
+                           , WSCKeychainItemAttributeExpirationDate
+                           , WSCKeychainItemAttributePublicKeySignature
+                           , WSCKeychainItemAttributePublicKeySignatureAlgorithm
+                           ];
+
+    NSMutableDictionary* descDict = [ NSMutableDictionary dictionary ];
+    id value = nil;
+    for ( NSString* _SearchKey in searchKeys )
+        {
+        if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeEffectiveDate ]
+                || [ _SearchKey isEqualToString: WSCKeychainItemAttributeExpirationDate ] )
+            {
+            value = [ [ NSDate dateWithTimeIntervalSinceReferenceDate: [ [ self p_retriveAttributeOfReceiverItselfWithKey: _SearchKey ] doubleValue ] ] dateWithLocalTimeZone ];
+
+            if ( value )
+                descDict[ _SearchKey ] = value;
+            }
+        else
+            {
+            value = ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: _SearchKey ];
+
+            if ( value )
+                descDict[ _SearchKey ] = value;
+            }
+        }
+
+    return [ descDict description ];
+    }
+
 #pragma mark Issuer Attributes of a Certificate
 
 /** The Email address of the issuer of a certificate. (read-only)
@@ -250,7 +299,6 @@
     }
 
 #pragma mark Certificate, Key, and Trust Services Bridge
-
 /* The reference of the `SecCertificate` opaque object, which wrapped by `WSCCertificateItem` object. (read-only)
  */
 - ( SecCertificateRef ) secCertificateItem
