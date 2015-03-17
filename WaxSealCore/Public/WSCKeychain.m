@@ -650,6 +650,9 @@ WSCKeychain static* s_system = nil;
                      , WSCKeychainItemAttributeSerialNumber
                      , WSCKeychainItemAttributePublicKeySignature
                      , WSCKeychainItemAttributePublicKeySignatureAlgorithm
+
+                     , WSCKeychainItemAttributeEffectiveDate
+                     , WSCKeychainItemAttributeExpirationDate
                      ] arrayByAddingObjectsFromArray: self->p_commonAttributesSearchKeys ] retain ];
             }
         else
@@ -947,12 +950,7 @@ WSCKeychain static* s_system = nil;
 
                     // If the give certificate item's attribute is not equal to the search value
                     // remove it from the mathcedItems array
-                    if ( ![ _SearchKey isEqualToString: WSCKeychainItemAttributePublicKeySignatureAlgorithm ] )
-                        {
-                        if ( ![ attrValueOfCurrentCert isEqualTo: searchValue ] )
-                            [ matchedCerts removeObject: _Item ];
-                        }
-                    else
+                    if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributePublicKeySignatureAlgorithm ] )
                         {
                         WSCSignatureAlgorithmType signatureAlgorithmOfCurrentCert =
                             [ WSCCertificateItem p_signatureAlgorithmFromGiveOID: attrValueOfCurrentCert ];
@@ -961,6 +959,22 @@ WSCKeychain static* s_system = nil;
                         [ searchValue getValue: &searchingSignatureAlgorithm ];
 
                         if ( signatureAlgorithmOfCurrentCert != searchingSignatureAlgorithm )
+                            [ matchedCerts removeObject: _Item ];
+                        }
+
+                    else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeEffectiveDate ]
+                                || [ _SearchKey isEqualToString: WSCKeychainItemAttributeExpirationDate ] )
+                        {
+                        CFAbsoluteTime absoluteTimeSinceRefDateOfCurrentCert = [ ( NSNumber* )attrValueOfCurrentCert doubleValue ];
+                        CFAbsoluteTime absoluteTimeSinceRefDateOfSearchValue = [ ( NSDate* )searchValue timeIntervalSinceReferenceDate ];
+
+                        if ( absoluteTimeSinceRefDateOfCurrentCert != absoluteTimeSinceRefDateOfSearchValue )
+                            [ matchedCerts removeObject: _Item ];
+                        }
+
+                    else
+                        {
+                        if ( ![ attrValueOfCurrentCert isEqualTo: searchValue ] )
                             [ matchedCerts removeObject: _Item ];
                         }
                     }

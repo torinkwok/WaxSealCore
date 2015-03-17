@@ -78,6 +78,7 @@
         findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"secure.imdb.com"
                                                         , WSCKeychainItemAttributeProtocol : WSCInternetProtocolCocoaValue( WSCInternetProtocolTypeHTTPS )
                                                         , WSCKeychainItemAttributeComment : @"👺👹👺👹"
+                                                        , WSCKeychainItemAttributeModificationDate : [ NSDate dateWithString: @"2015-3-17 02:50:00 +0000" ]
                                                         }
                                             itemClass: WSCKeychainItemClassInternetPassphraseItem
                                                 error: &error ];
@@ -751,6 +752,8 @@
                                                        , WSCKeychainItemAttributeSubjectCountryAbbreviation : @"CN"
                                                        , WSCKeychainItemAttributeIssuerCountryAbbreviation : @"US"
                                                        , WSCKeychainItemAttributeLabel : @"Mac Developer: Tong Guo (8ZDY95NQGT)"
+                                                       , WSCKeychainItemAttributeEffectiveDate : [ NSDate dateWithString: @"2014-08-25 04:28:32 +0000" ]
+                                                       , WSCKeychainItemAttributeExpirationDate : [ NSDate dateWithString: @"2015-08-25 04:28:32 +0000" ]
                                                        }
                                            itemClass: WSCKeychainItemClassCertificateItem
                                                error: &error ];
@@ -786,14 +789,11 @@
                          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
         }
 
-{
     // --------------------------------------------------------------------------------------------------------------------
     // Positive Test Case 1
     // --------------------------------------------------------------------------------------------------------------------
     NSSet* matchedItems_testCase1 = [ [ WSCKeychain login ]
-        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Mac Developer: Tong Guo (8ZDY95NQGT)"
-                                                       , 
-                                                       }
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : @"Mac Developer: Tong Guo (8ZDY95NQGT)" }
                                            itemClass: WSCKeychainItemClassCertificateItem
                                                error: &error ];
     XCTAssertNotNil( matchedItems_testCase1 );
@@ -827,7 +827,45 @@
         fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
         }
-}
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Positive Test Case 2
+    // --------------------------------------------------------------------------------------------------------------------
+    NSSet* matchedItems_testCase2 = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeEffectiveDate : [ NSDate dateWithString: @"2014-12-13 08:00:00 +0800" ] }
+                                           itemClass: WSCKeychainItemClassCertificateItem
+                                               error: &error ];
+    XCTAssertNotNil( matchedItems_testCase2 );
+    XCTAssert( matchedItems_testCase2.count > 0 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                     "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
+
+    for ( WSCCertificateItem* _Cert in matchedItems_testCase2 )
+        {
+        NSLog( @"Label #TestCase0: %@", _Cert.label );
+
+        NSLog( @"Subject Address #TestCase0: %@", _Cert.subjectEmailAddress );
+        NSLog( @"Subject Common Name #TestCase0: %@", _Cert.subjectCommonName );
+        NSLog( @"Subject Organization #TestCase0: %@", _Cert.subjectOrganization );
+        NSLog( @"Subject OrganizationalUnit #TestCase0: %@", _Cert.subjectOrganizationalUnit );
+        NSLog( @"Subject Country Abbreviation #TestCase0: %@", _Cert.subjectCountryAbbreviation );
+        NSLog( @"Subject State Or Province #TestCase0: %@", _Cert.subjectStateOrProvince );
+        NSLog( @"Subject Subject Locality #TestCase0: %@", _Cert.subjectLocality );
+
+        NSLog( @"Issuer Address #TestCase0: %@", _Cert.issuerEmailAddress );
+        NSLog( @"Issuer Common Name #TestCase0: %@", _Cert.issuerCommonName );
+        NSLog( @"Issuer Organization #TestCase0: %@", _Cert.issuerOrganization );
+        NSLog( @"Issuer Organization #TestCase0: %@", _Cert.issuerOrganizationalUnit );
+        NSLog( @"Issuer Country Abbreviation #TestCase0: %@", _Cert.issuerCountryAbbreviation );
+        NSLog( @"Issuer State Or Province #TestCase0: %@", _Cert.issuerStateOrProvince );
+        NSLog( @"Issuer Subject Locality #TestCase0: %@", _Cert.issuerLocality );
+
+        fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                         "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
+        }
 
     // --------------------------------------------------------------------------------------------------------------------
     // Negative Test Case 1
@@ -837,6 +875,7 @@
                                                        , WSCKeychainItemAttributeSubjectCountryAbbreviation : @"CN"
                                                        , WSCKeychainItemAttributeIssuerCountryAbbreviation : @"US"
                                                        , WSCKeychainItemAttributeLabel : @"Doesn't exist"
+                                                       , WSCKeychainItemAttributeEffectiveDate : [ NSDate dateWithString: @"2014-08-25 04:28:32 +0000" ]
                                                        }
                                            itemClass: WSCKeychainItemClassCertificateItem
                                                error: &error ];
@@ -887,6 +926,55 @@
     XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
     XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
     _WSCPrintNSErrorForUnitTest( error );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Negative Test Case 5
+    // --------------------------------------------------------------------------------------------------------------------
+    NSSet* matchedItems_testCase5 = [ [ WSCKeychain login ]
+        findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributePublicKeySignatureAlgorithm : WSCSignatureAlgorithmTypeCocoaValue( WSCSignatureAlgorithmSHA1WithRSA )
+                                                       , WSCKeychainItemAttributeSubjectCountryAbbreviation : @"CN"
+                                                       , WSCKeychainItemAttributeIssuerCountryAbbreviation : @"US"
+                                                       , WSCKeychainItemAttributeLabel : @"Mac Developer: Tong Guo (8ZDY95NQGT)"
+                                                       , WSCKeychainItemAttributeEffectiveDate : [ NSDate dateWithString: @"2019-08-25 04:28:32 +0000" ]
+                                                       , WSCKeychainItemAttributeExpirationDate : [ NSDate dateWithString: @"2015-08-25 04:28:32 +0000" ]
+                                                       }
+                                           itemClass: WSCKeychainItemClassCertificateItem
+                                               error: &error ];
+
+    XCTAssertNotNil( matchedItems_testCase5 );
+    XCTAssert( matchedItems_testCase5.count == 0 );
+    XCTAssertNil( error );
+    _WSCPrintNSErrorForUnitTest( error );
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Negative Test Case 6
+    // --------------------------------------------------------------------------------------------------------------------
+    WSCKeychainItemClass classes_testCase6[] =
+        { WSCKeychainItemClassInternetPassphraseItem, WSCKeychainItemClassApplicationPassphraseItem, WSCKeychainItemClassCertificateItem };
+
+    for ( int _Index = 0; _Index < sizeof( classes_testCase6 ) / sizeof( classes_testCase6[ 0 ] ); _Index ++ )
+        {
+        NSSet* matchedItems_testCase6 = [ [ WSCKeychain login ]
+            findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeExpirationDate : [ NSDate dateWithString: @"2015-08-25 04:28:32 +0000" ] }
+                                               itemClass: classes_testCase6[ _Index ]
+                                                   error: &error ];
+
+        if ( classes_testCase6[ _Index ] != WSCKeychainItemClassCertificateItem )
+            {
+            XCTAssertNil( matchedItems_testCase6 );
+            XCTAssertNotNil( error );
+            XCTAssertEqualObjects( error.domain, WaxSealCoreErrorDomain );
+            XCTAssertEqual( error.code, WSCCommonInvalidParametersError );
+            _WSCPrintNSErrorForUnitTest( error );
+            }
+        else
+            {
+            XCTAssertNotNil( matchedItems_testCase6 );
+            XCTAssert( matchedItems_testCase6.count > 0 );
+            XCTAssertNil( error );
+            _WSCPrintNSErrorForUnitTest( error );
+            }
+        }
     }
 
 - ( void ) testFindingFirstKeychainItem
