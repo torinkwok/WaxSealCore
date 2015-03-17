@@ -61,10 +61,10 @@
         rawDate = [ [ NSCalendar autoupdatingCurrentCalendar ] dateFromComponents: dateComponents ];
         }
 
-    return [ rawDate localizedDate ];
+    return [ rawDate dateWithLocalTimeZone ];
     }
 
-- ( NSDate* ) localizedDate
+- ( NSDate* ) dateWithLocalTimeZone
     {
     return [ self dateWithCalendarFormat: nil timeZone: [ NSTimeZone localTimeZone ] ];
     }

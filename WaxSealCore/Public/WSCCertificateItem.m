@@ -176,7 +176,9 @@
 - ( NSDate* ) effectiveDate
     {
     NSNumber* validityNotBefore = ( NSNumber* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeEffectiveDate ];
-    return [ NSDate dateWithTimeIntervalSinceReferenceDate: ( NSTimeInterval )( validityNotBefore.doubleValue ) ].localizedDate;
+
+    return [ [ NSDate dateWithTimeIntervalSinceReferenceDate:
+                ( NSTimeInterval )( validityNotBefore.doubleValue ) ] dateWithLocalTimeZone ];
     }
 
 /* The expiration date of a certificate represented by receiver.
@@ -184,7 +186,9 @@
 - ( NSDate* ) expirationDate
     {
     NSNumber* validityNotAfter = ( NSNumber* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeExpirationDate ];
-    return [ NSDate dateWithTimeIntervalSinceReferenceDate: ( NSTimeInterval )( validityNotAfter.doubleValue ) ].localizedDate;
+
+    return [ [ NSDate dateWithTimeIntervalSinceReferenceDate:
+                ( NSTimeInterval )( validityNotAfter.doubleValue ) ] dateWithLocalTimeZone ];
     }
 
 #pragma mark Managing Public Key

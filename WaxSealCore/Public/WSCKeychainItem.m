@@ -399,7 +399,7 @@
             *_Error = [ NSError errorWithDomain: WaxSealCoreErrorDomain
                                            code: WSCCommonInvalidParametersError
                                        userInfo: nil ];
-    return [ rawDate localizedDate ];
+    return [ rawDate dateWithLocalTimeZone ];
     }
 
 /* Extract NSData object from the SecKeychainAttribute struct.

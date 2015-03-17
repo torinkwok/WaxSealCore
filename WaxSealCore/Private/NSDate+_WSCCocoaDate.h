@@ -30,7 +30,7 @@
 
 + ( NSDate* ) dateWithCSSMDate: ( CSSM_DATE )_CSSMDate;
 
-- ( NSDate* ) localizedDate;
+- ( NSDate* ) dateWithLocalTimeZone;
 
 @end // NSDate + _WSCCocoaDate
 
