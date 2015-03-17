@@ -23,12 +23,16 @@
   ██████████████████████████████████████████████████████████████████████████████*/
 
 #import "NSURL+WSCKeychainURL.h"
+#import "NSDate+WSCCocoaDate.h"
+
 #import "WSCKeychainError.h"
 #import "WSCKeychainManager.h"
 #import "WSCKeychain.h"
 #import "WSCKeychainItem.h"
 #import "WSCProtectedKeychainItem.h"
 #import "WSCPassphraseItem.h"
+#import "WSCCertificateItem.h"
+#import "WSCKey.h"
 #import "WSCTrustedApplication.h"
 #import "WSCPermittedOperation.h"
 

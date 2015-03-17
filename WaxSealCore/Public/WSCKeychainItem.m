@@ -27,8 +27,8 @@
 #import "WSCKeychainError.h"
 #import "WSCPassphraseItem.h"
 #import "NSString+_OMCString.h"
+#import "NSDate+WSCCocoaDate.h"
 
-#import "NSDate+_WSCCocoaDate.h"
 #import "_WSCKeychainErrorPrivate.h"
 #import "_WSCKeychainPrivate.h"
 #import "_WSCKeychainItemPrivate.h"

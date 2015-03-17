@@ -25,8 +25,8 @@
 #import "WSCCertificateItem.h"
 #import "WSCKey.h"
 #import "WSCKeychainError.h"
+#import "NSDate+WSCCocoaDate.h"
 
-#import "NSDate+_WSCCocoaDate.h"
 #import "_WSCKeychainErrorPrivate.h"
 #import "_WSCKeychainPrivate.h"
 #import "_WSCKeychainItemPrivate.h"

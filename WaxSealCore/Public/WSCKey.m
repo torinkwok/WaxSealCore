@@ -23,8 +23,8 @@
   ██████████████████████████████████████████████████████████████████████████████*/
 
 #import "WSCKey.h"
+#import "NSDate+WSCCocoaDate.h"
 
-#import "NSDate+_WSCCocoaDate.h"
 #import "_WSCKeychainItemPrivate.h"
 #import "_WSCKeyPrivate.h"
 

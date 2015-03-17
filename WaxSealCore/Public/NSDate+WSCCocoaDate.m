@@ -23,14 +23,51 @@
   ██████████████████████████████████████████████████████████████████████████████*/
 
 
-#import <Foundation/Foundation.h>
+#import "NSDate+WSCCocoaDate.h"
 
-#pragma mark NSDate+_WSCCocoaDate
-@interface NSDate ( _WSCocoaDate )
+#pragma mark NSDate+WSCCocoaDate
+@implementation NSDate ( _WSCocoaDate )
 
-+ ( NSDate* ) dateWithCSSMDate: ( CSSM_DATE )_CSSMDate;
++ ( NSDate* ) dateWithCSSMDate: ( CSSM_DATE )_CSSMDate
+    {
+    NSDate* rawDate = nil;
 
-- ( NSDate* ) dateWithLocalTimeZone;
+    NSMutableString* yearString = [ NSMutableString string ];
+    for ( int _Index = 0; _Index < 4; _Index++ )
+        if ( _CSSMDate.Year[ _Index ] != '\0' )
+            [ yearString appendString: [ NSString stringWithFormat: @"%u", _CSSMDate.Year[ _Index ] ] ];
+
+    NSMutableString* monthString = [ NSMutableString string ];
+    for ( int _Index = 0; _Index < 2; _Index++ )
+        if ( _CSSMDate.Month[ _Index ] != '\0' )
+            [ monthString appendString: [ NSString stringWithFormat: @"%u", _CSSMDate.Month[ _Index ] ] ];
+
+    NSMutableString* dayString = [ NSMutableString string ];
+    for ( int _Index = 0; _Index < 2; _Index++ )
+        if ( _CSSMDate.Day[ _Index ] != '\0' )
+            [ dayString appendString: [ NSString stringWithFormat: @"%u", _CSSMDate.Day[ _Index ] ] ];
+
+    if ( yearString.length !=0 && monthString.length != 0 && dayString.length != 0 )
+        {
+        NSDateComponents* dateComponents = [ [ [ NSDateComponents alloc ] init ] autorelease ];
+
+        // GMT (GMT) offset 0, the standard Greenwich Mean Time, that's pretty important!
+        [ dateComponents setTimeZone: [ NSTimeZone timeZoneForSecondsFromGMT: 0 ] ];
+
+        [ dateComponents setYear: yearString.integerValue   ];
+        [ dateComponents setMonth: monthString.integerValue ];
+        [ dateComponents setDay: dayString.integerValue ];
+
+        rawDate = [ [ NSCalendar autoupdatingCurrentCalendar ] dateFromComponents: dateComponents ];
+        }
+
+    return [ rawDate dateWithLocalTimeZone ];
+    }
+
+- ( NSDate* ) dateWithLocalTimeZone
+    {
+    return [ self dateWithCalendarFormat: nil timeZone: [ NSTimeZone localTimeZone ] ];
+    }
 
 @end // NSDate + _WSCCocoaDate
 
