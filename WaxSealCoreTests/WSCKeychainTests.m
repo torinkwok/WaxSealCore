@@ -579,23 +579,7 @@
 
     for ( WSCCertificateItem* _Item in allCertificateItems_testCase0 )
         {
-        NSLog( @"Label #TestCase0: %@", _Item.label );
-
-        NSLog( @"Subject Address #TestCase0: %@", _Item.subjectEmailAddress );
-        NSLog( @"Subject Common Name #TestCase0: %@", _Item.subjectCommonName );
-        NSLog( @"Subject Organization #TestCase0: %@", _Item.subjectOrganization );
-        NSLog( @"Subject Organization #TestCase0: %@", _Item.subjectOrganizationalUnit );
-        NSLog( @"Subject Country Abbreviation #TestCase0: %@", _Item.subjectCountryAbbreviation );
-        NSLog( @"Subject State Or Province #TestCase0: %@", _Item.subjectStateOrProvince );
-        NSLog( @"Subject Subject Locality #TestCase0: %@", _Item.subjectLocality );
-
-        NSLog( @"Issuer Address #TestCase0: %@", _Item.issuerEmailAddress );
-        NSLog( @"Issuer Common Name #TestCase0: %@", _Item.issuerCommonName );
-        NSLog( @"Issuer Organization #TestCase0: %@", _Item.issuerOrganization );
-        NSLog( @"Issuer Organization #TestCase0: %@", _Item.issuerOrganizationalUnit );
-        NSLog( @"Issuer Country Abbreviation #TestCase0: %@", _Item.issuerCountryAbbreviation );
-        NSLog( @"Issuer State Or Province #TestCase0: %@", _Item.issuerStateOrProvince );
-        NSLog( @"Issuer Subject Locality #TestCase0: %@", _Item.issuerLocality );
+        NSLog( @"%@", _Item );
 
         fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
@@ -614,23 +598,7 @@
 
     for ( WSCCertificateItem* _Item in allCertificateItems_testCase1 )
         {
-        NSLog( @"Label #TestCase1: %@", _Item.label );
-
-        NSLog( @"Subject Address #TestCase1: %@", _Item.subjectEmailAddress );
-        NSLog( @"Subject Common Name #TestCase1: %@", _Item.subjectCommonName );
-        NSLog( @"Subject Organization #TestCase1: %@", _Item.subjectOrganization );
-        NSLog( @"Subject Organization #TestCase1: %@", _Item.subjectOrganizationalUnit );
-        NSLog( @"Subject Country Abbreviation #TestCase1: %@", _Item.subjectCountryAbbreviation );
-        NSLog( @"Subject State Or Province #TestCase1: %@", _Item.subjectStateOrProvince );
-        NSLog( @"Subject Subject Locality #TestCase1: %@", _Item.subjectLocality );
-
-        NSLog( @"Issuer Address #TestCase1: %@", _Item.issuerEmailAddress );
-        NSLog( @"Issuer Common Name #TestCase1: %@", _Item.issuerCommonName );
-        NSLog( @"Issuer Organization #TestCase1: %@", _Item.issuerOrganization );
-        NSLog( @"Issuer Organization #TestCase1: %@", _Item.issuerOrganizationalUnit );
-        NSLog( @"Issuer Country Abbreviation #TestCase1: %@", _Item.issuerCountryAbbreviation );
-        NSLog( @"Issuer State Or Province #TestCase1: %@", _Item.issuerStateOrProvince );
-        NSLog( @"Issuer Subject Locality #TestCase1: %@", _Item.issuerLocality );
+        NSLog( @"%@", _Item );
 
         fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
@@ -767,7 +735,7 @@
 
     for ( WSCCertificateItem* _Cert in matchedItems_testCase0 )
         {
-        NSLog( @"%@: %@", _Cert.label, _Cert );
+        NSLog( @"%@", _Cert );
 
         fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
@@ -790,7 +758,7 @@
 
     for ( WSCCertificateItem* _Cert in matchedItems_testCase1 )
         {
-        NSLog( @"%@: %@", _Cert.label, _Cert );
+        NSLog( @"%@", _Cert );
 
         fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );
@@ -813,7 +781,7 @@
 
     for ( WSCCertificateItem* _Cert in matchedItems_testCase2 )
         {
-        NSLog( @"%@: %@", _Cert.label, _Cert );
+        NSLog( @"%@", _Cert );
 
         fprintf( stdout, "\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n" );

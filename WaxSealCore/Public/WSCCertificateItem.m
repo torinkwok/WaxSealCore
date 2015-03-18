@@ -113,40 +113,21 @@
 
 - ( NSString* ) description
     {
-    NSArray* searchKeys = @[ WSCKeychainItemAttributeSubjectEmailAddress
-                           , WSCKeychainItemAttributeSubjectCommonName
-                           , WSCKeychainItemAttributeSubjectOrganization
-                           , WSCKeychainItemAttributeSubjectOrganizationalUnit
-                           , WSCKeychainItemAttributeSubjectCountryAbbreviation
-                           , WSCKeychainItemAttributeSubjectStateOrProvince
-                           , WSCKeychainItemAttributeSubjectLocality
-
-                           , WSCKeychainItemAttributeIssuerEmailAddress
-                           , WSCKeychainItemAttributeIssuerCommonName
-                           , WSCKeychainItemAttributeIssuerOrganization
-                           , WSCKeychainItemAttributeIssuerOrganizationalUnit
-                           , WSCKeychainItemAttributeIssuerCountryAbbreviation
-                           , WSCKeychainItemAttributeIssuerStateOrProvince
-                           , WSCKeychainItemAttributeIssuerLocality
-
-                           , WSCKeychainItemAttributeSerialNumber
-                           , WSCKeychainItemAttributeEffectiveDate
-                           , WSCKeychainItemAttributeExpirationDate
-                           , WSCKeychainItemAttributePublicKeySignature
-                           , WSCKeychainItemAttributePublicKeySignatureAlgorithm
-                           ];
-
     NSMutableDictionary* descDict = [ NSMutableDictionary dictionary ];
     id value = nil;
-    for ( NSString* _SearchKey in searchKeys )
-        {
-        value = ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: _SearchKey ];
 
-        if ( value )
-            descDict[ _SearchKey ] = value;
+    for ( NSString* _SearchKey in [ WSCCertificateItem p_certificateSearchKeys ] )
+        {
+        if ( ![ _SearchKey isEqualToString: WSCKeychainItemAttributeLabel ] )
+            {
+            value = ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: _SearchKey ];
+
+            if ( value )
+                descDict[ _SearchKey ] = value;
+            }
         }
 
-    return [ descDict description ];
+    return [ NSString stringWithFormat: @"%@: %@", self.label, [ descDict description ] ];
     }
 
 #pragma mark Issuer Attributes of a Certificate
