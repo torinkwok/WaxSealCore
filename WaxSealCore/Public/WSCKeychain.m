@@ -291,8 +291,7 @@ WSCKeychain static* s_system = nil;
     if ( self == _AnotherKeychain )
         return YES;
 
-    return ( self.hash == _AnotherKeychain.hash )
-                && [ self.URL isEqualTo: _AnotherKeychain.URL ];
+    return [ self.URL isEqualTo: _AnotherKeychain.URL ];
     }
 
 #pragma mark Creating and Managing Keychain Items
