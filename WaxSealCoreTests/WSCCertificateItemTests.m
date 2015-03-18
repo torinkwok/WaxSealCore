@@ -37,6 +37,8 @@
 #import "_WSCPermittedOperationPrivate.h"
 #import "_WSCKeychainItemPrivate.h"
 #import "_WSCCertificateItemPrivate.h"
+#import "_WSCPassphraseItemPrivate.h"
+#import "_WSCCertificateItemPrivate.h"
 
 // --------------------------------------------------------
 #pragma mark Interface of WSCCertificateItemTests Test Case

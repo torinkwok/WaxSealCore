@@ -37,6 +37,8 @@
 #pragma mark Private Programmatic Interfaces for Accessing Attributes
 @interface WSCKeychainItem ( WSCKeychainItemPrivateAccessingAttributes )
 
++ ( NSArray* ) p_generalSearchKeys;
+
 #pragma mark Extracting
 - ( WSCKeychainItemClass ) p_itemClass: ( NSError** )_Error;
 

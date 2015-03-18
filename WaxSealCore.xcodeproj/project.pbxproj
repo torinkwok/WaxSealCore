@@ -229,6 +229,7 @@
 			isa = PBXGroup;
 			children = (
 				837C8B4E1A6D4D7700FFE4FF /* _WSCKeychainItemPrivate.h */,
+				83D70F0C1A7CBD0200329504 /* _WSCPassphraseItemPrivate.h */,
 				83357B691AA9F28A00DA3A4A /* _WSCCertificateItemPrivate.h */,
 				83F83CBD1AB04A4700B80E30 /* _WSCKeyPrivate.h */,
 			);
@@ -296,7 +297,6 @@
 			isa = PBXGroup;
 			children = (
 				837C8B4F1A6D4D7700FFE4FF /* _WSCKeychainPrivate.h */,
-				83D70F0C1A7CBD0200329504 /* _WSCPassphraseItemPrivate.h */,
 				837C8B531A6D4DA000FFE4FF /* _WSCKeychainErrorPrivate.h */,
 				837C8B4D1A6D4D7700FFE4FF /* _WSCKeychainErrorPrivate.m */,
 			);
