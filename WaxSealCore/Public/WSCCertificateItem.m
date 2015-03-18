@@ -140,21 +140,10 @@
     id value = nil;
     for ( NSString* _SearchKey in searchKeys )
         {
-        if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeEffectiveDate ]
-                || [ _SearchKey isEqualToString: WSCKeychainItemAttributeExpirationDate ] )
-            {
-            value = [ [ NSDate dateWithTimeIntervalSinceReferenceDate: [ [ self p_retriveAttributeOfReceiverItselfWithKey: _SearchKey ] doubleValue ] ] dateWithLocalTimeZone ];
+        value = ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: _SearchKey ];
 
-            if ( value )
-                descDict[ _SearchKey ] = value;
-            }
-        else
-            {
-            value = ( NSString* )[ self p_retriveAttributeOfReceiverItselfWithKey: _SearchKey ];
-
-            if ( value )
-                descDict[ _SearchKey ] = value;
-            }
+        if ( value )
+            descDict[ _SearchKey ] = value;
         }
 
     return [ descDict description ];
@@ -224,20 +213,14 @@
  */
 - ( NSDate* ) effectiveDate
     {
-    NSNumber* validityNotBefore = ( NSNumber* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeEffectiveDate ];
-
-    return [ [ NSDate dateWithTimeIntervalSinceReferenceDate:
-                ( NSTimeInterval )( validityNotBefore.doubleValue ) ] dateWithLocalTimeZone ];
+    return ( NSDate* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeEffectiveDate ];
     }
 
 /* The expiration date of a certificate represented by receiver.
  */
 - ( NSDate* ) expirationDate
     {
-    NSNumber* validityNotAfter = ( NSNumber* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeExpirationDate ];
-
-    return [ [ NSDate dateWithTimeIntervalSinceReferenceDate:
-                ( NSTimeInterval )( validityNotAfter.doubleValue ) ] dateWithLocalTimeZone ];
+    return ( NSDate* )[ self p_retriveAttributeOfReceiverItselfWithKey: WSCKeychainItemAttributeExpirationDate ];
     }
 
 #pragma mark Managing Public Key
@@ -388,7 +371,13 @@ NSString static* kSubOIDKey = @"subOID";
                         }
                     }
                 else
-                    attribute = [ [ ( __bridge id )data copy ] autorelease ];
+                    {
+                    if ( [ masterOID isEqualToString: ( __bridge NSString* )kSecOIDX509V1ValidityNotBefore ]
+                            || [ masterOID isEqualToString: ( __bridge NSString* )kSecOIDX509V1ValidityNotAfter ] )
+                        attribute = [ [ NSDate dateWithTimeIntervalSinceReferenceDate: [ ( __bridge NSNumber* )data doubleValue ] ] dateWithLocalTimeZone ];
+                    else
+                        attribute = [ [ ( __bridge id )data copy ] autorelease ];
+                    }
                 }
 
             CFRelease( secResultValuesMatchingOIDs );

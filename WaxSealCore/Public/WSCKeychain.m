@@ -961,17 +961,6 @@ WSCKeychain static* s_system = nil;
                         if ( signatureAlgorithmOfCurrentCert != searchingSignatureAlgorithm )
                             [ matchedCerts removeObject: _Item ];
                         }
-
-                    else if ( [ _SearchKey isEqualToString: WSCKeychainItemAttributeEffectiveDate ]
-                                || [ _SearchKey isEqualToString: WSCKeychainItemAttributeExpirationDate ] )
-                        {
-                        CFAbsoluteTime absoluteTimeSinceRefDateOfCurrentCert = [ ( NSNumber* )attrValueOfCurrentCert doubleValue ];
-                        CFAbsoluteTime absoluteTimeSinceRefDateOfSearchValue = [ ( NSDate* )searchValue timeIntervalSinceReferenceDate ];
-
-                        if ( absoluteTimeSinceRefDateOfCurrentCert != absoluteTimeSinceRefDateOfSearchValue )
-                            [ matchedCerts removeObject: _Item ];
-                        }
-
                     else
                         {
                         if ( ![ attrValueOfCurrentCert isEqualTo: searchValue ] )

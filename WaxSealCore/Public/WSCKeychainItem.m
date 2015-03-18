@@ -658,8 +658,8 @@ NSString* const WSCKeychainItemAttributeIssuerStateOrProvince       = @"2.16.840
 NSString* const WSCKeychainItemAttributeIssuerLocality              = @"2.16.840.1.113741.2.1.1.1.5/2.5.4.7 (Issuer Locality)";
 
 NSString* const WSCKeychainItemAttributeSerialNumber                = @"2.16.840.1.113741.2.1.1.1.3 (Serial Number)";
-NSString* const WSCKeychainItemAttributeEffectiveDate               = @"2.16.840.1.113741.2.1.1.1.7 (Effective Date)";
-NSString* const WSCKeychainItemAttributeExpirationDate              = @"2.16.840.1.113741.2.1.1.1.6 (Expiration Date)";
+NSString* const WSCKeychainItemAttributeEffectiveDate               = @"2.16.840.1.113741.2.1.1.1.6 (Effective Date)";
+NSString* const WSCKeychainItemAttributeExpirationDate              = @"2.16.840.1.113741.2.1.1.1.7 (Expiration Date)";
 NSString* const WSCKeychainItemAttributePublicKeySignature          = @"2.16.840.1.113741.2.1.3.2.2 (Public Key Signature)";
 NSString* const WSCKeychainItemAttributePublicKeySignatureAlgorithm = @"2.16.840.1.113741.2.1.3.2.1 (Public Key Signature Algorithm)";
 
