@@ -27,6 +27,9 @@
 #pragma mark WSCPassphraseItem + WSCPasswordPrivateUtilities
 @interface WSCPassphraseItem ( WSCPasswordPrivateUtilities )
 
++ ( NSArray* ) p_applicationPassphraseSearchKeys;
++ ( NSArray* ) p_internetPassphraseSearchKeys;
+
 - ( void ) p_addSearchCriteriaWithCStringData: ( NSMutableDictionary* )_SearchCriteriaDict
                                      itemAttr: ( SecItemAttr )_ItemAttr;
 

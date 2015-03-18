@@ -180,6 +180,20 @@
 #pragma mark Private Programmatic Interfaces for Accessing Attributes
 @implementation WSCKeychainItem ( WSCKeychainItemPrivateAccessingAttributes )
 
+NSArray static* s_generalSearchKeys;
++ ( NSArray* ) p_generalSearchKeys
+    {
+    dispatch_once_t static onceToken;
+
+    dispatch_once( &onceToken
+                 , ( dispatch_block_t )^( void )
+                    {
+                    s_generalSearchKeys = [ @[ WSCKeychainItemAttributeLabel ] retain ];
+                    } );
+
+    return s_generalSearchKeys;
+    }
+
 #pragma mark Extracting
 - ( WSCKeychainItemClass ) p_itemClass: ( NSError** )_Error
     {

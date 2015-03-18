@@ -319,6 +319,43 @@
 NSString static* kMasterOIDKey = @"masterOID";
 NSString static* kSubOIDKey = @"subOID";
 
+NSArray static* s_certificateSearchKeys;
++ ( NSArray* ) p_certificateSearchKeys
+    {
+    dispatch_once_t static onceToken;
+
+    dispatch_once( &onceToken
+                 , ( dispatch_block_t )^( void )
+                    {
+                    s_certificateSearchKeys =
+                        [ [ @[ WSCKeychainItemAttributeSubjectEmailAddress
+                             , WSCKeychainItemAttributeSubjectCommonName
+                             , WSCKeychainItemAttributeSubjectOrganization
+                             , WSCKeychainItemAttributeSubjectOrganizationalUnit
+                             , WSCKeychainItemAttributeSubjectCountryAbbreviation
+                             , WSCKeychainItemAttributeSubjectStateOrProvince
+                             , WSCKeychainItemAttributeSubjectLocality
+
+                             , WSCKeychainItemAttributeIssuerEmailAddress
+                             , WSCKeychainItemAttributeIssuerCommonName
+                             , WSCKeychainItemAttributeIssuerOrganization
+                             , WSCKeychainItemAttributeIssuerOrganizationalUnit
+                             , WSCKeychainItemAttributeIssuerCountryAbbreviation
+                             , WSCKeychainItemAttributeIssuerStateOrProvince
+                             , WSCKeychainItemAttributeIssuerLocality
+
+                             , WSCKeychainItemAttributeSerialNumber
+                             , WSCKeychainItemAttributePublicKeySignature
+                             , WSCKeychainItemAttributePublicKeySignatureAlgorithm
+
+                             , WSCKeychainItemAttributeEffectiveDate
+                             , WSCKeychainItemAttributeExpirationDate
+                             ] arrayByAddingObjectsFromArray: [ WSCKeychainItem p_generalSearchKeys ] ] retain ];
+                    } );
+
+    return s_certificateSearchKeys;
+    }
+
 /* Extract attribute from the receiver itself
  */
 - ( id ) p_retriveAttributeOfReceiverItselfWithKey: ( NSString* )_AttributeKey

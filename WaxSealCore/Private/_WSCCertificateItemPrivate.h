@@ -27,6 +27,8 @@
 #pragma mark WSCCertificateItem + _WSCCertificateItemPrivateAccessAttributes
 @interface WSCCertificateItem ( _WSCCertificateItemPrivateAccessAttributes )
 
++ ( NSArray* ) p_certificateSearchKeys;
+
 // Extract attribute from the receiver itself
 - ( id ) p_retriveAttributeOfReceiverItselfWithKey: ( NSString* )_AttributeKey;
 

@@ -28,6 +28,7 @@
 #import "_WSCKeychainErrorPrivate.h"
 #import "_WSCKeychainItemPrivate.h"
 #import "_WSCPassphraseItemPrivate.h"
+#import "_WSCPassphraseItemPrivate.h"
 
 @implementation WSCPassphraseItem
 
@@ -334,6 +335,66 @@
 
 #pragma mark WSCPassphraseItem + WSCPasswordPrivateUtilities
 @implementation WSCPassphraseItem ( WSCPasswordPrivateUtilities )
+
+NSArray static* s_generalPassphraseItemSearchKeys;
+NSArray static* s_applicationPassphraseItemSearchKeys;
+NSArray static* s_internetPassphraseItemSearchKeys;
+
++ ( NSArray* ) p_generalPassphraseItemSearchKeys
+    {
+    dispatch_once_t static onceToken;
+
+    dispatch_once( &onceToken
+                 , ( dispatch_block_t )^( void )
+                    {
+                    s_generalPassphraseItemSearchKeys =
+                        [ [ @[ WSCKeychainItemAttributeCreationDate
+                             , WSCKeychainItemAttributeModificationDate
+                             , WSCKeychainItemAttributeAccount
+                             , WSCKeychainItemAttributeComment
+                             , WSCKeychainItemAttributeKindDescription
+                             , WSCKeychainItemAttributeNegative
+                             , WSCKeychainItemAttributeInvisible
+                             ] arrayByAddingObjectsFromArray: [ WSCKeychainItem p_generalSearchKeys ] ] retain ];
+                    } );
+
+    return s_generalPassphraseItemSearchKeys;
+    }
+
++ ( NSArray* ) p_applicationPassphraseSearchKeys
+    {
+    dispatch_once_t static onceToken;
+
+    dispatch_once( &onceToken
+                 , ( dispatch_block_t )^( void )
+                    {
+                    s_applicationPassphraseItemSearchKeys =
+                        [ [ @[ WSCKeychainItemAttributeServiceName
+                             , WSCKeychainItemAttributeUserDefinedDataAttribute
+                             ] arrayByAddingObjectsFromArray: [ WSCPassphraseItem p_generalPassphraseItemSearchKeys ] ] retain ];
+                    } );
+
+    return s_applicationPassphraseItemSearchKeys;
+    }
+
++ ( NSArray* ) p_internetPassphraseSearchKeys
+    {
+    dispatch_once_t static onceToken;
+
+    dispatch_once( &onceToken
+                 , ( dispatch_block_t )^( void )
+                    {
+                    s_internetPassphraseItemSearchKeys =
+                        [ [ @[ WSCKeychainItemAttributeHostName
+                             , WSCKeychainItemAttributeAuthenticationType
+                             , WSCKeychainItemAttributePort
+                             , WSCKeychainItemAttributeRelativePath
+                             , WSCKeychainItemAttributeProtocol
+                             ] arrayByAddingObjectsFromArray: [ WSCPassphraseItem p_generalPassphraseItemSearchKeys ] ] retain ];
+                    } );
+
+    return s_internetPassphraseItemSearchKeys;
+    }
 
 - ( void ) p_addSearchCriteriaWithCStringData: ( NSMutableDictionary* )_SearchCriteriaDict
                                      itemAttr: ( SecItemAttr )_ItemAttr
