@@ -3,7 +3,7 @@ WaxSealCore [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter
 
 ### What's WaxSealCore
 
-WaxSealCore is a modern and full feature Objective-C wrapper for Keychain Services [*Keychain Services*](https://developer.apple.com/library/mac/documentation/Security/Reference/keychainservices/index.html) API.
+WaxSealCore is a modern and full feature Objective-C wrapper for [*Keychain Services*](https://developer.apple.com/library/mac/documentation/Security/Reference/keychainservices/index.html) and [*Certificate, Key, and Trust Services*](https://developer.apple.com/library/mac/documentation/Security/Reference/certifkeytrustservices/index.html).
 
 ### Why WaxSealCore
 
@@ -213,9 +213,8 @@ else
     NSLog( @"I'm so sorry!" );
 ```
 
-### What's New in This Version (v1.01)
-* Supports `isInvisible` property for passphrase items
-* Supports `isNegative` property for passphrase items
+### What's New in This Version (v2.0)
+* Supports processing the X.509 certificates
 * Bug fixes
 
 ### Documentation
