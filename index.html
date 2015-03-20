@@ -32,7 +32,7 @@
       <section>
         <div id="title">
           <h1>WaxSealCore</h1>
-          <p>A simple and full feature Objective-C wrapper for Keychain Services API  that works on Mac</p>
+          <p>WaxSealCore is a modern and full feature Objective-C wrapper for Keychain Services and Certificate, Key, and Trust Services</p>
           <hr>
           <span class="credits left">Project maintained by <a href="https://github.com/TongG">TongG</a></span>
           <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
@@ -45,7 +45,7 @@
 <h3>
 <a id="whats-waxsealcore" class="anchor" href="#whats-waxsealcore" aria-hidden="true"><span class="octicon octicon-link"></span></a>What's WaxSealCore</h3>
 
-<p>WaxSealCore is a modern and full feature Objective-C wrapper for Keychain Services <a href="https://developer.apple.com/library/mac/documentation/Security/Reference/keychainservices/index.html"><em>Keychain Services</em></a> API.</p>
+<p>WaxSealCore is a modern and full feature Objective-C wrapper for <a href="https://developer.apple.com/library/mac/documentation/Security/Reference/keychainservices/index.html"><em>Keychain Services</em></a> and <a href="https://developer.apple.com/library/mac/documentation/Security/Reference/certifkeytrustservices/index.html"><em>Certificate, Key, and Trust Services</em></a>.</p>
 
 <h3>
 <a id="why-waxsealcore" class="anchor" href="#why-waxsealcore" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why WaxSealCore</h3>
@@ -209,7 +209,7 @@ WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain l
                                             error: &amp;error ];
 
 <span class="pl-c">// WaxSealCore supports Unicode-based search, so you can use Emoji or Chinese in your search criteria.</span>
-<span class="pl-c">// One step. So easy, is not it?</span></pre></div>
+<span class="pl-c">// One step. Quite handy, isn't it?</span></pre></div>
 
 <p>Print its Account Name, Passphrase and Comment:</p>
 
@@ -260,11 +260,10 @@ WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain l
     <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>I'm so sorry!<span class="pl-pds">"</span></span> );</pre></div>
 
 <h3>
-<a id="whats-new-in-this-version-v101" class="anchor" href="#whats-new-in-this-version-v101" aria-hidden="true"><span class="octicon octicon-link"></span></a>What's New in This Version (v1.01)</h3>
+<a id="whats-new-in-this-version-v20" class="anchor" href="#whats-new-in-this-version-v20" aria-hidden="true"><span class="octicon octicon-link"></span></a>What's New in This Version (v2.0)</h3>
 
 <ul>
-<li>Supports <code>isInvisible</code> property for passphrase items</li>
-<li>Supports <code>isNegative</code> property for passphrase items</li>
+<li>Supports processing the X.509 certificates</li>
 <li>Bug fixes</li>
 </ul>
 
