@@ -3,7 +3,7 @@ WaxSealCore [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter
 
 ### What's WaxSealCore
 
-WaxSealCore is a modern and full feature Objective-C wrapper for [*Keychain Services*](https://developer.apple.com/library/mac/documentation/Security/Reference/keychainservices/index.html) and [*Certificate, Key, and Trust Services*](https://developer.apple.com/library/mac/documentation/Security/Reference/certifkeytrustservices/index.html).
+WaxSealCore is a modern and full feature Objective-C wrapper for [*Keychain Services*](https://developer.apple.com/library/mac/documentation/Security/Reference/keychainservices/index.html) and [*Certificate, Key, and Trust Services*](https://developer.apple.com/library/mac/documentation/Security/Reference/certifkeytrustservices/index.html) that works on Mac.
 
 ### Why WaxSealCore
 
