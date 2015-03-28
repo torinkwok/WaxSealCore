@@ -1,6 +1,9 @@
 WaxSealCore [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/TongG/WaxSealCore?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 ===========
 
+### What's New in This Version (v2.0.1)
+* Solved the percent escapes problem of `URL` property for `WSCKeychain`
+
 ### What's WaxSealCore
 
 WaxSealCore is a modern and full feature Objective-C wrapper for [*Keychain Services*](https://developer.apple.com/library/mac/documentation/Security/Reference/keychainservices/index.html) and [*Certificate, Key, and Trust Services*](https://developer.apple.com/library/mac/documentation/Security/Reference/certifkeytrustservices/index.html) that works on Mac.
@@ -212,10 +215,6 @@ if ( passphrases.count != 0 )
 else
     NSLog( @"I'm so sorry!" );
 ```
-
-### What's New in This Version (v2.0)
-* Supports processing the X.509 certificates
-* Bug fixes
 
 ### Documentation
 
