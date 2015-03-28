@@ -41,6 +41,11 @@
 @interface WSCKeychainTests : XCTestCase
 @end
 
+#pragma mark v2.0.1
+@interface WSCKeychainTests ( v_2_0_1_bugFixing )
+- ( void ) test_v2_0_1_bugFixing_percentEscapesProblem;
+@end
+
 // --------------------------------------------------------
 #pragma mark Implementation of WSCKeychainTests case
 // --------------------------------------------------------
@@ -1980,6 +1985,52 @@
     }
 
 @end // WSCKeychainTests case
+
+#pragma mark v2.0.1
+@implementation WSCKeychainTests ( v_2_0_1_bugFixing )
+
+- ( void ) test_v2_0_1_bugFixing_percentEscapesProblem
+    {
+    NSError* error = nil;
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 0
+    // ----------------------------------------------------------------------------------
+    NSURL* URL_testCase0 = [ [ NSURL URLForTemporaryDirectory ] URLByAppendingPathComponent: @"🎭I have some space🎭.keychain" ];
+    WSCKeychain* keychainTestCase0 =
+        [ [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URL_testCase0
+                                                             passphrase: @"waxsealcore"
+                                                         becomesDefault: NO
+                                                                  error: &error ] autodelete ];
+    XCTAssertNotNil( keychainTestCase0 );
+    XCTAssertNil( error );
+
+    WSCKeychain* anotherKeychain_testCase0 = [ [ WSCKeychainManager defaultManager ] openExistingKeychainAtURL: URL_testCase0 error: &error ];
+    XCTAssertNotNil( anotherKeychain_testCase0 );
+    XCTAssertNil( error );
+
+    XCTAssertEqualObjects( keychainTestCase0, anotherKeychain_testCase0 );
+
+    // ----------------------------------------------------------------------------------
+    // Test Case 1
+    // ----------------------------------------------------------------------------------
+    NSURL* URL_testCase1 = [ [ NSURL URLForTemporaryDirectory ] URLByAppendingPathComponent: @"🎭*&''()🎭.keychain" ];
+    WSCKeychain* keychainTestCase1 =
+        [ [ [ WSCKeychainManager defaultManager ] createKeychainWithURL: URL_testCase1
+                                                             passphrase: @"waxsealcore"
+                                                         becomesDefault: NO
+                                                                  error: &error ] autodelete ];
+    XCTAssertNotNil( keychainTestCase1 );
+    XCTAssertNil( error );
+
+    WSCKeychain* anotherKeychain_testCase1 = [ [ WSCKeychainManager defaultManager ] openExistingKeychainAtURL: URL_testCase1 error: &error ];
+    XCTAssertNotNil( anotherKeychain_testCase1 );
+    XCTAssertNil( error );
+
+    XCTAssertEqualObjects( keychainTestCase1, anotherKeychain_testCase1 );
+    }
+
+@end
 
 /*================================================================================┐
 |                              The MIT License (MIT)                              |
