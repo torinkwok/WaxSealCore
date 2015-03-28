@@ -43,9 +43,17 @@
 </h1>
 
 <h3>
+<a id="whats-new-in-this-version-v201" class="anchor" href="#whats-new-in-this-version-v201" aria-hidden="true"><span class="octicon octicon-link"></span></a>What's New in This Version (v2.0.1)</h3>
+
+<ul>
+<li>Solved the percent escapes problem of <code>URL</code> property for <code>WSCKeychain</code>
+</li>
+</ul>
+
+<h3>
 <a id="whats-waxsealcore" class="anchor" href="#whats-waxsealcore" aria-hidden="true"><span class="octicon octicon-link"></span></a>What's WaxSealCore</h3>
 
-<p>WaxSealCore is a modern and full feature Objective-C wrapper for <a href="https://developer.apple.com/library/mac/documentation/Security/Reference/keychainservices/index.html"><em>Keychain Services</em></a> and <a href="https://developer.apple.com/library/mac/documentation/Security/Reference/certifkeytrustservices/index.html"><em>Certificate, Key, and Trust Services</em></a>.</p>
+<p>WaxSealCore is a modern and full feature Objective-C wrapper for <a href="https://developer.apple.com/library/mac/documentation/Security/Reference/keychainservices/index.html"><em>Keychain Services</em></a> and <a href="https://developer.apple.com/library/mac/documentation/Security/Reference/certifkeytrustservices/index.html"><em>Certificate, Key, and Trust Services</em></a> that works on Mac.</p>
 
 <h3>
 <a id="why-waxsealcore" class="anchor" href="#why-waxsealcore" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why WaxSealCore</h3>
@@ -78,24 +86,24 @@
 <li>using pure C API of <em>Keychain Services</em>:</li>
 </ul>
 
-<div class="highlight highlight-objective-c"><pre><span class="pl-s3">OSStatus</span> resultCode = errSecSuccess;
+<div class="highlight highlight-objective-c"><pre><span class="pl-c1">OSStatus</span> resultCode = errSecSuccess;
 SecKeychainRef secEmptyKeychain = <span class="pl-c1">NULL</span>;
-<span class="pl-s3">NSURL</span>* URL = [ [ [ <span class="pl-s3">NSBundle</span> mainBundle ] bundleURL ] <span class="pl-s3">URLByAppendingPathComponent:</span> <span class="pl-s1"><span class="pl-pds">@"</span>EmptyKeychainForWiki.keychain<span class="pl-pds">"</span></span> ];
-<span class="pl-st">char</span>* passphrase = <span class="pl-s1"><span class="pl-pds">"</span>waxsealcore<span class="pl-pds">"</span></span>;
+<span class="pl-c1">NSURL</span>* URL = [ [ [ <span class="pl-c1">NSBundle</span> mainBundle ] bundleURL ] <span class="pl-c1">URLByAppendingPathComponent:</span> <span class="pl-s"><span class="pl-pds">@"</span>EmptyKeychainForWiki.keychain<span class="pl-pds">"</span></span> ];
+<span class="pl-k">char</span>* passphrase = <span class="pl-s"><span class="pl-pds">"</span>waxsealcore<span class="pl-pds">"</span></span>;
 
 <span class="pl-c">// Create an empty keychain with given passphrase</span>
 resultCode = SecKeychainCreate( URL.path.UTF8String
-                              , ( <span class="pl-s3">UInt32</span> )strlen( passphrase )
-                              , ( <span class="pl-st">void</span> <span class="pl-s">const</span>* )passphrase
-                              , ( <span class="pl-s3">Boolean</span> )<span class="pl-c1">NO</span>
+                              , ( <span class="pl-c1">UInt32</span> )strlen( passphrase )
+                              , ( <span class="pl-k">void</span> <span class="pl-k">const</span>* )passphrase
+                              , ( <span class="pl-c1">Boolean</span> )<span class="pl-c1">NO</span>
                               , <span class="pl-c1">NULL</span>
                               , &amp;secEmptyKeychain
                               );
 
-<span class="pl-en">NSAssert</span>( resultCode == errSecSuccess, <span class="pl-s1"><span class="pl-pds">@"</span>Failed to create new empty keychain<span class="pl-pds">"</span></span> );
+<span class="pl-en">NSAssert</span>( resultCode == errSecSuccess, <span class="pl-s"><span class="pl-pds">@"</span>Failed to create new empty keychain<span class="pl-pds">"</span></span> );
 
 resultCode = SecKeychainDelete( secEmptyKeychain );
-<span class="pl-en">NSAssert</span>( resultCode == errSecSuccess, <span class="pl-s1"><span class="pl-pds">@"</span>Failed to delete the given keychain<span class="pl-pds">"</span></span> );
+<span class="pl-en">NSAssert</span>( resultCode == errSecSuccess, <span class="pl-s"><span class="pl-pds">@"</span>Failed to delete the given keychain<span class="pl-pds">"</span></span> );
 
 <span class="pl-k">if</span> ( secEmptyKeychain )
     <span class="pl-c">// Keychain Services is based on Core Foundation,</span>
@@ -106,12 +114,12 @@ resultCode = SecKeychainDelete( secEmptyKeychain );
 <li>using <em>WaxSealCore</em>:</li>
 </ul>
 
-<div class="highlight highlight-objective-c"><pre><span class="pl-s3">NSError</span>* error = <span class="pl-c1">nil</span>;
+<div class="highlight highlight-objective-c"><pre><span class="pl-c1">NSError</span>* error = <span class="pl-c1">nil</span>;
 
 <span class="pl-c">// Create an empty keychain with given passphrase</span>
 WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
-    createKeychainWithURL: [ [ [ <span class="pl-s3">NSBundle</span> mainBundle ] bundleURL ] <span class="pl-s3">URLByAppendingPathComponent:</span> <span class="pl-s1"><span class="pl-pds">@"</span>EmptyKeychainForWiki.keychain<span class="pl-pds">"</span></span> ]
-               passphrase: <span class="pl-s1"><span class="pl-pds">@"</span>waxsealcore<span class="pl-pds">"</span></span>
+    createKeychainWithURL: [ [ [ <span class="pl-c1">NSBundle</span> mainBundle ] bundleURL ] <span class="pl-c1">URLByAppendingPathComponent:</span> <span class="pl-s"><span class="pl-pds">@"</span>EmptyKeychainForWiki.keychain<span class="pl-pds">"</span></span> ]
+               passphrase: <span class="pl-s"><span class="pl-pds">@"</span>waxsealcore<span class="pl-pds">"</span></span>
            becomesDefault: <span class="pl-c1">NO</span>
                     error: &amp;error ];
 
@@ -126,15 +134,15 @@ WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
 <li>using pure C API of <em>Keychain Services</em> (OMG! Give me a break!<g-emoji alias="astonished" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f632.png">😲</g-emoji><g-emoji alias="gun" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f52b.png">🔫</g-emoji>):</li>
 </ul>
 
-<div class="highlight highlight-objective-c"><pre><span class="pl-s3">OSStatus</span> resultCode = errSecSuccess;
+<div class="highlight highlight-objective-c"><pre><span class="pl-c1">OSStatus</span> resultCode = errSecSuccess;
 
 <span class="pl-c">// Attributes that will be used for constructing search criteria</span>
-<span class="pl-st">char</span>* label = <span class="pl-s1"><span class="pl-pds">"</span>secure.imdb.com<span class="pl-pds">"</span></span>;
+<span class="pl-k">char</span>* label = <span class="pl-s"><span class="pl-pds">"</span>secure.imdb.com<span class="pl-pds">"</span></span>;
 SecProtocolType* ptrProtocolType = malloc( <span class="pl-k">sizeof</span>( SecProtocolType ) );
 *ptrProtocolType = <span class="pl-c1">kSecProtocolTypeHTTPS</span>;
 
-SecKeychainAttribute attrs[] = { { <span class="pl-c1">kSecLabelItemAttr</span>, ( <span class="pl-s3">UInt32</span> )<span class="pl-s3">strlen</span>( label ), ( <span class="pl-st">void</span>* )label }
-                               , { <span class="pl-c1">kSecProtocolItemAttr</span>, ( <span class="pl-s3">UInt32</span> )<span class="pl-k">sizeof</span>( SecProtocolType ), ( <span class="pl-st">void</span>* )ptrProtocolType }
+SecKeychainAttribute attrs[] = { { <span class="pl-c1">kSecLabelItemAttr</span>, ( <span class="pl-c1">UInt32</span> )<span class="pl-c1">strlen</span>( label ), ( <span class="pl-k">void</span>* )label }
+                               , { <span class="pl-c1">kSecProtocolItemAttr</span>, ( <span class="pl-c1">UInt32</span> )<span class="pl-k">sizeof</span>( SecProtocolType ), ( <span class="pl-k">void</span>* )ptrProtocolType }
                                };
 
 SecKeychainAttributeList attrsList = { <span class="pl-k">sizeof</span>( attrs ) / <span class="pl-k">sizeof</span>( attrs[ <span class="pl-c1">0</span> ] ), attrs };
@@ -150,41 +158,41 @@ SecKeychainSearchRef searchObject = <span class="pl-c1">NULL</span>;
     SecKeychainItemRef matchedItem = <span class="pl-c1">NULL</span>;
 
     <span class="pl-c">// Finds the next keychain item matching the given search criteria.</span>
-    <span class="pl-k">while</span> ( ( resultCode = <span class="pl-s3">SecKeychainSearchCopyNext</span>( searchObject, &amp;matchedItem ) ) != errSecItemNotFound )
+    <span class="pl-k">while</span> ( ( resultCode = <span class="pl-c1">SecKeychainSearchCopyNext</span>( searchObject, &amp;matchedItem ) ) != errSecItemNotFound )
         {
         SecKeychainAttribute theAttributes[] = { { <span class="pl-c1">kSecAccountItemAttr</span>, <span class="pl-c1">0</span>, <span class="pl-c1">NULL</span> }
                                                , { <span class="pl-c1">kSecCommentItemAttr</span>, <span class="pl-c1">0</span>, <span class="pl-c1">NULL</span> }
                                                };
 
         SecKeychainAttributeList theAttrList = { <span class="pl-k">sizeof</span>( theAttributes ) / <span class="pl-k">sizeof</span>( theAttributes[ <span class="pl-c1">0</span> ] ), theAttributes };
-        <span class="pl-s3">UInt32</span> lengthOfPassphrase = <span class="pl-c1">0</span>;
-        <span class="pl-st">char</span>* passphraseBuffer = <span class="pl-c1">NULL</span>;
-        <span class="pl-k">if</span> ( ( resultCode = <span class="pl-s3">SecKeychainItemCopyContent</span>( matchedItem
+        <span class="pl-c1">UInt32</span> lengthOfPassphrase = <span class="pl-c1">0</span>;
+        <span class="pl-k">char</span>* passphraseBuffer = <span class="pl-c1">NULL</span>;
+        <span class="pl-k">if</span> ( ( resultCode = <span class="pl-c1">SecKeychainItemCopyContent</span>( matchedItem
                                                       , <span class="pl-c1">NULL</span>
                                                       , &amp;theAttrList
                                                       , &amp;lengthOfPassphrase
-                                                      , ( <span class="pl-st">void</span>** )&amp;passphraseBuffer
+                                                      , ( <span class="pl-k">void</span>** )&amp;passphraseBuffer
                                                       ) ) == errSecSuccess )
             {
-            <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span><span class="pl-cce">\n</span>==============================<span class="pl-cce">\n</span><span class="pl-pds">"</span></span> );
-            <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>Passphrase: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, [ [ [ <span class="pl-s3">NSString</span> alloc ] <span class="pl-s3">initWithBytes:</span> passphraseBuffer <span class="pl-s3">length:</span> lengthOfPassphrase <span class="pl-s3">encoding:</span> NSUTF8StringEncoding ] autorelease ] );
+            <span class="pl-c1">NSLog</span>( <span class="pl-s"><span class="pl-pds">@"</span><span class="pl-cce">\n</span>==============================<span class="pl-cce">\n</span><span class="pl-pds">"</span></span> );
+            <span class="pl-c1">NSLog</span>( <span class="pl-s"><span class="pl-pds">@"</span>Passphrase: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, [ [ [ <span class="pl-c1">NSString</span> alloc ] <span class="pl-c1">initWithBytes:</span> passphraseBuffer <span class="pl-c1">length:</span> lengthOfPassphrase <span class="pl-c1">encoding:</span> NSUTF8StringEncoding ] autorelease ] );
 
-            <span class="pl-k">for</span> ( <span class="pl-st">int</span> _Index = <span class="pl-c1">0</span>; _Index &lt; theAttrList.<span class="pl-vo">count</span>; _Index++ )
+            <span class="pl-k">for</span> ( <span class="pl-k">int</span> _Index = <span class="pl-c1">0</span>; _Index &lt; theAttrList.<span class="pl-smi">count</span>; _Index++ )
                 {
-                SecKeychainAttribute attrStruct = theAttrList.<span class="pl-vo">attr</span>[ _Index ];
-                <span class="pl-s3">NSString</span>* attributeValue = [ [ [ <span class="pl-s3">NSString</span> alloc ] <span class="pl-s3">initWithBytes:</span> attrStruct.data <span class="pl-s3">length:</span> attrStruct.length <span class="pl-s3">encoding:</span> NSUTF8StringEncoding ] autorelease ];
+                SecKeychainAttribute attrStruct = theAttrList.<span class="pl-smi">attr</span>[ _Index ];
+                <span class="pl-c1">NSString</span>* attributeValue = [ [ [ <span class="pl-c1">NSString</span> alloc ] <span class="pl-c1">initWithBytes:</span> attrStruct.data <span class="pl-c1">length:</span> attrStruct.length <span class="pl-c1">encoding:</span> NSUTF8StringEncoding ] autorelease ];
 
-                <span class="pl-k">if</span> ( attrStruct.<span class="pl-vo">tag</span> == <span class="pl-c1">kSecAccountItemAttr</span> )
-                    <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>IMDb User Name: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, attributeValue );
-                <span class="pl-k">else</span> <span class="pl-k">if</span> ( attrStruct.<span class="pl-vo">tag</span> == <span class="pl-c1">kSecCommentItemAttr</span> )
-                    <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>Comment: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, attributeValue );
+                <span class="pl-k">if</span> ( attrStruct.<span class="pl-smi">tag</span> == <span class="pl-c1">kSecAccountItemAttr</span> )
+                    <span class="pl-c1">NSLog</span>( <span class="pl-s"><span class="pl-pds">@"</span>IMDb User Name: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, attributeValue );
+                <span class="pl-k">else</span> <span class="pl-k">if</span> ( attrStruct.<span class="pl-smi">tag</span> == <span class="pl-c1">kSecCommentItemAttr</span> )
+                    <span class="pl-c1">NSLog</span>( <span class="pl-s"><span class="pl-pds">@"</span>Comment: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, attributeValue );
                 }
 
-            <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span><span class="pl-cce">\n</span>==============================<span class="pl-cce">\n</span><span class="pl-pds">"</span></span> );
+            <span class="pl-c1">NSLog</span>( <span class="pl-s"><span class="pl-pds">@"</span><span class="pl-cce">\n</span>==============================<span class="pl-cce">\n</span><span class="pl-pds">"</span></span> );
             }
 
-        <span class="pl-s3">SecKeychainItemFreeContent</span>( &amp;theAttrList, passphraseBuffer );
-        <span class="pl-s3">CFRelease</span>( matchedItem );
+        <span class="pl-c1">SecKeychainItemFreeContent</span>( &amp;theAttrList, passphraseBuffer );
+        <span class="pl-c1">CFRelease</span>( matchedItem );
         }
     }
 
@@ -198,12 +206,12 @@ SecKeychainSearchRef searchObject = <span class="pl-c1">NULL</span>;
 <li>using <em>WaxSealCore</em> (Just a few lines of Objective-C code):</li>
 </ul>
 
-<div class="highlight highlight-objective-c"><pre><span class="pl-s3">NSError</span>* error = <span class="pl-c1">nil</span>;
+<div class="highlight highlight-objective-c"><pre><span class="pl-c1">NSError</span>* error = <span class="pl-c1">nil</span>;
 
 WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain login ]
-    findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : <span class="pl-s1"><span class="pl-pds">@"</span>secure.imdb.com<span class="pl-pds">"</span></span>
-                                                    , WSCKeychainItemAttributeProtocol : <span class="pl-s3">WSCInternetProtocolCocoaValue</span>( WSCInternetProtocolTypeHTTPS )
-                                                    , WSCKeychainItemAttributeComment : <span class="pl-s1"><span class="pl-pds">@"</span>👺👹👺👹<span class="pl-pds">"</span></span>
+    findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : <span class="pl-s"><span class="pl-pds">@"</span>secure.imdb.com<span class="pl-pds">"</span></span>
+                                                    , WSCKeychainItemAttributeProtocol : <span class="pl-c1">WSCInternetProtocolCocoaValue</span>( WSCInternetProtocolTypeHTTPS )
+                                                    , WSCKeychainItemAttributeComment : <span class="pl-s"><span class="pl-pds">@"</span>👺👹👺👹<span class="pl-pds">"</span></span>
                                                     }
                                         itemClass: WSCKeychainItemClassInternetPassphraseItem
                                             error: &amp;error ];
@@ -215,31 +223,31 @@ WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain l
 
 <div class="highlight highlight-objective-c"><pre><span class="pl-k">if</span> ( IMDbLoginPassphrase )
     {
-    <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>==============================<span class="pl-pds">"</span></span> );
+    <span class="pl-c1">NSLog</span>( <span class="pl-s"><span class="pl-pds">@"</span>==============================<span class="pl-pds">"</span></span> );
     <span class="pl-c">// Use the `account` property</span>
-    <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>IMDb User Name: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, IMDbLoginPassphrase.<span class="pl-vo">account</span> );
+    <span class="pl-c1">NSLog</span>( <span class="pl-s"><span class="pl-pds">@"</span>IMDb User Name: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, IMDbLoginPassphrase.<span class="pl-smi">account</span> );
 
     <span class="pl-c">// Use the `passphrase` property</span>
-    <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>Passphrase: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, [ [ [ <span class="pl-s3">NSString</span> alloc ] <span class="pl-s3">initWithData:</span> IMDbLoginPassphrase.passphrase <span class="pl-s3">encoding:</span> NSUTF8StringEncoding ] autorelease ] );
+    <span class="pl-c1">NSLog</span>( <span class="pl-s"><span class="pl-pds">@"</span>Passphrase: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, [ [ [ <span class="pl-c1">NSString</span> alloc ] <span class="pl-c1">initWithData:</span> IMDbLoginPassphrase.passphrase <span class="pl-c1">encoding:</span> NSUTF8StringEncoding ] autorelease ] );
 
     <span class="pl-c">// Use the `comment` property</span>
-    <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>Comment: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, IMDbLoginPassphrase.<span class="pl-vo">comment</span> );
-    <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>==============================<span class="pl-pds">"</span></span> );
+    <span class="pl-c1">NSLog</span>( <span class="pl-s"><span class="pl-pds">@"</span>Comment: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, IMDbLoginPassphrase.<span class="pl-smi">comment</span> );
+    <span class="pl-c1">NSLog</span>( <span class="pl-s"><span class="pl-pds">@"</span>==============================<span class="pl-pds">"</span></span> );
 
     <span class="pl-c">// -setComment:</span>
-    IMDbLoginPassphrase.<span class="pl-vo">comment</span> = <span class="pl-s1"><span class="pl-pds">@"</span>👿👿👿👿👿👿<span class="pl-pds">"</span></span>;
+    IMDbLoginPassphrase.<span class="pl-smi">comment</span> = <span class="pl-s"><span class="pl-pds">@"</span>👿👿👿👿👿👿<span class="pl-pds">"</span></span>;
     }
 <span class="pl-k">else</span>
-    <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>I'm so sorry!<span class="pl-pds">"</span></span> );</pre></div>
+    <span class="pl-c1">NSLog</span>( <span class="pl-s"><span class="pl-pds">@"</span>I'm so sorry!<span class="pl-pds">"</span></span> );</pre></div>
 
 <p>Batch Search:</p>
 
 <div class="highlight highlight-objective-c"><pre><span class="pl-c">// Find all the Internet passphrases that met the given search criteria</span>
-<span class="pl-s3">NSArray</span>* passphrases = [ [ WSCKeychain login ]
+<span class="pl-c1">NSArray</span>* passphrases = [ [ WSCKeychain login ]
     <span class="pl-c">// Batch search</span>
-    findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : <span class="pl-s1"><span class="pl-pds">@"</span>secure.imdb.com<span class="pl-pds">"</span></span>
-                                                   , WSCKeychainItemAttributeProtocol : <span class="pl-s3">WSCInternetProtocolCocoaValue</span>( WSCInternetProtocolTypeHTTPS )
-                                                   , WSCKeychainItemAttributeComment : <span class="pl-s1"><span class="pl-pds">@"</span>👿👿👿👿👿👿<span class="pl-pds">"</span></span>
+    findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : <span class="pl-s"><span class="pl-pds">@"</span>secure.imdb.com<span class="pl-pds">"</span></span>
+                                                   , WSCKeychainItemAttributeProtocol : <span class="pl-c1">WSCInternetProtocolCocoaValue</span>( WSCInternetProtocolTypeHTTPS )
+                                                   , WSCKeychainItemAttributeComment : <span class="pl-s"><span class="pl-pds">@"</span>👿👿👿👿👿👿<span class="pl-pds">"</span></span>
                                                    }
                                        itemClass: WSCKeychainItemClassInternetPassphraseItem
                                            error: &amp;error ];
@@ -247,25 +255,17 @@ WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain l
     {
     <span class="pl-k">for</span> ( WSCPassphraseItem* _Passphrase in passphrases )
         {
-        <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>==============================<span class="pl-pds">"</span></span> );
-        <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>IMDb User Name: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, IMDbLoginPassphrase.<span class="pl-vo">account</span> );
-        <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>Passphrase: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, [ [ [ <span class="pl-s3">NSString</span> alloc ] <span class="pl-s3">initWithData:</span> IMDbLoginPassphrase.passphrase <span class="pl-s3">encoding:</span> NSUTF8StringEncoding ] autorelease ] );
-        <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>Comment: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, IMDbLoginPassphrase.<span class="pl-vo">comment</span> );
-        <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>==============================<span class="pl-pds">"</span></span> );
+        <span class="pl-c1">NSLog</span>( <span class="pl-s"><span class="pl-pds">@"</span>==============================<span class="pl-pds">"</span></span> );
+        <span class="pl-c1">NSLog</span>( <span class="pl-s"><span class="pl-pds">@"</span>IMDb User Name: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, IMDbLoginPassphrase.<span class="pl-smi">account</span> );
+        <span class="pl-c1">NSLog</span>( <span class="pl-s"><span class="pl-pds">@"</span>Passphrase: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, [ [ [ <span class="pl-c1">NSString</span> alloc ] <span class="pl-c1">initWithData:</span> IMDbLoginPassphrase.passphrase <span class="pl-c1">encoding:</span> NSUTF8StringEncoding ] autorelease ] );
+        <span class="pl-c1">NSLog</span>( <span class="pl-s"><span class="pl-pds">@"</span>Comment: <span class="pl-c1">%@</span><span class="pl-pds">"</span></span>, IMDbLoginPassphrase.<span class="pl-smi">comment</span> );
+        <span class="pl-c1">NSLog</span>( <span class="pl-s"><span class="pl-pds">@"</span>==============================<span class="pl-pds">"</span></span> );
 
-        _Passphrase.<span class="pl-vo">comment</span> = <span class="pl-s1"><span class="pl-pds">@"</span>👺👹👺👹<span class="pl-pds">"</span></span>;
+        _Passphrase.<span class="pl-smi">comment</span> = <span class="pl-s"><span class="pl-pds">@"</span>👺👹👺👹<span class="pl-pds">"</span></span>;
         }
     }
 <span class="pl-k">else</span>
-    <span class="pl-s3">NSLog</span>( <span class="pl-s1"><span class="pl-pds">@"</span>I'm so sorry!<span class="pl-pds">"</span></span> );</pre></div>
-
-<h3>
-<a id="whats-new-in-this-version-v20" class="anchor" href="#whats-new-in-this-version-v20" aria-hidden="true"><span class="octicon octicon-link"></span></a>What's New in This Version (v2.0)</h3>
-
-<ul>
-<li>Supports processing the X.509 certificates</li>
-<li>Bug fixes</li>
-</ul>
+    <span class="pl-c1">NSLog</span>( <span class="pl-s"><span class="pl-pds">@"</span>I'm so sorry!<span class="pl-pds">"</span></span> );</pre></div>
 
 <h3>
 <a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h3>
