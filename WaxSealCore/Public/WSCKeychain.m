@@ -105,11 +105,24 @@ BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
 /* The URL for the receiver. (read-only) */
 - ( NSURL* ) URL
     {
-    NSString* pathOfKeychain = _WSCKeychainGetPathOfKeychain( self.secKeychain );
+    NSString* originalPathOfKeychain = _WSCKeychainGetPathOfKeychain( self.secKeychain );
 
-    if ( pathOfKeychain )
+    if ( originalPathOfKeychain )
         {
-        NSURL* URLForKeychain = [ NSURL URLWithString: [ @"file://" stringByAppendingString: pathOfKeychain ] ];
+        CFStringRef percentEncodedPathOfKeychain = NULL;
+        NSURL* URLForKeychain = nil;
+        if ( ( percentEncodedPathOfKeychain =
+                CFURLCreateStringByAddingPercentEscapes( kCFAllocatorDefault
+                                                       , ( __bridge CFStringRef )originalPathOfKeychain
+                                                       , NULL
+                                                       , CFSTR( ":?#[]@!$&'()*+,;=" )
+                                                       , kCFStringEncodingUTF8
+                                                       ) ) )
+            {
+            URLForKeychain = [ NSURL URLWithString: [ @"file://" stringByAppendingString: ( __bridge NSString* )percentEncodedPathOfKeychain ] ];
+            CFRelease( percentEncodedPathOfKeychain );
+            percentEncodedPathOfKeychain = NULL;
+            }
 
         NSError* error = nil;
         if ( [ URLForKeychain isFileURL ] && [ URLForKeychain checkResourceIsReachableAndReturnError: &error ] )
