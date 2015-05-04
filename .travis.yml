@@ -1,0 +1,3 @@
+language: objective-c
+xcode_project: WaxSealCore.xcodeproj
+xcode_scheme: WaxSealCore
