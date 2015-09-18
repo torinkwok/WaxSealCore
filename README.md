@@ -231,13 +231,13 @@ else
 ### Contact Me
 If you encounter any issue, you can: 
 
- * Email me: <Tong-G@outlook.com>
- * DM me on Twitter: [@NSTongG]( https://twitter.com/NSTongG )
+ * Email me: `dG9uZy1rdW9Ab3V0bG9vay5jb20=` (Base64ed)
+ * DM me on Twitter: [@NSTongK]( https://twitter.com/TongKuo)
  * If you are using S/MIME, you can send me encrypted email by retrieving my S/MIME certificate and its related intermediate certificates in [here](https://www.dropbox.com/sh/hicq0v0hhepqvdg/AAB7hLeZRg1XPw9cGea1rtkla?dl=0)
  * If you are using GnuPG, you can send me encrypted email, my GnuPG pub key is **0x5604FA90**, you can retrieve it from keyserver.
 
 ### License
-> Copyright (c) 2015 Tong Guo
+> Copyright (c) 2015 Tong Kuo
 
 > Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
