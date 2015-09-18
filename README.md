@@ -220,7 +220,7 @@ else
 
 * [Read online](https://tongkuo.github.io/WaxSealCore-Doc)
 
-* [Download the offline docset for Dash or Xcode Documentation Viewer](https://github.com/TongG/WaxSealCore-Doc)
+* [Download the offline docset for Dash or Xcode Documentation Viewer](https://github.com/TongKuo/WaxSealCore-Doc)
 
 ### Minimum System Requirements
 
