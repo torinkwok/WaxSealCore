@@ -1,43 +1,33 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>WaxSealCore by TongG</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>WaxSealCore by TongKuo</title>
   </head>
+
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/TongG/WaxSealCore">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/TongG/WaxSealCore/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/TongG/WaxSealCore/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
 
-    <div class="wrapper">
+    <header>
+      <div class="container">
+        <h1>WaxSealCore</h1>
+        <h2>WaxSealCore is a modern and full feature Objective-C wrapper for Keychain Services and Certificate, Key, and Trust Services that works on Mac</h2>
 
-      <section>
-        <div id="title">
-          <h1>WaxSealCore</h1>
-          <p>WaxSealCore is a modern and full feature Objective-C wrapper for Keychain Services and Certificate, Key, and Trust Services that works on Mac</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/TongG">TongG</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
-        </div>
+        <section id="downloads">
+          <a href="https://github.com/TongKuo/WaxSealCore/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/TongKuo/WaxSealCore/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/TongKuo/WaxSealCore" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
 
+    <div class="container">
+      <section id="main_content">
         <h1>
 <a id="" class="anchor" href="#" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://gitter.im/TongG/WaxSealCore?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Gitter"></a>
 </h1>
@@ -86,7 +76,7 @@
 <li>using pure C API of <em>Keychain Services</em>:</li>
 </ul>
 
-<div class="highlight highlight-objective-c"><pre><span class="pl-c1">OSStatus</span> resultCode = errSecSuccess;
+<div class="highlight highlight-source-objc"><pre><span class="pl-c1">OSStatus</span> resultCode = errSecSuccess;
 SecKeychainRef secEmptyKeychain = <span class="pl-c1">NULL</span>;
 <span class="pl-c1">NSURL</span>* URL = [ [ [ <span class="pl-c1">NSBundle</span> mainBundle ] bundleURL ] <span class="pl-c1">URLByAppendingPathComponent:</span> <span class="pl-s"><span class="pl-pds">@"</span>EmptyKeychainForWiki.keychain<span class="pl-pds">"</span></span> ];
 <span class="pl-k">char</span>* passphrase = <span class="pl-s"><span class="pl-pds">"</span>waxsealcore<span class="pl-pds">"</span></span>;
@@ -114,7 +104,7 @@ resultCode = SecKeychainDelete( secEmptyKeychain );
 <li>using <em>WaxSealCore</em>:</li>
 </ul>
 
-<div class="highlight highlight-objective-c"><pre><span class="pl-c1">NSError</span>* error = <span class="pl-c1">nil</span>;
+<div class="highlight highlight-source-objc"><pre><span class="pl-c1">NSError</span>* error = <span class="pl-c1">nil</span>;
 
 <span class="pl-c">// Create an empty keychain with given passphrase</span>
 WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
@@ -134,7 +124,7 @@ WSCKeychain* emptyKeychain = [ [ WSCKeychainManager defaultManager ]
 <li>using pure C API of <em>Keychain Services</em> (OMG! Give me a break!<g-emoji alias="astonished" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f632.png">😲</g-emoji><g-emoji alias="gun" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f52b.png">🔫</g-emoji>):</li>
 </ul>
 
-<div class="highlight highlight-objective-c"><pre><span class="pl-c1">OSStatus</span> resultCode = errSecSuccess;
+<div class="highlight highlight-source-objc"><pre><span class="pl-c1">OSStatus</span> resultCode = errSecSuccess;
 
 <span class="pl-c">// Attributes that will be used for constructing search criteria</span>
 <span class="pl-k">char</span>* label = <span class="pl-s"><span class="pl-pds">"</span>secure.imdb.com<span class="pl-pds">"</span></span>;
@@ -206,7 +196,7 @@ SecKeychainSearchRef searchObject = <span class="pl-c1">NULL</span>;
 <li>using <em>WaxSealCore</em> (Just a few lines of Objective-C code):</li>
 </ul>
 
-<div class="highlight highlight-objective-c"><pre><span class="pl-c1">NSError</span>* error = <span class="pl-c1">nil</span>;
+<div class="highlight highlight-source-objc"><pre><span class="pl-c1">NSError</span>* error = <span class="pl-c1">nil</span>;
 
 WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain login ]
     findFirstKeychainItemSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : <span class="pl-s"><span class="pl-pds">@"</span>secure.imdb.com<span class="pl-pds">"</span></span>
@@ -221,7 +211,7 @@ WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain l
 
 <p>Print its Account Name, Passphrase and Comment:</p>
 
-<div class="highlight highlight-objective-c"><pre><span class="pl-k">if</span> ( IMDbLoginPassphrase )
+<div class="highlight highlight-source-objc"><pre><span class="pl-k">if</span> ( IMDbLoginPassphrase )
     {
     <span class="pl-c1">NSLog</span>( <span class="pl-s"><span class="pl-pds">@"</span>==============================<span class="pl-pds">"</span></span> );
     <span class="pl-c">// Use the `account` property</span>
@@ -242,7 +232,7 @@ WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain l
 
 <p>Batch Search:</p>
 
-<div class="highlight highlight-objective-c"><pre><span class="pl-c">// Find all the Internet passphrases that met the given search criteria</span>
+<div class="highlight highlight-source-objc"><pre><span class="pl-c">// Find all the Internet passphrases that met the given search criteria</span>
 <span class="pl-c1">NSArray</span>* passphrases = [ [ WSCKeychain login ]
     <span class="pl-c">// Batch search</span>
     findAllKeychainItemsSatisfyingSearchCriteria: @{ WSCKeychainItemAttributeLabel : <span class="pl-s"><span class="pl-pds">@"</span>secure.imdb.com<span class="pl-pds">"</span></span>
@@ -271,8 +261,8 @@ WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain l
 <a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h3>
 
 <ul>
-<li><p><a href="https://tongg.github.io/WaxSealCore-Doc">Read online</a></p></li>
-<li><p><a href="https://github.com/TongG/WaxSealCore-Doc">Download the offline docset for Dash or Xcode Documentation Viewer</a></p></li>
+<li><p><a href="https://tongkuo.github.io/WaxSealCore-Doc">Read online</a></p></li>
+<li><p><a href="https://github.com/TongKuo/WaxSealCore-Doc">Download the offline docset for Dash or Xcode Documentation Viewer</a></p></li>
 </ul>
 
 <h3>
@@ -289,9 +279,8 @@ WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain l
 <p>If you encounter any issue, you can: </p>
 
 <ul>
-<li>Email me: <a href="mailto:Tong-G@outlook.com">Tong-G@outlook.com</a>
-</li>
-<li>DM me on Twitter: <a href="https://twitter.com/NSTongG">@NSTongG</a>
+<li>Email me: <code>dG9uZy1rdW9Ab3V0bG9vay5jb20=</code> (Base64ed)</li>
+<li>DM me on Twitter: <a href="https://twitter.com/TongKuo">@NSTongK</a>
 </li>
 <li>If you are using S/MIME, you can send me encrypted email by retrieving my S/MIME certificate and its related intermediate certificates in <a href="https://www.dropbox.com/sh/hicq0v0hhepqvdg/AAB7hLeZRg1XPw9cGea1rtkla?dl=0">here</a>
 </li>
@@ -302,7 +291,7 @@ WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain l
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h3>
 
 <blockquote>
-<p>Copyright (c) 2015 Tong Guo</p>
+<p>Copyright (c) 2015 Tong Kuo</p>
 
 <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
 
@@ -311,9 +300,8 @@ WSCPassphraseItem* IMDbLoginPassphrase = ( WSCPassphraseItem* )[ [ WSCKeychain l
 <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
 </blockquote>
       </section>
-
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+
               <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
