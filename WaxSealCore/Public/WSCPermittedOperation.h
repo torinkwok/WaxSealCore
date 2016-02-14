@@ -84,7 +84,7 @@ typedef NS_ENUM( NSUInteger, WSCPermittedOperationTag )
 
 /** Masks that define when using a keychain or a protected keychain item should require a passphrase.
   */
-typedef NS_ENUM( SecKeychainPromptSelector, WSCPermittedOperationPromptContext )
+typedef NS_ENUM( int /*SecKeychainPromptSelector*/, WSCPermittedOperationPromptContext )
     {
     /// Indicates that prompt selector bit is not set, this is default.
       WSCPermittedOperationPromptContextNone = 0
