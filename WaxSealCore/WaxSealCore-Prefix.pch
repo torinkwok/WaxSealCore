@@ -25,7 +25,7 @@
 #ifdef __OBJC__
     #import <Cocoa/Cocoa.h>
     #import "_WSCCommon.h"
-    #import "_WSCCommonForUnitTests.h"
+//    #import "_WSCCommonForUnitTests.h"
 #endif
 
 /*================================================================================┐
