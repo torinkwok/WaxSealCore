@@ -96,8 +96,8 @@ BOOL _WSCKeychainIsSecKeychainValid( SecKeychainRef _Keychain )
     {
     return [ NSString stringWithFormat: @"%@", @{ @"Keychain Name"  : self.URL.lastPathComponent
                                                 , @"Keychain URL"   : self.URL
-                                                , @"Lock Status"    : self.isLocked ? @"Locked" : @"Unlocked"
-                                                , @"Is Default"     : self.isDefault ? @"YES" : @"NO"
+                                                , @"Lock Status"    : ( self.isLocked ? @"Locked" : @"Unlocked" )
+                                                , @"Is Default"     : ( self.isDefault ? @"YES" : @"NO" )
                                                 } ];
     }
 

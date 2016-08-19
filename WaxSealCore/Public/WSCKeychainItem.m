@@ -159,7 +159,10 @@
             self->_secAccessAutoReleasePool = CFSetCreateMutable( kCFAllocatorDefault, 0, &kCFTypeSetCallBacks );
             }
         else
+            {
+            self = nil;
             return nil;
+            }
         }
 
     return self;
