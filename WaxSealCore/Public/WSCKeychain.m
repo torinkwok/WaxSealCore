@@ -678,7 +678,7 @@ WSCKeychain static* s_system = nil;
                 // TODO: Waiting for the other item class, Certificates, Keys, etc.
                 NSAssert( wrapperClass, @"Failed to determine the concrete Class of new object" );
 
-                id keychainItem = objc_msgSend( wrapperClass, initSelector, ( __bridge SecKeychainRef )secMatchedItem );
+                id keychainItem = ( ( id (*)( Class, SEL, CFTypeRef ) )objc_msgSend )( wrapperClass, initSelector, ( __bridge SecKeychainRef )secMatchedItem );
                 [ allItems addObject: keychainItem ];
                 }
 
@@ -834,7 +834,7 @@ WSCKeychain static* s_system = nil;
             // TODO: Waiting for the other item class, Certificates, Keys, etc.
             NSAssert( wrapperClass, @"Failed to determine the concrete Class of new object" );
 
-            id keychainItem = objc_msgSend( wrapperClass, initSelector, ( __bridge SecKeychainRef )_MatchedItem );
+            id keychainItem = ( ( id (*)( Class, SEL, CFTypeRef ) )objc_msgSend )( wrapperClass, initSelector, ( __bridge SecKeychainRef )_MatchedItem );
             [ matchedItems addObject: keychainItem ];
             }
 
